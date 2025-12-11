@@ -1,0 +1,33 @@
+{
+  "name": "tree-sitter-macaulay2",
+  "version": "0.1.0",
+  "description": "Macaulay2 grammar for tree-sitter",
+  "main": "bindings/node",
+  "keywords": [
+    "parser",
+    "lexer",
+    "macaulay2",
+    "tree-sitter"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "nan": "^2.17.0"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.20.8"
+  },
+  "scripts": {
+    "test": "tree-sitter test",
+    "parse": "tree-sitter parse",
+    "generate": "tree-sitter generate"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.macaulay2",
+      "file-types": [
+        "m2"
+      ]
+    }
+  ]
+}

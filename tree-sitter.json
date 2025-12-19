@@ -1,0 +1,38 @@
+{
+  "grammars": [
+    {
+      "name": "macaulay2",
+      "camelcase": "Macaulay2",
+      "scope": "source.m2",
+      "path": ".",
+      "file-types": [
+        "m2"
+      ],
+      "highlights": "queries/highlights.scm",
+      "injection-regex": "^(m2)$"
+    }
+  ],
+
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Macaulay2 grammar for tree-sitter",
+    "links": {
+      "repository": "https://github.com/AlexanderGolys/tree-sitter-macaulay2"
+    },
+    "authors": [
+        {
+          "name": "Alexander Golys",
+          "email": "alexandergolys@gmail.com"
+        }]
+  },
+  
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true
+  }
+}

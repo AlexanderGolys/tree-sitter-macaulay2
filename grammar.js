@@ -1,5 +1,3 @@
-
-
 const PREC = {
   SEMICOLON: 7,
   CONTROL: 12,
@@ -32,10 +30,10 @@ module.exports = grammar({
   word: ($) => $.symbol,
 
   inline: ($) => [
-    // $._primitive_expression,
-    // $._non_prefix_expression,
-    // $._mult_collection,
-    // $._collection
+     $._primitive_expression,
+     $._non_prefix_expression,
+     $._mult_collection,
+     $._collection
   ],
 
   rules: {
@@ -96,9 +94,9 @@ module.exports = grammar({
 
 
     cell: ($) => seq(
-        choice($.expression, $._mult_collection, $.comment),
+        choice($.expression, $._mult_collection),
         repeat(';'),
-        repeat1(choice('\n', '\0'))
+        repeat1(choice('\n', '\0', $.comment))
     ),
 
     integer: ($) => token(seq(
@@ -147,7 +145,7 @@ module.exports = grammar({
     _raw_string: ($) =>
       seq(
         token("///"),
-        repeat(choice(/[^/]+/, /\/[^/]/, /\/\/[^/]/)),
+        repeat(choice(/[^/]+/, /\/[^"]/ , /\/\/[^/]/)),
         token("///")
       ),
 
@@ -332,23 +330,23 @@ module.exports = grammar({
       optional(field('alternative', $.else_clause))
     )),
 
-    from_clause: ($) => seq(field('keyword', $.from_keyword), field('source', $.expression)),
+    from_clause: ($) => clause($, $.from_keyword, 'source'),
 
-    to_clause: ($) => seq(field('keyword', $.to_keyword), field('target', $.expression)),
+    to_clause: ($) => clause($, $.to_keyword, 'target'),
 
-    when_clause: ($) => seq(field('keyword', $.when_keyword), field('condition', $.expression)),
+    when_clause: ($) => clause($, $.when_keyword, 'condition'),
 
-    list_clause: ($) => seq(field('keyword', $.list_keyword), field('body', $.expression)),
+    list_clause: ($) => clause($, $.list_keyword, 'body'),
 
-    else_clause: ($) => prec(PREC.CONTROL, seq(field('keyword', $.else_keyword), field('alternative', $.expression))),
+    else_clause: ($) => clause($, $.else_keyword, 'alternative', PREC.CONTROL),
 
-    do_clause: ($) => prec(PREC.CONTROL, seq(field('keyword', $.do_keyword), field('body', $.expression))),
+    do_clause: ($) => clause($, $.do_keyword, 'body', PREC.CONTROL),
 
-    then_clause: ($) => prec(PREC.CONTROL, seq(field('keyword', $.then_keyword), field('body', $.expression))),
+    then_clause: ($) => clause($, $.then_keyword, 'body', PREC.CONTROL),
 
-    in_clause: ($) => prec(PREC.ITER, seq(field('keyword', $.in_keyword), field('source', $.expression))),
+    in_clause: ($) => clause($, $.in_keyword, 'source', PREC.ITER),
 
-    of_clause: ($) => prec(PREC.ITER, seq(field('keyword', $.of_keyword), field('source', $.expression))),
+    of_clause: ($) => clause($, $.of_keyword, 'source', PREC.ITER),
 
     for_statement: ($) => prec.right(PREC.CONTROL, choice(
     seq(
@@ -402,27 +400,25 @@ module.exports = grammar({
 
 
 
-    break_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.break_keyword), optional(field('value', $.expression)))),
+    break_statement: ($) => optionalValueStatement($, $.break_keyword),
 
-    continue_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.continue_keyword), optional(field('value', $.expression)))),
+    continue_statement: ($) => optionalValueStatement($, $.continue_keyword),
 
-    return_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.return_keyword), optional(field('value', $.expression)))),
+    return_statement: ($) => optionalValueStatement($, $.return_keyword),
 
-    breakpoint_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.breakpoint_keyword), optional(field('value', $.expression)))),
+    breakpoint_statement: ($) => optionalValueStatement($, $.breakpoint_keyword),
 
-    catch_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.catch_keyword), field('body', $.expression))),
+    catch_statement: ($) => requiredValueStatement($, $.catch_keyword),
 
-    shield_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.shield_keyword), field('body', $.expression))),
+    shield_statement: ($) => requiredValueStatement($, $.shield_keyword),
 
-    test_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.test_keyword), field('body', $.expression))),
+    test_statement: ($) => requiredValueStatement($, $.test_keyword),
 
-    step_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.step_keyword), field('body', $.expression))),
+    step_statement: ($) => requiredValueStatement($, $.step_keyword),
 
-    throw_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.throw_keyword), field('body', $.expression))),
+    throw_statement: ($) => requiredValueStatement($, $.throw_keyword),
 
-    time_statement: ($) => prec.left(PREC.CONTROL, seq(
-        field('keyword', choice($.time_keyword, $.timing_keyword, $.elapsedTime_keyword, $.elapsedTiming_keyword, $.profile_keyword)),
-        field('body', $.expression))),
+    time_statement: ($) => requiredValueStatement($, choice($.time_keyword, $.timing_keyword, $.elapsedTime_keyword, $.elapsedTiming_keyword, $.profile_keyword)),
 
 
     try_statement: ($) => prec.left(PREC.CONTROL, seq(
@@ -537,6 +533,19 @@ module.exports = grammar({
 
 });
 
+
+function clause($, keywordRule, fieldName, precedence) {
+  const body = seq(field('keyword', keywordRule), field(fieldName, $.expression));
+  return precedence ? prec(precedence, body) : body;
+}
+
+function optionalValueStatement($, keywordRule, precedence = PREC.CONTROL, fieldName = 'value') {
+  return prec.left(precedence, seq(field('keyword', keywordRule), optional(field(fieldName, $.expression))));
+}
+
+function requiredValueStatement($, keywordRule, precedence = PREC.CONTROL, fieldName = 'body') {
+  return prec.left(precedence, seq(field('keyword', keywordRule), field(fieldName, $.expression)));
+}
 
 function MultiCollection(rule, fieldName="component", bracket="", sep=',', prcd=PREC.COMMA) {
   const r = prec.left(prcd, seq(

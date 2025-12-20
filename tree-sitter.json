@@ -3,7 +3,7 @@
     {
       "name": "macaulay2",
       "camelcase": "Macaulay2",
-      "scope": "source.m2",
+      "scope": "source",  
       "path": ".",
       "file-types": [
         "m2"

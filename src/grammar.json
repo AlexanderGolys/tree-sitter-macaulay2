@@ -437,10 +437,6 @@
             {
               "type": "SYMBOL",
               "name": "_mult_collection"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "comment"
             }
           ]
         },
@@ -463,6 +459,10 @@
               {
                 "type": "STRING",
                 "value": "\u0000"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "comment"
               }
             ]
           }
@@ -961,7 +961,7 @@
               },
               {
                 "type": "PATTERN",
-                "value": "\\/[^/]"
+                "value": "\\/[^\"]"
               },
               {
                 "type": "PATTERN",
@@ -4135,7 +4135,12 @@
   "conflicts": [],
   "precedences": [],
   "externals": [],
-  "inline": [],
+  "inline": [
+    "_primitive_expression",
+    "_non_prefix_expression",
+    "_mult_collection",
+    "_collection"
+  ],
   "supertypes": [
     "expression"
   ],

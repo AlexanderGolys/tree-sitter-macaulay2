@@ -1,10 +1,12 @@
 ==================
 Full line comment
 ==================
--- a
+i < 40
 
 ---
 (source_file
-   (comment))
-
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (integer))))
 ==================

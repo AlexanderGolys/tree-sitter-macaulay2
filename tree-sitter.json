@@ -8,7 +8,7 @@
       "file-types": [
         "m2"
       ],
-      "highlights": "queries/macaulay2/highlights.scm",
+      "highlights": "queries/highlights.scm",
       "injection-regex": "^(m2)$"
     }
   ],

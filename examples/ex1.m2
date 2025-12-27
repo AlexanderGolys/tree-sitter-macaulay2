@@ -25,5 +25,6 @@ A = {3,4,,5}
 1..5, x_1..x_5, a..e, y .. z
 A = {3 .. 6, 9, 3:12}
 A = {,,{a,b,,c}, , {d , {e,  f}},}
-use        Monoid := M ->(if M.?use     then M.use M; M)
-x_(0, 0) .. x_(3, 3)
+A = { 1, 2, new CacheTable from { 1 => 10,  2 => 20 }}
+describe (C = tensor(A, B, DegreeRank => 1, Degrees => {5:1}))
+tensor(ZZ^2, ZZ^3, ZZ^4)

@@ -1,0 +1,5 @@
+warning: tree-sitter-macaulay2@0.0.1: src/parser.c:330:18: warning: null character(s) preserved in string literal [-Wnull-character]
+warning: tree-sitter-macaulay2@0.0.1:   330 |   [anon_sym_] = "<U+0000>",
+warning: tree-sitter-macaulay2@0.0.1:       |                  ^
+warning: tree-sitter-macaulay2@0.0.1: 1 warning generated.
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.19s

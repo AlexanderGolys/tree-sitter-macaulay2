@@ -5,10 +5,13 @@ const PREC = {
   CONTROL: 12,
   ASSIGN: 13,
   ITER: 16,
+  RANGE: 48,
   ACCESS: 70,
+  POWER: 70,
   COMMA: 10,
   CALL: 61,
   SCOPE: 74,
+
 }
 
 module.exports = grammar({
@@ -16,6 +19,7 @@ module.exports = grammar({
 
   supertypes: ($) => [
     $.expression,
+    // $.binary_expression
 
   ],
 
@@ -26,16 +30,17 @@ module.exports = grammar({
   ],
 
   extras: ($) => [
-    /[ \r\t]/,
+    /\s/,
     $.comment],
 
-  word: ($) => $.symbol,
+  word: $ => $.symbol,
 
   inline: ($) => [
+    // $.binary_expression,
     // $._primitive_expression,
     // $._non_prefix_expression,
-    // $._mult_collection,
-    // $._collection
+    $._mult_collection,
+    $._collection
   ],
 
   rules: {
@@ -82,7 +87,7 @@ module.exports = grammar({
     xor_keyword: $ => 'xor',
 
     operator_keyword: $ => choice(
-      "++", "--", "**", "//", "==", "!=", "===", "=!=", "<=", ">=", "=:", ":=", "=>", "->", "<-", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "^^=", "<<=", ">>=", "..<", "..", ";", ".", ".?", "^", "^**", "_", "#", "@", "??", "\\", "\\\\", "+",  "-", "*", "/", "%", "<", ">", "?", "=", "|", "&", "~", "||", "!", "(*)", "^*", "_*", "~", "@@", "@@?", "|-"
+      "++", "--", "**", "//", "==", "!=", "===", "=!=", "<=", ">=", ":=", "=>", "->", "<-", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "^^=", "<<=", ">>=", "..<", "..", ";", ".", ".?", "^", "^**", "_", "#", "@", "??", "\\", "\\\\", "+",  "-", "*", "/", "%", "<", ">", "?", "=", "|", "&", "~", "||", "!", "(*)", "^*", "_*", "~", "@@", "@@?", "|-"
     ),
 
 
@@ -96,9 +101,8 @@ module.exports = grammar({
 
 
     cell: ($) => seq(
-        choice($.expression, $._mult_collection, $.comment),
-        repeat(';'),
-        repeat1(choice('\n', '\0'))
+        optional(choice($.expression, $._mult_collection, $.multi_expression)),
+        choice('\n', '\0')
     ),
 
     integer: ($) => token(seq(
@@ -107,11 +111,8 @@ module.exports = grammar({
     )),
 
     floating: ($) => choice(
-      // Scientific notation without decimal: 1e5, 1E-5
       token(seq(repeat1(/[0-9]/), optional(seq('p', repeat1(/[0-9]/))), choice('e', 'E'), optional(choice('+', '-')), repeat1(/[0-9]/))),
-      // With decimal: 1.5, 1.5e5 - require digit after . to avoid consuming .. operator
       token(seq(repeat1(/[0-9]/), '.', repeat1(/[0-9]/), optional(seq('p', repeat1(/[0-9]/))), optional(seq(choice('e', 'E'), optional(choice('+', '-')), repeat1(/[0-9]/))))),
-      // Leading decimal: .5, .5e5
       token(seq('.', repeat1(/[0-9]/), optional(seq('p', repeat1(/[0-9]/))), optional(seq(choice('e', 'E'), optional(choice('+', '-')), repeat1(/[0-9]/))))),
     ),
 
@@ -171,14 +172,12 @@ module.exports = grammar({
         ),
 
     multi_expression: ($) =>  seq( 
-      field("left_bracket", token("(")),
-      optional( field("component", $.expression)),
+      optional( field("expression", $.expression)),
       repeat1(seq(
           field("separator", ';'),
-          optional(field("component", $.expression))
+          optional(field("expression", $.expression))
         )),
-      field("right_bracket", token(")"))
-        ),
+      ),
 
 
     _collection: ($) => choice(
@@ -205,7 +204,7 @@ module.exports = grammar({
     parenthesized_expression: ($) =>
       seq(
         field("left_bracket", token("(")),
-        field("content", $.expression),
+        field("content", choice($.expression, $.multi_expression)),
         field("right_bracket", token(")"))
       ),
 
@@ -236,9 +235,11 @@ module.exports = grammar({
         [prec.left, 50, choice('++', '+', '-')],
         [prec.left, 54, '**'],
         [prec.left, 58, choice('%', '//', '/', '*')],
-        [prec.left, 70, choice('#?', '.', '.?', '^', '^**', '_', '#')],
+        [prec.left, PREC.ACCESS, choice(
+          '#?', '#', '.', '.?', '|_',
+          '^', '^**', '^<', '^<=', '^>', '^>=',
+          '_',  '_<', '_<=', '_>', '_>=')],
         [prec.left, 66, choice('@@', '@@?')],
-        [prec.right, PREC.ASSIGN, choice('>>', '=', '=:', ':=','=>', '->', '<-')],
         [prec.right, 19, '|-'],
         [prec.right, 21, choice('<===', '===>')],
         [prec.right, 23, '<==>'],
@@ -253,44 +254,42 @@ module.exports = grammar({
       ];
 
       return choice(...table.map(([fn, precedence, operator]) =>fn(precedence, seq(
-          field('left', choice($._non_prefix_expression)),
+          field('left', $.expression),
           field('operator', operator),
-          field('right', $._non_prefix_expression),
+          field('right', $.expression),
         ))));
     },
+
+    assignment: ($) => prec.right(PREC.ASSIGN, seq(
+        field('left', $._primitive_expression),
+        field('operator', choice('>>', '=', ':=', '=>', '<-')),
+        field('right', $.expression),
+      )),
+
+    method_installation: ($) => prec.right(PREC.ASSIGN, seq(
+        field('left', choice($.binary_expression, $.prefix_expression, $.postfix_expression, $.call_expression)),
+        field('operator', choice('=', ':=')),
+        field('right', $.expression),
+      )),
+
+    augmented_assignment: ($) => prec.right(PREC.ASSIGN, seq(
+        field('left', $._primitive_expression),
+        field('operator', choice('%=',  '&=',  '**=',  '*=',  '++=',  '+=',  '-=',  '..<=',  '..=',  '//=',  '/=',  '<<=',  '<==>=',  '===>=',  '==>=',  '>>=',  '??=',  '@=',  '@@=',  '@@?=',  '\\=',  '\\\\=',  '^**=',  '^=',  '^^=',  '_=',  '|-=',  '|=',  '|_=',  '||=',  '·=',  '⊠=',  '⧢=')),
+        field('right', $.expression),
+      )),
+
+    function_closure: ($) => prec.right(PREC.ASSIGN, seq(
+        field('left', choice($.symbol, $.parenthesized_expression, $.sequence)),
+        field('operator', '->'),
+        field('right', $.expression),
+      )),
 
 
     call_expression: ($) => prec.right(PREC.CALL, choice(
       seq(
-        field('left', choice($.expression)),
-        field('right', choice($._non_prefix_expression))),
-
+        field('left', choice($._primitive_expression)),
+        field('right', choice($.expression))),
       )),
-
-
-    // function_closure: ($) =>  prec.right(PREC.ASSIGN, seq(
-    //     field('parameter', choice($.symbol, $.sequence, seq(
-    //       field('left_bracket', token('(')),
-    //       optional($.symbol),
-    //       field('right_bracket', token(')'))
-    //     ))),
-    //     field('operator', '->'),
-    //     field('body', $.expression)
-    //   )
-    // ),
-
-    // simple_local_assignment: ($) => prec.right(PREC.ASSIGN, seq(
-    //   field('variable', $.symbol),
-    //   field('operator', ':='),
-    //   field('value', $._non_prefix_expression)
-    // )),
-
-    // multiple_local_assignment: ($) => prec.right(PREC.ASSIGN, seq(
-    //   MultiCollectionStrict($.symbol, fieldName='variable', bracket='('),
-    //   field('operator', ':='),
-    //   field('value', $._non_prefix_expression)
-    // )),
-
 
 
     prefix_expression: $ => {
@@ -299,7 +298,6 @@ module.exports = grammar({
         [20, '|-'],
         [22, '<==='],
         [26, '<=='],
-        [34, $.not_keyword],
         [36, choice('<', '<=', '>', '>=', '?')],
         [50, choice('+', '-')],
         [58, '*'],
@@ -315,8 +313,8 @@ module.exports = grammar({
     postfix_expression: $ => {
       const table = [
         [64, '(*)'],
-        [68, choice('^*',  '_*',  '~')],
-        [72, '!'],
+        [68, choice('^*', '_*', '~', '^~', '_~')],
+        [72, choice('!', '^!', '_!')],
         
       ];
       return choice(...table.map(([precedence, operator]) => prec.left(precedence, seq(
@@ -332,49 +330,64 @@ module.exports = grammar({
       optional(field('alternative', $.else_clause))
     )),
 
-    from_clause: ($) => seq(field('keyword', $.from_keyword), field('source', $.expression)),
+    from_clause: ($) => seq(
+      field('keyword', $.from_keyword), 
+      field('source', $.expression)),
 
-    to_clause: ($) => seq(field('keyword', $.to_keyword), field('target', $.expression)),
+    to_clause: ($) => seq(
+      field('keyword', $.to_keyword), 
+      field('target', $.expression)),
 
-    when_clause: ($) => seq(field('keyword', $.when_keyword), field('condition', $.expression)),
-
+    when_clause: ($) => seq(
+      field('keyword', $.when_keyword), 
+      field('condition', $.expression)),
     list_clause: ($) => seq(field('keyword', $.list_keyword), field('body', $.expression)),
 
-    else_clause: ($) => prec(PREC.CONTROL, seq(field('keyword', $.else_keyword), field('alternative', $.expression))),
+    else_clause: ($) => prec(PREC.CONTROL, seq(
+      field('keyword', $.else_keyword), 
+      field('alternative', $.expression))),
 
-    do_clause: ($) => prec(PREC.CONTROL, seq(field('keyword', $.do_keyword), field('body', $.expression))),
+    do_clause: ($) => prec(PREC.CONTROL, seq(
+      field('keyword', $.do_keyword), 
+      field('body', $.expression))),
 
-    then_clause: ($) => prec(PREC.CONTROL, seq(field('keyword', $.then_keyword), field('body', $.expression))),
+    then_clause: ($) => prec(PREC.CONTROL, seq(
+      field('keyword', $.then_keyword), 
+      field('body', $.expression))),
 
-    in_clause: ($) => prec(PREC.ITER, seq(field('keyword', $.in_keyword), field('source', $.expression))),
+    in_clause: ($) => prec(PREC.ITER, seq(
+      field('keyword', $.in_keyword), 
+      field('source', $.expression))),
 
-    of_clause: ($) => prec(PREC.ITER, seq(field('keyword', $.of_keyword), field('source', $.expression))),
+    of_clause: ($) => prec(PREC.ITER, seq(
+      field('keyword', $.of_keyword), 
+      field('source', $.expression))),
 
     for_statement: ($) => prec.right(PREC.CONTROL, choice(
-    seq(
-      field('keyword', $.for_keyword),
-      field('variable', $.symbol),
-      optional($.from_clause),
-      $.to_clause,
-      optional($.when_clause),
-      optional($.list_clause),
-      optional($.do_clause)
+      seq(
+        field('keyword', $.for_keyword),
+        field('variable', $.symbol),
+        optional($.from_clause),
+        $.to_clause,
+        optional($.when_clause),
+        optional($.list_clause),
+        optional($.do_clause)
     ),
-    seq(
-      field('keyword', $.for_keyword),
-      field('variable', $.symbol),
-      optional($.from_clause),
-      $.when_clause,
-      optional($.list_clause),
-      optional($.do_clause)
-    ),
-    seq(
-      field('keyword', $.for_keyword),
-      field('variable', $.symbol),
-      $.in_clause,
-      optional($.when_clause),
-      optional($.list_clause),
-      optional($.do_clause)
+      seq(
+        field('keyword', $.for_keyword),
+        field('variable', $.symbol),
+        optional($.from_clause),
+        $.when_clause,
+        optional($.list_clause),
+        optional($.do_clause)
+      ),
+      seq(
+        field('keyword', $.for_keyword),
+        field('variable', $.symbol),
+        $.in_clause,
+        optional($.when_clause),
+        optional($.list_clause),
+        optional($.do_clause)
     )
   )),
 
@@ -402,26 +415,49 @@ module.exports = grammar({
 
 
 
-    break_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.break_keyword), optional(field('value', $.expression)))),
+    break_statement: ($) => prec.left(PREC.CONTROL, seq(
+      field('keyword', $.break_keyword), 
+      optional(field('body', $.expression)))),
 
-    continue_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.continue_keyword), optional(field('value', $.expression)))),
+    continue_statement: ($) => prec.left(PREC.CONTROL, seq(
+      field('keyword', $.continue_keyword), 
+      optional(field('body', $.expression)))),
 
-    return_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.return_keyword), optional(field('value', $.expression)))),
+    return_statement: ($) => prec.left(PREC.CONTROL, seq(
+      field('keyword', $.return_keyword), 
+      optional(field('body', $.expression)))),
 
-    breakpoint_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.breakpoint_keyword), optional(field('value', $.expression)))),
+    breakpoint_statement: ($) => prec.left(PREC.CONTROL, seq(
+      field('keyword', $.breakpoint_keyword), 
+      optional(field('body', $.expression)))),
 
-    catch_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.catch_keyword), field('body', $.expression))),
+    catch_statement: ($) => prec.left(PREC.CONTROL, seq(
+      field('keyword', $.catch_keyword), 
+      field('body', $.expression))),
 
-    shield_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.shield_keyword), field('body', $.expression))),
+    shield_statement: ($) => prec.left(PREC.CONTROL, seq(
+      field('keyword', $.shield_keyword), 
+      field('body', $.expression))),
 
-    test_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.test_keyword), field('body', $.expression))),
+    test_statement: ($) => prec.left(PREC.CONTROL, seq(
+      field('keyword', $.test_keyword), 
+      field('body', $.expression))),
 
-    step_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.step_keyword), field('body', $.expression))),
+    step_statement: ($) => prec.left(PREC.CONTROL, seq(
+      field('keyword', $.step_keyword), 
+      field('body', $.expression))),
 
-    throw_statement: ($) => prec.left(PREC.CONTROL, seq(field('keyword', $.throw_keyword), field('body', $.expression))),
+    throw_statement: ($) => prec.left(PREC.CONTROL, seq(
+      field('keyword', $.throw_keyword), 
+      field('body', $.expression))),
 
     time_statement: ($) => prec.left(PREC.CONTROL, seq(
-        field('keyword', choice($.time_keyword, $.timing_keyword, $.elapsedTime_keyword, $.elapsedTiming_keyword, $.profile_keyword)),
+        field('keyword', choice(
+          $.time_keyword, 
+          $.timing_keyword, 
+          $.elapsedTime_keyword, 
+          $.elapsedTiming_keyword, 
+          $.profile_keyword)),
         field('body', $.expression))),
 
 
@@ -433,7 +469,12 @@ module.exports = grammar({
     )),
 
     locality_operator: ($) => prec(PREC.SCOPE, seq(
-      field('keyword', choice($.global_keyword, $.local_keyword, $.symbol_keyword, $.threadVariable_keyword, $.threadLocal_keyword)), 
+      field('keyword', choice(
+        $.global_keyword, 
+        $.local_keyword, 
+        $.symbol_keyword, 
+        $.threadVariable_keyword, 
+        $.threadLocal_keyword)), 
       field('name', choice(
        $.boolean_literal,
        $.builtin_constant,
@@ -493,44 +534,37 @@ module.exports = grammar({
       $.array,
       $.angle_bar_list,
       $.list,
-      $.multi_expression
     ),
 
     // _non_prefix_expression: expression without prefix operators at top level
     // This is used for call_expression RHS to prevent "i < 40" from being parsed as "i (< 40)"
-    _non_prefix_expression: ($) =>
-      choice(
-        $._primitive_expression,
-        $.binary_expression,
-        $.postfix_expression,
-        $.call_expression,
-        // $.function_closure,
-        // $.simple_local_assignment,
-        // $.multiple_local_assignment,
-        $.if_expression,
-        $.for_statement,
-        $.while_statement,
-        $.continue_statement,
-        $.break_statement,
-        $.return_statement,
-        $.try_statement,
-        $.time_statement,
-        $.breakpoint_statement,
-        $.throw_statement,
-        $.catch_statement,
-        $.shield_statement,
-        $.test_statement,
-        $.locality_operator,
-        $.new_statement
-      ),
 
-    expression: ($) =>
-      choice(
-        $._non_prefix_expression,
-        $.prefix_expression,
-      ),
-
-
+    expression: ($) => choice(
+      $._primitive_expression,
+      $.binary_expression,
+      $.assignment,
+      $.augmented_assignment,
+      $.method_installation,
+      $.function_closure,
+      $.postfix_expression,
+      $.call_expression,
+      $.prefix_expression,
+      $.if_expression,
+      $.for_statement,
+      $.while_statement,
+      $.continue_statement,
+      $.break_statement,
+      $.return_statement,
+      $.try_statement,
+      $.time_statement,
+      $.breakpoint_statement,
+      $.throw_statement,
+      $.catch_statement,
+      $.shield_statement,
+      $.test_statement,
+      $.locality_operator,
+      $.new_statement,
+    ),
   },
 
   // Treat all whitespace and comments as insignificant

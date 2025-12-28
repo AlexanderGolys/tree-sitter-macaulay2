@@ -1,8 +1,7 @@
 ==================
 Full line comment
 ==================
-i < 40
-
+-- Macaulay2 example
 ---
 (source_file
   (cell

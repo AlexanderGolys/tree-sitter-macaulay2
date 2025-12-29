@@ -1,0 +1,291 @@
+==================
+Integer literal [lots-of-basics]
+==================
+1
+---
+(source_file
+  (cell
+    (integer)))
+==================
+Floating literal [lots-of-basics]
+==================
+3.14
+---
+(source_file
+  (cell
+    (floating)))
+==================
+String literal [lots-of-basics]
+==================
+"hello"
+---
+(source_file
+  (cell
+    (string_expression)))
+==================
+Raw string literal [lots-of-basics]
+==================
+///raw string///
+---
+(source_file
+  (cell
+    (string_expression)))
+==================
+Boolean literal true [lots-of-basics]
+==================
+true
+---
+(source_file
+  (cell
+    (boolean_literal)))
+==================
+Boolean literal false [lots-of-basics]
+==================
+false
+---
+(source_file
+  (cell
+    (boolean_literal)))
+==================
+Null literal [lots-of-basics]
+==================
+null
+---
+(source_file
+  (cell
+    (builtin_constant)))
+==================
+Line comment [lots-of-basics]
+==================
+-- this is a comment
+---
+(source_file
+  (cell
+    (line_comment)))
+==================
+Block comment [lots-of-basics]
+==================
+-* block *-
+---
+(source_file
+  (block_comment))
+==================
+Simple binary expression [lots-of-basics]
+==================
+1 + 2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (integer))))
+==================
+Simple unary expression [lots-of-basics]
+==================
+-not 3
+---
+(source_file
+  (cell
+    (prefix_expression
+      operand: (not_expression
+        op: (not_keyword)
+        operand: (integer)))))
+==================
+Prefix plus [lots-of-basics]
+==================
++4
+---
+(source_file
+  (cell
+    (prefix_expression
+      operand: (integer))))
+==================
+Prefix minus [lots-of-basics]
+==================
+-5
+---
+(source_file
+  (cell
+    (prefix_expression
+      operand: (integer))))
+==================
+Parenthesized expression [lots-of-basics]
+==================
+(1 + 2)
+---
+(source_file
+  (cell
+    (parenthesized_expression
+      content: (binary_expression
+        left: (integer)
+        right: (integer)))))
+==================
+Nested parentheses [lots-of-basics]
+==================
+((42))
+---
+(source_file
+  (cell
+    (parenthesized_expression
+      content: (parenthesized_expression
+        content: (integer)))))
+==================
+Binary with comments [lots-of-basics]
+==================
+1 + 2 -- add
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (integer))
+    (line_comment)))
+==================
+Unary with comment [lots-of-basics]
+==================
+not 1 -- comment
+---
+(source_file
+  (cell
+    (not_expression
+      op: (not_keyword)
+      operand: (integer))
+    (line_comment)))
+==================
+Function call [lots-of-basics]
+==================
+f 1
+---
+(source_file
+  (cell
+    (call_expression
+      left: (symbol)
+      right: (integer))))
+==================
+Function call with parens [lots-of-basics]
+==================
+f(2)
+---
+(source_file
+  (cell
+    (call_expression
+      left: (symbol)
+      right: (parenthesized_expression
+        content: (integer)))))
+==================
+Function call with multiple args [lots-of-basics]
+==================
+f(3, 4)
+---
+(source_file
+  (cell
+    (call_expression
+      left: (symbol)
+      right: (sequence
+        component: (integer)
+        component: (integer)))))
+==================
+Sequence expression [lots-of-basics]
+==================
+(a, b, c)
+---
+(source_file
+  (cell
+    (sequence
+      component: (symbol)
+      component: (symbol)
+      component: (symbol))))
+==================
+List expression [lots-of-basics]
+==================
+{1, 2, 3}
+---
+(source_file
+  (cell
+    (list
+      component: (integer)
+      component: (integer)
+      component: (integer))))
+==================
+Array expression [lots-of-basics]
+==================
+[4, 5, 6]
+---
+(source_file
+  (cell
+    (array
+      component: (integer)
+      component: (integer)
+      component: (integer))))
+==================
+Angle bar list [lots-of-basics]
+==================
+<| a, b, c |>
+---
+(source_file
+  (cell
+    (angle_bar_list
+      component: (symbol)
+      component: (symbol)
+      component: (symbol))))
+==================
+Closure expression [lots-of-basics]
+==================
+x -> x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (symbol))))
+==================
+Closure with tuple [lots-of-basics]
+==================
+(a, b) -> a + b
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (sequence
+        component: (symbol)
+        component: (symbol))
+      right: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+==================
+Closure with member access [lots-of-basics]
+==================
+a.b -> b
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (symbol))))
+==================
+Closure with hash access [lots-of-basics]
+==================
+a#b -> b
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (symbol))))
+==================
+Invalid closure (should fail) [lots-of-basics]
+==================
+(a + b) -> c
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (parenthesized_expression
+        content: (binary_expression
+          left: (symbol)
+          right: (symbol)))
+      right: (symbol))))

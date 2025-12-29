@@ -1,0 +1,66 @@
+==================
+Integer 1 [basic-expressions]
+==================
+1
+---
+(source_file
+  (cell
+    (integer)))
+==================
+Integer 42 [basic-expressions]
+==================
+42
+---
+(source_file
+  (cell
+    (integer)))
+==================
+Float 3.14 [basic-expressions]
+==================
+3.14
+---
+(source_file
+  (cell
+    (floating)))
+==================
+String hello [basic-expressions]
+==================
+"hello"
+---
+(source_file
+  (cell
+    (string_expression)))
+==================
+String with escaped quotes [basic-expressions]
+==================
+"with \"escaped\" quotes"
+---
+(source_file
+  (cell
+    (string_expression
+      (escape_sequence)
+      (escape_sequence))))
+==================
+Boolean true [basic-expressions]
+==================
+true
+---
+(source_file
+  (cell
+    (boolean_literal)))
+==================
+Boolean false [basic-expressions]
+==================
+false
+---
+(source_file
+  (cell
+    (boolean_literal)))
+==================
+Null [basic-expressions]
+==================
+null
+---
+(source_file
+  (cell
+    (builtin_constant)))

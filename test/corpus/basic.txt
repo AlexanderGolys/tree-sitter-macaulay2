@@ -1,11 +1,8 @@
 ==================
-Full line comment
+Full line comment [basic]
 ==================
 -- Macaulay2 example
 ---
 (source_file
   (cell
-    (binary_expression
-      left: (symbol)
-      right: (integer))))
-==================
+    (line_comment)))

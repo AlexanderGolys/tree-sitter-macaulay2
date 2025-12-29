@@ -84,8 +84,8 @@ cargo:rerun-if-env-changed=CFLAGS_x86_64_apple_darwin
 CFLAGS_x86_64_apple_darwin = None
 cargo:rerun-if-env-changed=CFLAGS_x86_64-apple-darwin
 CFLAGS_x86_64-apple-darwin = None
-cargo:warning=src/parser.c:365:18: warning: null character(s) preserved in string literal [-Wnull-character]
-cargo:warning=  365 |   [anon_sym_] = "<U+0000>",
+cargo:warning=src/parser.c:305:18: warning: null character(s) preserved in string literal [-Wnull-character]
+cargo:warning=  305 |   [anon_sym_] = "<U+0000>",
 cargo:warning=      |                  ^
 cargo:warning=1 warning generated.
 cargo:rerun-if-env-changed=AR_x86_64-apple-darwin

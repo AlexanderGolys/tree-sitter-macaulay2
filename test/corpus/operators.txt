@@ -1,0 +1,174 @@
+==================
+Precedence: * over + [operators]
+==================
+1 + 2 * 3
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (binary_expression
+        left: (integer)
+        right: (integer)))))
+==================
+Precedence: * over + (left) [operators]
+==================
+1 * 2 + 3
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (integer)
+        right: (integer))
+      right: (integer))))
+==================
+Unary minus precedence [operators]
+==================
+-1 + 2
+---
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (integer)
+        right: (integer)))))
+==================
+RHS unary minus [operators]
+==================
+1 + -2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (prefix_expression
+        operand: (integer)))))
+==================
+Not precedence [operators]
+==================
+not 1 + 2
+---
+(source_file
+  (cell
+    (not_expression
+      op: (not_keyword)
+      operand: (binary_expression
+        left: (integer)
+        right: (integer)))))
+==================
+RHS not [operators]
+==================
+1 + not 2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (not_expression
+        op: (not_keyword)
+        operand: (integer)))))
+==================
+Parenthesized not [operators]
+==================
+not (1 + 2)
+---
+(source_file
+  (cell
+    (not_expression
+      op: (not_keyword)
+      operand: (parenthesized_expression
+        content: (binary_expression
+          left: (integer)
+          right: (integer))))))
+==================
+Multiple unary operators [operators]
+==================
++ - + 3
+---
+(source_file
+  (cell
+    (prefix_expression
+      operand: (prefix_expression
+        operand: (prefix_expression
+          operand: (integer))))))
+==================
+Double not [operators]
+==================
+not not 4
+---
+(source_file
+  (cell
+    (not_expression
+      op: (not_keyword)
+      operand: (not_expression
+        op: (not_keyword)
+        operand: (integer)))))
+==================
+Mixed unary [operators]
+==================
++not 5
+---
+(source_file
+  (cell
+    (prefix_expression
+      operand: (not_expression
+        op: (not_keyword)
+        operand: (integer)))))
+==================
+Mixed unary 2 [operators]
+==================
+not+6
+---
+(source_file
+  (cell
+    (not_expression
+      op: (not_keyword)
+      operand: (prefix_expression
+        operand: (integer)))))
+==================
+Binary plus unary plus [operators]
+==================
+1 + +2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (prefix_expression
+        operand: (integer)))))
+==================
+Binary times unary plus [operators]
+==================
+1 * +2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (prefix_expression
+        operand: (integer)))))
+==================
+Comparison chain [operators]
+==================
+1 < 2 <= 3
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (binary_expression
+        left: (integer)
+        right: (integer)))))
+==================
+Assignment chain [operators]
+==================
+a = b = c
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (symbol)))))

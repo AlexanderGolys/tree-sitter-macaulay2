@@ -1,0 +1,110 @@
+==================
+Precedence: * over + [precedence]
+==================
+1 + 2 * 3
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (binary_expression
+        left: (integer)
+        right: (integer)))))
+==================
+Precedence: * over + (left) [precedence]
+==================
+1 * 2 + 3
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (integer)
+        right: (integer))
+      right: (integer))))
+==================
+Precedence: ^ over * [precedence]
+==================
+1 * 2 ^ 3
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (binary_expression
+        left: (integer)
+        right: (integer)))))
+==================
+Precedence: function call over + [precedence]
+==================
+f 1 + 2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (call_expression
+        left: (symbol)
+        right: (integer))
+      right: (integer))))
+==================
+Precedence: function call over * [precedence]
+==================
+f 1 * 2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (call_expression
+        left: (symbol)
+        right: (integer))
+      right: (integer))))
+==================
+Associativity: + is left [precedence]
+==================
+1 + 2 + 3
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (integer)
+        right: (integer))
+      right: (integer))))
+==================
+Associativity: -> is right [precedence]
+==================
+a -> b -> c
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+==================
+Associativity: = is right [precedence]
+==================
+a = b = c
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+==================
+Mixed precedence: comparison [precedence]
+==================
+1 < 2 == 3 > 4
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      right: (binary_expression
+        left: (integer)
+        right: (binary_expression
+          left: (integer)
+          right: (integer))))))

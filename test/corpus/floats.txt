@@ -1,0 +1,89 @@
+==================
+Float with dot and digits [floats]
+==================
+1.23
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float starting with dot [floats]
+==================
+.23
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float ending with dot (if supported) [floats]
+==================
+1.
+---
+(source_file
+  (ERROR
+    (integer)))
+temp_input.m2	0 ms	(ERROR)
+==================
+Float with exponent [floats]
+==================
+1.23e-5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with precision [floats]
+==================
+1.23p50
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with precision and exponent [floats]
+==================
+1.23p50e-5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float starting with dot and precision [floats]
+==================
+.3p001e-0
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with p suffix only [floats]
+==================
+1p5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with dot and p suffix [floats]
+==================
+1.p5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with e suffix only (no dot) [floats]
+==================
+1e5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with E suffix [floats]
+==================
+1E+10
+---
+(source_file
+  (cell
+    (floating)))

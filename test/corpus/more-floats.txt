@@ -12,8 +12,8 @@ Float 0. [more-floats]
 0.
 ---
 (source_file
-  (ERROR
-    (integer)))
+  (cell
+    (floating)))
 ==================
 Float 0.0 [more-floats]
 ==================

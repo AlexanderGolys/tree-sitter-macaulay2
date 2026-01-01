@@ -877,15 +877,11 @@
       }
     },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "types": [
         {
           "type": "expression",
-          "named": true
-        },
-        {
-          "type": "line_comment",
           "named": true
         }
       ]
@@ -1777,7 +1773,6 @@
   {
     "type": "source_file",
     "named": true,
-    "root": true,
     "fields": {},
     "children": {
       "multiple": true,
@@ -2069,10 +2064,6 @@
   },
   {
     "type": "!=",
-    "named": false
-  },
-  {
-    "type": "\"",
     "named": false
   },
   {
@@ -2501,8 +2492,7 @@
   },
   {
     "type": "block_comment",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "break_keyword",
@@ -2574,8 +2564,7 @@
   },
   {
     "type": "line_comment",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "list_keyword",

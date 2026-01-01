@@ -1,8 +1,0 @@
-==================
-Full line comment [basic]
-==================
--- Macaulay2 example
----
-(source_file
-  (cell
-    (line_comment)))

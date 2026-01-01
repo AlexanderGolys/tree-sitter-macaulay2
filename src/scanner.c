@@ -19,23 +19,33 @@ unsigned tree_sitter_macaulay2_external_scanner_serialize(void *payload, char *b
 void tree_sitter_macaulay2_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
 }
 
+static bool is_digit(int32_t c) {
+  return c >= '0' && c <= '9';
+}
+
 bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   if (valid_symbols[FLOATING_DOTTED]) {
-    while (iswspace(lexer->lookahead)) {
-      lexer->advance(lexer, true);
-    }
 
-    if (!iswdigit(lexer->lookahead)) return false;
+    if (!is_digit(lexer->lookahead)) 
+      return false;
 
     lexer->advance(lexer, false);
-    while (iswdigit(lexer->lookahead)) {
+
+    while (is_digit(lexer->lookahead)) 
       lexer->advance(lexer, false);
-    }
+    
+    if (lexer->lookahead != '.') 
+      return false;
 
-    if (lexer->lookahead != '.') return false;
     lexer->advance(lexer, false);
 
-    if (lexer->lookahead == '.') return false; // Followed by another dot -> reject
+    // Reject if followed by: another dot (range), a digit, or e/E/p (suffix)
+    if (lexer->lookahead == '.' || 
+        is_digit(lexer->lookahead) ||
+        lexer->lookahead == 'e' || 
+        lexer->lookahead == 'E' || 
+        lexer->lookahead == 'p') 
+      return false;
 
     lexer->result_symbol = FLOATING_DOTTED;
     return true;

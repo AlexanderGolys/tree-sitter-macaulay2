@@ -81,7 +81,7 @@ module.exports = grammar({
   ],
 
   externals: $ => [
-    // $._floating_dotted
+    $._floating_dotted
   ],
 
   rules: {
@@ -186,7 +186,6 @@ module.exports = grammar({
           $._multi_collection, 
           $._multi_expression
         )),
-        optional($.line_comment),
         choice('\n', '\0')
     ),
 
@@ -203,7 +202,7 @@ module.exports = grammar({
       token(seq(
         repeat1(/[0-9]/), 
         '.',
-        repeat(/[0-9]/),
+        repeat1(/[0-9]/),
         optional(NUMBER_SUFFIX))),
 
       token(seq(
@@ -216,7 +215,7 @@ module.exports = grammar({
         '.',
         NUMBER_SUFFIX)),
       
-      // $._floating_dotted
+      $._floating_dotted
     ),
 
     _std_string_delimiter_token: ($) => token('"'),

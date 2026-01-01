@@ -4,8 +4,7 @@ Comment at end of file [comments]
 -- comment
 ---
 (source_file
-  (cell
-    (line_comment)))
+    (line_comment))
 ==================
 Comment after expression [comments]
 ==================
@@ -50,8 +49,7 @@ Comment with weird chars [comments]
 -- !@#$%^&*()
 ---
 (source_file
-  (cell
-    (line_comment)))
+  (line_comment))
 ==================
 Block comment with stars [comments]
 ==================

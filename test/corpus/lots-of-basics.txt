@@ -60,8 +60,7 @@ Line comment [lots-of-basics]
 -- this is a comment
 ---
 (source_file
-  (cell
-    (line_comment)))
+    (line_comment))
 ==================
 Block comment [lots-of-basics]
 ==================

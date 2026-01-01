@@ -20,9 +20,8 @@ Float ending with dot (if supported) [floats]
 1.
 ---
 (source_file
-  (ERROR
-    (integer)))
-temp_input.m2	0 ms	(ERROR)
+  (cell
+    (floating)))
 ==================
 Float with exponent [floats]
 ==================

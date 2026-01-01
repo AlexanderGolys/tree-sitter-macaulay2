@@ -1,5 +1,4 @@
 {
-  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "macaulay2",
   "word": "symbol",
   "rules": {
@@ -363,18 +362,6 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "line_comment"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
               "type": "STRING",
               "value": "\n"
             },
@@ -557,7 +544,7 @@
                 "value": "."
               },
               {
-                "type": "REPEAT",
+                "type": "REPEAT1",
                 "content": {
                   "type": "PATTERN",
                   "value": "[0-9]"
@@ -982,6 +969,10 @@
               }
             ]
           }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_floating_dotted"
         }
       ]
     },
@@ -4499,13 +4490,18 @@
   ],
   "conflicts": [],
   "precedences": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "_floating_dotted"
+    }
+  ],
   "inline": [
     "_collection",
     "_loop_body"
   ],
   "supertypes": [
     "expression"
-  ],
-  "reserved": {}
+  ]
 }
+

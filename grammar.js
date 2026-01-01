@@ -66,7 +66,7 @@ module.exports = grammar({
   ],
 
   extras: ($) => [
-    /[ \t\r]/,
+    /[ \t\r\n]/,
     $.block_comment,
     $.line_comment
   ],

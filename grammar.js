@@ -183,10 +183,11 @@ module.exports = grammar({
     cell: ($) => seq(
         optional(choice(
           $.expression, 
-          $._mult_collection, 
+          $._multi_collection, 
           $._multi_expression
         )),
-        choice('\n', '\0', $.line_comment)
+        optional($.line_comment),
+        choice('\n', '\0')
     ),
 
     integer: ($) => token(seq(
@@ -267,7 +268,7 @@ module.exports = grammar({
     ),
 
 
-    _mult_collection: ($) =>  prec.left(PREC.COMMA, seq( 
+    _multi_collection: ($) =>  prec.left(PREC.COMMA, seq( 
       optional( field('component', $.expression)),
       repeat1(seq(
         field('separator', ','),
@@ -283,7 +284,7 @@ module.exports = grammar({
 
 
     _collection: ($) => choice(
-      $._mult_collection,
+      $._multi_collection,
       field('component', $.expression)
     ),
 
@@ -298,7 +299,7 @@ module.exports = grammar({
 
     sequence: ($) => seq(
       field('left_bracket', '('),
-      optional($._mult_collection),
+      optional($._multi_collection),
       field('right_bracket', ')')
     ),
 

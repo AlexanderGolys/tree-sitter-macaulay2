@@ -114,6 +114,17 @@
 (call_expression
   left: (symbol) @function.call)
 
+
+(call_expression
+  left: (_) @variable
+  right: (array
+           component: [
+                       (symbol) @variable.parameter
+                       (binary_expression
+                         op: "_") @variable.parameter
+                       ]))
+
+
 (binary_expression
   left: (symbol) @function
   op: ["=" ":="]

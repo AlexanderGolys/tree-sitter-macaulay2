@@ -202,7 +202,7 @@ module.exports = grammar({
       token(seq(
         repeat1(/[0-9]/), 
         '.',
-        repeat1(/[0-9]/),
+        repeat(/[0-9]/),
         optional(NUMBER_SUFFIX))),
 
       token(seq(

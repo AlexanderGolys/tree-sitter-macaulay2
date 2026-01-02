@@ -5,11 +5,11 @@
       "camelcase": "Macaulay2",
       "scope": "source",  
       "path": ".",
-      "file-types": [
-        "m2"
-      ],
+      "file-types": ["m2", "M2"],
       "highlights": "queries/highlights.scm",
-      "injection-regex": "^(m2)$"
+      "description": "Tree-sitter grammar for the Macaulay2 language",
+      "repository": "https://github.com/AlexanderGolys/tree-sitter-macaulay2",
+      "version": "0.1.0"
     }
   ],
 

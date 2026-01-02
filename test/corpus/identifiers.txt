@@ -1,0 +1,48 @@
+==================
+Simple identifier [identifiers]
+==================
+abc
+---
+(source_file
+  (cell
+    (symbol)))
+==================
+Identifier with digits [identifiers]
+==================
+a123
+---
+(source_file
+  (cell
+    (symbol)))
+==================
+Identifier with apostrophe [identifiers]
+==================
+a'
+---
+(source_file
+  (cell
+    (symbol)))
+==================
+Identifier with multiple apostrophes [identifiers]
+==================
+a''
+---
+(source_file
+  (cell
+    (symbol)))
+==================
+Identifier starting with capital [identifiers]
+==================
+Abc
+---
+(source_file
+  (cell
+    (symbol)))
+==================
+Identifier with mixed case [identifiers]
+==================
+aBc
+---
+(source_file
+  (cell
+    (symbol)))

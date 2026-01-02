@@ -1,0 +1,87 @@
+==================
+Empty string [strings]
+==================
+""
+---
+(source_file
+  (cell
+    (string_expression)))
+==================
+String with escaped quote [strings]
+==================
+"\""
+---
+(source_file
+  (cell
+    (string_expression
+      (escape_sequence))))
+==================
+String with escaped backslash [strings]
+==================
+"\\"
+---
+(source_file
+  (cell
+    (string_expression
+      (escape_sequence))))
+==================
+String with newline escape [strings]
+==================
+"\n"
+---
+(source_file
+  (cell
+    (string_expression
+      (escape_sequence))))
+==================
+String with mixed content [strings]
+==================
+"abc\"def\nghi"
+---
+(source_file
+  (cell
+    (string_expression
+      (escape_sequence)
+      (escape_sequence))))
+==================
+Empty raw string [strings]
+==================
+//////
+---
+(source_file
+  (cell
+    (string_expression)))
+==================
+Raw string with content [strings]
+==================
+///abc///
+---
+(source_file
+  (cell
+    (string_expression)))
+==================
+Raw string with slashes [strings]
+==================
+///a/b//c///
+---
+(source_file
+  (cell
+    (string_expression)))
+==================
+Raw string with quotes [strings]
+==================
+///"abc"///
+---
+(source_file
+  (cell
+    (string_expression)))
+==================
+Raw string with newlines [strings]
+==================
+///
+abc
+///
+---
+(source_file
+  (cell
+    (string_expression)))

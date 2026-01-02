@@ -1,0 +1,47 @@
+==================
+Assignment [operators]
+==================
+a = b
+---
+(source_file
+  (cell
+    (assignment_expression
+        left: (symbol)
+        right: (symbol))))
+==================
+Closure [operators]
+==================  
+a -> b
+---
+(source_file
+  (cell
+    (function_closure
+      argument: (symbol)
+      right: (symbol))))
+==================
+Closure single variable [operators]
+==================
+(x) -> 2
+---
+(source_file
+  (cell
+    (function_closure
+      argument: (symbol)
+      right: (integer))))
+==================
+Closure 3 variables [operators]
+==================
+(x, y, z) -> (x, xy, y, x)
+---
+(source_file
+  (cell
+    (function_closure
+      argument: (symbol)
+      argument: (symbol)
+      argument: (symbol)
+      right: (sequence
+        component: (symbol)
+        component: (symbol)
+        component: (symbol)
+        component: (symbol)))))
+==================

@@ -1,0 +1,101 @@
+==================
+Nested function calls [compound]
+==================
+f(g(1, 2), h(3, 4))
+---
+(source_file
+  (cell
+    (call_expression
+      left: (symbol)
+      right: (sequence
+        component: (call_expression
+          left: (symbol)
+          right: (sequence
+            component: (integer)
+            component: (integer)))
+        component: (call_expression
+          left: (symbol)
+          right: (sequence
+            component: (integer)
+            component: (integer)))))))
+==================
+Function call precedence [compound]
+==================
+(f 1) + (g 2)
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (parenthesized_expression
+        content: (call_expression
+          left: (symbol)
+          right: (integer)))
+      right: (parenthesized_expression
+        content: (call_expression
+          left: (symbol)
+          right: (integer))))))
+==================
+Not with function call [compound]
+==================
+not f(1 + 2)
+---
+(source_file
+  (cell
+    (not_expression
+      operator: (not_keyword)
+      operand: (call_expression
+        left: (symbol)
+        right: (parenthesized_expression
+          content: (binary_expression
+            left: (integer)
+            right: (integer)))))))
+==================
+Nested calls without parens [compound]
+==================
+(f (g (h 1)))
+---
+(source_file
+  (cell
+    (parenthesized_expression
+      content: (call_expression
+        left: (symbol)
+        right: (parenthesized_expression
+          content: (call_expression
+            left: (symbol)
+            right: (parenthesized_expression
+              content: (call_expression
+                left: (symbol)
+                right: (integer)))))))))
+==================
+List expression [compound]
+==================
+{1, 2, 3}
+---
+(source_file
+  (cell
+    (list
+      component: (integer)
+      component: (integer)
+      component: (integer))))
+==================
+Sequence expression with semicolons [compound]
+==================
+(a; b; c)
+---
+(source_file
+  (cell
+    (parenthesized_expression
+      component: (symbol)
+      component: (symbol)
+      component: (symbol))))
+==================
+Array expression [compound]
+==================
+[a, b, c]
+---
+(source_file
+  (cell
+    (array
+      component: (symbol)
+      component: (symbol)
+      component: (symbol))))

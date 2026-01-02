@@ -1,0 +1,59 @@
+==================
+Comment at end of file [comments]
+==================
+-- comment
+---
+(source_file
+    (line_comment))
+==================
+Comment after expression [comments]
+==================
+1 -- comment
+---
+(source_file
+  (cell
+    (integer)
+    (line_comment)))
+==================
+Block comment inline [comments]
+==================
+1 + -* comment *- 2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer)
+      (block_comment)
+      right: (integer))))
+==================
+Block comment multiline [comments]
+==================
+-*
+  comment
+*-
+---
+(source_file
+  (block_comment))
+==================
+Nested block comments (if supported, or just checking behavior) [comments]
+==================
+-* outer -* inner *- outer *-
+---
+(source_file
+  (block_comment)
+  (ERROR
+    (symbol)))
+==================
+Comment with weird chars [comments]
+==================
+-- !@#$%^&*()
+---
+(source_file
+  (line_comment))
+==================
+Block comment with stars [comments]
+==================
+-***-
+---
+(source_file
+  (block_comment))

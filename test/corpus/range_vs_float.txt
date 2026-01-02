@@ -1,0 +1,37 @@
+==================
+Float ending with dot [range_vs_float]
+==================
+2.
+---
+(source_file
+  (cell
+    (floating)))
+
+==================
+Float starting with dot [range_vs_float]
+==================
+.3
+---
+(source_file
+  (cell
+    (floating)))
+
+==================
+Float inside with dot [range_vs_float]
+==================
+1.3
+---
+(source_file
+  (cell
+    (floating)))
+
+==================
+Range with integers [range_vs_float]
+==================
+2..3
+---
+(source_file
+  (cell
+    (range_expression
+      left: (integer)
+      right: (integer))))

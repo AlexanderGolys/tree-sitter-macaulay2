@@ -1,0 +1,168 @@
+==================
+Float with dot and digits [floats]
+==================
+1.23
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float starting with dot [floats]
+==================
+.23
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float ending with dot (if supported) [floats]
+==================
+1.
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with exponent [floats]
+==================
+1.23e-5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with precision [floats]
+==================
+1.23p50
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with precision and exponent [floats]
+==================
+1.23p50e-5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float starting with dot and precision [floats]
+==================
+.3p001e-0
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with p suffix only [floats]
+==================
+1p5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with dot and p suffix [floats]
+==================
+1.p5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with e suffix only (no dot) [floats]
+==================
+1e5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with E suffix [floats]
+==================
+1E+10
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float .0 [more-floats]
+==================
+.0
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float 0. [more-floats]
+==================
+0.
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float 0.0 [more-floats]
+==================
+0.0
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with dot and e suffix [more-floats]
+==================
+1.e5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with dot and E suffix [more-floats]
+==================
+1.E-5
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with dot, p suffix, and e suffix [more-floats]
+==================
+1.p2e3
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float starting with dot, p suffix [more-floats]
+==================
+.5p2
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float starting with dot, p suffix, e suffix [more-floats]
+==================
+.5p2e-3
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with many zeros [more-floats]
+==================
+000.000
+---
+(source_file
+  (cell
+    (floating)))
+==================
+Float with leading zeros [more-floats]
+==================
+007.5
+---
+(source_file
+  (cell
+    (floating)))

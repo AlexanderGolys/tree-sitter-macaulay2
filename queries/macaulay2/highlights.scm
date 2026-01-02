@@ -105,7 +105,6 @@
   ])
 
 
-
 (option_assignment
   left: (symbol) @property)
 
@@ -116,8 +115,7 @@
 (call_expression
   left: (_) @variable
   right: (array
-           component: [
-                       (symbol) @variable.parameter
+           component: [(symbol) @variable.parameter
                        (index_expression) @variable.parameter
                        ]))
 
@@ -135,9 +133,7 @@
   (#set! priority 120)
 ) @variable
 
-(((symbol) @character)
-(#any-of? @character
- "ZZ" "RR" "CC" "QQ" "RRi"
- "MutableList" "CacheTable" "List" "Container"
- "BasicList" "Bag" "Sequence" "Array"
-                         ))
+(member_access
+  right: (symbol) @variable.member)
+
+

@@ -26,10 +26,11 @@
     {
       "scope": "source.macaulay2",
       "file-types": [
-        "m2"
+        "macaulay2"
       ],
       "injection-regex": "^m2$|^macaulay2$",
       "highlights": "queries/macaulay2/highlights.scm",
+      "indent": "queries/macaulay2/indents.scm",
       "locals": "queries/macaulay2/locals.scm"
     }
   ],

@@ -12,7 +12,7 @@
 #define ALIAS_COUNT 0
 #define TOKEN_COUNT 188
 #define EXTERNAL_TOKEN_COUNT 1
-#define FIELD_COUNT 16
+#define FIELD_COUNT 17
 #define MAX_ALIAS_SEQUENCE_LENGTH 7
 #define PRODUCTION_ID_COUNT 29
 
@@ -1779,8 +1779,9 @@ enum {
   field_right = 12,
   field_right_bracket = 13,
   field_separator = 14,
-  field_type = 15,
-  field_variable = 16,
+  field_symbol = 15,
+  field_type = 16,
+  field_variable = 17,
 };
 
 static const char * const ts_field_names[] = {
@@ -1799,6 +1800,7 @@ static const char * const ts_field_names[] = {
   [field_right] = "right",
   [field_right_bracket] = "right_bracket",
   [field_separator] = "separator",
+  [field_symbol] = "symbol",
   [field_type] = "type",
   [field_variable] = "variable",
 };
@@ -1808,30 +1810,30 @@ static const TSFieldMapSlice ts_field_map_slices[PRODUCTION_ID_COUNT] = {
   [2] = {.index = 1, .length = 1},
   [3] = {.index = 2, .length = 2},
   [4] = {.index = 4, .length = 2},
-  [5] = {.index = 0, .length = 1},
-  [6] = {.index = 6, .length = 1},
-  [7] = {.index = 7, .length = 2},
-  [8] = {.index = 9, .length = 2},
-  [9] = {.index = 11, .length = 2},
-  [10] = {.index = 13, .length = 2},
-  [11] = {.index = 15, .length = 2},
-  [12] = {.index = 17, .length = 3},
-  [13] = {.index = 20, .length = 4},
-  [14] = {.index = 24, .length = 3},
-  [15] = {.index = 27, .length = 3},
-  [16] = {.index = 30, .length = 4},
-  [17] = {.index = 34, .length = 3},
-  [18] = {.index = 37, .length = 5},
-  [19] = {.index = 42, .length = 3},
-  [20] = {.index = 45, .length = 2},
-  [21] = {.index = 47, .length = 3},
-  [22] = {.index = 50, .length = 4},
-  [23] = {.index = 54, .length = 3},
-  [24] = {.index = 57, .length = 4},
-  [25] = {.index = 61, .length = 3},
-  [26] = {.index = 64, .length = 3},
-  [27] = {.index = 67, .length = 4},
-  [28] = {.index = 71, .length = 4},
+  [5] = {.index = 6, .length = 2},
+  [6] = {.index = 8, .length = 1},
+  [7] = {.index = 9, .length = 2},
+  [8] = {.index = 11, .length = 2},
+  [9] = {.index = 13, .length = 2},
+  [10] = {.index = 15, .length = 2},
+  [11] = {.index = 17, .length = 2},
+  [12] = {.index = 19, .length = 3},
+  [13] = {.index = 22, .length = 4},
+  [14] = {.index = 26, .length = 3},
+  [15] = {.index = 29, .length = 3},
+  [16] = {.index = 32, .length = 4},
+  [17] = {.index = 36, .length = 3},
+  [18] = {.index = 39, .length = 5},
+  [19] = {.index = 44, .length = 3},
+  [20] = {.index = 47, .length = 2},
+  [21] = {.index = 49, .length = 3},
+  [22] = {.index = 52, .length = 4},
+  [23] = {.index = 56, .length = 3},
+  [24] = {.index = 59, .length = 4},
+  [25] = {.index = 63, .length = 3},
+  [26] = {.index = 66, .length = 3},
+  [27] = {.index = 69, .length = 4},
+  [28] = {.index = 73, .length = 4},
 };
 
 static const TSFieldMapEntry ts_field_map_entries[] = {
@@ -1846,93 +1848,96 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_body, 1},
     {field_keyword, 0},
   [6] =
+    {field_keyword, 0},
+    {field_symbol, 1},
+  [8] =
     {field_type, 1},
-  [7] =
+  [9] =
     {field_op, 0},
     {field_operand, 1},
-  [9] =
+  [11] =
     {field_component, 1},
     {field_separator, 0},
-  [11] =
+  [13] =
     {field_left_bracket, 0},
     {field_right_bracket, 1},
-  [13] =
+  [15] =
     {field_left, 0},
     {field_right, 1},
-  [15] =
+  [17] =
     {field_op, 1},
     {field_operand, 0},
-  [17] =
+  [19] =
     {field_component, 0},
     {field_component, 1, .inherited = true},
     {field_separator, 1, .inherited = true},
-  [20] =
+  [22] =
     {field_component, 0, .inherited = true},
     {field_component, 1, .inherited = true},
     {field_separator, 0, .inherited = true},
     {field_separator, 1, .inherited = true},
-  [24] =
+  [26] =
     {field_body, 2},
     {field_keyword, 0},
     {field_variable, 1},
-  [27] =
+  [29] =
     {field_left, 0},
     {field_op, 1},
     {field_right, 2},
-  [30] =
+  [32] =
     {field_component, 1, .inherited = true},
     {field_left_bracket, 0},
     {field_right_bracket, 2},
     {field_separator, 1, .inherited = true},
-  [34] =
+  [36] =
     {field_component, 1},
     {field_left_bracket, 0},
     {field_right_bracket, 2},
-  [37] =
+  [39] =
     {field_component, 1, .inherited = true},
     {field_content, 1},
     {field_left_bracket, 0},
     {field_right_bracket, 2},
     {field_separator, 1, .inherited = true},
-  [42] =
+  [44] =
     {field_content, 1},
     {field_left_bracket, 0},
     {field_right_bracket, 2},
-  [45] =
+  [47] =
     {field_condition, 1},
     {field_consequence, 3},
-  [47] =
+  [49] =
     {field_body, 3},
     {field_keyword, 0},
     {field_variable, 1},
-  [50] =
+  [52] =
     {field_body, 2},
     {field_body, 3},
     {field_keyword, 0},
     {field_variable, 1},
-  [54] =
+  [56] =
     {field_body, 4},
     {field_keyword, 0},
     {field_variable, 1},
-  [57] =
+  [59] =
     {field_body, 3},
     {field_body, 4},
     {field_keyword, 0},
     {field_variable, 1},
-  [61] =
+  [63] =
     {field_alternative, 5},
     {field_condition, 1},
     {field_consequence, 3},
-  [64] =
+  [66] =
     {field_body, 5},
     {field_keyword, 0},
     {field_variable, 1},
-  [67] =
+  [69] =
     {field_body, 4},
     {field_body, 5},
     {field_keyword, 0},
     {field_variable, 1},
-  [71] =
+  [73] =
     {field_body, 5},
     {field_body, 6},
     {field_keyword, 0},

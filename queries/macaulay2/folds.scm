@@ -1,5 +1,0 @@
-[
-    (cell)
-    (sequence)
-    (list)
-] @fold

@@ -1370,17 +1370,17 @@
             "named": true
           }
         ]
+      },
+      "symbol": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "resolved_symbol",
+            "named": true
+          }
+        ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "resolved_symbol",
-          "named": true
-        }
-      ]
     }
   },
   {

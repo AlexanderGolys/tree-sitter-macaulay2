@@ -27,7 +27,16 @@
       "scope": "source.macaulay2",
       "file-types": [
         "m2"
-      ]
+      ],
+      "injection-regex": "^m2$|^macaulay2$",
+      "highlights": "queries/macaulay2/highlights.scm",
+      "locals": "queries/macaulay2/locals.scm"
     }
-  ]
+  ],
+  "install_info": {
+    "files": [
+      "src/parser.c",
+      "src/scanner.c"
+    ]
+  }
 }

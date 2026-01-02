@@ -1,43 +1,45 @@
 ; 1. SCOPES
 (source_file) @local.scope
 
-(binary_expression 
-  op: "->" 
-  right: (_) @local.scope)
+(function_closure) @local.scope
 
 (for_statement) @local.scope
 
-(while_statement) @local.scope
+(parenthesized_expression) @local.scope
+
 
 ; 2. DEFINITIONS - Most specific first
 
-(binary_expression
-  op: "->"
-  left: (symbol) @local.definition.parameter)
+(function_closure
+  left: [
+    (symbol) @local.definition.parameter
+    (parenthesized_expression
+      content: [(symbol) @local.definition.parameter
+                (locality_operator
+                  symbol: (_) @local.definition.parameter)])
+    (sequence
+      component: [(symbol) @local.definition.parameter
+                (locality_operator
+                  symbol: (_) @local.definition.parameter)])
+    (locality_operator
+      symbol: (_) @local.definition.parameter)
+    ])
 
-(binary_expression
-  op: "->"
-  left: (parenthesized_expression
-    content: (symbol) @local.definition.parameter))
+(for_statement 
+  variable: (symbol) @local.definition.var)
 
-(binary_expression
-  op: "->"
-  left: (sequence 
-    component: (symbol) @local.definition.parameter))
+(assignment_expression
+  left: (symbol) @local.definition)
+
+(assignment_expression
+  left: (sequence
+   component: (symbol) @local.definition))
+
+(assignment_expression
+  left: (symbol) @local.definition.function 
+  right: (function_closure))
 
 
-; Loop variables
-(for_statement variable: (symbol) @local.definition)
-
-; Explicit local declarations
-(locality_operator
-  keyword: (local_keyword)
-  (resolved_symbol) @local.definition)
-
-; Assignments (catch-all)
-(binary_expression
-  left: (symbol) @local.definition
-  op: ["=" ":=" "<-"])
 
 ; 3. REFERENCES - Broadest, must be last
 (symbol) @local.reference

@@ -4018,418 +4018,422 @@
             }
           },
           {
-            "type": "ALIAS",
+            "type": "FIELD",
+            "name": "symbol",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "%="
-                },
-                {
-                  "type": "STRING",
-                  "value": "&="
-                },
-                {
-                  "type": "STRING",
-                  "value": "**="
-                },
-                {
-                  "type": "STRING",
-                  "value": "*="
-                },
-                {
-                  "type": "STRING",
-                  "value": "++="
-                },
-                {
-                  "type": "STRING",
-                  "value": "+="
-                },
-                {
-                  "type": "STRING",
-                  "value": "-="
-                },
-                {
-                  "type": "STRING",
-                  "value": "..<="
-                },
-                {
-                  "type": "STRING",
-                  "value": "..="
-                },
-                {
-                  "type": "STRING",
-                  "value": "//="
-                },
-                {
-                  "type": "STRING",
-                  "value": "/="
-                },
-                {
-                  "type": "STRING",
-                  "value": "<<="
-                },
-                {
-                  "type": "STRING",
-                  "value": "<==>="
-                },
-                {
-                  "type": "STRING",
-                  "value": "===>="
-                },
-                {
-                  "type": "STRING",
-                  "value": "==>="
-                },
-                {
-                  "type": "STRING",
-                  "value": ">>="
-                },
-                {
-                  "type": "STRING",
-                  "value": "??="
-                },
-                {
-                  "type": "STRING",
-                  "value": "@="
-                },
-                {
-                  "type": "STRING",
-                  "value": "@@="
-                },
-                {
-                  "type": "STRING",
-                  "value": "@@?="
-                },
-                {
-                  "type": "STRING",
-                  "value": "\\="
-                },
-                {
-                  "type": "STRING",
-                  "value": "\\\\="
-                },
-                {
-                  "type": "STRING",
-                  "value": "^**="
-                },
-                {
-                  "type": "STRING",
-                  "value": "^="
-                },
-                {
-                  "type": "STRING",
-                  "value": "^^="
-                },
-                {
-                  "type": "STRING",
-                  "value": "_="
-                },
-                {
-                  "type": "STRING",
-                  "value": "|-="
-                },
-                {
-                  "type": "STRING",
-                  "value": "|="
-                },
-                {
-                  "type": "STRING",
-                  "value": "|_="
-                },
-                {
-                  "type": "STRING",
-                  "value": "||="
-                },
-                {
-                  "type": "STRING",
-                  "value": "·="
-                },
-                {
-                  "type": "STRING",
-                  "value": "⊠="
-                },
-                {
-                  "type": "STRING",
-                  "value": "⧢="
-                },
-                {
-                  "type": "STRING",
-                  "value": "<<"
-                },
-                {
-                  "type": "STRING",
-                  "value": ">>"
-                },
-                {
-                  "type": "STRING",
-                  "value": "<==="
-                },
-                {
-                  "type": "STRING",
-                  "value": "===>"
-                },
-                {
-                  "type": "STRING",
-                  "value": "<==>"
-                },
-                {
-                  "type": "STRING",
-                  "value": "<=="
-                },
-                {
-                  "type": "STRING",
-                  "value": "==>"
-                },
-                {
-                  "type": "STRING",
-                  "value": "++"
-                },
-                {
-                  "type": "STRING",
-                  "value": "**"
-                },
-                {
-                  "type": "STRING",
-                  "value": "//"
-                },
-                {
-                  "type": "STRING",
-                  "value": "=="
-                },
-                {
-                  "type": "STRING",
-                  "value": "!="
-                },
-                {
-                  "type": "STRING",
-                  "value": "==="
-                },
-                {
-                  "type": "STRING",
-                  "value": "=!="
-                },
-                {
-                  "type": "STRING",
-                  "value": "<="
-                },
-                {
-                  "type": "STRING",
-                  "value": ">="
-                },
-                {
-                  "type": "STRING",
-                  "value": ":="
-                },
-                {
-                  "type": "STRING",
-                  "value": "=>"
-                },
-                {
-                  "type": "STRING",
-                  "value": "->"
-                },
-                {
-                  "type": "STRING",
-                  "value": "<-"
-                },
-                {
-                  "type": "STRING",
-                  "value": "+"
-                },
-                {
-                  "type": "STRING",
-                  "value": "-"
-                },
-                {
-                  "type": "STRING",
-                  "value": "*"
-                },
-                {
-                  "type": "STRING",
-                  "value": "/"
-                },
-                {
-                  "type": "STRING",
-                  "value": "%"
-                },
-                {
-                  "type": "STRING",
-                  "value": "<"
-                },
-                {
-                  "type": "STRING",
-                  "value": ">"
-                },
-                {
-                  "type": "STRING",
-                  "value": "?"
-                },
-                {
-                  "type": "STRING",
-                  "value": "="
-                },
-                {
-                  "type": "STRING",
-                  "value": "|"
-                },
-                {
-                  "type": "STRING",
-                  "value": "&"
-                },
-                {
-                  "type": "STRING",
-                  "value": "~"
-                },
-                {
-                  "type": "STRING",
-                  "value": "||"
-                },
-                {
-                  "type": "STRING",
-                  "value": "!"
-                },
-                {
-                  "type": "STRING",
-                  "value": "(*)"
-                },
-                {
-                  "type": "STRING",
-                  "value": "^*"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_*"
-                },
-                {
-                  "type": "STRING",
-                  "value": "~"
-                },
-                {
-                  "type": "STRING",
-                  "value": "@@"
-                },
-                {
-                  "type": "STRING",
-                  "value": "@@?"
-                },
-                {
-                  "type": "STRING",
-                  "value": "|-"
-                },
-                {
-                  "type": "STRING",
-                  "value": "."
-                },
-                {
-                  "type": "STRING",
-                  "value": "..<"
-                },
-                {
-                  "type": "STRING",
-                  "value": ".."
-                },
-                {
-                  "type": "STRING",
-                  "value": "."
-                },
-                {
-                  "type": "STRING",
-                  "value": "·"
-                },
-                {
-                  "type": "STRING",
-                  "value": "⊠"
-                },
-                {
-                  "type": "STRING",
-                  "value": "⧢"
-                },
-                {
-                  "type": "STRING",
-                  "value": "^"
-                },
-                {
-                  "type": "STRING",
-                  "value": "^**"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_"
-                },
-                {
-                  "type": "STRING",
-                  "value": "#"
-                },
-                {
-                  "type": "STRING",
-                  "value": "@"
-                },
-                {
-                  "type": "STRING",
-                  "value": "??"
-                },
-                {
-                  "type": "STRING",
-                  "value": "\\"
-                },
-                {
-                  "type": "STRING",
-                  "value": "\\\\"
-                },
-                {
-                  "type": "STRING",
-                  "value": "("
-                },
-                {
-                  "type": "STRING",
-                  "value": ")"
-                },
-                {
-                  "type": "STRING",
-                  "value": "{"
-                },
-                {
-                  "type": "STRING",
-                  "value": "}"
-                },
-                {
-                  "type": "STRING",
-                  "value": "["
-                },
-                {
-                  "type": "STRING",
-                  "value": "]"
-                },
-                {
-                  "type": "STRING",
-                  "value": "<|"
-                },
-                {
-                  "type": "STRING",
-                  "value": "|>"
-                },
-                {
-                  "type": "STRING",
-                  "value": ","
-                },
-                {
-                  "type": "STRING",
-                  "value": ";"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_named_keyword"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "symbol"
-                }
-              ]
-            },
-            "named": true,
-            "value": "resolved_symbol"
+              "type": "ALIAS",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "%="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "&="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "**="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "*="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "++="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "+="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "-="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "..<="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "..="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "//="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "/="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "<<="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "<==>="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "===>="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "==>="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ">>="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "??="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "@="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "@@="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "@@?="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "\\="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "\\\\="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "^**="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "^="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "^^="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "_="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "|-="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "|="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "|_="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "||="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "·="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "⊠="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "⧢="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "<<"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ">>"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "<==="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "===>"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "<==>"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "<=="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "==>"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "++"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "**"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "//"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "=="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "!="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "==="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "=!="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "<="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ">="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ":="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "=>"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "->"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "<-"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "+"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "-"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "*"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "/"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "%"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "<"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ">"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "?"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "="
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "|"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "&"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "~"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "||"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "!"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "(*)"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "^*"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "_*"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "~"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "@@"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "@@?"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "|-"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "."
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "..<"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ".."
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "."
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "·"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "⊠"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "⧢"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "^"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "^**"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "_"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "#"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "@"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "??"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "\\"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "\\\\"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "("
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ")"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "{"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "}"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "["
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "]"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "<|"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "|>"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ";"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_named_keyword"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "symbol"
+                  }
+                ]
+              },
+              "named": true,
+              "value": "resolved_symbol"
+            }
           }
         ]
       }

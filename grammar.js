@@ -621,12 +621,12 @@ module.exports = grammar({
         $.threadVariable_keyword, 
         $.threadLocal_keyword)), 
         
-      alias(choice(
+      field('symbol', alias(choice(
         ...operatorsSymbols,
         ...punctuationSymbols,
         $._named_keyword,
         $.symbol
-      ), $.resolved_symbol)
+      ), $.resolved_symbol))
     )),
 
 

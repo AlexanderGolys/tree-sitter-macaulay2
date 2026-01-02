@@ -94,7 +94,6 @@
 	(from_clause
 		keyword: (from_keyword) @keyword.repeat)))
 
-(ERROR) @comment.error
 
 (function_closure
   left: [

@@ -33,7 +33,7 @@
 
 (assignment_expression
   left: (sequence
-   component: (symbol) @local.definition))
+    component: (symbol) @local.definition))
 
 (assignment_expression
   left: (symbol) @local.definition.function 

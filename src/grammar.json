@@ -2305,13 +2305,8 @@
             "type": "FIELD",
             "name": "operator",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "_"
-                }
-              ]
+              "type": "STRING",
+              "value": "_"
             }
           },
           {
@@ -2420,87 +2415,79 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "FIELD",
-                "name": "argument",
-                "content": {
+            "type": "FIELD",
+            "name": "left",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
                   "type": "SYMBOL",
                   "name": "symbol"
-                }
-              },
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "FIELD",
-                    "name": "left_bracket",
-                    "content": {
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
                       "type": "STRING",
                       "value": "("
-                    }
-                  },
-                  {
-                    "type": "FIELD",
-                    "name": "argument",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "symbol"
-                    }
-                  },
-                  {
-                    "type": "REPEAT",
-                    "content": {
-                      "type": "SEQ",
+                    },
+                    {
+                      "type": "CHOICE",
                       "members": [
                         {
-                          "type": "STRING",
-                          "value": ","
+                          "type": "SYMBOL",
+                          "name": "symbol"
                         },
                         {
-                          "type": "FIELD",
-                          "name": "argument",
-                          "content": {
+                          "type": "BLANK"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ")"
+                    }
+                  ]
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "("
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "symbol"
+                    },
+                    {
+                      "type": "REPEAT",
+                      "content": {
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": ","
+                          },
+                          {
                             "type": "SYMBOL",
                             "name": "symbol"
                           }
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "type": "FIELD",
-                    "name": "right_bracket",
-                    "content": {
+                        ]
+                      }
+                    },
+                    {
                       "type": "STRING",
                       "value": ")"
                     }
-                  }
-                ]
-              },
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "FIELD",
-                    "name": "left_bracket",
-                    "content": {
-                      "type": "STRING",
-                      "value": "("
-                    }
-                  },
-                  {
-                    "type": "FIELD",
-                    "name": "right_bracket",
-                    "content": {
-                      "type": "STRING",
-                      "value": ")"
-                    }
-                  }
-                ]
-              }
-            ]
+                  ]
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "sequence"
+                }
+              ]
+            }
           },
           {
             "type": "FIELD",
@@ -2633,7 +2620,7 @@
         ]
       }
     },
-    "auggmented_assignment_expression": {
+    "augmented_assignment_expression": {
       "type": "PREC_RIGHT",
       "value": 13,
       "content": {
@@ -4587,7 +4574,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "auggmented_assignment_expression"
+          "name": "augmented_assignment_expression"
         },
         {
           "type": "SYMBOL",

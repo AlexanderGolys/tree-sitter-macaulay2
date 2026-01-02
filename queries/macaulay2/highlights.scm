@@ -1,55 +1,39 @@
 ; Comments
-(line_comment) @comment
-(block_comment) @comment
+(comment) @comment
 
 ; Literals
 (integer) @number
-
 (floating) @number.float
-
-["%="  "&="  "**="  "*="  "++="  "+="  "-="  "..<="  
-  "..="  "//="  "/="  "<<="  "<==>="  "===>="  "==>="  ">>="  "??="  
-  "@="  "@@="  "@@?="  "\\="  "\\\\="  "^**="  "^="  "^^="  "_="  "|-="  
-  "|="  "|_="  "||="  "·="  "⊠="  "⧢="
-  ":=" "=>" "->" "<-" 
-  "<"  ">"  "+"  "*"  "="  "."  "@"  "?"  "|"  "^"  "/"  "\\" 
-  "<<" ">>" "++" "**" "==" ".." "@@" "??" "||" "^^" "//" "\\\\"
-  "<===" "===>" "<==>" "<==" "==>"
-  "!=" "===" "=!=" "<=" ">=" 
-  "-" "%" "&" "~" "!" "(*)" "^*" "_*" "~" "@@?" "|-"
-  "..<" "·"  "⊠"  "⧢"
-  "^**" "_" "#" ] @operator
-
-["(" ")" "{" "}" "[" "]"] @punctuation.bracket
-
-["," ";"] @punctuation.delimiter
-
 (string_expression) @string
 (escape_sequence) @string.escape
 (boolean_literal) @boolean
+(symbol) @variable
+(operator_keyword) @operator
+
+(locality_operator
+  keyword: _ @keyword
+  name: (symbol) @variable)
 
 (builtin_constant) @constant.builtin
 
 
 
 ; Operators
-(_ op: (_) @operator)
+(binary_expression operator: _ @operator)
+(prefix_expression operator: _ @operator)
+(postfix_expression operator: _ @operator)
 
-(and_keyword) @keyword.operator
-(or_keyword) @keyword.operator
-(xor_keyword) @keyword.operator
-(not_keyword) @keyword.operator
-(space_keyword) @keyword.operator
 
-(local_keyword) @keyword.modifier
-(global_keyword) @keyword.modifier
-(symbol_keyword) @keyword.modifier
-(threadVariable_keyword) @keyword.modifier
-(threadLocal_keyword) @keyword.modifier
 
-(_
-  left_bracket: _ @punctuation.bracket
-  right_bracket: _ @punctuation.bracket)
+; Brackets
+"(" @punctuation.bracket
+")" @punctuation.bracket
+"[" @punctuation.bracket
+"]" @punctuation.bracket
+"{" @punctuation.bracket
+"}" @punctuation.bracket
+"<|" @punctuation.bracket
+"|>" @punctuation.bracket
 
 ; Delimiters
 "," @punctuation.delimiter
@@ -57,26 +41,28 @@
 
 (if_keyword) @keyword.conditional
 (else_keyword) @keyword.conditional
-
 (then_keyword) @keyword
-
 (for_keyword) @keyword.repeat
 (while_keyword) @keyword.repeat
-
 (return_keyword) @keyword.return
 (break_keyword) @keyword.return
 (continue_keyword) @keyword.return
-
 (new_keyword) @keyword
-(in_keyword) @keyword.repeat
+(in_keyword) @keyword
 (of_keyword) @keyword
-(to_keyword) @keyword.repeat
-(list_keyword) @keyword.conditional
-(do_keyword) @keyword.conditional
+(from_keyword) @keyword
+(to_keyword) @keyword
+(list_keyword) @keyword
+(do_keyword) @keyword
 (when_keyword) @keyword.conditional
 (try_keyword) @keyword.exception
 (catch_keyword) @keyword.exception
 (throw_keyword) @keyword.exception
+(global_keyword) @keyword
+(local_keyword) @keyword
+(symbol_keyword) @keyword
+(threadVariable_keyword) @keyword
+(threadLocal_keyword) @keyword
 (time_keyword) @keyword.debug
 (timing_keyword) @keyword.debug
 (elapsedTime_keyword) @keyword.debug
@@ -87,46 +73,34 @@
 (breakpoint_keyword) @keyword.debug
 
 
-(from_clause
-	keyword: (from_keyword) @keyword)
-
-(for_statement (
-	(from_clause
-		keyword: (from_keyword) @keyword.repeat)))
-
-
-(function_closure
-    (argument) @variable.parameter)
-
-
-(option_assignment
-  left: (symbol) @property)
 
 (call_expression
-  left: (symbol) @function.call)
-
-
-(call_expression
-  left: (_) @variable
-  right: (array
-           component: [(symbol) @variable.parameter
-                       (index_expression) @variable.parameter
-                       ]))
-
+  left: (symbol) @function.call
+)
 
 (assignment_expression
   left: (symbol) @function
-  right: (function_closure)) 
+  right: (function_closure)
+)
 
-((symbol) @variable.builtin 
-(#match? @variable.builtin "^(o{2,4}|o[1-9][0-9]*)$"))
+(function_closure
+  left: (symbol) @variable.parameter
+)
 
-
-(index_expression
-  left: (symbol)
-) @variable
-
-(member_access
-  right: (symbol) @variable.member)
+(index_expression: 
+  left: (symbol) @variable
+  right: [
+    (sequence
+      component: (integer)) @index
+    (sequence
+      component: (symbol)) @index
+    (list
+      component: (integer)) @index
+    (list
+      component: (symbol)) @index
+    (symbol) @index
+    (integer) @index
+]
+) @variable.indexed
 
 

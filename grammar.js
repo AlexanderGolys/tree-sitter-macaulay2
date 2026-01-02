@@ -375,23 +375,20 @@ module.exports = grammar({
         $.list
       )),
       field('operator', choice('.', '#')),
-      field('right', choice($.symbol, $.integer))
+      field('right', $.expression)
     )),
 
 
     function_closure: ($) => prec.right(PREC.ASSIGN, seq(
+      field('left', 
         choice(
-          field('argument', $.symbol),
-          seq(
-            field('left_bracket', '('),
-            field('argument', $.symbol),
-            repeat(seq(',', field('argument', $.symbol))),
-            field('right_bracket', ')')),
-          seq(
-            field('left_bracket', '('),
-            field('right_bracket', ')'))),
-        field('operator', '->'),
-        field('right', $.expression)
+        $.symbol,
+        seq('(', optional($.symbol), ')'),
+        seq('(', $.symbol, repeat(seq(',', $.symbol)), ')'),
+        $.sequence
+      )),
+      field('operator', '->'),
+      field('right', $.expression)
     )),
 
     option_assignment: ($) => prec.right(PREC.ASSIGN, seq(
@@ -412,7 +409,7 @@ module.exports = grammar({
       field('right', $.expression)
     )),
 
-    auggmented_assignment_expression: ($) => prec.right(PREC.ASSIGN, seq(
+    augmented_assignment_expression: ($) => prec.right(PREC.ASSIGN, seq(
       field('left', $.expression),
       field('operator', choice(...augmentedAssignmentOperators)),
       field('right', $.expression)
@@ -657,8 +654,9 @@ module.exports = grammar({
       $.option_assignment,
       $.assignment_expression,
       $.option_attachment,
-      $.auggmented_assignment_expression,
+      $.augmented_assignment_expression,
       $.binary_expression,
+
       $.postfix_expression,
       $.not_expression,
       $.if_statement,

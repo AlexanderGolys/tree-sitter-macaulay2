@@ -64,3 +64,23 @@ null
 (source_file
   (cell
     (builtin_constant)))
+==================
+lambda expression [basic-expressions]
+==================
+x -> 2
+---
+(source_file
+  (cell
+    (function_closure
+      left: (symbol)
+      right: (integer))))
+==================
+dot access [basic-expressions]
+==================
+a.b
+---
+(source_file
+  (cell
+    (member_access
+      left: (symbol)
+      right: (symbol))))

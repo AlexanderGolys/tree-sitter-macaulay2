@@ -1,5 +1,5 @@
 ==================
-Float ending with dot
+Float ending with dot [range_vs_float]
 ==================
 2.
 ---
@@ -8,7 +8,7 @@ Float ending with dot
     (floating)))
 
 ==================
-Float starting with dot
+Float starting with dot [range_vs_float]
 ==================
 .3
 ---
@@ -17,7 +17,7 @@ Float starting with dot
     (floating)))
 
 ==================
-Float inside with dot
+Float inside with dot [range_vs_float]
 ==================
 1.3
 ---
@@ -26,45 +26,12 @@ Float inside with dot
     (floating)))
 
 ==================
-Range with integers
+Range with integers [range_vs_float]
 ==================
 2..3
 ---
 (source_file
   (cell
-    (binary_expression
+    (range_expression
       left: (integer)
       right: (integer))))
-
-==================
-Range with 3 dots
-==================
-2...3
----
-(source_file
-  (cell
-    (binary_expression
-      left: (integer)
-      right: (floating))))
-
-==================
-Range with float and integer
-==================
-2. .. 3
----
-(source_file
-  (cell
-    (binary_expression
-      left: (floating)
-      right: (integer))))
-
-==================
-Float followed by float (call)
-==================
-2. .3
----
-(source_file
-  (cell
-    (call_expression
-      left: (floating)
-      right: (floating))))

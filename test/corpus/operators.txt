@@ -161,14 +161,12 @@ Comparison chain [operators]
         left: (integer)
         right: (integer)))))
 ==================
-Assignment chain [operators]
+Assignment [operators]
 ==================
-a = b = c
+a = b
 ---
 (source_file
   (cell
-    (binary_expression
-      left: (symbol)
-      right: (binary_expression
+    (assignment_expression
         left: (symbol)
-        right: (symbol)))))
+        right: (symbol))))

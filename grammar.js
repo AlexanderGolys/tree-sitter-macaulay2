@@ -206,11 +206,6 @@ module.exports = grammar({
         optional(NUMBER_SUFFIX))),
 
       token(seq(
-        '.',
-        repeat1(/[0-9]/),
-        optional(NUMBER_SUFFIX))),
-
-      token(seq(
         repeat1(/[0-9]/), 
         '.',
         NUMBER_SUFFIX)),
@@ -322,6 +317,8 @@ module.exports = grammar({
         field('right_bracket', token('|>'))
       ),
 
+    
+
 
 
     binary_expression: $ => {
@@ -331,20 +328,17 @@ module.exports = grammar({
         [prec.left, 42, '|'],
         [prec.left, 44, '^^'],
         [prec.left, 46, '&'],
-        [prec.left, 48, choice('..', '..<')],
         [prec.left, 50, choice('++', '+', '-')],
         [prec.left, 52, '·'],
         [prec.left, 54, choice('**', '⊠', '⧢')],
         [prec.left, 58, choice('%', '//', '/', '*')],
         [prec.left, PREC.ACCESS, choice(
-          '.', '#',
           '#?', '.?', '|_',
           '^', '^**', '^<', '^<=', '^>', '^>=',
           '_',  '_<', '_<=', '_>', '_>=')],
         [prec.left, 66, choice('@@', '@@?')],
 
         [prec.right, 20, '|-'],
-        [prec.right, PREC.ASSIGN, choice('>>', '=', ':=', '<-', '=>', '->', ...augmentedAssignmentOperators)],
         [prec.right, 22, choice('<===', '===>')],
         [prec.right, 24, '<==>'],
         [prec.right, 26, choice('<==', '==>')],
@@ -367,6 +361,71 @@ module.exports = grammar({
     },
 
 
+    index_expression: ($) => prec.left(PREC.ACCESS, seq(
+      field('left', $.expression),
+      field('op', choice('_')),
+      field('right', $.symbol)
+    )),
+
+    member_access: ($) => prec.left(PREC.ACCESS, seq(
+      field('left', choice(
+        $.symbol,
+        $.member_access,
+        $.parenthesized_expression,
+        $.sequence,
+        $.string_expression,
+        $.index_expression,
+        $.array,
+        $.angle_bar_list,
+        $.list
+      )),
+      field('op', choice('.', '#')),
+      field('right', choice($.symbol, $.integer))
+    )),
+
+
+    function_closure: ($) => prec.right(PREC.ASSIGN, seq(
+      field('left', choice(
+        $.symbol,
+        $.member_access,
+        $.parenthesized_expression,
+        $.sequence
+      )),
+      field('op', '->'),
+      field('right', $.expression)
+    )),
+
+    option_assignment: ($) => prec.right(PREC.ASSIGN, seq(
+      field('left', $.expression),
+      field('op', '=>'),
+      field('right', $.expression)
+    )),
+
+    assignment_expression: ($) => prec.right(PREC.ASSIGN, seq(
+      field('left', $.expression),
+      field('op', choice('=', ':=', '<-')),
+      field('right', $.expression)
+    )),
+
+    option_attachment: ($) => prec.right(PREC.ASSIGN, seq(
+      field('left', $.expression),
+      field('op', '>>'),
+      field('right', $.expression)
+    )),
+
+    auggmented_assignment_expression: ($) => prec.right(PREC.ASSIGN, seq(
+      field('left', $.expression),
+      field('op', choice(...augmentedAssignmentOperators)),
+      field('right', $.expression)
+    )),
+
+    range_expression: ($) => prec.left(PREC.RANGE, seq(
+      field('left', $.expression),
+      field('op', choice('..', '..<')),
+      field('right', $.expression)
+    )),
+
+
 
     call_expression: ($) => prec.right(PREC.CALL, choice(
       seq(
@@ -375,7 +434,6 @@ module.exports = grammar({
       )),        
         field('right', choice(
           $._primitive_expression,
-
         )),
       ))),
 
@@ -592,7 +650,18 @@ module.exports = grammar({
 
     _not_prefix_expression: ($) => choice(
       $._primitive_expression,
+
+      $.function_closure,
+      $.index_expression,
+      $.member_access,
+      $.range_expression,
+      $.option_assignment,
+      $.assignment_expression,
+      $.option_attachment,
+      $.auggmented_assignment_expression,
       $.binary_expression,
+
+
       $.postfix_expression,
       $.not_expression,
 

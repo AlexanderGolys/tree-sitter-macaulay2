@@ -77,9 +77,9 @@ a -> b -> c
 ---
 (source_file
   (cell
-    (binary_expression
+    (function_closure
       left: (symbol)
-      right: (binary_expression
+      right: (function_closure
         left: (symbol)
         right: (symbol)))))
 ==================
@@ -89,9 +89,9 @@ a = b = c
 ---
 (source_file
   (cell
-    (binary_expression
+    (assignment_expression
       left: (symbol)
-      right: (binary_expression
+      right: (assignment_expression
         left: (symbol)
         right: (symbol)))))
 ==================

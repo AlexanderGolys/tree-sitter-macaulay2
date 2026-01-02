@@ -96,20 +96,19 @@
 
 (ERROR) @comment.error
 
-(binary_expression
+(function_closure
   left: [
     (symbol) @variable.parameter
     (parenthesized_expression
       content: (symbol) @variable.parameter)
     (sequence
       component: (symbol) @variable.parameter)
-  ]   op: "->")
+  ])
 
 
 
-(binary_expression
-  left: (symbol) @property
-  op: "=>")
+(option_assignment
+  left: (symbol) @property)
 
 (call_expression
   left: (symbol) @function.call)
@@ -120,26 +119,22 @@
   right: (array
            component: [
                        (symbol) @variable.parameter
-                       (binary_expression
-                         op: "_") @variable.parameter
+                       (index_expression) @variable.parameter
                        ]))
 
 
-(binary_expression
+(assignment_expression
   left: (symbol) @function
-  op: ["=" ":="]
-  right: (binary_expression
-	  op: "->")) 
+  right: (function_closure)) 
 
 ((symbol) @variable.builtin 
 (#match? @variable.builtin "^(o{2,4}|o[1-9][0-9]*)$"))
 
 
-(binary_expression
+(index_expression
   left: (symbol)
-  op: "_"
   (#set! priority 120)
-) @variable.parameter.builtin
+) @variable
 
 (((symbol) @character)
 (#any-of? @character

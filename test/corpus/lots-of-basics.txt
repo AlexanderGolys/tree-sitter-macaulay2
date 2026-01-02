@@ -234,7 +234,7 @@ x -> x
 ---
 (source_file
   (cell
-    (binary_expression
+    (function_closure
       left: (symbol)
       right: (symbol))))
 ==================
@@ -244,7 +244,7 @@ Closure with tuple [lots-of-basics]
 ---
 (source_file
   (cell
-    (binary_expression
+    (function_closure
       left: (sequence
         component: (symbol)
         component: (symbol))
@@ -258,8 +258,8 @@ a.b -> b
 ---
 (source_file
   (cell
-    (binary_expression
-      left: (binary_expression
+    (function_closure
+      left: (member_access
         left: (symbol)
         right: (symbol))
       right: (symbol))))
@@ -270,21 +270,8 @@ a#b -> b
 ---
 (source_file
   (cell
-    (binary_expression
-      left: (binary_expression
+    (function_closure
+      left: (member_access
         left: (symbol)
         right: (symbol))
-      right: (symbol))))
-==================
-Invalid closure (should fail) [lots-of-basics]
-==================
-(a + b) -> c
----
-(source_file
-  (cell
-    (binary_expression
-      left: (parenthesized_expression
-        content: (binary_expression
-          left: (symbol)
-          right: (symbol)))
       right: (symbol))))

@@ -136,4 +136,10 @@
 (member_access
   right: (symbol) @variable.member)
 
-
+(((symbol) @character)
+(#any-of? @character
+ "ZZ" "RR" "CC" "QQ" "RRi"
+ "String" "Symbol" "Integer" "Boolean"
+ "MutableList" "CacheTable" "List" "Container" "HashTable" "Set"
+ "BasicList" "Bag" "Sequence" "Array"
+                         ))

@@ -54,10 +54,10 @@ module.exports = grammar({
 
   supertypes: ($) => [
     $.expression,
-
   ],
 
   conflicts: ($) => [
+    [$.assignment_expression, $.method_installation]
   ],
 
   precedences: $ => [
@@ -79,6 +79,8 @@ module.exports = grammar({
   externals: $ => [
     $._floating_dotted
   ],
+
+
 
   rules: {
     source_file: ($) => repeat($.cell),
@@ -119,7 +121,7 @@ module.exports = grammar({
     new_keyword: $ => 'new',
     space_keyword: $ => 'SPACE',
     and_keyword: $ => 'and',
-    not_keyword: $ => 'not',
+    // not_keyword: $ => 'not',
     or_keyword: $ => 'or',
     xor_keyword: $ => 'xor',
 
@@ -163,7 +165,8 @@ module.exports = grammar({
       $.new_keyword,
       $.space_keyword,
       $.and_keyword,
-      $.not_keyword,
+      // $.not_keyword,
+      "not",
       $.or_keyword,
       $.xor_keyword
     ),
@@ -259,16 +262,12 @@ module.exports = grammar({
 
     _multi_collection: ($) =>  prec.left(PREC.COMMA, seq( 
       optional( field('component', $.expression)),
-      repeat1(seq(
-        field('separator', ','),
-        optional( field('component', $.expression))))
+      repeat1(seq(',', optional( field('component', $.expression))))
         )),
 
     _multi_expression: ($) =>  prec.left(PREC.SEMICOLON, seq( 
-      optional( field('component', $.expression)),
-      repeat1(seq(
-        field('separator', ';'),
-        optional(field('component', $.expression))))
+      optional( field('expression', $.expression)),
+      repeat1(seq( ';', optional(field('expression', $.expression))))
       )),
 
 
@@ -280,37 +279,15 @@ module.exports = grammar({
 
 
 
-    list: ($) => seq(
-        field('left_bracket', '{'),
-        optional($._collection),
-        field('right_bracket', '}')
-      ),
+    list: ($) => seq( '{', optional($._collection), '}'),
 
-    sequence: ($) => seq(
-      field('left_bracket', '('),
-      optional($._multi_collection),
-      field('right_bracket', ')')
-    ),
+    sequence: ($) => Parenthesized(seq(optional($._multi_collection)), ""),
 
-    parenthesized_expression: ($) => seq(
-      field('left_bracket', '('),
-      field('content', choice($.expression, $._multi_expression)),
-      field('right_bracket', ')')
-    ),
+    parenthesized_expression: ($) => Parenthesized(choice($.expression, $._multi_expression)),
 
-    array: ($) =>
-      seq(
-        field('left_bracket', token('[')),
-        optional($._collection),
-        field('right_bracket', token(']'))
-      ),
+    array: ($) => seq( '[', optional($._collection), ']'),
 
-    angle_bar_list: ($) =>
-      seq(
-        field('left_bracket', token('<|')),
-        optional($._collection),
-        field('right_bracket', token('|>'))
-      ),
+    angle_bar_list: ($) => seq( '<|', optional($._collection), '|>'), 
 
     
 
@@ -330,7 +307,7 @@ module.exports = grammar({
         [prec.left, PREC.ACCESS, choice(
           '#?', '.?', '|_',
           '^', '^**', '^<', '^<=', '^>', '^>=',
-          '_',  '_<', '_<=', '_>', '_>=')],
+          '_<', '_<=', '_>', '_>=')],
         [prec.left, 66, choice('@@', '@@?')],
 
         [prec.right, 20, '|-'],
@@ -356,11 +333,7 @@ module.exports = grammar({
     },
 
 
-    index_expression: ($) => prec.left(PREC.ACCESS, seq(
-      field('left', $.expression),
-      field('operator', '_'),
-      field('right', $.symbol)
-    )),
+    index_expression: ($) => BinOpLeft(PREC.ACCESS, "_", $.expression, $.expression),
 
     member_access: ($) => prec.left(PREC.ACCESS, seq(
       field('left', choice(
@@ -379,48 +352,27 @@ module.exports = grammar({
     )),
 
 
-    function_closure: ($) => prec.right(PREC.ASSIGN, seq(
-      field('left', 
-        choice(
-        $.symbol,
-        seq('(', optional($.symbol), ')'),
-        seq('(', $.symbol, repeat(seq(',', $.symbol)), ')'),
-        $.sequence
-      )),
-      field('operator', '->'),
-      field('right', $.expression)
-    )),
+    function_closure: ($) => BinOpRight(PREC.ASSIGN, '->', choice( $.symbol, $.sequence, $.parenthesized_expression), $.expression ),
 
-    option_assignment: ($) => prec.right(PREC.ASSIGN, seq(
-      field('left', $.expression),
-      field('operator', '=>'),
-      field('right', $.expression)
-    )),
+    option_assignment: ($) => BinOpRight(PREC.ASSIGN, '=>', $.expression, $.expression ),
+  
 
-    assignment_expression: ($) => prec.right(PREC.ASSIGN, seq(
-      field('left', $.expression),
-      field('operator', choice('=', ':=', '<-')),
-      field('right', $.expression)
-    )),
+    assignment_expression: ($) => BinOpRight(PREC.ASSIGN, 
+      choice('=', ':=', '<-'), 
+      choice($.symbol, $.sequence,  $.member_access,  $.index_expression),
+      $.expression),
 
-    option_attachment: ($) => prec.right(PREC.ASSIGN, seq(
-      field('left', $.expression),
-      field('operator', '>>'),
-      field('right', $.expression)
-    )),
+      method_installation: ($) => BinOpRight(PREC.ASSIGN, 
+        choice('=', ':='), 
+        choice($.index_expression, $.member_access, $.call_expression, $.binary_expression, 
+               $.prefix_expression, $.postfix_expression, $.not_expression),
+        $.expression),
 
-    augmented_assignment_expression: ($) => prec.right(PREC.ASSIGN, seq(
-      field('left', $.expression),
-      field('operator', choice(...augmentedAssignmentOperators)),
-      field('right', $.expression)
-    )),
+    option_attachment: ($) => BinOpRight(PREC.ASSIGN, '>>', $.expression, $.expression ),
 
-    range_expression: ($) => prec.left(PREC.RANGE, seq(
-      field('left', $.expression),
-      field('operator', choice('..', '..<')),
-      field('right', $.expression)
-    )),
+    augmented_assignment_expression: ($) => BinOpRight(PREC.ASSIGN, choice(...augmentedAssignmentOperators), $.expression, $.expression ),
 
+    range_expression: ($) => prec.left(PREC.RANGE, BinOpLeft(PREC.RANGE, choice('..', '..<'), $.expression, $.expression)),
 
 
     call_expression: ($) => prec.right(PREC.CALL, choice(
@@ -453,7 +405,7 @@ module.exports = grammar({
 
     not_expression: $ => prec.right(PREC.NOT, choice(
       seq(
-          field('operator', $.not_keyword),
+          field('operator', 'not'),
           field('operand', $.expression)
       ))),
 
@@ -508,7 +460,7 @@ module.exports = grammar({
 
 
     if_statement: ($) => prec.left(PREC.CONTROL, seq(
-      $.if_keyword,
+      "if",
       field('condition', $.expression),
       $.then_keyword,
       field('consequence', $.expression),
@@ -523,7 +475,8 @@ module.exports = grammar({
         field('variable', $.symbol),
 
         choice(
-          seq(optional($.from_clause), optional($.to_clause)),
+          seq(optional($.from_clause), 
+          optional($.to_clause)),
           $.in_clause),
 
         optional($.when_clause),
@@ -655,7 +608,10 @@ module.exports = grammar({
       $.assignment_expression,
       $.option_attachment,
       $.augmented_assignment_expression,
+      $.method_installation,
       $.binary_expression,
+
+
 
       $.postfix_expression,
       $.not_expression,
@@ -688,51 +644,31 @@ module.exports = grammar({
 });
 
 
-function MultiCollection(rule, fieldName='component', bracket='', sep=',', prcd=PREC.COMMA) {
-  const r = prec.left(prcd, seq(
-      optional(field(fieldName, rule)),
-      repeat1(seq(
-          field('separator', sep),
-          optional(field(fieldName, rule))
-        ))
-    ));
-  return (bracket == '') ? r : PutInBrackets(bracket, r);
-}
 
-function MultiCollectionStrict(rule, fieldName='component', bracket='', sep=',', prcd=PREC.COMMA) {
-  const r = prec.left(prcd, seq(
-      field(fieldName, rule),
-      repeat1(seq(
-          field('separator', sep),
-          field(fieldName, rule)
-        ))
-    ));
-  return (bracket == '') ? r : PutInBrackets(bracket, r);
-}
-
-
-function CollectionStrict(rule, fieldName='component', bracket='', sep=',', prcd=PREC.COMMA) {
-  const r = optional(prec.left(prcd, seq(
-      field(fieldName, rule),
-      repeat(seq(
-          field('separator', sep),
-          field(fieldName, rule)
-        ))
-    )));
-  return (bracket == '') ? r : PutInBrackets(bracket, r);
-}
-
-
-function PutInBrackets(left, rule, fieldName='') {
-  const right = (left === '{') ? '}' :
-                (left === '[') ? ']' :
-                (left === '<|') ? '|>' :
-                (left === '(') ? ')' : -1;
-
-
-    return seq(
-      field('left_bracket', left),
-      fieldName == '' ? rule : field(fieldName, rule),
-      field('right_bracket', right));
+function Parenthesized(rule, fieldName='content') {
+  if (fieldName == '') {
+    return seq( '(', rule, ')'  );
   }
+  return seq( '(', field(fieldName, rule), ')'  );
+}
 
+function SequenceOf(rule, fieldName='component') {
+  return seq('(', field(fieldName, rule), repeat(seq(',', field(fieldName,rule))), ')');
+};
+
+function BinOpRight(p, operator, leftRule, rightRule) {
+  return prec.right(p, seq(
+    field('left', leftRule),
+    field('operator', operator),
+    field('right', rightRule)
+  ));
+}
+
+
+function BinOpLeft(p, operator, leftRule, rightRule) {
+  return prec.left(p, seq(
+    field('left', leftRule),
+    field('operator', operator),
+    field('right', rightRule)
+  ));
+}

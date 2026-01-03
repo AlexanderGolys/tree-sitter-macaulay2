@@ -1,5 +1,5 @@
 ==================
-Precedence: * over + [precedence]
+1. Precedence: * over + [precedence]
 ==================
 1 + 2 * 3
 ---
@@ -11,7 +11,7 @@ Precedence: * over + [precedence]
         left: (integer)
         right: (integer)))))
 ==================
-Precedence: * over + (left) [precedence]
+2. Precedence: * over + (left) [precedence]
 ==================
 1 * 2 + 3
 ---
@@ -23,7 +23,7 @@ Precedence: * over + (left) [precedence]
         right: (integer))
       right: (integer))))
 ==================
-Precedence: ^ over * [precedence]
+3. Precedence: ^ over * [precedence]
 ==================
 1 * 2 ^ 3
 ---
@@ -35,7 +35,7 @@ Precedence: ^ over * [precedence]
         left: (integer)
         right: (integer)))))
 ==================
-Precedence: function call over + [precedence]
+4. Precedence: function call over + [precedence]
 ==================
 f 1 + 2
 ---
@@ -47,7 +47,7 @@ f 1 + 2
         right: (integer))
       right: (integer))))
 ==================
-Precedence: function call over * [precedence]
+5. Precedence: function call over * [precedence]
 ==================
 f 1 * 2
 ---
@@ -59,7 +59,7 @@ f 1 * 2
         right: (integer))
       right: (integer))))
 ==================
-Associativity: + is left [precedence]
+6. Associativity: + is left [precedence]
 ==================
 1 + 2 + 3
 ---
@@ -71,19 +71,19 @@ Associativity: + is left [precedence]
         right: (integer))
       right: (integer))))
 ==================
-Associativity: -> is right [precedence]
+7. Associativity: -> is right [precedence]
 ==================
 a -> b -> c
 ---
 (source_file
   (cell
     (function_closure
-      argument: (symbol)
+      left: (symbol)
       right: (function_closure
-        argument: (symbol)
+        left: (symbol)
         right: (symbol)))))
 ==================
-Associativity: = is right [precedence]
+8. Associativity: = is right [precedence]
 ==================
 a = b = c
 ---
@@ -95,7 +95,7 @@ a = b = c
         left: (symbol)
         right: (symbol)))))
 ==================
-Mixed precedence: comparison [precedence]
+9. Mixed precedence: comparison [precedence]
 ==================
 1 < 2 == 3 > 4
 ---
@@ -109,7 +109,7 @@ Mixed precedence: comparison [precedence]
           left: (integer)
           right: (integer))))))
 ==================
-RHS not [precedence]
+(10) RHS not [precedence]
 ==================
 1 + not 2
 ---
@@ -118,23 +118,21 @@ RHS not [precedence]
     (binary_expression
       left: (integer)
       right: (not_expression
-        operator: (not_keyword)
         operand: (integer)))))
 ==================
-Parenthesized not [precedence]
+11. Parenthesized not [precedence]
 ==================
 not (1 + 2)
 ---
 (source_file
   (cell
     (not_expression
-      operator: (not_keyword)
       operand: (parenthesized_expression
         content: (binary_expression
           left: (integer)
           right: (integer))))))
 ==================
-Multiple unary operators [precedence]
+12. Multiple unary operators [precedence]
 ==================
 + - + 3
 ---
@@ -145,19 +143,17 @@ Multiple unary operators [precedence]
         operand: (prefix_expression
           operand: (integer))))))
 ==================
-Double not [precedence]
+(13)Double not [precedence]
 ==================
 not not 4
 ---
 (source_file
   (cell
     (not_expression
-      operator: (not_keyword)
       operand: (not_expression
-        operator: (not_keyword)
         operand: (integer)))))
 ==================
-Mixed unary [precedence]
+14. Mixed unary [precedence]
 ==================
 +not 5
 ---
@@ -165,21 +161,19 @@ Mixed unary [precedence]
   (cell
     (prefix_expression
       operand: (not_expression
-        operator: (not_keyword)
         operand: (integer)))))
 ==================
-Mixed unary 2 [precedence]
+15. Mixed unary 2 [precedence]
 ==================
 not+6
 ---
 (source_file
   (cell
     (not_expression
-      operator: (not_keyword)
       operand: (prefix_expression
         operand: (integer)))))
 ==================
-Binary plus unary plus [precedence]
+16. Binary plus unary plus [precedence]
 ==================
 1 + +2
 ---
@@ -190,7 +184,7 @@ Binary plus unary plus [precedence]
       right: (prefix_expression
         operand: (integer)))))
 ==================
-Binary times unary plus [precedence]
+17. Binary times unary plus [precedence]
 ==================
 1 * +2
 ---
@@ -201,7 +195,7 @@ Binary times unary plus [precedence]
       right: (prefix_expression
         operand: (integer)))))
 ==================
-Precedence: * over + [precedence]
+18. Precedence: * over + [precedence]
 ==================
 1 + 2 * 3
 ---
@@ -213,7 +207,7 @@ Precedence: * over + [precedence]
         left: (integer)
         right: (integer)))))
 ==================
-Precedence: * over + (left) [precedence]
+19. Precedence: * over + (left) [precedence]
 ==================
 1 * 2 + 3
 ---
@@ -225,7 +219,7 @@ Precedence: * over + (left) [precedence]
         right: (integer))
       right: (integer))))
 ==================
-Unary minus precedence [precedence]
+20. Unary minus precedence [precedence]
 ==================
 -1 + 2
 ---
@@ -236,7 +230,7 @@ Unary minus precedence [precedence]
         left: (integer)
         right: (integer)))))
 ==================
-RHS unary minus [precedence]
+21. RHS unary minus [precedence]
 ==================
 1 + -2
 ---
@@ -247,14 +241,13 @@ RHS unary minus [precedence]
       right: (prefix_expression
         operand: (integer)))))
 ==================
-Not precedence [precedence]
+22. Not precedence [precedence]
 ==================
 not 1 + 2
 ---
 (source_file
   (cell
     (not_expression
-      operator: (not_keyword)
       operand: (binary_expression
         left: (integer)
         right: (integer)))))

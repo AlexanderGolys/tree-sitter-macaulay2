@@ -1,5 +1,5 @@
 ==================
-Assignment [operators]
+1. Assignment [operators]
 ==================
 a = b
 ---
@@ -9,39 +9,40 @@ a = b
         left: (symbol)
         right: (symbol))))
 ==================
-Closure [operators]
+2. Closure [operators]
 ==================  
 a -> b
 ---
 (source_file
   (cell
     (function_closure
-      argument: (symbol)
+      left: (symbol)
       right: (symbol))))
 ==================
-Closure single variable [operators]
+3. Closure single variable [operators]
 ==================
 (x) -> 2
 ---
 (source_file
   (cell
     (function_closure
-      argument: (symbol)
+      left: (parenthesized_expression
+        content: (symbol))
       right: (integer))))
 ==================
-Closure 3 variables [operators]
+4. Closure 3 variables [operators]
 ==================
 (x, y, z) -> (x, xy, y, x)
 ---
 (source_file
   (cell
     (function_closure
-      argument: (symbol)
-      argument: (symbol)
-      argument: (symbol)
+      left: (sequence
+        component: (symbol)
+        component: (symbol)
+        component: (symbol))
       right: (sequence
         component: (symbol)
         component: (symbol)
         component: (symbol)
         component: (symbol)))))
-==================

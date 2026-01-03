@@ -1,5 +1,5 @@
 ==================
-Nested function calls [compound]
+1. Nested function calls [compound]
 ==================
 f(g(1, 2), h(3, 4))
 ---
@@ -19,7 +19,7 @@ f(g(1, 2), h(3, 4))
             component: (integer)
             component: (integer)))))))
 ==================
-Function call precedence [compound]
+2. Function call precedence [compound]
 ==================
 (f 1) + (g 2)
 ---
@@ -35,14 +35,13 @@ Function call precedence [compound]
           left: (symbol)
           right: (integer))))))
 ==================
-Not with function call [compound]
+(3) Not with function call [compound]
 ==================
 not f(1 + 2)
 ---
 (source_file
   (cell
     (not_expression
-      operator: (not_keyword)
       operand: (call_expression
         left: (symbol)
         right: (parenthesized_expression
@@ -50,7 +49,7 @@ not f(1 + 2)
             left: (integer)
             right: (integer)))))))
 ==================
-Nested calls without parens [compound]
+4. Nested calls without parens [compound]
 ==================
 (f (g (h 1)))
 ---
@@ -67,7 +66,7 @@ Nested calls without parens [compound]
                 left: (symbol)
                 right: (integer)))))))))
 ==================
-List expression [compound]
+5. List expression [compound]
 ==================
 {1, 2, 3}
 ---
@@ -78,18 +77,18 @@ List expression [compound]
       component: (integer)
       component: (integer))))
 ==================
-Sequence expression with semicolons [compound]
+6. Sequence expression with semicolons [compound]
 ==================
 (a; b; c)
 ---
 (source_file
   (cell
     (parenthesized_expression
-      component: (symbol)
-      component: (symbol)
-      component: (symbol))))
+      expression: (symbol)
+      expression: (symbol)
+      expression: (symbol))))
 ==================
-Array expression [compound]
+7. Array expression [compound]
 ==================
 [a, b, c]
 ---

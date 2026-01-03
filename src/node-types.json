@@ -88,6 +88,10 @@
         "named": true
       },
       {
+        "type": "method_installation",
+        "named": true
+      },
+      {
         "type": "new_statement",
         "named": true
       },
@@ -174,36 +178,6 @@
             "named": true
           }
         ]
-      },
-      "left_bracket": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "<|",
-            "named": false
-          }
-        ]
-      },
-      "right_bracket": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "|>",
-            "named": false
-          }
-        ]
-      },
-      "separator": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": ",",
-            "named": false
-          }
-        ]
       }
     }
   },
@@ -220,36 +194,6 @@
             "named": true
           }
         ]
-      },
-      "left_bracket": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "[",
-            "named": false
-          }
-        ]
-      },
-      "right_bracket": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "]",
-            "named": false
-          }
-        ]
-      },
-      "separator": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": ",",
-            "named": false
-          }
-        ]
       }
     }
   },
@@ -262,7 +206,19 @@
         "required": true,
         "types": [
           {
-            "type": "expression",
+            "type": "index_expression",
+            "named": true
+          },
+          {
+            "type": "member_access",
+            "named": true
+          },
+          {
+            "type": "sequence",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           }
         ]
@@ -640,10 +596,6 @@
             "named": false
           },
           {
-            "type": "_",
-            "named": false
-          },
-          {
             "type": "_<",
             "named": false
           },
@@ -929,17 +881,13 @@
           }
         ]
       },
-      "separator": {
+      "expression": {
         "multiple": true,
         "required": false,
         "types": [
           {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": ";",
-            "named": false
+            "type": "expression",
+            "named": true
           }
         ]
       }
@@ -1110,20 +1058,12 @@
     "named": true,
     "fields": {
       "left": {
-        "multiple": true,
+        "multiple": false,
         "required": true,
         "types": [
           {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
+            "type": "parenthesized_expression",
+            "named": true
           },
           {
             "type": "sequence",
@@ -1156,6 +1096,11 @@
         ]
       }
     }
+  },
+  {
+    "type": "if_keyword",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "if_statement",
@@ -1198,10 +1143,6 @@
       "types": [
         {
           "type": "else_keyword",
-          "named": true
-        },
-        {
-          "type": "if_keyword",
           "named": true
         },
         {
@@ -1266,7 +1207,7 @@
         "required": true,
         "types": [
           {
-            "type": "symbol",
+            "type": "expression",
             "named": true
           }
         ]
@@ -1284,36 +1225,6 @@
           {
             "type": "expression",
             "named": true
-          }
-        ]
-      },
-      "left_bracket": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "{",
-            "named": false
-          }
-        ]
-      },
-      "right_bracket": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "}",
-            "named": false
-          }
-        ]
-      },
-      "separator": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": ",",
-            "named": false
           }
         ]
       }
@@ -1452,11 +1363,71 @@
         "required": true,
         "types": [
           {
-            "type": "integer",
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "method_installation",
+    "named": true,
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
             "named": true
           },
           {
-            "type": "symbol",
+            "type": "call_expression",
+            "named": true
+          },
+          {
+            "type": "index_expression",
+            "named": true
+          },
+          {
+            "type": "member_access",
+            "named": true
+          },
+          {
+            "type": "not_expression",
+            "named": true
+          },
+          {
+            "type": "postfix_expression",
+            "named": true
+          },
+          {
+            "type": "prefix_expression",
+            "named": true
+          }
+        ]
+      },
+      "operator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": ":=",
+            "named": false
+          },
+          {
+            "type": "=",
+            "named": false
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
             "named": true
           }
         ]
@@ -1516,8 +1487,8 @@
         "required": true,
         "types": [
           {
-            "type": "not_keyword",
-            "named": true
+            "type": "not",
+            "named": false
           }
         ]
       }
@@ -1625,16 +1596,6 @@
     "type": "parenthesized_expression",
     "named": true,
     "fields": {
-      "component": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      },
       "content": {
         "multiple": true,
         "required": true,
@@ -1649,33 +1610,13 @@
           }
         ]
       },
-      "left_bracket": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "(",
-            "named": false
-          }
-        ]
-      },
-      "right_bracket": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": ")",
-            "named": false
-          }
-        ]
-      },
-      "separator": {
+      "expression": {
         "multiple": true,
         "required": false,
         "types": [
           {
-            "type": ";",
-            "named": false
+            "type": "expression",
+            "named": true
           }
         ]
       }
@@ -1930,10 +1871,6 @@
           "named": true
         },
         {
-          "type": "not_keyword",
-          "named": true
-        },
-        {
           "type": "of_keyword",
           "named": true
         },
@@ -2053,36 +1990,6 @@
           {
             "type": "expression",
             "named": true
-          }
-        ]
-      },
-      "left_bracket": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "(",
-            "named": false
-          }
-        ]
-      },
-      "right_bracket": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": ")",
-            "named": false
-          }
-        ]
-      },
-      "separator": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": ",",
-            "named": false
           }
         ]
       }
@@ -2893,8 +2800,8 @@
     "named": true
   },
   {
-    "type": "if_keyword",
-    "named": true
+    "type": "if",
+    "named": false
   },
   {
     "type": "ii",
@@ -2930,8 +2837,8 @@
     "named": true
   },
   {
-    "type": "not_keyword",
-    "named": true
+    "type": "not",
+    "named": false
   },
   {
     "type": "null",

@@ -1,0 +1,40 @@
+==================
+(1) Call precedence lower than power [weird]
+==================
+f(3)^2
+---
+(source_file
+  (cell
+    (call_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (parenthesized_expression
+          expression: (integer))
+        right: (integer)))))
+
+==================
+(2) true + + not true [weird]
+==================
+x + + not + x 
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (prefix_expression
+        operand: (not_expression
+          operand: (prefix_expression
+            operand: (symbol)))))))
+==================
+ (3) true not + + not true [weird]
+==================
+x not + + x 
+---
+(source_file
+  (cell
+    (call_expression
+      left: (symbol)
+      right: (not_expression
+        operand: (prefix_expression
+          operand: (prefix_expression
+            operand: (symbol)))))))

@@ -1,5 +1,5 @@
 ==================
-Empty string [strings]
+1. Empty string [strings]
 ==================
 ""
 ---
@@ -7,7 +7,7 @@ Empty string [strings]
   (cell
     (string_expression)))
 ==================
-String with escaped quote [strings]
+2. String with escaped quote [strings]
 ==================
 "\""
 ---
@@ -16,7 +16,7 @@ String with escaped quote [strings]
     (string_expression
       (escape_sequence))))
 ==================
-String with escaped backslash [strings]
+3. String with escaped backslash [strings]
 ==================
 "\\"
 ---
@@ -25,7 +25,7 @@ String with escaped backslash [strings]
     (string_expression
       (escape_sequence))))
 ==================
-String with newline escape [strings]
+4. String with newline escape [strings]
 ==================
 "\n"
 ---
@@ -34,7 +34,7 @@ String with newline escape [strings]
     (string_expression
       (escape_sequence))))
 ==================
-String with mixed content [strings]
+5. String with mixed content [strings]
 ==================
 "abc\"def\nghi"
 ---
@@ -44,7 +44,7 @@ String with mixed content [strings]
       (escape_sequence)
       (escape_sequence))))
 ==================
-Empty raw string [strings]
+6. Empty raw string [strings]
 ==================
 //////
 ---
@@ -52,7 +52,7 @@ Empty raw string [strings]
   (cell
     (string_expression)))
 ==================
-Raw string with content [strings]
+7. Raw string with content [strings]
 ==================
 ///abc///
 ---
@@ -60,7 +60,7 @@ Raw string with content [strings]
   (cell
     (string_expression)))
 ==================
-Raw string with slashes [strings]
+8. Raw string with slashes [strings]
 ==================
 ///a/b//c///
 ---
@@ -68,7 +68,7 @@ Raw string with slashes [strings]
   (cell
     (string_expression)))
 ==================
-Raw string with quotes [strings]
+9. Raw string with quotes [strings]
 ==================
 ///"abc"///
 ---
@@ -76,7 +76,7 @@ Raw string with quotes [strings]
   (cell
     (string_expression)))
 ==================
-Raw string with newlines [strings]
+10. Raw string with newlines [strings]
 ==================
 ///
 abc

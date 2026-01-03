@@ -1,12 +1,12 @@
 ==================
-Comment at end of file [comments]
+1. Comment at end of file [comments]
 ==================
 -- comment
 ---
 (source_file
     (line_comment))
 ==================
-Comment after expression [comments]
+2. Comment after expression [comments]
 ==================
 1 -- comment
 ---
@@ -15,7 +15,7 @@ Comment after expression [comments]
     (integer)
     (line_comment)))
 ==================
-Block comment inline [comments]
+3. Block comment inline [comments]
 ==================
 1 + -* comment *- 2
 ---
@@ -26,7 +26,7 @@ Block comment inline [comments]
       (block_comment)
       right: (integer))))
 ==================
-Block comment multiline [comments]
+4. Block comment multiline [comments]
 ==================
 -*
   comment
@@ -35,7 +35,7 @@ Block comment multiline [comments]
 (source_file
   (block_comment))
 ==================
-Nested block comments (if supported, or just checking behavior) [comments]
+5. Nested block comments (if supported, or just checking behavior) [comments]
 ==================
 -* outer -* inner *- outer *-
 ---
@@ -44,14 +44,14 @@ Nested block comments (if supported, or just checking behavior) [comments]
   (ERROR
     (symbol)))
 ==================
-Comment with weird chars [comments]
+6. Comment with weird chars [comments]
 ==================
 -- !@#$%^&*()
 ---
 (source_file
   (line_comment))
 ==================
-Block comment with stars [comments]
+7. Block comment with stars [comments]
 ==================
 -***-
 ---

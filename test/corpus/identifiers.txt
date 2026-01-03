@@ -1,5 +1,5 @@
 ==================
-Simple identifier [identifiers]
+1. Simple identifier [identifiers]
 ==================
 abc
 ---
@@ -7,7 +7,7 @@ abc
   (cell
     (symbol)))
 ==================
-Identifier with digits [identifiers]
+2. Identifier with digits [identifiers]
 ==================
 a123
 ---
@@ -15,7 +15,7 @@ a123
   (cell
     (symbol)))
 ==================
-Identifier with apostrophe [identifiers]
+3. Identifier with apostrophe [identifiers]
 ==================
 a'
 ---
@@ -23,7 +23,7 @@ a'
   (cell
     (symbol)))
 ==================
-Identifier with multiple apostrophes [identifiers]
+4. Identifier with multiple apostrophes [identifiers]
 ==================
 a''
 ---
@@ -31,7 +31,7 @@ a''
   (cell
     (symbol)))
 ==================
-Identifier starting with capital [identifiers]
+5. Identifier starting with capital [identifiers]
 ==================
 Abc
 ---
@@ -39,7 +39,7 @@ Abc
   (cell
     (symbol)))
 ==================
-Identifier with mixed case [identifiers]
+6. Identifier with mixed case [identifiers]
 ==================
 aBc
 ---

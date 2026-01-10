@@ -21,7 +21,7 @@ installAssignmentMethod(symbol _, M, ZZ, (x,i,v) -> x#i = v);
 M _ ZZ := (x,i) -> x#i
 QQ#{topLevelMode,AfterPrint} = r -> r
 positions({12, 3, -10, 42, 7, 6, 53, x_12, x_{1, 1}, y_(a, b)}, i -> i<0 or i>40)
-s = new  from {a, b,c};
+s = new Type of Array from {a, b,c};
 showStructure(List,Sequence,Array,  Container,MutableList,Bag,BasicList)
 1..5, x_1..x_5, a..e, y .. z
 A = {3 .. 6, 9, 3:12, {,,{a,b,,c}, , {d , {e,  f}},}}

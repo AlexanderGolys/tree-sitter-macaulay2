@@ -1,0 +1,190 @@
+==================
+(1) if 
+==================
+if x==4 then x=5
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (compare_expression
+        left: (symbol)
+        right: (integer_literal))
+      consequence: (assignment_expression
+        left: (symbol)
+        right: (integer_literal)))))
+
+
+==================
+(2) if-then-else
+==================
+if a > 0 then b else c
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (compare_expression
+        left: (symbol)
+        right: (integer_literal))
+      consequence: (symbol)
+      alternative: (symbol))))
+
+==================
+(3) nested if-then-else
+==================
+if x < 3 then if y < 2 then a else b else c
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (compare_expression
+        left: (symbol)
+        right: (integer_literal))
+      consequence: (if_statement
+        condition: (compare_expression
+          left: (symbol)
+          right: (integer_literal))
+        consequence: (symbol)
+        alternative: (symbol))
+      alternative: (symbol))))
+
+==================
+(4) for statement (with in, when, do)
+==================
+for i in 1..5 when i>2 do print i
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (in_clause
+        body: (range_expression
+          left: (integer_literal)
+          right: (integer_literal)))
+      (when_clause
+        body: (compare_expression
+          left: (symbol)
+          right: (integer_literal)))
+      (do_clause
+        body: (call_expression
+          left: (symbol)
+          right: (symbol))))))
+
+==================
+(5) for with from/to FIX
+==================
+for j from 0 to 4 do doSomething j
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (from_clause
+        body: (integer_literal))
+      (to_clause
+        body: (integer_literal))
+      (do_clause
+        body: (call_expression
+          left: (symbol)
+          right: (symbol))))))
+
+==================
+(6) while with when
+==================
+while x < 10 when x > 1 do x = x + 1
+---
+(source_file
+  (cell
+    (while_statement
+      (compare_expression
+        left: (symbol)
+        right: (integer_literal))
+      (when_clause
+        body: (compare_expression
+          left: (symbol)
+          right: (integer_literal)))
+      (do_clause
+        body: (assignment_expression
+          left: (symbol)
+          right: (binary_expression
+            left: (symbol)
+            right: (integer_literal)))))))
+
+==================
+(7) break
+==================
+break
+---
+(source_file
+  (cell
+    (break_statement)))
+
+==================
+(8) continue
+==================
+continue
+---
+(source_file
+  (cell
+    (continue_statement)))
+
+==================
+(9) return
+==================
+return x
+---
+(source_file
+  (cell
+    (return_statement
+      (symbol))))
+
+==================
+(10) breakpoint
+==================
+breakpoint 42
+---
+(source_file
+  (cell
+    (breakpoint_statement
+      (integer_literal))))
+
+==================
+(11) catch
+==================
+catch expr
+---
+(source_file
+  (cell
+    (catch_statement
+      (symbol))))
+
+==================
+(12) shield
+==================
+shield something
+---
+(source_file
+  (cell
+    (shield_statement
+      (symbol))))
+
+==================
+(13) TEST
+==================
+TEST a + b
+---
+(source_file
+  (cell
+    (test_statement
+      (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+
+==================
+(15) throw
+==================
+throw err
+---
+(source_file
+  (cell
+    (throw_statement
+      (symbol))))

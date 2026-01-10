@@ -8,16 +8,16 @@ f(g(1, 2), h(3, 4))
     (call_expression
       left: (symbol)
       right: (sequence
-        component: (call_expression
+        (call_expression
           left: (symbol)
           right: (sequence
-            component: (integer)
-            component: (integer)))
-        component: (call_expression
+            (integer_literal)
+            (integer_literal)))
+        (call_expression
           left: (symbol)
           right: (sequence
-            component: (integer)
-            component: (integer)))))))
+            (integer_literal)
+            (integer_literal)))))))
 ==================
 2. Function call precedence [compound]
 ==================
@@ -26,14 +26,14 @@ f(g(1, 2), h(3, 4))
 (source_file
   (cell
     (binary_expression
-      left: (parenthesized_expression
-        content: (call_expression
+      left: (sequence
+        (call_expression
           left: (symbol)
-          right: (integer)))
-      right: (parenthesized_expression
-        content: (call_expression
+          right: (integer_literal)))
+      right: (sequence
+        (call_expression
           left: (symbol)
-          right: (integer))))))
+          right: (integer_literal))))))
 ==================
 (3) Not with function call [compound]
 ==================
@@ -41,13 +41,13 @@ not f(1 + 2)
 ---
 (source_file
   (cell
-    (not_expression
+    (prefix_expression
       operand: (call_expression
         left: (symbol)
-        right: (parenthesized_expression
-          content: (binary_expression
-            left: (integer)
-            right: (integer)))))))
+        right: (sequence
+          (binary_expression
+            left: (integer_literal)
+            right: (integer_literal)))))))
 ==================
 4. Nested calls without parens [compound]
 ==================
@@ -55,16 +55,16 @@ not f(1 + 2)
 ---
 (source_file
   (cell
-    (parenthesized_expression
-      content: (call_expression
+    (sequence
+      (call_expression
         left: (symbol)
-        right: (parenthesized_expression
-          content: (call_expression
+        right: (sequence
+          (call_expression
             left: (symbol)
-            right: (parenthesized_expression
-              content: (call_expression
+            right: (sequence
+              (call_expression
                 left: (symbol)
-                right: (integer)))))))))
+                right: (integer_literal)))))))))
 ==================
 5. List expression [compound]
 ==================
@@ -73,9 +73,9 @@ not f(1 + 2)
 (source_file
   (cell
     (list
-      component: (integer)
-      component: (integer)
-      component: (integer))))
+      (integer_literal)
+      (integer_literal)
+      (integer_literal))))
 ==================
 6. Sequence expression with semicolons [compound]
 ==================
@@ -83,10 +83,10 @@ not f(1 + 2)
 ---
 (source_file
   (cell
-    (parenthesized_expression
-      expression: (symbol)
-      expression: (symbol)
-      expression: (symbol))))
+    (sequence
+      (symbol)
+      (symbol)
+      (symbol))))
 ==================
 7. Array expression [compound]
 ==================
@@ -95,6 +95,6 @@ not f(1 + 2)
 (source_file
   (cell
     (array
-      component: (symbol)
-      component: (symbol)
-      component: (symbol))))
+      (symbol)
+      (symbol)
+      (symbol))))

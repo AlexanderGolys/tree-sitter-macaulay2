@@ -5,25 +5,18 @@
 
 (for_statement) @local.scope
 
-(parenthesized_expression) @local.scope
+(sequence) @local.scope
 
 
 ; 2. DEFINITIONS - Most specific first
 
+; Function parameters
 (function_closure
-  left: [
-    (symbol) @local.definition.parameter
-    (parenthesized_expression
-      content: [(symbol) @local.definition.parameter
-                (locality_operator
-                  symbol: (_) @local.definition.parameter)])
-    (sequence
-      component: [(symbol) @local.definition.parameter
-                (locality_operator
-                  symbol: (_) @local.definition.parameter)])
-    (locality_operator
-      symbol: (_) @local.definition.parameter)
-    ])
+  left: (symbol) @local.definition.parameter)
+
+(function_closure
+  left: (sequence
+    (symbol) @local.definition.parameter))
 
 (for_statement 
   variable: (symbol) @local.definition.var)
@@ -33,7 +26,7 @@
 
 (assignment_expression
   left: (sequence
-    component: (symbol) @local.definition))
+    (symbol) @local.definition))
 
 (assignment_expression
   left: (symbol) @local.definition.function 

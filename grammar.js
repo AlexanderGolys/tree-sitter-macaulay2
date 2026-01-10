@@ -1,674 +1,584 @@
 const PREC = {
-  SEMICOLON: 8,
-  COMMA: 10,
-  CONTROL: 12,
-  ASSIGN: 13,
-  ITER: 16,
-  NOT: 34,
-  COMPARE: 36,
-  RANGE: 48,
-  ACCESS: 70,
-  POWER: 70,
-  COMMA: 10,
-  CALL: 61,
-  SCOPE: 74,
+    SEMICOLON: 8,
+    COMMA: 10,
+    CONTROL: 12,
+    ASSIGN: 13,
+    ITER: 16,
+	PRINT: 18,
+    NOT: 34,
+    COMPARE: 36,
+    RANGE: 48,
+    ADD: 50, 
+    DOT: 52, 
+    TENSOR: 54, 
+    MULT: 58,
+    AT: 60,
+    ACCESS: 70,
+    POWER: 70,
+    CALL: 61,
+    SCOPE: 74,
 
 }
 
 const augmentedAssignmentOperators = [
-  '%=',  '&=',  '**=',  '*=',  '++=',  '+=',  '-=',  '..<=',  
-  '..=',  '//=',  '/=',  '<<=',  '<==>=',  '===>=',  '==>=',  '>>=',  '??=',  
-  '@=',  '@@=',  '@@?=',  '\\=',  '\\\\=',  '^**=',  '^=',  '^^=',  '_=',  '|-=',  
-  '|=',  '|_=',  '||=',  '·=',  '⊠=',  '⧢='
+    '%=',  '&=',  '**=',  '*=',  '++=',  '+=',  '-=',  
+    '//=',  '/=',  '<<=',  '<==>=',  '===>=',  '==>=',  '>>=',  '??=',  
+    '@=',  '@@=',  '@@?=',  '\\=',  '\\\\=',  '^**=',  '^=',  '^^=',  '_=',  '|-=',  
+    '|=',  '|_=',  '||=',  '·=',  '⊠=',  '⧢='
 ];
 
 const operatorsSymbols = [
-  ...augmentedAssignmentOperators,
-  '<<', '>>', '<===', '===>', '<==>', '<==', '==>',
-  '++', '**', '//', '==', '!=', '===', '=!=', '<=', '>=', ':=', '=>', '->', '<-', 
-  '+',  '-', '*', '/', '%', '<', '>', '?', 
-  '=', '|', '&', '~', '||', '!', '(*)', '^*', '_*', '~', '@@', '@@?', '|-',
-  '.', '..<', '..', '.', '·',  '⊠',  '⧢',
-  '^', '^**', '_', '#', '@', '??', '\\', '\\\\'
+    ...augmentedAssignmentOperators,
+    '<<', '>>', '<===', '===>', '<==>', '<==', '==>',
+    '++', '**', '//', '==', '!=', '===', '=!=', '<=', '>=', ':=', '=>', '->', '<-', 
+    '+',  '-', '*', '/', '%', '<', '>', '?', 
+    '=', '|', '&', '~', '||', '!', '(*)', '^*', '_*', '~', '@@', '@@?', '|-',
+    '.', '..<', '..', '·',  '⊠',  '⧢',
+    '^', '^**', '_', '#', '@', '??', '\\', '\\\\'
 ];
 
 const punctuationSymbols = [
-  '(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';'
+    '(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';'
 ];
 
-const NUMBER_SUFFIX = choice(
-  seq(
-    'p', repeat1(/[0-9]/),
-    optional(seq(
-      choice('e', 'E'), 
-      optional(choice('+', '-')), 
-      repeat1(/[0-9]/)))),
-  seq(
-    choice('e', 'E'), 
-    optional(choice('+', '-')), 
-    repeat1(/[0-9]/))
-);
+// Like choice(), but avoids unnecessary wrapper for single element
+const Choice = (...items) => items.length === 1 ? items[0] : choice(...items);
+
 
 module.exports = grammar({
-  name: 'macaulay2',
+    name: 'macaulay2',
 
-  supertypes: ($) => [
-    $.expression,
-  ],
+    supertypes: ($) => [
+        $.expression,
+    ],
 
-  conflicts: ($) => [
-    [$.assignment_expression, $.method_installation]
-  ],
+    conflicts: ($) => [
+        [$.assignment_expression, $.method_installation],
+    ],
 
-  precedences: $ => [
-  ],
-
-  extras: ($) => [
-    /[ \t\r\n]/,
-    $.block_comment,
-    $.line_comment
-  ],
-
-  word: $ => $.symbol,
-
-  inline: ($) => [
-    $._collection,
-    $._loop_body,
-  ],
-
-  externals: $ => [
-    $._floating_dotted
-  ],
-
-
-
-  rules: {
-    source_file: ($) => repeat($.cell),
-
-    // Keywords
-    if_keyword: $ => 'if',
-    then_keyword: $ => 'then',
-    else_keyword: $ => 'else',
-    from_keyword: $ => 'from',
-    to_keyword: $ => 'to',
-    when_keyword: $ => 'when',
-    do_keyword: $ => 'do',
-    in_keyword: $ => 'in',
-    of_keyword: $ => 'of',
-    list_keyword: $ => 'list',
-    for_keyword: $ => 'for',
-    while_keyword: $ => 'while',
-    break_keyword: $ => 'break',
-    continue_keyword: $ => 'continue',
-    return_keyword: $ => 'return',
-    try_keyword: $ => 'try',
-    catch_keyword: $ => 'catch',
-    throw_keyword: $ => 'throw',
-    time_keyword: $ => 'time',
-    timing_keyword: $ => 'timing',
-    elapsedTime_keyword: $ => 'elapsedTime',
-    elapsedTiming_keyword: $ => 'elapsedTiming',
-    profile_keyword: $ => 'profile',
-    step_keyword: $ => 'step',
-    shield_keyword: $ => 'shield',
-    test_keyword: $ => 'TEST',
-    breakpoint_keyword: $ => 'breakpoint',
-    global_keyword: $ => 'global',
-    local_keyword: $ => 'local',
-    symbol_keyword: $ => 'symbol',
-    threadVariable_keyword: $ => 'threadVariable',
-    threadLocal_keyword: $ => 'threadLocal',
-    new_keyword: $ => 'new',
-    space_keyword: $ => 'SPACE',
-    and_keyword: $ => 'and',
-    // not_keyword: $ => 'not',
-    or_keyword: $ => 'or',
-    xor_keyword: $ => 'xor',
-
-
-
-
-
-    _named_keyword: $ => choice(
-      $.if_keyword,
-      $.then_keyword,
-      $.else_keyword,
-      $.from_keyword,
-      $.to_keyword,
-      $.when_keyword,
-      $.do_keyword,
-      $.in_keyword,
-      $.of_keyword,
-      $.list_keyword,
-      $.for_keyword,
-      $.while_keyword,
-      $.break_keyword,
-      $.continue_keyword,
-      $.return_keyword,
-      $.try_keyword,
-      $.catch_keyword,
-      $.throw_keyword,
-      $.time_keyword,
-      $.timing_keyword,
-      $.elapsedTime_keyword,
-      $.elapsedTiming_keyword,
-      $.profile_keyword,
-      $.step_keyword,
-      $.shield_keyword,
-      $.test_keyword,
-      $.breakpoint_keyword,
-      $.global_keyword,
-      $.local_keyword,
-      $.symbol_keyword,
-      $.threadVariable_keyword,
-      $.threadLocal_keyword,
-      $.new_keyword,
-      $.space_keyword,
-      $.and_keyword,
-      // $.not_keyword,
-      "not",
-      $.or_keyword,
-      $.xor_keyword
-    ),
-
-    symbol: ($) => /[a-zA-Z][a-zA-Z0-9']*/,
-
-    line_comment: $ =>  /--[^\n]*/,
-      
-    block_comment: $ => /-\*([^*]|\*+[^-])*?\*+-/, 
-
-
-
-    cell: ($) => seq(
-        optional(choice(
-          $.expression, 
-          $._multi_collection, 
-          $._multi_expression
-        )),
-        choice('\n', '\0')
-    ),
-
-    integer: ($) => token(seq(
-        repeat1(/[0-9]/),
-    )),
-
-
-    floating: ($) => choice(
-      token(seq(
-        repeat1(/[0-9]/), 
-        NUMBER_SUFFIX)),
-      
-      token(seq(
-        repeat1(/[0-9]/), 
-        '.',
-        repeat1(/[0-9]/),
-        optional(NUMBER_SUFFIX))),
-
-      token(seq(
-        repeat1(/[0-9]/), 
-        '.',
-        NUMBER_SUFFIX)),
-      
-      $._floating_dotted
-    ),
-
-    _std_string_delimiter_token: ($) => token('"'),
-    _raw_string_delimiter_token: ($) => token('///'),
-    
-
-    escape_sequence: ($) =>
-      choice(
-        token('\\n'),
-        token('\\f'),
-        token('\\"'),
-        token('\\r'),
-        token('\\\\'),
-        token('\\a'),
-        token('\\b'),
-        token('\\e'),
-        token('\\E'),
-        token('\\t'),
-        token('\\v'),
-        token(/\\[0-7][0-7][0-7]/),
-        token(/\\x[0-9a-fA-F][0-9a-fA-F]/),
-        token(/\\u[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]/)
-      ),
-
-    _std_string: ($) =>
-      seq(
-        $._std_string_delimiter_token,
-        repeat(choice($.escape_sequence, /[^"\\\n]+/)),
-        $._std_string_delimiter_token
-      ),
-
-    _raw_string: ($) =>
-      seq(
-        token('///'),
-        repeat(choice(/[^/]+/, /\/[^/]/, /\/\/[^/]/)),
-        token('///')
-      ),
-
-    string_expression: ($) => choice($._std_string, $._raw_string),
-
-    boolean_literal: ($) => choice('true', 'false'),
-
-    builtin_constant: ($) => choice(
-      'null',
-      'infinity',
-      'ii',
-      'pi',
-    ),
-
-
-    _multi_collection: ($) =>  prec.left(PREC.COMMA, seq( 
-      optional( field('component', $.expression)),
-      repeat1(seq(',', optional( field('component', $.expression))))
-        )),
-
-    _multi_expression: ($) =>  prec.left(PREC.SEMICOLON, seq( 
-      optional( field('expression', $.expression)),
-      repeat1(seq( ';', optional(field('expression', $.expression))))
-      )),
-
-
-    _collection: ($) => choice(
-      $._multi_collection,
-      field('component', $.expression)
-    ),
-
-
-
-
-    list: ($) => seq( '{', optional($._collection), '}'),
-
-    sequence: ($) => Parenthesized(seq(optional($._multi_collection)), ""),
-
-    parenthesized_expression: ($) => Parenthesized(choice($.expression, $._multi_expression)),
-
-    array: ($) => seq( '[', optional($._collection), ']'),
-
-    angle_bar_list: ($) => seq( '<|', optional($._collection), '|>'), 
-
-    
-
-
-
-    binary_expression: $ => {
-      const table = [
-        [prec.left, 18, '<<'],
-        [prec.left, 38, '||'],
-        [prec.left, 42, '|'],
-        [prec.left, 44, '^^'],
-        [prec.left, 46, '&'],
-        [prec.left, 50, choice('++', '+', '-')],
-        [prec.left, 52, '·'],
-        [prec.left, 54, choice('**', '⊠', '⧢')],
-        [prec.left, 58, choice('%', '//', '/', '*')],
-        [prec.left, PREC.ACCESS, choice(
-          '#?', '.?', '|_',
-          '^', '^**', '^<', '^<=', '^>', '^>=',
-          '_<', '_<=', '_>', '_>=')],
-        [prec.left, 66, choice('@@', '@@?')],
-
-        [prec.right, 20, '|-'],
-        [prec.right, 22, choice('<===', '===>')],
-        [prec.right, 24, '<==>'],
-        [prec.right, 26, choice('<==', '==>')],
-        [prec.right, 28, choice($.or_keyword, '??')],
-        [prec.right, 30, $.xor_keyword],
-        [prec.right, 32, $.and_keyword],
-        [prec.right, PREC.COMPARE, choice('==', '!=', '===', '=!=', '<', '>','<=', '>=', '?')],
-        [prec.right, 40, ':'],
-        [prec.right, 58, choice('\\', '\\\\')],
-        [prec.right, 60, '@'],
-      ];
-
-      return choice(
-        ...table.map(([fn, precedence, operator]) =>
-        fn(precedence, seq(
-          field('left', $.expression),
-          field('operator', operator),
-          field('right', $.expression),
-        ))));
-    },
-
-
-    index_expression: ($) => BinOpLeft(PREC.ACCESS, "_", $.expression, $.expression),
-
-    member_access: ($) => prec.left(PREC.ACCESS, seq(
-      field('left', choice(
-        $.symbol,
-        $.member_access,
-        $.parenthesized_expression,
-        $.sequence,
-        $.string_expression,
-        $.index_expression,
-        $.array,
-        $.angle_bar_list,
-        $.list
-      )),
-      field('operator', choice('.', '#')),
-      field('right', $.expression)
-    )),
-
-
-    function_closure: ($) => BinOpRight(PREC.ASSIGN, '->', choice( $.symbol, $.sequence, $.parenthesized_expression), $.expression ),
-
-    option_assignment: ($) => BinOpRight(PREC.ASSIGN, '=>', $.expression, $.expression ),
-  
-
-    assignment_expression: ($) => BinOpRight(PREC.ASSIGN, 
-      choice('=', ':=', '<-'), 
-      choice($.symbol, $.sequence,  $.member_access,  $.index_expression),
-      $.expression),
-
-      method_installation: ($) => BinOpRight(PREC.ASSIGN, 
-        choice('=', ':='), 
-        choice($.index_expression, $.member_access, $.call_expression, $.binary_expression, 
-               $.prefix_expression, $.postfix_expression, $.not_expression),
-        $.expression),
-
-    option_attachment: ($) => BinOpRight(PREC.ASSIGN, '>>', $.expression, $.expression ),
-
-    augmented_assignment_expression: ($) => BinOpRight(PREC.ASSIGN, choice(...augmentedAssignmentOperators), $.expression, $.expression ),
-
-    range_expression: ($) => prec.left(PREC.RANGE, BinOpLeft(PREC.RANGE, choice('..', '..<'), $.expression, $.expression)),
-
-
-    call_expression: ($) => prec.right(PREC.CALL, choice(
-      seq(
-        field('left', choice(
-          $._primitive_expression,
-      )),        
-        field('right', choice(
-          $._primitive_expression,
-        )),
-      ))),
-
-
-    prefix_expression: $ => {
-      const table = [
-        [18, '<<'],
-        [20, '|-'],
-        [22, '<==='],
-        [26, '<=='],
-        [34, choice('<', '<=', '>', '>=', '?')],
-        [50, choice('+', '-')],
-        [58, '*'],
-        [62, '#'],
-      ];
-      return choice(...table.map(([precedence, operator]) => prec.right(precedence, seq(
-          field('operator', operator),
-          field('operand', $.expression)
-        ))));
-    },
-
-    not_expression: $ => prec.right(PREC.NOT, choice(
-      seq(
-          field('operator', 'not'),
-          field('operand', $.expression)
-      ))),
-
-
-    postfix_expression: $ => {
-      const table = [
-        [64, '(*)'],
-        [68, choice('^*', '_*', '~', '^~', '_~')],
-        [72, choice('!', '^!', '_!')],
+    precedences: $ => [],
         
-      ];
-      return choice(...table.map(([precedence, operator]) => prec.left(precedence, seq(
-          field('operand', $.expression),
-          field('operator', operator)
-        ))));
+
+    extras: ($) => [
+        /[\s\n\r]/,  // whitespace
+        $.block_comment,
+        $.line_comment
+    ],
+
+    word: $ => $.symbol,
+
+    reserved: {
+        keywords: $ => [
+            'if', 'then', 'else', 'from', 'to', 'when', 'do', 'in', 'of', 'list',
+            'for', 'while', 'break', 'continue', 'return', 'try', 'catch', 'throw',
+            'time', 'timing', 'elapsedTime', 'elapsedTiming', 'profile',
+            'shield', 'TEST', 'breakpoint', 'global', 'local', 'symbol',
+            'threadVariable', 'threadLocal', 'new', 'SPACE', 'and', 'not', 'or', 'xor'
+        ],
+
+		locality_op: $ => []
     },
 
-
-    from_clause: ($) => seq(
-      field('keyword', $.from_keyword), 
-      field('body', $.expression)),
-
-    to_clause: ($) => seq(
-      field('keyword', $.to_keyword), 
-      field('body', $.expression)),
-
-    when_clause: ($) => seq(
-      field('keyword', $.when_keyword), 
-      field('body', $.expression)),
-
-    list_clause: ($) => seq(
-      field('keyword', $.list_keyword), 
-      field('body', $.expression)),
-
-
-    do_clause: ($) => prec(PREC.CONTROL, seq(
-      field('keyword', $.do_keyword), 
-      field('body', $.expression))),
-
-    in_clause: ($) => prec(PREC.ITER, seq(
-      field('keyword', $.in_keyword), 
-      field('body', $.expression))),
-
-    of_clause: ($) => prec(PREC.ITER, seq(
-      field('keyword', $.of_keyword), 
-      field('body', $.expression))),
-
-    _loop_body: ($) => choice(
-          seq($.list_clause, optional($.do_clause)),
-          $.do_clause),
+    inline: ($) => [
+        $._loop_body,
+    ],
+	
+    externals: $ => [
+        $._space,             // Adjacency operator for function calls
+        $._range,             // .. (greedy pair of dots)
+        $._range_lt,          // ..< (range exclusive)
+        $._range_eq,          // ..= (range inclusive)
+        $._range_lt_eq,       // ..<= (range exclusive or equal)
+        $.float_literal,      // Floating point literal
+		$.exp_missing,        // Exponent missing
+		$.p_missing,          // Precision missing
+    ],
 
 
 
-    if_statement: ($) => prec.left(PREC.CONTROL, seq(
-      "if",
-      field('condition', $.expression),
-      $.then_keyword,
-      field('consequence', $.expression),
-      optional(seq(
-        $.else_keyword, 
-        field('alternative', $.expression)))
-    )),
-
-
-    for_statement: $ => prec.right(PREC.CONTROL, seq(
-        field('keyword', $.for_keyword),
-        field('variable', $.symbol),
-
-        choice(
-          seq(optional($.from_clause), 
-          optional($.to_clause)),
-          $.in_clause),
-
-        optional($.when_clause),
-
-        field('body', $._loop_body),
-      )
-    ),
-      
-
-  while_statement: ($) => prec.right(PREC.CONTROL, seq(
-        field('keyword', $.while_keyword),
-        field('variable', $.expression),
-        optional($.when_clause),
-        field('body', $._loop_body),
-      )
-    ),
+    rules: {
+        source_file: $ => optional(DelimitedSeq(alias($._multi_expression, $.cell), 
+        { allow_empty: true, allow_single: true, delim: '\n' })),
 
 
 
-    new_statement: ($) => prec.left(seq(
-        $.new_keyword,
-        field('type', $.expression),
-        optional($.of_clause),
-        optional($.from_clause)
-      )),
+        symbol: _ => /[a-zA-Z][a-zA-Z0-9']*/,
+
+        line_comment: _ =>  /--[^\n]*/,
+
+        block_comment: _ => /-\*([^*]|\*+[^-])*\*+-/, 
+
+        integer_literal: _ => /[0-9]+(p[0-9]+)?/,
+
+
+        exp_missing: $ => $.exp_missing,
+
+        p_missing: $ => $.p_missing,
+        
+
+        escape_sequence: _ => choice(
+            /\\[abeEfrtv"\\]/,
+            /\\[0-7]{3}/,
+            /\\x[0-9a-fA-F]{2}/,
+            /\\u[0-9a-fA-F]{4}/
+        ),
+
+        _std_string: $ =>
+            seq('"', repeat(choice($.escape_sequence, /\n/, /[^"\\]+/)), '"'),
+            
+
+        _raw_string: _ => seq('///', repeat(choice(/[^/]+/, /\/[^\/]/, /\/\/[^\/]/)), '///'),
+
+        string_literal: ($) => choice($._std_string, $._raw_string),
+
+        boolean_literal: _ => choice('true', 'false'),
+
+        builtin_constant: _ => choice(
+            'null',
+            'infinity',
+            'ii',
+            'pi',
+        ),
+
+        
+        array: ($) => prec.left(56, Parenthesized($._multi_expression, '[')), 
+
+
+        sequence: ($) => prec.left(62, Parenthesized($._multi_expression)), 
+
+
+        list: ($) => prec.left(62, Parenthesized($._multi_expression, '{')), 
     
 
+        angle_bar_list: ($) => prec.left(56, Parenthesized($._multi_expression, '<|')), 
 
 
-    break_statement: ($) => prec.left(PREC.CONTROL, seq(
-      field('keyword', $.break_keyword), 
-      optional(field('body', $.expression)))),
+        binary_expression: $ => {
+            const table = [
+                [prec.left, 18, '<<'],
+                [prec.left, 38, '||'],
+                [prec.left, 42, '|'],
+                [prec.left, 44, '^^'],
+                [prec.left, 46, '&'],
+                [prec.left, PREC.ADD, '++', '+', '-'],
+                [prec.left, PREC.DOT, '·'],
+                [prec.left, PREC.TENSOR, '**', '⊠', '⧢'],
+                [prec.left, PREC.MULT, '%', '//', '/', '*'],
+                [prec.left, PREC.ACCESS, 
+                    '|_', '^', '^**', '^<', '^<=', '^>', '^>=',
+                    '_<', '_<=', '_>', '_>='],
+                [prec.left, 66, '@@', '@@?'],
 
-    continue_statement: ($) => prec.left(PREC.CONTROL, seq(
-      field('keyword', $.continue_keyword), 
-      optional(field('body', $.expression)))),
+                [prec.right, 20, '|-'],
+                [prec.right, 22, '<===', '===>'],
+                [prec.right, 24, '<==>'],
+                [prec.right, 26, '<==', '==>'],
+                [prec.right, 28, 'or', '??'],
+                [prec.right, 30, 'xor'],
+                [prec.right, 32, 'and'],
+                [prec.right, 40, ':'],
+                [prec.right, PREC.MULT, '\\', '\\\\'],
+                [prec.right, PREC.AT, '@'],
+            ];
 
-    return_statement: ($) => prec.left(PREC.CONTROL, seq(
-      field('keyword', $.return_keyword), 
-      optional(field('body', $.expression)))),
-
-    breakpoint_statement: ($) => prec.left(PREC.CONTROL, seq(
-      field('keyword', $.breakpoint_keyword), 
-      optional(field('body', $.expression)))),
-
-    catch_statement: ($) => prec.left(PREC.CONTROL, seq(
-      field('keyword', $.catch_keyword), 
-      field('body', $.expression))),
-
-    shield_statement: ($) => prec.left(PREC.CONTROL, seq(
-      field('keyword', $.shield_keyword), 
-      field('body', $.expression))),
-
-    test_statement: ($) => prec.left(PREC.CONTROL, seq(
-      field('keyword', $.test_keyword), 
-      field('body', $.expression))),
-
-    step_statement: ($) => prec.left(PREC.CONTROL, seq(
-      field('keyword', $.step_keyword), 
-      field('body', $.expression))),
-
-    throw_statement: ($) => prec.left(PREC.CONTROL, seq(
-      field('keyword', $.throw_keyword), 
-      field('body', $.expression))),
-
-    time_statement: ($) => prec.left(PREC.CONTROL, seq(
-        field('keyword', choice(
-          $.time_keyword, 
-          $.timing_keyword, 
-          $.elapsedTime_keyword, 
-          $.elapsedTiming_keyword, 
-          $.profile_keyword)),
-        field('body', $.expression))),
+            return choice(...table.map(
+                ([fn, precedence, ...operators]) => 
+                    fn(precedence, BinOp(Choice(...operators), $.expression, $.expression))));
+        },
 
 
-    try_statement: ($) => prec.left(PREC.CONTROL, seq(
-      $.try_keyword,
-      field('condition', $.expression),
-      $.then_keyword,
-      field('consequence', $.expression),
-      optional(seq(
-        $.else_keyword, 
-        field('alternative', $.expression)))
-    )),
-
-    locality_operator: ($) => prec(PREC.SCOPE, seq(
-      field('keyword', choice(
-        $.global_keyword, 
-        $.local_keyword, 
-        $.symbol_keyword, 
-        $.threadVariable_keyword, 
-        $.threadLocal_keyword)), 
-        
-      field('symbol', alias(choice(
-        ...operatorsSymbols,
-        ...punctuationSymbols,
-        $._named_keyword,
-        $.symbol
-      ), $.resolved_symbol))
-    )),
-
-
-    _primitive_expression: ($) => choice(
-      $.integer,
-      $.floating,
-      $.boolean_literal,
-      $.string_expression,
-      $.builtin_constant,
-      $.symbol,
-      $.parenthesized_expression,
-      $.sequence,
-      $.array,
-      $.angle_bar_list,
-      $.list,
-      $.call_expression,
-    ),
-
-    // _non_prefix_expression: expression without prefix operators at top level
-    // This is used for call_expression RHS to prevent 'i < 40' from being parsed as 'i (< 40)'
-
-      _not_prefix_expression: ($) => choice(
-      $._primitive_expression,
-
-      $.function_closure,
-      $.index_expression,
-      $.member_access,
-      $.range_expression,
-      $.option_assignment,
-      $.assignment_expression,
-      $.option_attachment,
-      $.augmented_assignment_expression,
-      $.method_installation,
-      $.binary_expression,
+        index_expression: ($) => 
+            BinOpLeft(PREC.ACCESS, "_", 
+                $.expression, 
+                $.expression),
 
 
 
-      $.postfix_expression,
-      $.not_expression,
-      $.if_statement,
-      $.for_statement,
-      $.while_statement,
-      $.continue_statement,
-      $.break_statement,
-      $.return_statement,
-      $.try_statement,
-      $.time_statement,
-      $.breakpoint_statement,
-      $.throw_statement,
-      $.catch_statement,
-      $.shield_statement,
-      $.test_statement,
-      $.locality_operator,
-      $.new_statement,
-    ),
+        member_access: ($) => BinOpLeft(PREC.ACCESS, 
+			choice('.', '.?'),
+            $.expression,
+            $.symbol),
 
-    expression: ($) => choice(
-      $._not_prefix_expression,
-      $.prefix_expression,
-    ),
+		compare_expression: ($) => BinOpRight(PREC.COMPARE, 
+			choice('==', '!=', '===', '=!=', '<', '>','<=', '>=', '?'),
+			$.expression,
+			$.expression),
 
-  },
+        hash_expression: ($) => BinOpLeft(PREC.ACCESS, 
+			choice('#', '#?'),
+            $.expression,
+            $.expression
+        ),
 
-  // Treat all whitespace and comments as insignificant
 
+        function_closure: ($) => 
+            BinOpRight(PREC.ASSIGN, '->', 
+                choice($.symbol, $.sequence, $.list),
+                $.expression),
+
+
+        option_assignment: ($) => 
+            BinOpRight(PREC.ASSIGN, '=>', 
+                $.expression, 
+                $.expression),
+
+        assignment_expression: ($) => 
+            BinOpRight(PREC.ASSIGN, choice('=', ':=', '<-'), 
+                choice(
+					$.symbol, 
+					$.sequence, 
+					$.array, 
+					$.list, 
+					$.angle_bar_list, 
+					$.member_access, 
+					$.hash_expression, 
+					$.index_expression),
+                $.expression),
+
+        method_installation: ($) => 
+            BinOpRight(PREC.ASSIGN, choice('=', ':='), 
+                choice(
+                    $.index_expression, 
+                    $.call_expression, 
+					$.augmented_assignment_expression,
+                    $.range_expression, 
+                    $.binary_expression, 
+                    $.prefix_expression, 
+					$.new_statement,
+                    $.postfix_expression),
+                $.expression),
+
+        option_attachment: ($) => 
+            BinOpRight(PREC.ASSIGN, '>>', 
+                $.expression, 
+                $.expression),
+
+        augmented_assignment_expression: ($) => 
+            BinOpRight(PREC.ASSIGN, choice($._range_eq, $._range_lt_eq, ...augmentedAssignmentOperators), 
+                $.expression, 
+                $.expression),
+
+
+        range_expression: ($) => 
+            BinOpLeft(PREC.RANGE, choice($._range, $._range_lt), 
+                $.expression, 
+                $.expression),
+
+
+        call_expression: ($) => 
+            BinOpRight(PREC.CALL, choice($._space, 'SPACE'), 
+                $.expression, 
+                $.expression),
+
+        prefix_expression: $ => {
+            const table = [
+                [18, '<<'],
+                [20, '|-'],
+                [22, '<==='],
+                [26, '<=='],
+				[28, '??'],
+                [34, '<', '<=', '>', '>=', '?'],
+                [PREC.ADD, '+', '-'],
+                [PREC.MULT, '*'],
+                [PREC.NOT, 'not'],
+            ];
+            return choice(...table.map(
+                ([precedence, ...operator]) => 
+                    prefixOp(precedence, Choice(...operator), $.expression)));
+        },
+
+
+		length_prefix_expression: $ => prefixOp(PREC.CALL, '#', $.expression),
+
+
+
+        postfix_expression: $ => {
+            const table = [
+                [64, '(*)'],
+                [68, choice('^*', '_*', '~', '^~', '_~')],
+                [72, choice('!', '^!', '_!')]
+
+            ];
+            return choice(...table.map(
+                ([precedence, operator]) => 
+                    postfixOp(precedence, operator, $.expression)));
+        },
+
+
+        from_clause: ($) => seq(
+            'from',
+            field('body', $.expression)),
+
+        to_clause: ($) => seq(
+            'to',
+            field('body', $.expression)),
+
+        when_clause: ($) => seq(
+            'when',
+            field('body', $.expression)),
+
+        list_clause: ($) => seq(
+            'list',
+            field('body', $.expression)),
+
+
+        do_clause: ($) => prec(PREC.CONTROL, seq(
+            'do',
+            field('body', $.expression))),
+
+        in_clause: ($) => prec(PREC.ITER, seq(
+            'in',
+            field('body', $.expression))),
+
+        of_clause: ($) => prec(PREC.ITER, seq(
+            'of',
+            field('body', $.expression))),
+
+        _loop_body: ($) => choice(
+            seq($.list_clause, optional($.do_clause)),
+            $.do_clause),
+
+
+
+        if_statement: ($) => prec.right(PREC.CONTROL, seq(
+            'if',
+            field('condition', $.expression),
+            'then',
+            field('consequence', $.expression),
+            optional(seq(
+                'else', 
+                field('alternative', $.expression)))
+        )),
+
+
+        for_statement: $ => prec.right(PREC.CONTROL, seq(
+            'for',
+            field('variable', $.symbol),
+
+            choice(
+                seq(optional($.from_clause), 
+                    optional($.to_clause)),
+                $.in_clause),
+
+            optional($.when_clause),
+            $._loop_body,
+        )
+        ),
+
+
+        while_statement: ($) => prec.right(PREC.CONTROL, seq(
+            'while',
+            $.expression,
+            optional($.when_clause),
+            $._loop_body,
+        )),
+
+
+
+        new_statement: ($) => prec.left(seq(
+            'new',
+            field('type', $.expression),
+            optional($.of_clause),
+            optional($.from_clause)
+        )),
+
+
+
+
+        break_statement: ($) => prec.left(PREC.CONTROL, seq(
+            'break', 
+            optional($.expression))),
+
+        continue_statement: ($) => prec.left(PREC.CONTROL, seq(
+            'continue', 
+            optional($.expression))),
+
+        return_statement: ($) => prec.left(PREC.CONTROL, seq(
+            'return', 
+            optional($.expression))),
+
+        breakpoint_statement: ($) => prec.left(PREC.CONTROL, seq(
+            'breakpoint', 
+            optional($.expression))),
+
+        catch_statement: ($) => prec.left(PREC.CONTROL, seq(
+            'catch', 
+            $.expression)),
+
+        shield_statement: ($) => prec.left(PREC.CONTROL, seq(
+            'shield', 
+            $.expression)),
+
+        test_statement: ($) => prec.left(PREC.CONTROL, seq(
+            'TEST', 
+            $.expression)),
+
+        step_statement: ($) => prec.left(PREC.CONTROL, seq(
+            'step', 
+            $.expression)),
+
+        throw_statement: ($) => prec.left(PREC.CONTROL, seq(
+            'throw', 
+            $.expression)),
+
+        time_statement: ($) => prec.left(PREC.CONTROL, seq(
+            choice(
+                'time', 
+                'timing', 
+                'elapsedTime', 
+                'elapsedTiming', 
+                'profile'),
+            $.expression)),
+
+
+        try_statement: ($) => prec.right(PREC.CONTROL, seq(
+            'try',
+            field('condition', $.expression),
+            'then',
+            field('consequence', $.expression),
+            optional(seq(
+                'else', 
+                field('alternative', $.expression)))
+        )),
+
+        locality_operator: ($) => reserved('locality_op', prec(PREC.SCOPE, seq(
+            choice(
+                'global', 
+                'local', 
+                'symbol', 
+                'threadVariable', 
+                'threadLocal'), 
+
+            field('symbol', alias(choice(
+                ...operatorsSymbols,
+                ...punctuationSymbols,
+                $.symbol
+            ), $.resolved_symbol))
+        ))),
+
+		
+
+
+
+
+        _multi_expression: ($) => seq(
+            DelimitedSeq(
+                DelimitedSeq($.expression, { delim: ',' }),
+                { delim: ';', allow_empty: false}),
+            optional(";")),
+
+       
+        expression: ($) => choice(
+            $.integer_literal,
+            $.float_literal,      
+            $.boolean_literal,
+            $.string_literal,
+            $.builtin_constant,
+            $.symbol,
+            $.sequence,
+            $.array,
+            $.angle_bar_list,
+            $.list,
+
+            $.prefix_expression,
+			$.length_prefix_expression,
+
+			$.call_expression,
+			$.compare_expression,
+            $.assignment_expression,
+            $.function_closure,
+            $.index_expression,
+            $.member_access,       
+            $.hash_expression,     
+            $.range_expression,
+            $.option_assignment,
+            $.option_attachment,
+            $.augmented_assignment_expression,
+            $.method_installation,
+            $.binary_expression,
+
+            $.postfix_expression,
+
+            $.if_statement,
+            $.for_statement,
+            $.while_statement,
+            $.continue_statement,
+            $.break_statement,
+            $.return_statement,
+            $.try_statement,
+            $.time_statement,
+            $.breakpoint_statement,
+            $.throw_statement,
+            $.catch_statement,
+            $.shield_statement,
+            $.test_statement,
+            $.locality_operator,
+            $.new_statement,
+        ),
+
+
+
+    },  // End of rules
 });
 
-
-
-function Parenthesized(rule, fieldName='content') {
-  if (fieldName == '') {
-    return seq( '(', rule, ')'  );
-  }
-  return seq( '(', field(fieldName, rule), ')'  );
+function bracket_right(left) {
+    switch (left) {
+        case '(': return ')';
+        case '{': return '}';
+        case '[': return ']';
+        case '<|': return '|>';
+    }
+    return left;
 }
 
-function SequenceOf(rule, fieldName='component') {
-  return seq('(', field(fieldName, rule), repeat(seq(',', field(fieldName,rule))), ')');
-};
+function Parenthesized(rule, bracket) {
+    bracket = bracket || '(';
+    return seq(bracket, optional(rule), bracket_right(bracket));
+}
+
+function DelimitedSeq(rule, options) {
+    options = options || {};
+    const allow_empty = options.allow_empty !== undefined ? options.allow_empty : true;
+    const allow_single = options.allow_single !== undefined ? options.allow_single : true;
+    const field_name = options.field_name !== undefined ? options.field_name : '';
+    const delim = options.delim !== undefined ? options.delim : ',';
+
+    if (field_name !== '') 
+        rule = field(field_name, rule);
+    const rule_opt = allow_empty ? optional(rule) : rule;
+    const non_single = seq(repeat1(seq(rule_opt, delim)), rule_opt); 
+
+    return allow_single ? choice(non_single, rule) : non_single;
+}
+
+
+function postfixOp(p, operator, operandRule) {
+    return prec.left(p, seq(
+        field('operand', operandRule),
+        field('operator', operator)
+    ));
+}
+
+
+function prefixOp(p, operator, operandRule) {
+    return prec.right(p, seq(
+        field('operator', operator),
+        field('operand', operandRule)
+    ));
+}
+
+function BinOp(operator, leftRule, rightRule) {
+        return seq(
+            field('left', leftRule),
+            field('operator', operator),
+            field('right', rightRule));
+    };
 
 function BinOpRight(p, operator, leftRule, rightRule) {
-  return prec.right(p, seq(
-    field('left', leftRule),
-    field('operator', operator),
-    field('right', rightRule)
-  ));
+    return prec.right(p, BinOp(operator, leftRule, rightRule));
 }
 
 
 function BinOpLeft(p, operator, leftRule, rightRule) {
-  return prec.left(p, seq(
-    field('left', leftRule),
-    field('operator', operator),
-    field('right', rightRule)
-  ));
+    return prec.left(p, BinOp(operator, leftRule, rightRule));
 }

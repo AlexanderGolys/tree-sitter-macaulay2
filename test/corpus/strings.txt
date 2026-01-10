@@ -5,7 +5,7 @@
 ---
 (source_file
   (cell
-    (string_expression)))
+    (string_literal)))
 ==================
 2. String with escaped quote [strings]
 ==================
@@ -13,7 +13,7 @@
 ---
 (source_file
   (cell
-    (string_expression
+    (string_literal
       (escape_sequence))))
 ==================
 3. String with escaped backslash [strings]
@@ -22,61 +22,53 @@
 ---
 (source_file
   (cell
-    (string_expression
+    (string_literal
       (escape_sequence))))
+
 ==================
-4. String with newline escape [strings]
+(4) String with mixed content [strings]
 ==================
-"\n"
+"abc\"def\aghi"
 ---
 (source_file
   (cell
-    (string_expression
-      (escape_sequence))))
-==================
-5. String with mixed content [strings]
-==================
-"abc\"def\nghi"
----
-(source_file
-  (cell
-    (string_expression
+    (string_literal
       (escape_sequence)
       (escape_sequence))))
 ==================
-6. Empty raw string [strings]
+(5) Empty raw string [strings]
 ==================
 //////
 ---
 (source_file
   (cell
-    (string_expression)))
+    (string_literal)))
 ==================
-7. Raw string with content [strings]
+(6) Raw string with content [strings]
 ==================
 ///abc///
 ---
 (source_file
   (cell
-    (string_expression)))
+    (string_literal)))
 ==================
-8. Raw string with slashes [strings]
+(7) Raw string with slashes [strings]
 ==================
 ///a/b//c///
 ---
 (source_file
   (cell
-    (string_expression)))
+    (string_literal)))
 ==================
-9. Raw string with quotes [strings]
+(8) Raw string with quotes [strings]
 ==================
 ///"abc"///
 ---
 (source_file
   (cell
-    (string_expression)))
+    (string_literal)))
 ==================
-10. Raw string with newlines [strings]
+(9) Raw string with newlines [strings]
 ==================
 ///
 abc
@@ -84,4 +76,4 @@ abc
 ---
 (source_file
   (cell
-    (string_expression)))
+    (string_literal)))

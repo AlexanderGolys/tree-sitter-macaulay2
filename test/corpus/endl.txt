@@ -1,0 +1,115 @@
+==================
+(1) Two expressions
+==================
+2
+2
+---
+(source_file
+	(cell
+		(integer_literal))
+	(cell
+		(integer_literal)))
+==================
+(1) Broken expression
+==================
+2 + 
+2
+---
+(source_file
+	(cell
+		(binary_expression
+			left: (integer_literal)
+			right: (integer_literal))))
+==================
+(2) Statement after operator (no newline break)
+==================
+2 +
+2
+---
+(source_file
+	(cell
+		(binary_expression
+			left: (integer_literal)
+			right: (integer_literal))))
+==================
+(3) Statement after operator (with comment, still no newline break)
+==================
+2 + -- comment
+2
+---
+(source_file
+	(cell
+		(binary_expression
+			left: (integer_literal)
+			(line_comment)
+			right: (integer_literal))))
+==================
+(4) Statement break after complete binary expression
+==================
+2 + 3
+2
+---
+(source_file
+	(cell
+		(binary_expression
+			left: (integer_literal)
+			right: (integer_literal)))
+	(cell
+		(integer_literal)))
+==================
+(5) Statement break after closing paren
+==================
+(2 + 3)
+2
+---
+(source_file
+	(cell
+		(sequence
+			(binary_expression
+				left: (integer_literal)
+				right: (integer_literal))))
+	(cell
+		(integer_literal)))
+==================
+(6) Statement break after assignment
+==================
+a = 5
+b = 7
+---
+(source_file
+	(cell
+		(assignment_expression
+			left: (symbol)
+			right: (integer_literal)))
+	(cell
+		(assignment_expression
+			left: (symbol)
+			right: (integer_literal))))
+==================
+(7) No break for continued parentheses
+==================
+f(
+  2
+  + 3
+)
+---
+(source_file
+	(cell
+		(call_expression
+			left: (symbol)
+			right: (sequence
+				(binary_expression
+					left: (integer_literal)
+					right: (integer_literal))))))
+==================
+(8) Newline ends statement before binary op (error)
+==================
+2
++ 3
+---
+(source_file
+	(cell
+		(integer_literal))
+	(cell
+		(prefix_expression
+			operand: (integer_literal))))

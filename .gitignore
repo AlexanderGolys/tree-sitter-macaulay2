@@ -1,6 +1,6 @@
 *.log
 .DS_Store
-**.code-workspace
+*.code-workspace
 node_modules/
 .vscode/
 *.obj
@@ -17,3 +17,7 @@ node_modules/
 dist/
 *.egg-info
 *.whl
+test_output.txt
+.github/
+target/
+build/

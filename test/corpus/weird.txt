@@ -8,9 +8,9 @@ f(3)^2
     (call_expression
       left: (symbol)
       right: (binary_expression
-        left: (parenthesized_expression
-          expression: (integer))
-        right: (integer)))))
+        left: (sequence
+          (integer_literal))
+        right: (integer_literal)))))
 
 ==================
 (2) true + + not true [weird]
@@ -22,7 +22,7 @@ x + + not + x
     (binary_expression
       left: (symbol)
       right: (prefix_expression
-        operand: (not_expression
+        operand: (prefix_expression
           operand: (prefix_expression
             operand: (symbol)))))))
 ==================
@@ -34,7 +34,77 @@ x not + + x
   (cell
     (call_expression
       left: (symbol)
-      right: (not_expression
+      right: (prefix_expression
         operand: (prefix_expression
           operand: (prefix_expression
             operand: (symbol)))))))
+
+==================
+(4) 2..2 is range(int, int) [weird]
+==================
+2..2
+---
+(source_file
+  (cell
+    (range_expression
+      left: (integer_literal)
+      right: (integer_literal))))
+
+==================
+(5) 2...2 is range(int, leading_dot_float) [weird]
+==================
+2...2
+---
+(source_file
+  (cell
+    (range_expression
+      left: (integer_literal)
+      right: (float_literal))))
+
+==================
+(6) x_2.e2 is member_access(index_expression, symbol) [weird]
+==================
+x_2.e2
+---
+(source_file
+  (cell
+    (index_expression
+      left: (symbol)
+      right: (float_literal))))
+
+==================
+(7) x_2! is index of postfix [weird]
+==================
+x_2!
+---
+(source_file
+  (cell
+    (index_expression
+      left: (symbol)
+      right: (postfix_expression
+        operand: (integer_literal)))))
+
+==================
+(8) 2....2 gives syntax_error [weird]
+:error
+==================
+2....2
+
+==================
+(9) x_2.e : error parsing float
+:error 
+==================
+x_2.e
+
+==================
+(9) x_2.d : call 
+==================
+x_2.d
+---
+(source_file
+  (cell
+    (call_expression
+      left: (index_expression
+        left: (symbol)
+        right: (float_literal))
+      right: (symbol))))

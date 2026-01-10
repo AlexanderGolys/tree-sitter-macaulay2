@@ -10,7 +10,7 @@ a = b
         right: (symbol))))
 ==================
 2. Closure [operators]
-==================  
+==================
 a -> b
 ---
 (source_file
@@ -26,9 +26,9 @@ a -> b
 (source_file
   (cell
     (function_closure
-      left: (parenthesized_expression
-        content: (symbol))
-      right: (integer))))
+    left: (sequence
+        (symbol))
+    right: (integer_literal))))
 ==================
 4. Closure 3 variables [operators]
 ==================
@@ -38,11 +38,11 @@ a -> b
   (cell
     (function_closure
       left: (sequence
-        component: (symbol)
-        component: (symbol)
-        component: (symbol))
+        (symbol)
+        (symbol)
+        (symbol))
       right: (sequence
-        component: (symbol)
-        component: (symbol)
-        component: (symbol)
-        component: (symbol)))))
+        (symbol)
+        (symbol)
+        (symbol)
+        (symbol)))))

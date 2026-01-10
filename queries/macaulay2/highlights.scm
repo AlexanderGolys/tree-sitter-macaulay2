@@ -1,27 +1,50 @@
 ; Comments
-(comment) @comment
+(line_comment) @comment
+(block_comment) @comment
 
 ; Literals
-(integer) @number
-(floating) @number.float
-(string_expression) @string
+(integer_literal) @number
+(float_literal) @number.float
+(exp_missing) @comment.error
+(p_missing) @comment.error
+(string_literal) @string
 (escape_sequence) @string.escape
 (boolean_literal) @boolean
 (symbol) @variable
-(operator_keyword) @operator
 
 (locality_operator
-  keyword: _ @keyword
-  name: (symbol) @variable)
+  symbol: (resolved_symbol) @variable)
 
 (builtin_constant) @constant.builtin
 
+((string_literal) @string.special.url
+  (#match? @string.special.url "http[s]?://.*"))
 
+((string_literal) @string.special.url
+  (#match? @string.special.url "www\..*"))
+
+((call_expression
+  left: (symbol) @function.builtin
+  right: [(string_literal) @string.special.url
+          (sequence . (string_literal) @string.special.url)])
+  (#match? @function.builtin "splitWWW|getWWW|urlEncode"))
+
+((call_expression
+  left: (symbol) @function.builtin
+  right: [(string_literal) @string.regexp
+          (sequence . (string_literal) @string.regexp)])
+  (#match? @function.builtin "match|regex|select|replace"))
+
+((call_expression
+  left: (symbol) @function.builtin
+  right: (sequence 
+           (string_literal) @string.regexp
+           (_)+))
+  (#match? @function.builtin "separate"))
 
 ; Operators
-(binary_expression operator: _ @operator)
-(prefix_expression operator: _ @operator)
-(postfix_expression operator: _ @operator)
+(_ operator: _ @operator)
+
 
 
 
@@ -39,68 +62,132 @@
 "," @punctuation.delimiter
 ";" @punctuation.delimiter
 
-(if_keyword) @keyword.conditional
-(else_keyword) @keyword.conditional
-(then_keyword) @keyword
-(for_keyword) @keyword.repeat
-(while_keyword) @keyword.repeat
-(return_keyword) @keyword.return
-(break_keyword) @keyword.return
-(continue_keyword) @keyword.return
-(new_keyword) @keyword
-(in_keyword) @keyword
-(of_keyword) @keyword
-(from_keyword) @keyword
-(to_keyword) @keyword
-(list_keyword) @keyword
-(do_keyword) @keyword
-(when_keyword) @keyword.conditional
-(try_keyword) @keyword.exception
-(catch_keyword) @keyword.exception
-(throw_keyword) @keyword.exception
-(global_keyword) @keyword
-(local_keyword) @keyword
-(symbol_keyword) @keyword
-(threadVariable_keyword) @keyword
-(threadLocal_keyword) @keyword
-(time_keyword) @keyword.debug
-(timing_keyword) @keyword.debug
-(elapsedTime_keyword) @keyword.debug
-(elapsedTiming_keyword) @keyword.debug
-(profile_keyword) @keyword.debug
-(shield_keyword) @keyword.exception
-(test_keyword) @keyword.debug
-(breakpoint_keyword) @keyword.debug
+"if" @keyword.conditional
+"else" @keyword.conditional
+"then" @keyword
+"for" @keyword.repeat
+"while" @keyword.repeat
+"return" @keyword.return
+"break" @keyword.return
+"continue" @keyword.return
+"new" @keyword
+"in" @keyword.repeat
+"of" @keyword
+"from" @keyword.repeat
+"to" @keyword.repeat
+"list" @keyword
+"do" @keyword
+"when" @keyword.conditional
+"try" @keyword.exception
+"catch" @keyword.exception
+"throw" @keyword.exception
+"global" @keyword.modifier
+"local" @keyword.modifier
+"symbol" @keyword.modifier
+"threadVariable" @keyword.modifier
+"threadLocal" @keyword.modifier
+"SPACE" @keyword.operator
+"time" @keyword.debug
+"timing" @keyword.debug
+"elapsedTime" @keyword.debug
+"elapsedTiming" @keyword.debug
+"profile" @keyword.debug
+"shield" @keyword.exception
+"TEST" @keyword.debug
+"breakpoint" @keyword.debug
+"and" @keyword.operator
+"or" @keyword.operator
+"xor" @keyword.operator
+"not" @keyword.operator
 
 
 
 (call_expression
-  left: (symbol) @function.call
-)
+  left: (symbol) @function.call)
+
+(call_expression
+  left: (index_expression
+   left: (symbol) @function.call))
+
+(call_expression
+  left: (hash_expression
+   right: (symbol) @function.method.call))
+
+(call_expression
+  left: (member_access
+   right: (symbol) @function.method.call))
+
+(call_expression
+  right: (sequence
+           (option_assignment) @variable.member))
+
+((call_expression
+  left: (symbol) @keyword.exception)
+ (#eq? @keyword.exception "error"))
 
 (assignment_expression
   left: (symbol) @function
   right: (function_closure)
 )
 
-(function_closure
-  left: (symbol) @variable.parameter
+(assignment_expression
+  left: (member_access
+   right: (symbol) @function.method)
+  right: (function_closure)
 )
 
-(index_expression: 
+(assignment_expression
+  left: (hash_expression
+   right: (symbol) @function.method)
+  right: (function_closure)
+)
+
+(augmented_assignment_expression
+  left: (symbol) @function
+  right: (function_closure))
+
+
+
+(function_closure
+  left: (symbol) @variable.parameter)
+
+(function_closure
+  left: (sequence
+    (symbol) @variable.parameter))
+
+(index_expression
   left: (symbol) @variable
   right: [
-    (sequence
-      component: (integer)) @index
-    (sequence
-      component: (symbol)) @index
-    (list
-      component: (integer)) @index
-    (list
-      component: (symbol)) @index
+    (sequence) @index
+    (list) @index
     (symbol) @index
-    (integer) @index
-]
+    (integer_literal) @index
+  ]
 ) @variable.indexed
 
+(hash_expression
+  left: (symbol) @variable
+  right: [
+    (sequence) @index
+    (list) @index
+    (symbol) @index
+    (integer_literal) @index
+  ]
+) @variable.indexed
 
+(option_assignment
+  left: (symbol) @property)
+
+(method_installation
+  left: (_) @constructor)
+
+(assignment_expression
+  right: (option_attachment
+          left: (_) @property
+          right: (function_closure
+                   left: (symbol) @variable.member)))
+
+(new_statement
+  type: (symbol) @type)
+
+(of)

@@ -1,88 +1,144 @@
 ==================
-1. Float with dot and digits [floats]
+(1) Float with dot and digits [floats]
 ==================
 1.23
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
 ==================
-2. Float starting with dot [floats]
+(2) Float with dot and digits scientific [floats]
 ==================
-.23
+1.23e0
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
 ==================
-3. Float ending with dot (if supported) [floats]
+(3) Float with dot and digits scientific [floats]
+==================
+1.23e-0
+---
+(source_file
+  (cell
+    (float_literal)))
+
+==================
+(3) Float with dot and digits and prec, scientific [floats]
+==================
+1.23p01e-0
+---
+(source_file
+  (cell
+    (float_literal)))
+
+==================
+(4) Float with dot and digits and prec [floats]
+==================
+1.23p0
+---
+(source_file
+  (cell
+    (float_literal)))
+
+==================
+(5) Float with trailing dot [floats]
 ==================
 1.
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
 ==================
-4. Float with exponent [floats]
+(5) Float with trailing dot, scientific [floats]
 ==================
-1.23e-5
+1.e-0
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
 ==================
-5. Float with precision [floats]
+(6) Float with trailing dot, prec, [floats]
 ==================
-1.23p50
+1.p111
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
 ==================
-6. Float with precision and exponent [floats]
+(7) Float with trailing dot, prec, scientific [floats]
 ==================
-1.23p50e-5
+1.p111e-11
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
 ==================
-7. Float starting with dot and precision [floats]
+(7) Float starting with dot [floats]
 ==================
-.3p001e-0
+.1
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
 ==================
-8. Float with p suffix only [floats]
+(8) Float starting with dot, prec[floats]
 ==================
-1p5
+.1p1
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
 ==================
-9. Float with dot and p suffix [floats]
+(9) Float starting with dot, scientific [floats]
 ==================
-1.p5
+.1e1
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
 ==================
-10. Float with e suffix only (no dot) [floats]
+(10) Float no dot, scientific [floats]
 ==================
-1e5
+1e1
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
+
 ==================
-11. Float with E suffix [floats]
+(11) Float no dot, prec, scientific [floats]
 ==================
-1E-10
+1p1e1
 ---
 (source_file
   (cell
-    (floating)))
+    (float_literal)))
+
+==================
+(12) Int [floats]
+==================
+1
+---
+(source_file
+  (cell
+    (integer_literal)))
+
+==================
+(13) Int, prec [floats]
+==================
+1p1
+---
+(source_file
+  (cell
+    (integer_literal)))

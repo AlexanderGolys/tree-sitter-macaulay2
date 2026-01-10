@@ -190,4 +190,3 @@
 (new_statement
   type: (symbol) @type)
 
-(of)

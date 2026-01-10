@@ -19,7 +19,7 @@
     (symbol) @local.definition.parameter))
 
 (for_statement 
-  variable: (symbol) @local.definition.var)
+  variable: (symbol) @local.definition)
 
 (assignment_expression
   left: (symbol) @local.definition)

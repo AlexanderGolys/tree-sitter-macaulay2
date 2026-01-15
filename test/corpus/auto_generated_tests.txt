@@ -557,3 +557,231 @@ f := x -> y
         parameters: (symbol)
         body: (symbol)))))
 
+==================
+if x==4 then x=5
+==================
+if x==4 then x=5
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (binary_expression
+        left: (symbol)
+        right: (integer_literal))
+      then: (assignment_expression
+        left: (symbol)
+        right: (integer_literal)))))
+
+==================
+if a > 0 then b else c
+==================
+if a > 0 then b else c
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (binary_expression
+        left: (symbol)
+        right: (integer_literal))
+      then: (symbol)
+      else: (symbol))))
+
+==================
+for i from 0 to 4 do doSomething i
+==================
+for i from 0 to 4 do doSomething i
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (from_clause
+        (integer_literal))
+      (to_clause
+        (integer_literal))
+      (do_clause
+        (binary_expression
+          left: (symbol)
+          operator: (space)
+          right: (symbol))))))
+
+==================
+for i in 1..5 when i>2 do print i
+==================
+for i in 1..5 when i>2 do print i
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (in_clause
+        (binary_expression
+          left: (integer_literal)
+          right: (integer_literal)))
+      (when_clause
+        (binary_expression
+          left: (symbol)
+          right: (integer_literal)))
+      (do_clause
+        (binary_expression
+          left: (symbol)
+          operator: (space)
+          right: (symbol))))))
+
+==================
+while x < 10 do x = x + 1
+==================
+while x < 10 do x = x + 1
+---
+(source_file
+  (cell
+    (while_statement
+      (binary_expression
+        left: (symbol)
+        right: (integer_literal))
+      (do_clause
+        (assignment_expression
+          left: (symbol)
+          right: (binary_expression
+            left: (symbol)
+            right: (integer_literal)))))))
+
+==================
+break
+==================
+break
+---
+(source_file
+  (cell
+    (break_statement)))
+
+==================
+continue
+==================
+continue
+---
+(source_file
+  (cell
+    (continue_statement)))
+
+==================
+return x
+==================
+return x
+---
+(source_file
+  (cell
+    (return_statement
+      (symbol))))
+
+==================
+try a then b else c
+==================
+try a then b else c
+---
+(source_file
+  (cell
+    (try_statement
+      condition: (symbol)
+      consequence: (symbol)
+      alternative: (symbol))))
+
+==================
+if a then if b then x else y
+==================
+if a then if b then x else y
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (symbol)
+      then: (if_statement
+        condition: (symbol)
+        then: (symbol)
+        else: (symbol)))))
+
+==================
+if a then x else if b then y else z
+==================
+if a then x else if b then y else z
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (symbol)
+      then: (symbol)
+      else: (if_statement
+        condition: (symbol)
+        then: (symbol)
+        else: (symbol)))))
+
+==================
+while a do if b then break
+==================
+while a do if b then break
+---
+(source_file
+  (cell
+    (while_statement
+      (symbol)
+      (do_clause
+        (if_statement
+          condition: (symbol)
+          then: (break_statement))))))
+
+==================
+for i in L do if i > 0 then return i else continue
+==================
+for i in L do if i > 0 then return i else continue
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (in_clause
+        (symbol))
+      (do_clause
+        (if_statement
+          condition: (binary_expression
+            left: (symbol)
+            right: (integer_literal))
+          then: (return_statement
+            (symbol))
+          else: (continue_statement))))))
+
+==================
+for i in a list for j in b do print x
+==================
+for i in a list for j in b do print x
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (in_clause
+        (symbol))
+      (list_clause
+        (for_statement
+          variable: (symbol)
+          (in_clause
+            (symbol))
+          (do_clause
+            (binary_expression
+              left: (symbol)
+              operator: (space)
+              right: (symbol))))))))
+
+==================
+if try x then y else z then 1
+==================
+if try x then y else z then 1
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (try_statement
+        condition: (symbol)
+        consequence: (symbol)
+        alternative: (symbol))
+      then: (integer_literal))))
+

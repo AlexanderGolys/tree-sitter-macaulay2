@@ -25,7 +25,7 @@ s = new Type of Array from {a, b,c};
 showStructure(List,Sequence,Array,  Container,MutableList,Bag,BasicList)
 1..5, x_1..x_5, a..e, y .. z
 A = {3 .. 6, 9, 3:12, {,,{a,b,,c}, , {d , {e,  f}},}}
-A = { 1 , 2, new  from { 1 => 10,  2 => 20 }}
+A = { 1 , 2, new Type from { 1 => 10,  2 => 20 }}
 describe (C = tensor(A, B, DegreeRank => 1, Degrees => {5:1}))
 tensor(ZZ^2, ZZ^3, ZZ^4)
 for i from 1 to 5 when i^2 < 15 list i^2 do print i

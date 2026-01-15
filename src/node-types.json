@@ -909,6 +909,16 @@
     "type": "new_statement",
     "named": true,
     "fields": {
+      "parent_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
       "type": {
         "multiple": false,
         "required": true,
@@ -921,30 +931,11 @@
       }
     },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "types": [
         {
           "type": "from_clause",
-          "named": true
-        },
-        {
-          "type": "of_clause",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "of_clause",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "expression",
           "named": true
         }
       ]

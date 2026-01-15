@@ -1,23 +1,3 @@
-const PREC = {
-    SEMICOLON: 8,
-    COMMA: 10,
-    CONTROL: 12,
-    ASSIGN: 13,
-    ITER: 16,
-	PRINT: 18,
-    NOT: 34,
-    COMPARE: 36,
-    RANGE: 48,
-    ADD: 50, 
-    DOT: 52, 
-    TENSOR: 54, 
-    MULT: 58,
-    AT: 60,
-    ACCESS: 70,
-    POWER: 70,
-    CALL: 61,
-    SCOPE: 74,
-}
 
 // Range assignment operators ..= and ..<= not included, as they need to be consumed before float literals
 const augmentedAssignmentOperators = [
@@ -28,59 +8,69 @@ const augmentedAssignmentOperators = [
 ]; 
 
 const assignmentOperators = [
-    {symbols: ['=', ':=', ...augmentedAssignmentOperators], precedence: 13, assoc: prec.right},
+    {precedence: 13, assoc: prec.right, symbols: ['=', ':=', ...augmentedAssignmentOperators]},
 ];
 
 const optionOperators = [
-    {symbols: ['=>', '>>', '<-'], precedence: 13, assoc: prec.right},
+    {precedence: 13, assoc: prec.right, symbols: ['=>', '>>', '<-']},
 ];
 
 const binaryOperators = [
-	{symbols: ['<<'], precedence: 18, assoc: prec.left},
-	{symbols: ['|-'], precedence: 19, assoc: prec.right},
-	{symbols: ['<===', '===>'], precedence: 21, assoc: prec.right},
-	{symbols: ['<==>'], precedence: 23, assoc: prec.right},
-	{symbols: ['<==', '==>'], precedence: 25, assoc: prec.right},
-	{symbols: ['or', '??'], precedence: 27, assoc: prec.right},
-	{symbols: ['xor'], precedence: 29, assoc: prec.right},
-	{symbols: ['and'], precedence: 31, assoc: prec.right},
-	{symbols: ['==', '!=', '===', '=!=', '<', '>','<=', '>=', '?'], precedence: 35, assoc: prec.right},
-	{symbols: ['||'], precedence: 38, assoc: prec.left},
-	{symbols: [':'], precedence: 39, assoc: prec.right},
-	{symbols: ['|'], precedence: 42, assoc: prec.left},
-	{symbols: ['^^'], precedence: 44, assoc: prec.left},
-	{symbols: ['&'], precedence: 46, assoc: prec.left},
-	{symbols: ['++', '+', '-'], precedence: 50, assoc: prec.left},
-	{symbols: ['·'], precedence: 52, assoc: prec.left},
-	{symbols: ['**', '⊠', '⧢'], precedence: 54, assoc: prec.left},
-	{symbols: ['\\', '\\\\'], precedence: 57, assoc: prec.right},
-	{symbols: ['%', '//', '/', '*'], precedence: 58, assoc: prec.left},
-	{symbols: ['@'], precedence: 59, assoc: prec.right},
-	{symbols: ['@@', '@@?'], precedence: 66, assoc: prec.right},
-	{symbols: ['|_', '^', '^**', '^<', '^<=', '^>', '^>=', '_<', '_<=', '_>', '_>=', '_', '#', '#?'], precedence: 70, assoc: prec.left},
+	{precedence: 18, assoc: prec.left,  symbols: ['<<']},
+	{precedence: 19, assoc: prec.right, symbols: ['|-']},
+	{precedence: 21, assoc: prec.right, symbols: ['<===', '===>']},
+	{precedence: 23, assoc: prec.right, symbols: ['<==>']},
+	{precedence: 25, assoc: prec.right, symbols: ['<==', '==>']},
+	{precedence: 27, assoc: prec.right, symbols: ['or', '??']},
+	{precedence: 29, assoc: prec.right, symbols: ['xor']},
+	{precedence: 31, assoc: prec.right, symbols: ['and']},
+	{precedence: 35, assoc: prec.right, symbols: ['==', '!=', '===', '=!=', '<', '>','<=', '>=', '?']},
+	{precedence: 38, assoc: prec.left,  symbols: ['||']},
+	{precedence: 39, assoc: prec.right, symbols: [':']},
+	{precedence: 42, assoc: prec.left,  symbols: ['|']},
+	{precedence: 44, assoc: prec.left,  symbols: ['^^']},
+	{precedence: 46, assoc: prec.left,  symbols: ['&']},
+	{precedence: 50, assoc: prec.left,  symbols: ['++', '+', '-']},
+	{precedence: 52, assoc: prec.left,  symbols: ['·']},
+	{precedence: 54, assoc: prec.left,  symbols: ['**', '⊠', '⧢']},
+	{precedence: 57, assoc: prec.right, symbols: ['\\', '\\\\']},
+	{precedence: 58, assoc: prec.left,  symbols: ['%', '//', '/', '*']},
+	{precedence: 59, assoc: prec.right, symbols: ['@']},
+	{precedence: 66, assoc: prec.right, symbols: ['@@', '@@?']},
+	{precedence: 70, assoc: prec.left,  symbols: ['|_', '^', '^**', '^<', '^<=', '^>', '^>=', '_<', '_<=', '_>', '_>=', '_', '#', '#?']},
 ];
 
 const prefixOperators = [
-	{symbols: ['<<'], precedence: 18,},
-	{symbols: ['|-'], precedence: 20},
-	{symbols: ['<==='], precedence: 22},
-	{symbols: ['<=='], precedence: 26},
-	{symbols: ['??'], precedence: 28},
-	{symbols: ['not'], precedence: 34},
-	{symbols: ['<', '<=', '>', '>=', '?'], precedence: 36},
-	{symbols: ['+', '-'], precedence: 50},
-	{symbols: ['*'], precedence: 58},
-	{symbols: ['#'], precedence: 61},
+	{precedence: 18, symbols: ['<<'],},
+	{precedence: 20, symbols: ['|-']},
+	{precedence: 22, symbols: ['<===']},
+	{precedence: 26, symbols: ['<==']},
+	{precedence: 28, symbols: ['??']},
+	{precedence: 34, symbols: ['not']},
+	{precedence: 36, symbols: ['<', '<=', '>', '>=', '?']},
+	{precedence: 50, symbols: ['+', '-']},
+	{precedence: 58, symbols: ['*']},
+	{precedence: 61, symbols: ['#']},
 ];
 const postfixOperators = [
-	{symbols: ['(*)'], precedence: 64},
-	{symbols: ['^*', '_*', '~', '^~', '_~'], precedence: 70},
-	{symbols: ['!', '^!', '_!'], precedence: 72},
+	{precedence: 64, symbols: ['(*)']},
+	{precedence: 70, symbols: ['^*', '_*', '~', '^~', '_~']},
+	{precedence: 72, symbols: ['!', '^!', '_!']},
 ];
 
-const operatorsSymbols = [... new Set([...binaryOperators, ...prefixOperators, ...postfixOperators].flatMap(op => op.symbols))];
+const operatorsSymbols = [... new Set([...binaryOperators, ...prefixOperators, ...postfixOperators, ...optionOperators, ...assignmentOperators]
+									  .flatMap(op => op.symbols).concat(['SPACE']))];
 
 const punctuationSymbols = ['(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';'];
+
+const PREC = {
+    CONTROL: 10,
+    SCOPE: 10
+};
+
+function reserved(name, rule) {
+    return rule;
+}
 
 const Choice = (...items) => items.length === 1 ? items[0] : choice(...items);
 
@@ -117,8 +107,6 @@ module.exports = grammar({
 
     inline: ($) => [
         $._loop_body,
-		// $.assignment_expression,
-		// $.method_installation,
     ],
 	
     externals: $ => [
@@ -247,21 +235,11 @@ module.exports = grammar({
 					field('operator', Choice(...ops)),
 					field('right', rhs));
 
-            const SpaceBinOp = (ops, {lhs=$.expression, rhs=$.expression}={}) => 
-				seq(field('left', lhs),
-					field('operator', Choice(...ops)),
-					field('right', rhs));
-
 			return choice(
 				...binaryOperators.map(op => op.assoc(op.precedence, BinOp(op.symbols))),
 				prec.left(48, BinOp([alias($._range, ".."), alias($._range_lt, "..<")])),
-				
-				// Standard Adjacency
-				prec.right(61, SpaceBinOp([alias(choice($._space, "SPACE"), $.space)])),
-				
-				// Low-precedence Adjacency to brackets
-				prec.left(56, SpaceBinOp([alias($._space_indexing, $.space)])),
-
+				prec.right(61, BinOp([alias(choice($._space, "SPACE"), $.space)])),
+				prec.right(56, BinOp([alias($._space_indexing, $.space)])),
 				prec.left(70, BinOp(['.', '.?'], {rhs: $.symbol}))
 			);
         },
@@ -314,9 +292,6 @@ module.exports = grammar({
             'in',
             $.expression),
 
-        of_clause: ($) => seq(
-            'of',
-            $.expression),
 
         _loop_body: ($) => choice(
             seq($.list_clause, optional($.do_clause)),
@@ -362,7 +337,7 @@ module.exports = grammar({
         new_statement: ($) => prec.left(seq(
             'new',
             field('type', $.expression),
-            optional($.of_clause),
+            optional(seq('of', field('parent_type', $.expression))),
             optional($.from_clause)
         )),
 
@@ -439,6 +414,8 @@ module.exports = grammar({
                 $.symbol
             ), $.resolved_symbol))
         ))),
+
+        resolved_symbol: $ => $.symbol,
 
 		
 

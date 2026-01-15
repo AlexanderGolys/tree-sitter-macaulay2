@@ -5,21 +5,19 @@ inputFile = "test/test_generator/test_expressions.m2"
 -- Helper functions
 myTrim := s -> (
     s = toString s;
-    local startPos;
-    local finishPos;
-    startPos = 0;
+    startPos := 0;
     while startPos < #s and (s#startPos == " " or s#startPos == "\n" or s#startPos == "\t") do startPos = startPos + 1;
-    finishPos = #s - 1;
+    finishPos := #s - 1;
     while finishPos >= 0 and finishPos < #s and (s#finishPos == " " or s#finishPos == "\n" or s#finishPos == "\t") do finishPos = finishPos - 1;
     if startPos > finishPos then "" else substring(startPos, finishPos - startPos + 1, s)
 );
 
 myReplaceRParen := s -> (
     s = toString s;
-    local res; res = "";
-    local inStr; inStr = false;
-    local inRaw; inRaw = false;
-    local i; i = 0;
+    res := "";
+    inStr := false;
+    inRaw := false;
+    i := 0;
     while i < #s do (
         if not inStr and not inRaw and i + 2 < #s and s#i == "/" and s#(i+1) == "/" and s#(i+2) == "/" then (
             inRaw = true;
@@ -37,9 +35,9 @@ myReplaceRParen := s -> (
         
         if not inStr and not inRaw and s#i == ")" then (
             -- Only add comma if NOT followed by -> or = or :=
-            local j; j = i + 1;
+            j := i + 1;
             while j < #s and (s#j == " " or s#j == "\n" or s#j == "\t") do j = j + 1;
-            local follow; follow = false;
+            follow := false;
             if j + 1 < #s and s#j == "-" and s#(j+1) == ">" then follow = true;
             if j < #s and s#j == "=" then follow = true;
             if j + 1 < #s and s#j == ":" and s#(j+1) == "=" then follow = true;
@@ -60,26 +58,20 @@ myReplaceRParen := s -> (
 mySplitFirst := (s, delim) -> (
     s = toString s;
     delim = toString delim;
-    local parts;
-    parts = separate(delim, s);
+    parts := separate(delim, s);
     if #parts <= 1 then (s, "")
     else (
-        local firstPart;
-        local restPart;
-        firstPart = parts#0;
-        restPart = substring(#firstPart + #delim, #s - #firstPart - #delim, s);
+        firstPart := parts#0;
+        restPart := substring(#firstPart + #delim, #s - #firstPart - #delim, s);
         (firstPart, restPart)
     )
 );
 
 myExtractParenthesized := s -> (
     s = toString s;
-    local depth;
-    local endPos;
-    local inString;
-    depth = 0;
-    endPos = 0;
-    inString = false;
+    depth := 0;
+    endPos := 0;
+    inString := false;
     for i from 0 to (#s - 1) do (
         if not inString then (
             if s#i == "\"" then inString = true
@@ -98,8 +90,7 @@ myStartsWith := (prefix, s) -> (
     s = toString s;
     prefix = toString prefix;
     if #s < #prefix then false else (
-        local result;
-        result = true;
+        result := true;
         for i from 0 to (#prefix - 1) do (
             if s#i != prefix#i then (result = false; break)
         );
@@ -108,13 +99,13 @@ myStartsWith := (prefix, s) -> (
 );
 
 -- Split M2 source into top-level arguments
-splitM2Args := s -> (
-    local res; res = {};
-    local curr; curr = "";
-    local depth; depth = 0;
-    local inStr; inStr = false;
+splitSourceArgs := s -> (
+    res := {};
+    curr := "";
+    depth := 0;
+    inStr := false;
     for i from 0 to #s-1 do (
-        local c; c = s#i;
+        c := s#i;
         if not inStr then (
             if c == "\"" then inStr = true
             else if c == "(" or c == "{" or c == "[" then depth = depth + 1
@@ -133,6 +124,50 @@ splitM2Args := s -> (
     res
 );
 
+splitSExprArgs := s -> (
+    res := {};
+    curr := "";
+    depth := 0;
+    inStr := false;
+    for i from 0 to #s-1 do (
+        c := s#i;
+        if not inStr then (
+            if c == "\"" then inStr = true
+            else if c == "(" or c == "{" or c == "[" then depth = depth + 1
+            else if c == ")" or c == "}" or c == "]" then depth = depth - 1
+            else if (c == " " or c == "\n" or c == "\t") and depth == 0 then (
+                curr = myTrim curr;
+                if #curr > 0 then res = append(res, curr);
+                curr = "";
+                continue;
+            );
+        ) else (
+            if c == "\"" and (i == 0 or s#(i-1) != "\\") then inStr = false;
+        );
+        curr = curr | c;
+    );
+    curr = myTrim curr;
+    if #curr > 0 then res = append(res, curr);
+    res
+);
+
+parseControlArgs := (s) -> (
+    args := splitSExprArgs(s);
+    res := new MutableHashTable;
+    i := 0;
+    while i < #args do (
+        if args#i == "then:" or args#i == "else:" or args#i == "do:" or args#i == "in:" or args#i == "from:" or args#i == "to:" or args#i == "when:" or args#i == "list:" then (
+            key := substring(0, #args#i - 1, args#i);
+            i = i + 1;
+            if i < #args then res#key = args#i;
+        ) else (
+            if not res#?"condition" then res#"condition" = args#i;
+        );
+        i = i + 1;
+    );
+    res
+);
+
 postfixOps = {"(*)", "^*", "_*", "~", "^~", "_~", "!", "^!", "_!"};
 
 toTreeSitter := (s, indent, src) -> (
@@ -140,8 +175,80 @@ toTreeSitter := (s, indent, src) -> (
     src = myTrim src;
     if #s == 0 then return "";
     
-    local sp; sp = ""; for i from 1 to indent do sp = sp | " ";
-    local nextSp; nextSp = sp | "  ";
+    sp := ""; for i from 1 to indent do sp = sp | " ";
+    nextSp := sp | "  ";
+
+    if myStartsWith("(if", s) then (
+        inner := substring(4, #s - 5, s);
+        args := parseControlArgs(inner);
+        res := "(if_statement\n" | nextSp | "condition: " | toTreeSitter(args#"condition", indent + 2, "") | "\n" | nextSp | "then: " | toTreeSitter(args#"then", indent + 2, "");
+        if args#?"else" and args#"else" != "(null)" then (
+            res = res | "\n" | nextSp | "else: " | toTreeSitter(args#"else", indent + 2, "");
+        );
+        return res | ")";
+    );
+    
+    if myStartsWith("(while", s) then (
+        inner := substring(7, #s - 8, s);
+        args := parseControlArgs(inner);
+        
+        res := "(while_statement\n" | nextSp | toTreeSitter(args#"condition", indent + 2, "");
+        if args#?"when" and args#"when" != "(null)" then (
+             res = res | "\n" | nextSp | "(when_clause\n" | nextSp | "  " | toTreeSitter(args#"when", indent + 4, "") | ")";
+        );
+        res = res | "\n" | nextSp | "(do_clause\n" | nextSp | "  " | toTreeSitter(args#"do", indent + 4, "") | "))";
+        return res;
+    );
+
+    if myStartsWith("(for", s) then (
+        inner := substring(5, #s - 6, s);
+        args := parseControlArgs(inner);
+        
+        -- Extract variable from source src: "for i from ..."
+        varName := "(symbol)";
+        if myStartsWith("for ", src) then (
+             parts := separate(" ", src);
+             if #parts >= 2 then varName = "(symbol)"; -- We can't easily extract name to match exact symbol text unless we parse src better, but (symbol) is generic enough for now.
+             -- Actually Tree-sitter test expects (symbol) usually, but we might want the name?
+             -- In generated tests, it just outputs structure. (symbol) is fine.
+        );
+        
+        res := "(for_statement\n" | nextSp | "variable: (symbol)";
+        
+        if args#?"in" and args#"in" != "(null)" then (
+            res = res | "\n" | nextSp | "(in_clause\n" | nextSp | "  " | toTreeSitter(args#"in", indent + 4, "") | ")";
+        ) else if (args#?"from" and args#"from" != "(null)") or (args#?"to" and args#"to" != "(null)") then (
+            if args#?"from" and args#"from" != "(null)" then res = res | "\n" | nextSp | "(from_clause\n" | nextSp | "  " | toTreeSitter(args#"from", indent + 4, "") | ")";
+            if args#?"to" and args#"to" != "(null)" then res = res | "\n" | nextSp | "(to_clause\n" | nextSp | "  " | toTreeSitter(args#"to", indent + 4, "") | ")";
+        );
+        
+        if args#?"when" and args#"when" != "(null)" then (
+            res = res | "\n" | nextSp | "(when_clause\n" | nextSp | "  " | toTreeSitter(args#"when", indent + 4, "") | ")";
+        );
+        
+        if args#?"list" and args#"list" != "(null)" then (
+            res = res | "\n" | nextSp | "(list_clause\n" | nextSp | "  " | toTreeSitter(args#"list", indent + 4, "") | ")";
+        );
+        
+        if args#?"do" and args#"do" != "(null)" then (
+            res = res | "\n" | nextSp | "(do_clause\n" | nextSp | "  " | toTreeSitter(args#"do", indent + 4, "") | ")";
+        );
+        
+        return res | ")";
+    );
+    
+    if myStartsWith("(try", s) then (
+        inner := substring(5, #s - 6, s);
+        args := splitSExprArgs(inner);
+        res := "(try_statement\n" | nextSp | "condition: " | toTreeSitter(args#0, indent + 2, "");
+        if #args > 1 and args#1 != "(null)" then (
+            res = res | "\n" | nextSp | "consequence: " | toTreeSitter(args#1, indent + 2, "");
+        );
+        if #args > 2 and args#2 != "(null)" then (
+            res = res | "\n" | nextSp | "alternative: " | toTreeSitter(args#2, indent + 2, "");
+        );
+        return res | ")";
+    );
 
     if myStartsWith("(global-fetch", s) then return "(symbol)";
     
@@ -149,8 +256,8 @@ toTreeSitter := (s, indent, src) -> (
     
     if #s > 0 and s#0 == "(" then (
         -- Check if it is (depth index) local ref
-        local inner; inner = substring(1, #s - 2, s);
-        local p; p = separate(" ", inner);
+        inner := substring(1, #s - 2, s);
+        p := separate(" ", inner);
         if #p == 2 and all(p, x -> #x > 0 and all(separate("", x), c -> c >= "0" and c <= "9")) then return "(symbol)";
     );
     
@@ -163,28 +270,22 @@ toTreeSitter := (s, indent, src) -> (
     if #s >= 2 and s#0 == "\"" and s#(#s-1) == "\"" then return "(string_literal)";
     
     if myStartsWith("(list", s) or myStartsWith("(sequence", s) or myStartsWith("(array", s) or myStartsWith("(angleBarList", s) then (
-        local typeName;
-        local prefixLength;
+        typeName := "angle_bar_list";
+        prefixLength := 14;
         if myStartsWith("(list", s) then (typeName = "list"; prefixLength = 6)
         else if myStartsWith("(sequence", s) then (typeName = "sequence"; prefixLength = 10)
-        else if myStartsWith("(array", s) then (typeName = "array"; prefixLength = 7)
-        else (typeName = "angle_bar_list"; prefixLength = 14);
+        else if myStartsWith("(array", s) then (typeName = "array"; prefixLength = 7);
         
-        local remainder;
-        remainder = myTrim substring(prefixLength, #s - prefixLength - 1, s);
+        remainder := myTrim substring(prefixLength, #s - prefixLength - 1, s);
         
-        local treeSitterArgs;
-        treeSitterArgs = "";
+        treeSitterArgs := "";
         
-        local srcInner;
-        srcInner = if #src >= 2 and (src#0 == "(" or src#0 == "{" or src#0 == "[") then substring(1, #src - 2, src) else src;
-        local srcArgs;
-        srcArgs = splitM2Args(srcInner);
-        local argIdx; argIdx = 0;
+        srcInner := if #src >= 2 and (src#0 == "(" or src#0 == "{" or src#0 == "[") then substring(1, #src - 2, src) else src;
+        srcArgs := splitSourceArgs(srcInner);
+        argIdx := 0;
 
         while #remainder > 0 do (
-            local argument;
-            argument = "";
+            argument := "";
             if remainder#0 == "(" then argument = myExtractParenthesized(remainder)
             else if remainder#0 == "\"" then argument = myExtractParenthesized(remainder)
             else (
@@ -193,11 +294,9 @@ toTreeSitter := (s, indent, src) -> (
                 argument = p#0;
             );
             
-            local currentSrc;
-            currentSrc = if argIdx < #srcArgs then srcArgs#argIdx else "";
-            
-            local tsArg;
-            tsArg = toTreeSitter(argument, indent + 2, currentSrc);
+            currentSrc := if argIdx < #srcArgs then srcArgs#argIdx else "";
+                
+            tsArg := toTreeSitter(argument, indent + 2, currentSrc);
             if #tsArg > 0 then (
                 treeSitterArgs = treeSitterArgs | "\n" | nextSp | tsArg;
             );
@@ -272,7 +371,7 @@ toTreeSitter := (s, indent, src) -> (
             local typeName; typeName = "sequence";
             local treeSitterArgs; treeSitterArgs = "";
             local srcInner; srcInner = if #srcLeft >= 2 and (srcLeft#0 == "(" or srcLeft#(#srcLeft-1) == ")") then substring(1, #srcLeft - 2, srcLeft) else srcLeft;
-            local srcArgs; srcArgs = splitM2Args(srcInner);
+            local srcArgs; srcArgs = splitSourceArgs(srcInner);
             local argIdx; argIdx = 0;
             local remainder; remainder = myTrim inner;
             while #remainder > 0 do (
@@ -315,7 +414,7 @@ toTreeSitter := (s, indent, src) -> (
             local typeName; typeName = "sequence";
             local treeSitterArgs; treeSitterArgs = "";
             local srcInner; srcInner = substring(1, #srcLeft - 2, srcLeft);
-            local srcArgs; srcArgs = splitM2Args(srcInner);
+            local srcArgs; srcArgs = splitSourceArgs(srcInner);
             for a in srcArgs do (
                 local tsArg; tsArg = toTreeSitter(a, indent + 4, a);
                 if #tsArg > 0 then treeSitterArgs = treeSitterArgs | "\n" | sp | "    " | tsArg;
@@ -363,6 +462,17 @@ toTreeSitter := (s, indent, src) -> (
         local r; local op; local x;
         r = substring(6, #s - 7, s);
         (op, x) = mySplitFirst(r, " ");
+        
+        if op == "break" then return "(break_statement" | (if x != "(null)" then "\n" | nextSp | toTreeSitter(x, indent + 2, "") else "") | ")";
+        if op == "continue" then return "(continue_statement" | (if x != "(null)" then "\n" | nextSp | toTreeSitter(x, indent + 2, "") else "") | ")";
+        if op == "return" then return "(return_statement" | (if x != "(null)" then "\n" | nextSp | toTreeSitter(x, indent + 2, "") else "") | ")";
+        if op == "throw" then return "(throw_statement\n" | nextSp | toTreeSitter(x, indent + 2, "") | ")";
+        if op == "shield" then return "(shield_statement\n" | nextSp | toTreeSitter(x, indent + 2, "") | ")";
+        if op == "TEST" then return "(test_statement\n" | nextSp | toTreeSitter(x, indent + 2, "") | ")";
+        if op == "breakpoint" then return "(breakpoint_statement\n" | nextSp | toTreeSitter(x, indent + 2, "") | ")";
+        if op == "time" or op == "timing" or op == "elapsedTime" or op == "elapsedTiming" or op == "profile" then return "(time_statement\n" | nextSp | toTreeSitter(x, indent + 2, "") | ")";
+        if op == "catch" then return "(catch_statement\n" | nextSp | toTreeSitter(x, indent + 2, "") | ")";
+        
         if any(postfixOps, p -> p == op) then (
             return "(postfix_expression\n" | nextSp | "operand: " | toTreeSitter(x, indent + 2, "") | ")";
         ) else (

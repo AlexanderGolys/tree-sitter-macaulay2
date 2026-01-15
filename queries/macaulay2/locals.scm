@@ -9,30 +9,28 @@
 ; 2. DEFINITIONS - Most specific first
 
 ; Function parameters
-(binary_expression
-  operator: "->"
-  left: (symbol) @local.definition.parameter)
+(function_expression
+  parameters: (symbol) @local.definition.parameter)
 
-(binary_expression
-  operator: "->"
-  left: (sequence
+(function_expression
+  parameters: (sequence
     (symbol) @local.definition.parameter))
 
 (for_statement 
   variable: (symbol) @local.definition)
 
-(binary_expression
-  operator: "="
-  left: (symbol) @local.definition)
+(assignment_expression
+  left: (symbol) @local.definition
+  operator: "=")
 
-(binary_expression
-  operator: ":="
-  left: (symbol) @local.definition)
+(assignment_expression
+  left: (symbol) @local.definition
+  operator: ":=")
 
-(binary_expression
-  operator: "="
+(assignment_expression
   left: (symbol) @local.definition.function 
-  right: (binary_expression operator: "->"))
+  operator: "="
+  right: (function_expression))
 
 
 

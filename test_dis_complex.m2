@@ -1,6 +1,0 @@
-print("Closure:")
-print(toString disassemble functionBody(() -> (x, y) -> z))
-print("Global assignment:")
-print(toString disassemble functionBody(() -> (x, y) = (1, 2)))
-print("Local assignment:")
-print(toString disassemble functionBody(() -> (x, y) := (1, 2)))

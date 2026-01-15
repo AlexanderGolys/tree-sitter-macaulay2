@@ -5,8 +5,9 @@ f(3)^2
 ---
 (source_file
   (cell
-    (call_expression
+    (binary_expression
       left: (symbol)
+      operator: (space)
       right: (binary_expression
         left: (sequence
           (integer_literal))
@@ -32,8 +33,9 @@ x not + + x
 ---
 (source_file
   (cell
-    (call_expression
+    (binary_expression
       left: (symbol)
+      operator: (space)
       right: (prefix_expression
         operand: (prefix_expression
           operand: (prefix_expression
@@ -46,7 +48,7 @@ x not + + x
 ---
 (source_file
   (cell
-    (range_expression
+    (binary_expression
       left: (integer_literal)
       right: (integer_literal))))
 
@@ -57,18 +59,18 @@ x not + + x
 ---
 (source_file
   (cell
-    (range_expression
+    (binary_expression
       left: (integer_literal)
       right: (float_literal))))
 
 ==================
-(6) x_2.e2 is member_access(index_expression, symbol) [weird]
+(6) x_2.e2 is member_access(binary_expression, symbol) [weird]
 ==================
 x_2.e2
 ---
 (source_file
   (cell
-    (index_expression
+    (binary_expression
       left: (symbol)
       right: (float_literal))))
 
@@ -79,7 +81,7 @@ x_2!
 ---
 (source_file
   (cell
-    (index_expression
+    (binary_expression
       left: (symbol)
       right: (postfix_expression
         operand: (integer_literal)))))
@@ -103,8 +105,9 @@ x_2.d
 ---
 (source_file
   (cell
-    (call_expression
-      left: (index_expression
+    (binary_expression
+      left: (binary_expression
         left: (symbol)
         right: (float_literal))
+      operator: (space)
       right: (symbol))))

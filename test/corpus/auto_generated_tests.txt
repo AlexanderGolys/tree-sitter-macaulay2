@@ -1,0 +1,559 @@
+==================
+"abc"
+==================
+"abc"
+---
+(source_file
+  (cell
+    (string_literal)))
+
+==================
+{1, 2, 3}
+==================
+{1, 2, 3}
+---
+(source_file
+  (cell
+    (list
+      (integer_literal)
+      (integer_literal)
+      (integer_literal))))
+
+==================
+(a, b, c)
+==================
+(a, b, c)
+---
+(source_file
+  (cell
+    (sequence
+      (symbol)
+      (symbol)
+      (symbol))))
+
+==================
+[x, y, z]
+==================
+[x, y, z]
+---
+(source_file
+  (cell
+    (array
+      (symbol)
+      (symbol)
+      (symbol))))
+
+==================
+f("a", {b}, (c))
+==================
+f("a", {b}, (c))
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      operator: (space)
+      right: (sequence
+        (string_literal)
+        (list
+          (symbol))
+        (sequence
+          (symbol))))))
+
+==================
+{a,}
+==================
+{a,}
+---
+(source_file
+  (cell
+    (list
+      (symbol))))
+
+==================
+()
+==================
+()
+---
+(source_file
+  (cell
+    (sequence)))
+
+==================
+(,)
+==================
+(,)
+---
+(source_file
+  (cell
+    (sequence)))
+
+==================
+(a,,b)
+==================
+(a,,b)
+---
+(source_file
+  (cell
+    (sequence
+      (symbol)
+      (symbol))))
+
+==================
+(g not x) + y
+==================
+(g not x) + y
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (sequence
+        (binary_expression
+          left: (symbol)
+          operator: (space)
+          right: (prefix_expression
+            operand: (symbol))))
+      right: (symbol))))
+
+==================
+x_2.e-2
+==================
+x_2.e-2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (float_literal))))
+
+==================
+R / I [x]
+==================
+R / I [x]
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      operator: (space)
+      right: (array
+        (symbol)))))
+
+==================
+f g [x]
+==================
+f g [x]
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (symbol))
+      operator: (space)
+      right: (array
+        (symbol)))))
+
+==================
+f(2)^2
+==================
+f(2)^2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      operator: (space)
+      right: (binary_expression
+        left: (sequence
+          (integer_literal))
+        right: (integer_literal)))))
+
+==================
+f / g (s)
+==================
+f / g (s)
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (sequence
+          (symbol))))))
+
+==================
+f / g [x]
+==================
+f / g [x]
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      operator: (space)
+      right: (array
+        (symbol)))))
+
+==================
+f / g # (x)
+==================
+f / g # (x)
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (sequence
+          (symbol))))))
+
+==================
+f / g # [x]
+==================
+f / g # [x]
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (array
+          (symbol))))))
+
+==================
+a + b [x]
+==================
+a + b [x]
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (array
+          (symbol))))))
+
+==================
+a * b [x]
+==================
+a * b [x]
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      operator: (space)
+      right: (array
+        (symbol)))))
+
+==================
+f / g <| 1 |>
+==================
+f / g <| 1 |>
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      operator: (space)
+      right: (angle_bar_list
+        (integer_literal)))))
+
+==================
+f/g#(x)
+==================
+f/g#(x)
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (sequence
+          (symbol))))))
+
+==================
+f/g#[x]
+==================
+f/g#[x]
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (array
+          (symbol))))))
+
+==================
+a + b * c - d / e
+==================
+a + b * c - d / e
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (binary_expression
+          left: (symbol)
+          right: (symbol)))
+      right: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+
+==================
+x_3 + y^2 - z_1.e-5
+==================
+x_3 + y^2 - z_1.e-5
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (binary_expression
+          left: (symbol)
+          right: (integer_literal))
+        right: (binary_expression
+          left: (symbol)
+          right: (integer_literal)))
+      right: (binary_expression
+        left: (symbol)
+        right: (float_literal)))))
+
+==================
+a + b * c ^ d
+==================
+a + b * c ^ d
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (binary_expression
+          left: (symbol)
+          right: (symbol))))))
+
+==================
+x - y / z ++ w
+==================
+x - y / z ++ w
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (binary_expression
+          left: (symbol)
+          right: (symbol)))
+      right: (symbol))))
+
+==================
+a - b * c ^ d
+==================
+a - b * c ^ d
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (binary_expression
+          left: (symbol)
+          right: (symbol))))))
+
+==================
+x - y / z ++ w
+==================
+x - y / z ++ w
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (binary_expression
+          left: (symbol)
+          right: (symbol)))
+      right: (symbol))))
+
+==================
+a - b * c ^ d
+==================
+a - b * c ^ d
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (binary_expression
+          left: (symbol)
+          right: (symbol))))))
+
+==================
+a..b..2
+==================
+a..b..2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (integer_literal))))
+
+==================
+a..<b..2
+==================
+a..<b..2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (integer_literal))))
+
+==================
+a..=b..2
+==================
+a..=b..2
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (integer_literal)))))
+
+==================
+a..<b..2
+==================
+a..<b..2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (integer_literal))))
+
+==================
+x += 3 + 3
+==================
+x += 3 + 3
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (integer_literal)
+        right: (integer_literal)))))
+
+==================
+x := y
+==================
+x := y
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (symbol)
+      right: (symbol))))
+
+==================
+(x, y) -> z
+==================
+(x, y) -> z
+---
+(source_file
+  (cell
+    (function_expression
+      parameters: (sequence
+        (symbol)
+        (symbol))
+      body: (symbol))))
+
+==================
+(x, y) = f
+==================
+(x, y) = f
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (sequence
+        (symbol)
+        (symbol))
+      right: (symbol))))
+
+==================
+(x, y) := (1, 2)
+==================
+(x, y) := (1, 2)
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (sequence
+        (symbol)
+        (symbol))
+      right: (sequence
+        (integer_literal)
+        (integer_literal)))))
+
+==================
+x >> y -> z
+==================
+x >> y -> z
+---
+(source_file
+  (cell
+    (option_expression
+      left: (symbol)
+      right: (function_expression
+        parameters: (symbol)
+        body: (symbol)))))
+
+==================
+f := x -> y
+==================
+f := x -> y
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (symbol)
+      right: (function_expression
+        parameters: (symbol)
+        body: (symbol)))))
+

@@ -49,8 +49,9 @@ f 1 + 2
 (source_file
   (cell
     (binary_expression
-      left: (call_expression
+      left: (binary_expression
         left: (symbol)
+        operator: (space)
         right: (integer_literal))
       right: (integer_literal))))
 
@@ -63,8 +64,9 @@ f 1 * 2
 (source_file
   (cell
     (binary_expression
-      left: (call_expression
+      left: (binary_expression
         left: (symbol)
+        operator: (space)
         right: (integer_literal))
       right: (integer_literal))))
 
@@ -90,14 +92,14 @@ a -> b -> c
 
 (source_file
   (cell
-    (function_closure
-      left: (symbol)
-      right: (function_closure
-        left: (symbol)
-        right: (symbol)))))
+    (function_expression
+      parameters: (symbol)
+      body: (function_expression
+        parameters: (symbol)
+        body: (symbol)))))
 
 ==================
-8. Associativity: = is right [precedence]
+(8) Associativity: = is right [precedence]
 ==================
 a = b = c
 ---
@@ -118,11 +120,11 @@ a = b = c
 
 (source_file
   (cell
-    (compare_expression
+    (binary_expression
       left: (integer_literal)
-      right: (compare_expression
+      right: (binary_expression
         left: (integer_literal)
-        right: (compare_expression
+        right: (binary_expression
           left: (integer_literal)
           right: (integer_literal))))))
 
@@ -236,10 +238,10 @@ not+6
 
 (source_file
   (cell
-    (prefix_expression
-      operand: (binary_expression
-        left: (integer_literal)
-        right: (integer_literal)))))
+    (binary_expression
+      left: (prefix_expression
+        operand: (integer_literal))
+      right: (integer_literal))))
 
 ==================
 21. RHS unary minus [precedence]
@@ -267,3 +269,34 @@ not 1 + 2
         left: (integer_literal)
         right: (integer_literal)))))
 
+==================
+(23) indexed variable assignment [precedence]
+==================
+x_y = z
+---
+
+(source_file
+  (cell
+    (assignment_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (symbol))))
+
+==================
+(24) indexed variable assignment [precedence]
+==================
+ZZ _ ZZ := (x, y) -> x
+---
+
+(source_file
+  (cell
+    (assignment_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (function_expression
+        parameters: (sequence
+          (symbol)
+          (symbol))
+        body: (symbol)))))

@@ -17,50 +17,86 @@ const PREC = {
     POWER: 70,
     CALL: 61,
     SCOPE: 74,
-
 }
 
+// Range assignment operators ..= and ..<= not included, as they need to be consumed before float literals
 const augmentedAssignmentOperators = [
     '%=',  '&=',  '**=',  '*=',  '++=',  '+=',  '-=',  
     '//=',  '/=',  '<<=',  '<==>=',  '===>=',  '==>=',  '>>=',  '??=',  
     '@=',  '@@=',  '@@?=',  '\\=',  '\\\\=',  '^**=',  '^=',  '^^=',  '_=',  '|-=',  
     '|=',  '|_=',  '||=',  '·=',  '⊠=',  '⧢='
+]; 
+
+const assignmentOperators = [
+    {symbols: ['=', ':=', ...augmentedAssignmentOperators], precedence: 13, assoc: prec.right},
 ];
 
-const operatorsSymbols = [
-    ...augmentedAssignmentOperators,
-    '<<', '>>', '<===', '===>', '<==>', '<==', '==>',
-    '++', '**', '//', '==', '!=', '===', '=!=', '<=', '>=', ':=', '=>', '->', '<-', 
-    '+',  '-', '*', '/', '%', '<', '>', '?', 
-    '=', '|', '&', '~', '||', '!', '(*)', '^*', '_*', '~', '@@', '@@?', '|-',
-    '.', '..<', '..', '·',  '⊠',  '⧢',
-    '^', '^**', '_', '#', '@', '??', '\\', '\\\\'
+const optionOperators = [
+    {symbols: ['=>', '>>', '<-'], precedence: 13, assoc: prec.right},
 ];
 
-const punctuationSymbols = [
-    '(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';'
+const binaryOperators = [
+	{symbols: ['<<'], precedence: 18, assoc: prec.left},
+	{symbols: ['|-'], precedence: 19, assoc: prec.right},
+	{symbols: ['<===', '===>'], precedence: 21, assoc: prec.right},
+	{symbols: ['<==>'], precedence: 23, assoc: prec.right},
+	{symbols: ['<==', '==>'], precedence: 25, assoc: prec.right},
+	{symbols: ['or', '??'], precedence: 27, assoc: prec.right},
+	{symbols: ['xor'], precedence: 29, assoc: prec.right},
+	{symbols: ['and'], precedence: 31, assoc: prec.right},
+	{symbols: ['==', '!=', '===', '=!=', '<', '>','<=', '>=', '?'], precedence: 35, assoc: prec.right},
+	{symbols: ['||'], precedence: 38, assoc: prec.left},
+	{symbols: [':'], precedence: 39, assoc: prec.right},
+	{symbols: ['|'], precedence: 42, assoc: prec.left},
+	{symbols: ['^^'], precedence: 44, assoc: prec.left},
+	{symbols: ['&'], precedence: 46, assoc: prec.left},
+	{symbols: ['++', '+', '-'], precedence: 50, assoc: prec.left},
+	{symbols: ['·'], precedence: 52, assoc: prec.left},
+	{symbols: ['**', '⊠', '⧢'], precedence: 54, assoc: prec.left},
+	{symbols: ['\\', '\\\\'], precedence: 57, assoc: prec.right},
+	{symbols: ['%', '//', '/', '*'], precedence: 58, assoc: prec.left},
+	{symbols: ['@'], precedence: 59, assoc: prec.right},
+	{symbols: ['@@', '@@?'], precedence: 66, assoc: prec.right},
+	{symbols: ['|_', '^', '^**', '^<', '^<=', '^>', '^>=', '_<', '_<=', '_>', '_>=', '_', '#', '#?'], precedence: 70, assoc: prec.left},
 ];
 
-// Like choice(), but avoids unnecessary wrapper for single element
+const prefixOperators = [
+	{symbols: ['<<'], precedence: 18,},
+	{symbols: ['|-'], precedence: 20},
+	{symbols: ['<==='], precedence: 22},
+	{symbols: ['<=='], precedence: 26},
+	{symbols: ['??'], precedence: 28},
+	{symbols: ['not'], precedence: 34},
+	{symbols: ['<', '<=', '>', '>=', '?'], precedence: 36},
+	{symbols: ['+', '-'], precedence: 50},
+	{symbols: ['*'], precedence: 58},
+	{symbols: ['#'], precedence: 61},
+];
+const postfixOperators = [
+	{symbols: ['(*)'], precedence: 64},
+	{symbols: ['^*', '_*', '~', '^~', '_~'], precedence: 70},
+	{symbols: ['!', '^!', '_!'], precedence: 72},
+];
+
+const operatorsSymbols = [... new Set([...binaryOperators, ...prefixOperators, ...postfixOperators].flatMap(op => op.symbols))];
+
+const punctuationSymbols = ['(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';'];
+
 const Choice = (...items) => items.length === 1 ? items[0] : choice(...items);
 
 
 module.exports = grammar({
     name: 'macaulay2',
 
-    supertypes: ($) => [
-        $.expression,
-    ],
+    supertypes: ($) => [$.expression],
 
-    conflicts: ($) => [
-        [$.assignment_expression, $.method_installation],
-    ],
+    conflicts: ($) => [],
 
     precedences: $ => [],
         
 
     extras: ($) => [
-        /[\s\n\r]/,  // whitespace
+        /[\s\n]/,  // whitespace	
         $.block_comment,
         $.line_comment
     ],
@@ -81,10 +117,13 @@ module.exports = grammar({
 
     inline: ($) => [
         $._loop_body,
+		// $.assignment_expression,
+		// $.method_installation,
     ],
 	
     externals: $ => [
         $._space,             // Adjacency operator for function calls
+        $._space_indexing,    // Adjacency before [ or <|
         $._range,             // .. (greedy pair of dots)
         $._range_lt,          // ..< (range exclusive)
         $._range_eq,          // ..= (range inclusive)
@@ -116,18 +155,37 @@ module.exports = grammar({
         p_missing: $ => $.p_missing,
         
 
-        escape_sequence: _ => choice(
-            /\\[abeEfrtv"\\]/,
-            /\\[0-7]{3}/,
-            /\\x[0-9a-fA-F]{2}/,
-            /\\u[0-9a-fA-F]{4}/
+        escape_sequence: $ => token.immediate(seq(
+            '\\',
+            choice(
+                /[abeEfrtvn"\\]/,
+                /[0-7]{3}/,
+                /x[0-9a-fA-F]{2}/,
+                /u[0-9a-fA-F]{4}/
+            )
+        )),
+
+        _string_content: $ => token.immediate(prec(1, /[^"\\\n]+/)),
+
+        _std_string: $ => seq(
+            '"',
+            repeat(choice(
+                $.escape_sequence,
+                $._string_content,
+                token.immediate('\n')
+            )),
+            token.immediate('"')
         ),
 
-        _std_string: $ =>
-            seq('"', repeat(choice($.escape_sequence, /\n/, /[^"\\]+/)), '"'),
-            
-
-        _raw_string: _ => seq('///', repeat(choice(/[^/]+/, /\/[^\/]/, /\/\/[^\/]/)), '///'),
+        _raw_string: $ => seq(
+            '///',
+            repeat(choice(
+                prec(10, token.immediate(/[^/]+/)),
+                prec(10, token.immediate(/\/[^\/]/)),
+                prec(10, token.immediate(/\/\/[^\/]/))
+            )),
+            prec(10, token.immediate('///'))
+        ),
 
         string_literal: ($) => choice($._std_string, $._raw_string),
 
@@ -153,186 +211,112 @@ module.exports = grammar({
         angle_bar_list: ($) => prec.left(56, Parenthesized($._multi_expression, '<|')), 
 
 
-        binary_expression: $ => {
-            const table = [
-                [prec.left, 18, '<<'],
-                [prec.left, 38, '||'],
-                [prec.left, 42, '|'],
-                [prec.left, 44, '^^'],
-                [prec.left, 46, '&'],
-                [prec.left, PREC.ADD, '++', '+', '-'],
-                [prec.left, PREC.DOT, '·'],
-                [prec.left, PREC.TENSOR, '**', '⊠', '⧢'],
-                [prec.left, PREC.MULT, '%', '//', '/', '*'],
-                [prec.left, PREC.ACCESS, 
-                    '|_', '^', '^**', '^<', '^<=', '^>', '^>=',
-                    '_<', '_<=', '_>', '_>='],
-                [prec.left, 66, '@@', '@@?'],
+        function_expression: $ => prec.right(13, seq(
+            field('parameters', choice($.symbol, $.sequence, $.list)),
+            field('operator', '->'),
+            field('body', $.expression)
+        )),
 
-                [prec.right, 20, '|-'],
-                [prec.right, 22, '<===', '===>'],
-                [prec.right, 24, '<==>'],
-                [prec.right, 26, '<==', '==>'],
-                [prec.right, 28, 'or', '??'],
-                [prec.right, 30, 'xor'],
-                [prec.right, 32, 'and'],
-                [prec.right, 40, ':'],
-                [prec.right, PREC.MULT, '\\', '\\\\'],
-                [prec.right, PREC.AT, '@'],
-            ];
+        option_expression: $ => {
+            const OptionOp = (ops, {lhs=$.expression, rhs=$.expression}={}) =>
+                seq(field('left', lhs),
+                    field('operator', Choice(...ops)),
+                    field('right', rhs));
+            return choice(
+                ...optionOperators.map(op => op.assoc(op.precedence, OptionOp(op.symbols)))
+            );
+        },
 
-            return choice(...table.map(
-                ([fn, precedence, ...operators]) => 
-                    fn(precedence, BinOp(Choice(...operators), $.expression, $.expression))));
+        assignment_expression: $ => {
+			const AssignOp = (ops, {lhs=$.expression, rhs=$.expression}={}) => 
+				seq(field('left', lhs),
+					field('operator', Choice(...ops)),
+					field('right', rhs));
+
+            return choice(
+                ...assignmentOperators.map(op => op.assoc(op.precedence, AssignOp(op.symbols))),
+                prec.right(13, AssignOp([alias($._range_eq, "..="), alias($._range_lt_eq, "..<=")]))
+            );
         },
 
 
-        index_expression: ($) => 
-            BinOpLeft(PREC.ACCESS, "_", 
-                $.expression, 
-                $.expression),
+        binary_expression: $ => {
 
+			const BinOp = (ops, {lhs=$.expression, rhs=$.expression}={}) => 
+				seq(field('left', lhs),
+					field('operator', Choice(...ops)),
+					field('right', rhs));
 
+            const SpaceBinOp = (ops, {lhs=$.expression, rhs=$.expression}={}) => 
+				seq(field('left', lhs),
+					field('operator', Choice(...ops)),
+					field('right', rhs));
 
-        member_access: ($) => BinOpLeft(PREC.ACCESS, 
-			choice('.', '.?'),
-            $.expression,
-            $.symbol),
+			return choice(
+				...binaryOperators.map(op => op.assoc(op.precedence, BinOp(op.symbols))),
+				prec.left(48, BinOp([alias($._range, ".."), alias($._range_lt, "..<")])),
+				
+				// Standard Adjacency
+				prec.right(61, SpaceBinOp([alias(choice($._space, "SPACE"), $.space)])),
+				
+				// Low-precedence Adjacency to brackets
+				prec.left(56, SpaceBinOp([alias($._space_indexing, $.space)])),
 
-		compare_expression: ($) => BinOpRight(PREC.COMPARE, 
-			choice('==', '!=', '===', '=!=', '<', '>','<=', '>=', '?'),
-			$.expression,
-			$.expression),
+				prec.left(70, BinOp(['.', '.?'], {rhs: $.symbol}))
+			);
+        },
 
-        hash_expression: ($) => BinOpLeft(PREC.ACCESS, 
-			choice('#', '#?'),
-            $.expression,
-            $.expression
-        ),
-
-
-        function_closure: ($) => 
-            BinOpRight(PREC.ASSIGN, '->', 
-                choice($.symbol, $.sequence, $.list),
-                $.expression),
-
-
-        option_assignment: ($) => 
-            BinOpRight(PREC.ASSIGN, '=>', 
-                $.expression, 
-                $.expression),
-
-        assignment_expression: ($) => 
-            BinOpRight(PREC.ASSIGN, choice('=', ':=', '<-'), 
-                choice(
-					$.symbol, 
-					$.sequence, 
-					$.array, 
-					$.list, 
-					$.angle_bar_list, 
-					$.member_access, 
-					$.hash_expression, 
-					$.index_expression),
-                $.expression),
-
-        method_installation: ($) => 
-            BinOpRight(PREC.ASSIGN, choice('=', ':='), 
-                choice(
-                    $.index_expression, 
-                    $.call_expression, 
-					$.augmented_assignment_expression,
-                    $.range_expression, 
-                    $.binary_expression, 
-                    $.prefix_expression, 
-					$.new_statement,
-                    $.postfix_expression),
-                $.expression),
-
-        option_attachment: ($) => 
-            BinOpRight(PREC.ASSIGN, '>>', 
-                $.expression, 
-                $.expression),
-
-        augmented_assignment_expression: ($) => 
-            BinOpRight(PREC.ASSIGN, choice($._range_eq, $._range_lt_eq, ...augmentedAssignmentOperators), 
-                $.expression, 
-                $.expression),
-
-
-        range_expression: ($) => 
-            BinOpLeft(PREC.RANGE, choice($._range, $._range_lt), 
-                $.expression, 
-                $.expression),
-
-
-        call_expression: ($) => 
-            BinOpRight(PREC.CALL, choice($._space, 'SPACE'), 
-                $.expression, 
-                $.expression),
 
         prefix_expression: $ => {
-            const table = [
-                [18, '<<'],
-                [20, '|-'],
-                [22, '<==='],
-                [26, '<=='],
-				[28, '??'],
-                [34, '<', '<=', '>', '>=', '?'],
-                [PREC.ADD, '+', '-'],
-                [PREC.MULT, '*'],
-                [PREC.NOT, 'not'],
-            ];
-            return choice(...table.map(
-                ([precedence, ...operator]) => 
-                    prefixOp(precedence, Choice(...operator), $.expression)));
+			const prefixOp = (p, op) => 
+				prec.left(p, seq(
+					field('operator', Choice(...op)),
+					field('operand', $.expression),
+				));
+            return choice(...prefixOperators.map(op => prefixOp(op.precedence, op.symbols)));
         },
-
-
-		length_prefix_expression: $ => prefixOp(PREC.CALL, '#', $.expression),
 
 
 
         postfix_expression: $ => {
-            const table = [
-                [64, '(*)'],
-                [68, choice('^*', '_*', '~', '^~', '_~')],
-                [72, choice('!', '^!', '_!')]
+            const postfixOp = (p, op) => 
+				prec.left(p, seq(
+					field('operand', $.expression),
+					field('operator', Choice(...op))
+				));
 
-            ];
-            return choice(...table.map(
-                ([precedence, operator]) => 
-                    postfixOp(precedence, operator, $.expression)));
+            return choice( ...postfixOperators.map(op => postfixOp(op.precedence, op.symbols)), );
         },
 
 
         from_clause: ($) => seq(
             'from',
-            field('body', $.expression)),
+            $.expression),
 
         to_clause: ($) => seq(
             'to',
-            field('body', $.expression)),
+            $.expression),
 
         when_clause: ($) => seq(
             'when',
-            field('body', $.expression)),
+            $.expression),
 
         list_clause: ($) => seq(
             'list',
-            field('body', $.expression)),
+            $.expression),
 
 
-        do_clause: ($) => prec(PREC.CONTROL, seq(
+        do_clause: ($) => seq(
             'do',
-            field('body', $.expression))),
+            $.expression),
 
-        in_clause: ($) => prec(PREC.ITER, seq(
+        in_clause: ($) => seq(
             'in',
-            field('body', $.expression))),
+            $.expression),
 
-        of_clause: ($) => prec(PREC.ITER, seq(
+        of_clause: ($) => seq(
             'of',
-            field('body', $.expression))),
+            $.expression),
 
         _loop_body: ($) => choice(
             seq($.list_clause, optional($.do_clause)),
@@ -344,10 +328,10 @@ module.exports = grammar({
             'if',
             field('condition', $.expression),
             'then',
-            field('consequence', $.expression),
+            field('then', $.expression),
             optional(seq(
                 'else', 
-                field('alternative', $.expression)))
+                field('else', $.expression)))
         )),
 
 
@@ -474,6 +458,7 @@ module.exports = grammar({
             $.boolean_literal,
             $.string_literal,
             $.builtin_constant,
+
             $.symbol,
             $.sequence,
             $.array,
@@ -481,23 +466,11 @@ module.exports = grammar({
             $.list,
 
             $.prefix_expression,
-			$.length_prefix_expression,
-
-			$.call_expression,
-			$.compare_expression,
-            $.assignment_expression,
-            $.function_closure,
-            $.index_expression,
-            $.member_access,       
-            $.hash_expression,     
-            $.range_expression,
-            $.option_assignment,
-            $.option_attachment,
-            $.augmented_assignment_expression,
-            $.method_installation,
             $.binary_expression,
-
             $.postfix_expression,
+            $.assignment_expression,
+            $.function_expression,
+            $.option_expression,
 
             $.if_statement,
             $.for_statement,
@@ -552,12 +525,7 @@ function DelimitedSeq(rule, options) {
 }
 
 
-function postfixOp(p, operator, operandRule) {
-    return prec.left(p, seq(
-        field('operand', operandRule),
-        field('operator', operator)
-    ));
-}
+
 
 
 function prefixOp(p, operator, operandRule) {
@@ -567,12 +535,7 @@ function prefixOp(p, operator, operandRule) {
     ));
 }
 
-function BinOp(operator, leftRule, rightRule) {
-        return seq(
-            field('left', leftRule),
-            field('operator', operator),
-            field('right', rightRule));
-    };
+
 
 function BinOpRight(p, operator, leftRule, rightRule) {
     return prec.right(p, BinOp(operator, leftRule, rightRule));

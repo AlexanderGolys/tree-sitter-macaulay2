@@ -17,36 +17,26 @@
 
 (builtin_constant) @constant.builtin
 
-((string_literal) @string.special.url
-  (#match? @string.special.url "http[s]?://.*"))
-
-((string_literal) @string.special.url
-  (#match? @string.special.url "www\..*"))
-
-((call_expression
-  left: (symbol) @function.builtin
-  right: [(string_literal) @string.special.url
-          (sequence . (string_literal) @string.special.url)])
-  (#match? @function.builtin "splitWWW|getWWW|urlEncode"))
-
-((call_expression
-  left: (symbol) @function.builtin
-  right: [(string_literal) @string.regexp
-          (sequence . (string_literal) @string.regexp)])
-  (#match? @function.builtin "match|regex|select|replace"))
-
-((call_expression
-  left: (symbol) @function.builtin
-  right: (sequence 
-           (string_literal) @string.regexp
-           (_)+))
-  (#match? @function.builtin "separate"))
-
 ; Operators
 (_ operator: _ @operator)
 
+(binary_expression
+  left: (symbol) @function.call
+  operator: (space))
+
+(binary_expression
+  left: (symbol) @property
+  operator: "=>")
+
+; (binary_expression
+;   operator: (space)
+;   right: (array
+           
 
 
+
+((symbol) @variable.builtin
+(#match? @variable.builtin "((o[1-9][0-9]*)|oo|ooo|oooo)"))
 
 ; Brackets
 "(" @punctuation.bracket
@@ -64,7 +54,7 @@
 
 "if" @keyword.conditional
 "else" @keyword.conditional
-"then" @keyword
+"then" @keyword.conditional
 "for" @keyword.repeat
 "while" @keyword.repeat
 "return" @keyword.return
@@ -86,7 +76,6 @@
 "symbol" @keyword.modifier
 "threadVariable" @keyword.modifier
 "threadLocal" @keyword.modifier
-"SPACE" @keyword.operator
 "time" @keyword.debug
 "timing" @keyword.debug
 "elapsedTime" @keyword.debug
@@ -102,91 +91,34 @@
 
 
 
-(call_expression
-  left: (symbol) @function.call)
 
-(call_expression
-  left: (index_expression
-   left: (symbol) @function.call))
+; special strings 
 
-(call_expression
-  left: (hash_expression
-   right: (symbol) @function.method.call))
+((string_literal) @string.special.url
+  (#match? @string.special.url "http[s]?://.*"))
 
-(call_expression
-  left: (member_access
-   right: (symbol) @function.method.call))
+((string_literal) @string.special.url
+  (#match? @string.special.url "www\..*"))
 
-(call_expression
-  right: (sequence
-           (option_assignment) @variable.member))
+((binary_expression
+  left: (symbol) @function.builtin
+  operator: (space)
+  right: [(string_literal) @string.special.url
+          (sequence . (string_literal) @string.special.url)])
+  (#any-of? @function.builtin "splitWWW" "getWWW" "urlEncode"))
 
-((call_expression
-  left: (symbol) @keyword.exception)
- (#eq? @keyword.exception "error"))
-
-(assignment_expression
-  left: (symbol) @function
-  right: (function_closure)
-)
-
-(assignment_expression
-  left: (member_access
-   right: (symbol) @function.method)
-  right: (function_closure)
-)
-
-(assignment_expression
-  left: (hash_expression
-   right: (symbol) @function.method)
-  right: (function_closure)
-)
-
-(augmented_assignment_expression
-  left: (symbol) @function
-  right: (function_closure))
+((binary_expression
+  left: (symbol) @function.builtin
+  operator: (space)
+  right: [(string_literal) @string.regexp
+          (sequence . (string_literal) @string.regexp)])
+  (#any-of? @function.builtin "match" "regex" "select" "replace"))
 
 
-
-(function_closure
-  left: (symbol) @variable.parameter)
-
-(function_closure
-  left: (sequence
-    (symbol) @variable.parameter))
-
-(index_expression
-  left: (symbol) @variable
-  right: [
-    (sequence) @index
-    (list) @index
-    (symbol) @index
-    (integer_literal) @index
-  ]
-) @variable.indexed
-
-(hash_expression
-  left: (symbol) @variable
-  right: [
-    (sequence) @index
-    (list) @index
-    (symbol) @index
-    (integer_literal) @index
-  ]
-) @variable.indexed
-
-(option_assignment
-  left: (symbol) @property)
-
-(method_installation
-  left: (_) @constructor)
-
-(assignment_expression
-  right: (option_attachment
-          left: (_) @property
-          right: (function_closure
-                   left: (symbol) @variable.member)))
-
-(new_statement
-  type: (symbol) @type)
-
+((binary_expression
+  	left: (symbol) @function.builtin
+    operator: (space)
+  	right: (sequence 
+           (string_literal) @string.regexp
+           (_)+))
+(#eq? @function.builtin "separate"))

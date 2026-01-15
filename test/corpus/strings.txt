@@ -3,23 +3,28 @@
 ==================
 ""
 ---
+
 (source_file
   (cell
     (string_literal)))
+
 ==================
 2. String with escaped quote [strings]
 ==================
 "\""
 ---
+
 (source_file
   (cell
     (string_literal
       (escape_sequence))))
+
 ==================
 3. String with escaped backslash [strings]
 ==================
 "\\"
 ---
+
 (source_file
   (cell
     (string_literal
@@ -30,43 +35,53 @@
 ==================
 "abc\"def\aghi"
 ---
+
 (source_file
   (cell
     (string_literal
       (escape_sequence)
       (escape_sequence))))
+
 ==================
 (5) Empty raw string [strings]
 ==================
 //////
 ---
+
 (source_file
   (cell
     (string_literal)))
+
 ==================
 (6) Raw string with content [strings]
 ==================
 ///abc///
 ---
+
 (source_file
   (cell
     (string_literal)))
+
 ==================
 (7) Raw string with slashes [strings]
 ==================
 ///a/b//c///
 ---
+
 (source_file
   (cell
     (string_literal)))
+
 ==================
 (8) Raw string with quotes [strings]
 ==================
 ///"abc"///
 ---
+
 (source_file
   (cell
     (string_literal)))
+
 ==================
 (9) Raw string with newlines [strings]
 ==================
@@ -74,6 +89,130 @@
 abc
 ///
 ---
+
+(source_file
+  (cell
+    (string_literal)))
+
+==================
+(10) String with comment [strings]
+==================
+"a--s"
+---
+
+(source_file
+  (cell
+    (string_literal)))
+
+==================
+(11) Raw string with comment [strings]
+==================
+/// a -- s ///
+---
+
+(source_file
+  (cell
+    (string_literal)))
+
+==================
+(12) String with block comment [strings]
+==================
+"a -* s "
+---
+
+(source_file
+  (cell
+    (string_literal)))
+
+==================
+(12) Raw string with block comment [strings]
+==================
+///a -* s ///
+---
+
+(source_file
+  (cell
+    (string_literal)))
+
+==================
+(13) String with comment in expression [strings]
+==================
+expressions = separate("\n--")
+---
+
+(source_file
+  (cell
+    (assignment_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (sequence
+          (string_literal
+            (escape_sequence)))))))
+
+==================
+(14) String with comment in expression [strings]
+==================
+expressions = separate("\n--\a-*\" ///----*//")
+---
+
+(source_file
+  (cell
+    (assignment_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (sequence
+          (string_literal
+            (escape_sequence)
+            (escape_sequence)
+            (escape_sequence)))))))
+
+==================
+(15) String with comment in expression [strings]
+==================
+expressions = separate(///\n--///)
+---
+
+(source_file
+  (cell
+    (assignment_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (sequence
+          (string_literal))))))
+
+==================
+(16) String with comment in expression + newline inside [strings]
+==================
+expressions = separate("--\"\a
+")
+---
+
+(source_file
+  (cell
+    (assignment_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (sequence
+          (string_literal
+            (escape_sequence)
+            (escape_sequence)))))))
+
+==================
+(17) Raw String with comment and newlines [strings]
+==================
+///
+-- 
+-- ///
+---
+
 (source_file
   (cell
     (string_literal)))

@@ -3,45 +3,52 @@
 ==================
 a = b
 ---
+
 (source_file
   (cell
     (assignment_expression
-        left: (symbol)
-        right: (symbol))))
+      left: (symbol)
+      right: (symbol))))
+
 ==================
 2. Closure [operators]
 ==================
 a -> b
 ---
+
 (source_file
   (cell
-    (function_closure
-      left: (symbol)
-      right: (symbol))))
+    (function_expression
+      parameters: (symbol)
+      body: (symbol))))
+
 ==================
 3. Closure single variable [operators]
 ==================
 (x) -> 2
 ---
+
 (source_file
   (cell
-    (function_closure
-    left: (sequence
+    (function_expression
+      parameters: (sequence
         (symbol))
-    right: (integer_literal))))
+      body: (integer_literal))))
+
 ==================
 4. Closure 3 variables [operators]
 ==================
 (x, y, z) -> (x, xy, y, x)
 ---
+
 (source_file
   (cell
-    (function_closure
-      left: (sequence
+    (function_expression
+      parameters: (sequence
         (symbol)
         (symbol)
         (symbol))
-      right: (sequence
+      body: (sequence
         (symbol)
         (symbol)
         (symbol)

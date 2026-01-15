@@ -1,72 +1,76 @@
 ==================
-(1) if 
+(1) if
 ==================
 if x==4 then x=5
 ---
+
 (source_file
   (cell
     (if_statement
-      condition: (compare_expression
+      condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      consequence: (assignment_expression
+      then: (assignment_expression
         left: (symbol)
         right: (integer_literal)))))
-
 
 ==================
 (2) if-then-else
 ==================
 if a > 0 then b else c
 ---
+
 (source_file
   (cell
     (if_statement
-      condition: (compare_expression
+      condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      consequence: (symbol)
-      alternative: (symbol))))
+      then: (symbol)
+      else: (symbol))))
 
 ==================
 (3) nested if-then-else
 ==================
 if x < 3 then if y < 2 then a else b else c
 ---
+
 (source_file
   (cell
     (if_statement
-      condition: (compare_expression
+      condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      consequence: (if_statement
-        condition: (compare_expression
+      then: (if_statement
+        condition: (binary_expression
           left: (symbol)
           right: (integer_literal))
-        consequence: (symbol)
-        alternative: (symbol))
-      alternative: (symbol))))
+        then: (symbol)
+        else: (symbol))
+      else: (symbol))))
 
 ==================
 (4) for statement (with in, when, do)
 ==================
 for i in 1..5 when i>2 do print i
 ---
+
 (source_file
   (cell
     (for_statement
       variable: (symbol)
       (in_clause
-        body: (range_expression
+        (binary_expression
           left: (integer_literal)
           right: (integer_literal)))
       (when_clause
-        body: (compare_expression
+        (binary_expression
           left: (symbol)
           right: (integer_literal)))
       (do_clause
-        body: (call_expression
+        (binary_expression
           left: (symbol)
+          operator: (space)
           right: (symbol))))))
 
 ==================
@@ -74,17 +78,19 @@ for i in 1..5 when i>2 do print i
 ==================
 for j from 0 to 4 do doSomething j
 ---
+
 (source_file
   (cell
     (for_statement
       variable: (symbol)
       (from_clause
-        body: (integer_literal))
+        (integer_literal))
       (to_clause
-        body: (integer_literal))
+        (integer_literal))
       (do_clause
-        body: (call_expression
+        (binary_expression
           left: (symbol)
+          operator: (space)
           right: (symbol))))))
 
 ==================
@@ -92,18 +98,19 @@ for j from 0 to 4 do doSomething j
 ==================
 while x < 10 when x > 1 do x = x + 1
 ---
+
 (source_file
   (cell
     (while_statement
-      (compare_expression
+      (binary_expression
         left: (symbol)
         right: (integer_literal))
       (when_clause
-        body: (compare_expression
+        (binary_expression
           left: (symbol)
           right: (integer_literal)))
       (do_clause
-        body: (assignment_expression
+        (assignment_expression
           left: (symbol)
           right: (binary_expression
             left: (symbol)
@@ -114,6 +121,7 @@ while x < 10 when x > 1 do x = x + 1
 ==================
 break
 ---
+
 (source_file
   (cell
     (break_statement)))
@@ -123,6 +131,7 @@ break
 ==================
 continue
 ---
+
 (source_file
   (cell
     (continue_statement)))
@@ -132,6 +141,7 @@ continue
 ==================
 return x
 ---
+
 (source_file
   (cell
     (return_statement
@@ -142,6 +152,7 @@ return x
 ==================
 breakpoint 42
 ---
+
 (source_file
   (cell
     (breakpoint_statement
@@ -152,6 +163,7 @@ breakpoint 42
 ==================
 catch expr
 ---
+
 (source_file
   (cell
     (catch_statement
@@ -162,6 +174,7 @@ catch expr
 ==================
 shield something
 ---
+
 (source_file
   (cell
     (shield_statement
@@ -172,6 +185,7 @@ shield something
 ==================
 TEST a + b
 ---
+
 (source_file
   (cell
     (test_statement
@@ -184,6 +198,7 @@ TEST a + b
 ==================
 throw err
 ---
+
 (source_file
   (cell
     (throw_statement

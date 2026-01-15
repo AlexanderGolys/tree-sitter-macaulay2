@@ -4,6 +4,7 @@
 
 enum TokenType {
   SPACE,            // Zero-width adjacency operator
+  SPACE_INDEXING,   // Zero-width adjacency before [ or <|
   RANGE,            // .. (greedy pair of dots)
   RANGE_LT,         // ..< (range exclusive)
   RANGE_EQ,
@@ -191,7 +192,7 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
     return false;
   }
 
-  if (valid_symbols[SPACE]) {
+  if (valid_symbols[SPACE] || valid_symbols[SPACE_INDEXING]) {
     lexer->mark_end(lexer);
 
     if (c == '\n' || c == '\r') 
@@ -200,8 +201,14 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
     if (c == '<') {
       lexer->advance(lexer, false);
       if (lexer->lookahead == '|') {
-        lexer->result_symbol = SPACE;
-        return true;
+        if (valid_symbols[SPACE_INDEXING]) {
+            lexer->result_symbol = SPACE_INDEXING;
+            return true;
+        }
+        if (valid_symbols[SPACE]) {
+            lexer->result_symbol = SPACE;
+            return true;
+        }
       }
       return false;
     }
@@ -226,7 +233,18 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
       return true;
     }
 
-    if (is_digit(c) || c == '(' || c == '[' || c == '{' || c == '"') {
+    if (c == '[') {
+        if (valid_symbols[SPACE_INDEXING]) {
+            lexer->result_symbol = SPACE_INDEXING;
+            return true;
+        }
+        if (valid_symbols[SPACE]) {
+            lexer->result_symbol = SPACE;
+            return true;
+        }
+    }
+
+    if (is_digit(c) || c == '(' || c == '{' || c == '"') {
       lexer->result_symbol = SPACE;
       return true;
     }

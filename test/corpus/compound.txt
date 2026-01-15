@@ -5,16 +5,19 @@ f(g(1, 2), h(3, 4))
 ---
 (source_file
   (cell
-    (call_expression
+    (binary_expression
       left: (symbol)
+      operator: (space)
       right: (sequence
-        (call_expression
+        (binary_expression
           left: (symbol)
+          operator: (space)
           right: (sequence
             (integer_literal)
             (integer_literal)))
-        (call_expression
+        (binary_expression
           left: (symbol)
+          operator: (space)
           right: (sequence
             (integer_literal)
             (integer_literal)))))))
@@ -27,12 +30,14 @@ f(g(1, 2), h(3, 4))
   (cell
     (binary_expression
       left: (sequence
-        (call_expression
+        (binary_expression
           left: (symbol)
+          operator: (space)
           right: (integer_literal)))
       right: (sequence
-        (call_expression
+        (binary_expression
           left: (symbol)
+          operator: (space)
           right: (integer_literal))))))
 ==================
 (3) Not with function call [compound]
@@ -42,8 +47,9 @@ not f(1 + 2)
 (source_file
   (cell
     (prefix_expression
-      operand: (call_expression
+      operand: (binary_expression
         left: (symbol)
+        operator: (space)
         right: (sequence
           (binary_expression
             left: (integer_literal)
@@ -56,14 +62,17 @@ not f(1 + 2)
 (source_file
   (cell
     (sequence
-      (call_expression
+      (binary_expression
         left: (symbol)
+        operator: (space)
         right: (sequence
-          (call_expression
+          (binary_expression
             left: (symbol)
+            operator: (space)
             right: (sequence
-              (call_expression
+              (binary_expression
                 left: (symbol)
+                operator: (space)
                 right: (integer_literal)))))))))
 ==================
 5. List expression [compound]

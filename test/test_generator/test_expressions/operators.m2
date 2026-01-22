@@ -40,4 +40,6 @@ I/R[x, y, z]
 sin(2)! + sin sin 2
 x + y 2! + (z w) q 2
 f / g # (x) (*)
-
+(x)(x, y)((x, y)(x)x)
+I/R(x, y)
+2...2

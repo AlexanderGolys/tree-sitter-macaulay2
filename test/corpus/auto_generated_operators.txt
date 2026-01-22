@@ -590,3 +590,58 @@ x + y 2! + (z w) q 2
           operator: (space)
           right: (integer_literal))))))
 
+==================
+(42) (x)(x, y)((x, y)(x)x) [auto_generated_operators]
+==================
+(x)(x, y)((x, y)(x)x)
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (sequence
+        (symbol))
+      operator: (space)
+      right: (binary_expression
+        left: (sequence
+          (symbol)
+          (symbol))
+        operator: (space)
+        right: (sequence
+          (binary_expression
+            left: (sequence
+              (symbol)
+              (symbol))
+            operator: (space)
+            right: (binary_expression
+              left: (sequence
+                (symbol))
+              operator: (space)
+              right: (symbol))))))))
+
+==================
+(43) I/R(x, y) [auto_generated_operators]
+==================
+I/R(x, y)
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (sequence
+          (symbol)
+          (symbol))))))
+
+==================
+(44) 2...2 [auto_generated_operators]
+==================
+2...2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (float_literal))))
+

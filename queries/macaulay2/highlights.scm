@@ -86,14 +86,16 @@
            left: (symbol)
            operator: "_") @function.call
    operator: (space))
- (#set! priority 105))
+ (#set! priority 101))
 
 
-; f x
+; x -> expression
 (function_expression
   parameters: (symbol) @variable.parameter)
 
-; f(x, y)
+; (x, y) -> ...
+; (x) -> ...
+; () -> ...
 (function_expression
   parameters: (sequence 
                 (symbol) @variable.parameter))

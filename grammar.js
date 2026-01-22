@@ -3,6 +3,8 @@ const PREC = {
     FOR_NEW: 16,
     ASSIGN: 13,
     LOC_CONTROL: 16,
+    BRACKET_LOW: 56,
+    BRACKET_HIGH: 62,
     LOCALITY: 74
 };
 
@@ -86,14 +88,14 @@ const Choice = (...items) => items.length === 1 ? items[0] : choice(...items);
 module.exports = grammar({
     name: 'macaulay2',
 
-    supertypes: ($) => [$.expression],
+    supertypes: $ => [$.expression],
 
-    conflicts: ($) => [],
+    conflicts: _ => [],
 
-    precedences: $ => [],
+    precedences: _ => [],
         
 
-    extras: ($) => [
+    extras: $ => [
         /[\s\n]/,  // whitespace	
         $.block_comment,
         $.line_comment
@@ -102,7 +104,7 @@ module.exports = grammar({
     word: $ => $.symbol,
 
     reserved: {
-        keywords: $ => [
+        keywords: _ => [
             'if', 'then', 'else', 'from', 'to', 'when', 'do', 'in', 'of', 'list',
             'for', 'while', 'break', 'continue', 'return', 'try', 'catch', 'throw',
             'time', 'timing', 'elapsedTime', 'elapsedTiming', 'profile',
@@ -110,10 +112,10 @@ module.exports = grammar({
             'threadVariable', 'threadLocal', 'new', 'SPACE', 'and', 'not', 'or', 'xor'
         ],
 
-		locality_op: $ => []
+		locality_op: _ => []
     },
 
-    inline: ($) => [
+    inline: $ => [
         $._loop_body,
     ],
 	
@@ -184,31 +186,31 @@ module.exports = grammar({
             prec(10, token.immediate('///'))
         ),
 
-        string_literal: ($) => choice($._std_string, $._raw_string),
+        string_literal: $ => choice($._std_string, $._raw_string),
 
         boolean_literal: _ => choice('true', 'false'),
 
         builtin_constant: _ => choice(
-            'null',
-            'infinity',
+            'CatalanConstant',
+            'EulerConstant',
             'ii',
             'pi',
         ),
 
         
-        array: ($) => prec.left(56, Parenthesized($._multi_expression, '[')), 
+        array: $ => prec.left(PREC.BRACKET_LOW, seq('[', optional($._multi_expression), ']')), 
 
 
-        sequence: ($) => prec.left(62, Parenthesized($._multi_expression)), 
+        sequence: $ => prec.left(PREC.BRACKET_HIGH, seq('(', optional($._multi_expression), ')')), 
 
 
-        list: ($) => prec.left(62, Parenthesized($._multi_expression, '{')), 
+        list: $ => prec.left(PREC.BRACKET_HIGH, seq('{', optional($._multi_expression), '}')), 
+
     
+        angle_bar_list: $ => prec.left(PREC.BRACKET_LOW, seq('<|', optional($._multi_expression), '|>')), 
 
-        angle_bar_list: ($) => prec.left(56, Parenthesized($._multi_expression, '<|')), 
 
-
-        function_expression: $ => prec.right(13, seq(
+        function_expression: $ => prec.right(PREC.ASSIGN, seq(
             field('parameters', choice($.symbol, $.sequence, $.list)),
             field('operator', '->'),
             field('body', $.expression)
@@ -243,7 +245,7 @@ module.exports = grammar({
 
             return choice(
                 ...assignmentOperators.map(op => op.assoc(op.precedence, AssignOp(op.symbols))),
-                prec.right(13, AssignOp([alias($._range_eq, "..="), alias($._range_lt_eq, "..<=")]))
+                prec.right(PREC.ASSIGN, AssignOp([alias($._range_eq, "..="), alias($._range_lt_eq, "..<=")]))
             );
         },
 
@@ -287,43 +289,43 @@ module.exports = grammar({
         },
 
 
-        from_clause: ($) => prec(PREC.LOC_CONTROL, seq(
+        from_clause: $ => prec(PREC.LOC_CONTROL, seq(
             'from',
             $.expression)),
 
-		of_clause: ($) => prec(PREC.LOC_CONTROL, seq(
+		of_clause: $ => prec(PREC.LOC_CONTROL, seq(
 			'of',
 			$.expression)),
 
-        to_clause: ($) => prec(PREC.LOC_CONTROL, seq(
+        to_clause: $ => prec(PREC.LOC_CONTROL, seq(
             'to',
             $.expression)),
 
-        when_clause: ($) => prec(PREC.LOC_CONTROL, seq(
+        when_clause: $ => prec(PREC.LOC_CONTROL, seq(
             'when',
             $.expression)),
 
-        list_clause: ($) => prec(12, seq(
+        list_clause: $ => prec(PREC.CONTROL, seq(
             'list',
             $.expression)),
 
 
-        do_clause: ($) => prec(12, seq(
+        do_clause: $ => prec(PREC.CONTROL, seq(
             'do',
             $.expression)),
 
-        in_clause: ($) => prec(PREC.LOC_CONTROL, seq(
+        in_clause: $ => prec(PREC.LOC_CONTROL, seq(
             'in',
             $.expression)),
 
 
-        _loop_body: ($) => prec.right(choice(
+        _loop_body: $ => prec.right(choice(
             seq($.list_clause, optional($.do_clause)),
             $.do_clause)),
 
 
 
-        if_statement: ($) => prec.right(PREC.CONTROL, seq(
+        if_statement: $ => prec.right(PREC.CONTROL, seq(
             'if',
             field('condition', $.expression),
             'then',
@@ -349,7 +351,7 @@ module.exports = grammar({
         ),
 
 
-        while_statement: ($) => prec.right(PREC.CONTROL, seq(
+        while_statement: $ => prec.right(PREC.CONTROL, seq(
             'while',
             $.expression,
             optional($.when_clause),
@@ -358,7 +360,7 @@ module.exports = grammar({
 
 
 
-        new_statement: ($) => prec.right(PREC.FOR_NEW, seq(
+        new_statement: $ => prec.right(PREC.FOR_NEW, seq(
             'new',
             field('type', $.expression),
             optional($.of_clause),
@@ -368,43 +370,43 @@ module.exports = grammar({
 
 
 
-        break_statement: ($) => prec.left(PREC.CONTROL, seq(
+        break_statement: $ => prec.left(PREC.CONTROL, seq(
             'break', 
             optional($.expression))),
 
-        continue_statement: ($) => prec.left(PREC.CONTROL, seq(
+        continue_statement: $ => prec.left(PREC.CONTROL, seq(
             'continue', 
             optional($.expression))),
 
-        return_statement: ($) => prec.left(PREC.CONTROL, seq(
+        return_statement: $ => prec.left(PREC.CONTROL, seq(
             'return', 
             optional($.expression))),
 
-        breakpoint_statement: ($) => prec.left(PREC.CONTROL, seq(
+        breakpoint_statement: $ => prec.left(PREC.CONTROL, seq(
             'breakpoint', 
             optional($.expression))),
 
-        catch_statement: ($) => prec.left(PREC.CONTROL, seq(
+        catch_statement: $ => prec.left(PREC.CONTROL, seq(
             'catch', 
             $.expression)),
 
-        shield_statement: ($) => prec.left(PREC.CONTROL, seq(
+        shield_statement: $ => prec.left(PREC.CONTROL, seq(
             'shield', 
             $.expression)),
 
-        test_statement: ($) => prec.left(PREC.CONTROL, seq(
+        test_statement: $ => prec.left(PREC.CONTROL, seq(
             'TEST', 
             $.expression)),
 
-        step_statement: ($) => prec.left(PREC.CONTROL, seq(
+        step_statement: $ => prec.left(PREC.CONTROL, seq(
             'step', 
             $.expression)),
 
-        throw_statement: ($) => prec.left(PREC.CONTROL, seq(
+        throw_statement: $ => prec.left(PREC.CONTROL, seq(
             'throw', 
             $.expression)),
 
-        time_statement: ($) => prec.left(PREC.CONTROL, seq(
+        time_statement: $ => prec.left(PREC.CONTROL, seq(
             choice(
                 'time', 
                 'timing', 
@@ -414,7 +416,7 @@ module.exports = grammar({
             $.expression)),
 
 
-        try_statement: ($) => prec.right(PREC.CONTROL, seq(
+        try_statement: $ => prec.right(PREC.CONTROL, seq(
             'try',
             field('condition', $.expression),
             'then',
@@ -424,7 +426,7 @@ module.exports = grammar({
                 field('alternative', $.expression)))
         )),
 
-        locality_operator: ($) => reserved('locality_op', prec(PREC.LOCALITY, seq(
+        locality_operator: $ => reserved('locality_op', prec(PREC.LOCALITY, seq(
             choice(
                 'global', 
                 'local', 
@@ -439,21 +441,15 @@ module.exports = grammar({
             ), $.resolved_symbol))
         ))),
 
-        resolved_symbol: $ => $.symbol,
 
-		
-
-
-
-
-        _multi_expression: ($) => seq(
+        _multi_expression: $ => seq(
             DelimitedSeq(
                 DelimitedSeq($.expression, { delim: ',' }),
                 { delim: ';', allow_empty: false}),
             optional(";")),
 
        
-        expression: ($) => choice(
+        expression: $ => choice(
             $.integer_literal,
             $.float_literal,      
             $.boolean_literal,
@@ -496,20 +492,6 @@ module.exports = grammar({
     },  // End of rules
 });
 
-function bracket_right(left) {
-    switch (left) {
-        case '(': return ')';
-        case '{': return '}';
-        case '[': return ']';
-        case '<|': return '|>';
-    }
-    return left;
-}
-
-function Parenthesized(rule, bracket) {
-    bracket = bracket || '(';
-    return seq(bracket, optional(rule), bracket_right(bracket));
-}
 
 function DelimitedSeq(rule, options) {
     options = options || {};

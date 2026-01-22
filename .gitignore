@@ -16,4 +16,4 @@ gen_output.txt
 # Editor files
 *.code-workspace
 .DS_Store
-.github
+.github/

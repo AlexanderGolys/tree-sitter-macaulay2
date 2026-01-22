@@ -279,11 +279,11 @@
       "members": [
         {
           "type": "STRING",
-          "value": "null"
+          "value": "CatalanConstant"
         },
         {
           "type": "STRING",
-          "value": "infinity"
+          "value": "EulerConstant"
         },
         {
           "type": "STRING",
@@ -292,6 +292,10 @@
         {
           "type": "STRING",
           "value": "pi"
+        },
+        {
+          "type": "STRING",
+          "value": "null"
         }
       ]
     },
@@ -2857,16 +2861,29 @@
             }
           },
           {
-            "type": "STRING",
-            "value": "then"
-          },
-          {
-            "type": "FIELD",
-            "name": "consequence",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "then"
+                  },
+                  {
+                    "type": "FIELD",
+                    "name": "consequence",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "expression"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "CHOICE",
@@ -3395,10 +3412,6 @@
           }
         ]
       }
-    },
-    "resolved_symbol": {
-      "type": "SYMBOL",
-      "name": "symbol"
     },
     "_multi_expression": {
       "type": "SEQ",

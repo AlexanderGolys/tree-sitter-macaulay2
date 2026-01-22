@@ -203,3 +203,47 @@ throw err
   (cell
     (throw_statement
       (symbol))))
+==================
+(16) try then else
+==================
+try x then y else z
+---
+
+(source_file
+  (cell
+    (try_statement
+      condition: (symbol)
+      consequence: (symbol)
+      alternative: (symbol))))
+==================
+(17) try then 
+==================
+try x then y
+---
+
+(source_file
+  (cell
+    (try_statement
+      condition: (symbol)
+      consequence: (symbol))))
+==================
+(18) try else 
+==================
+try x else y
+---
+
+(source_file
+  (cell
+    (try_statement
+      condition: (symbol)
+      alternative: (symbol))))
+==================
+(19) try 
+==================
+try x 
+---
+
+(source_file
+  (cell
+    (try_statement
+      condition: (symbol))))

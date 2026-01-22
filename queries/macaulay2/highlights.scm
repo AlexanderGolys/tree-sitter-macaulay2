@@ -5,8 +5,7 @@
 ; Literals
 (integer_literal) @number
 (float_literal) @number.float
-(exp_missing) @comment.error
-(p_missing) @comment.error
+
 (string_literal) @string
 (escape_sequence) @string.escape
 (boolean_literal) @boolean
@@ -36,8 +35,8 @@
 ";" @punctuation.delimiter
 
 ; Keywords
-(if_statement "if" @keyword.conditional)
-(if_statement "else" @keyword.conditional)
+"if" @keyword.conditional
+"else" @keyword.conditional
 "then" @keyword.conditional
 "for" @keyword.repeat
 "while" @keyword.repeat

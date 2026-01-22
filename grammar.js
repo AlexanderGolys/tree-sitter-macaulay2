@@ -195,6 +195,7 @@ module.exports = grammar({
             'EulerConstant',
             'ii',
             'pi',
+            'null'
         ),
 
         
@@ -419,11 +420,8 @@ module.exports = grammar({
         try_statement: $ => prec.right(PREC.CONTROL, seq(
             'try',
             field('condition', $.expression),
-            'then',
-            field('consequence', $.expression),
-            optional(seq(
-                'else', 
-                field('alternative', $.expression)))
+            optional(seq('then', field('consequence', $.expression))),
+            optional(seq('else', field('alternative', $.expression)))
         )),
 
         locality_operator: $ => reserved('locality_op', prec(PREC.LOCALITY, seq(

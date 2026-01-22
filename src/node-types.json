@@ -1332,7 +1332,7 @@
       },
       "consequence": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "expression",
@@ -1669,6 +1669,14 @@
     "named": false
   },
   {
+    "type": "CatalanConstant",
+    "named": false
+  },
+  {
+    "type": "EulerConstant",
+    "named": false
+  },
+  {
     "type": "TEST",
     "named": false
   },
@@ -1862,10 +1870,6 @@
     "named": false
   },
   {
-    "type": "infinity",
-    "named": false
-  },
-  {
     "type": "integer_literal",
     "named": true
   },
@@ -1928,11 +1932,11 @@
   },
   {
     "type": "symbol",
-    "named": true
+    "named": false
   },
   {
     "type": "symbol",
-    "named": false
+    "named": true
   },
   {
     "type": "then",

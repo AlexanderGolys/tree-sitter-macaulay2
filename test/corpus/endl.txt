@@ -132,3 +132,26 @@ f(
 			(postfix_expression
           		operand: (integer_literal))))))
 
+==================
+(10) Broken postfix in call [endl]
+==================
+f(x -> (
+
+	x;
+
+	y
+
+))
+---
+
+(source_file
+  (cell
+	 (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (sequence
+          (function_expression
+            parameters: (symbol)
+            body: (sequence
+              (symbol)
+              (symbol)))))))

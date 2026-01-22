@@ -87,9 +87,9 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
 
   int32_t c = lexer->lookahead;
 
-  if (lexer->eof(lexer)) 
-    return false;
-
+    if (lexer->eof(lexer)) 
+      return false;
+    
   // Check RANGE first, before FLOAT, to avoid consuming the first '.'
   if (valid_symbols[RANGE] || valid_symbols[RANGE_LT] || valid_symbols[RANGE_EQ] || valid_symbols[RANGE_LT_EQ]) {
     if (c == '.') {
@@ -194,10 +194,10 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
 
   if (valid_symbols[SPACE] || valid_symbols[SPACE_INDEXING]) {
     lexer->mark_end(lexer);
-
+    
     if (c == '\n' || c == '\r') 
       return false;
-
+    
     if (c == '<') {
       lexer->advance(lexer, false);
       if (lexer->lookahead == '|') {
@@ -206,13 +206,13 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
             return true;
         }
         if (valid_symbols[SPACE]) {
-            lexer->result_symbol = SPACE;
-            return true;
+        lexer->result_symbol = SPACE;
+        return true;
         }
       }
       return false;
     }
-
+    
     if (c == '/') {
       lexer->advance(lexer, false);
       if (lexer->lookahead == '/') {
@@ -224,15 +224,15 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
       }
       return false;
     }
-
+  
     if (is_alpha(c)) {
       if (is_structural_keyword_ahead(lexer))
         return false;
-
+      
       lexer->result_symbol = SPACE;
       return true;
     }
-
+    
     if (c == '[') {
         if (valid_symbols[SPACE_INDEXING]) {
             lexer->result_symbol = SPACE_INDEXING;

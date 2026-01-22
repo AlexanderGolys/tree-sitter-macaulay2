@@ -20,95 +20,6 @@
 ; Operators
 (_ operator: _ @operator)
 
-; Functions
-(binary_expression
-  left: (symbol) @function.call
-  operator: (space))
-
-((binary_expression
-  left: (binary_expression
-          left: (symbol)
-          operator: "_") @function.call
-  operator: (space))
- (#set! priority 105))
-
-
-(function_expression
-  parameters: (symbol) @variable.parameter)
-
-(function_expression
-  parameters: (sequence (symbol) @variable.parameter))
-
-(function_expression
-  parameters: (list (symbol) @variable.parameter))
-
-(assignment_expression
-  left: (symbol) @function
-  right: (function_expression))
-
-; Options / Properties
-(option_expression
-  left: (symbol) @property
-  operator: "=>")
-
-(binary_expression
-  operator: (space)
-  right: (sequence
-           (option_expression
-             left: (symbol) @variable.parameter
-             operator: "=>"
-             right: _ @variable.member)))
-
-(array
-  (option_expression
-    left: (symbol) @variable.parameter
-    operator: "=>"
-    right: _ @variable.member))
-
-
-; Method Installations
-
-((assignment_expression
-  left: (binary_expression
-	  left: (_) @type
-	  operator: (_) @_op
-	  right: (_) @type))
-(#not-any-of? @_op "." ".?" "#" "_"))
-
-(assignment_expression
-  left: (binary_expression
-	  left: (_) @type
-	  operator: "_" 
-	  right: (_) @type)
-  right: (function_expression))
-
-
-(assignment_expression
-  left: (binary_expression
-	  left: (symbol) @function
-	  operator: (space)
-	  right: (sequence
-		  (_) @type)))
-
-(assignment_expression
-  left: (prefix_expression
-	operand: (symbol) @type))
-
-(assignment_expression
-  left: (postfix_expression
-	operand: (symbol) @type))
-
-((binary_expression
-  left: (symbol) @function.builtin
-  operator: (space)
-  right: (sequence
-    (locality_operator) .
-    (_) @type .
-    (_) @type))
-  (#eq? @function.builtin "installAssignmentMethod"))
-
-
-
 
 ; Brackets
 "(" @punctuation.bracket
@@ -125,8 +36,8 @@
 ";" @punctuation.delimiter
 
 ; Keywords
-"if" @keyword.conditional
-"else" @keyword.conditional
+(if_statement "if" @keyword.conditional)
+(if_statement "else" @keyword.conditional)
 "then" @keyword.conditional
 "for" @keyword.repeat
 "while" @keyword.repeat
@@ -162,19 +73,199 @@
 "xor" @keyword.operator
 "not" @keyword.operator
 
+
+
+; f x
+(binary_expression
+  left: (symbol) @function.call
+  operator: (space))
+
+; f_1 x
+((binary_expression
+   left: (binary_expression
+           left: (symbol)
+           operator: "_") @function.call
+   operator: (space))
+ (#set! priority 105))
+
+
+; f x
+(function_expression
+  parameters: (symbol) @variable.parameter)
+
+; f(x, y)
+(function_expression
+  parameters: (sequence 
+                (symbol) @variable.parameter))
+
+
+(function_expression
+  parameters: (list 
+                (symbol) @variable.parameter))
+
+; f := x -> x
+(assignment_expression
+  left: (symbol) @function
+  right: (function_expression))
+
+(assignment_expression
+  left: (symbol) @function
+  right: (option_attachment 
+           left: [(list
+                   (option_assignment 
+                     left: (symbol) @variable.member))
+                  (symbol)]
+           right: (function_expression
+                    parameters: (symbol) @variable.member)))
+
+(binary_expression
+  operator: ["." ".?"] 
+  right: (symbol) @variable.member)
+
+; Options / Properties
+(option_assignment
+  left: (symbol) @property)
+
+(binary_expression
+  operator: (space)
+  right: (sequence
+           (option_assignment
+             left: (symbol) @variable.member)))
+
+(binary_expression
+  left: (_) @type
+  operator: (space)
+  right: (array))
+
+
+
+(array
+  (option_assignment
+    left: (symbol) @variable.parameter
+    right: _ @variable.member))
+
+
 ; Types
 (new_statement
   type: (_) @type
-  parent_type: (_)? @type)
+  (of_clause (_) @type)) 
+
+(new_statement
+  (from_clause "from" @keyword)) 
+
+; Method Installations
+; ZZ + ZZ := add
+((assignment_expression
+   left: (binary_expression
+           left: (_) @type
+           operator: _ @constructor
+           right: (_) @type)
+   operator: ["=" ":="] @constructor)
+ (#not-any-of? @constructor "." ".?" "#" "_"))
+
+
+
+; Method Installations
+; f ZZ := add
+((assignment_expression
+   left: (binary_expression
+           left: (symbol) @constructor
+           operator: (space) 
+           right: (symbol) @type))
+ (#match? @constructor "[a-z].*"))
+
+; Method Installations 
+; ZZ ZZ := add
+((assignment_expression
+   left: (binary_expression
+           left: (symbol) @constructor
+           operator: (space) 
+           right: (symbol) @type))
+ (#match? @constructor "[a-z].*"))
+
+; x_1 := 2   -- NOT installation
+; A _ B := (x, y) -> x*y    -- closure as value: INSTALLATION
+; A, B :: @type 
+; _, := :: @constructor
+(assignment_expression
+  left: (binary_expression
+          left: (_) @type
+          operator: "_" @constructor
+          right: (_) @type)
+  operator: ["=" ":="] @constructor
+  right: (function_expression))
+
+; A op B := Y => f  -- specifying typical codomain as Y
+(assignment_expression
+  left: [(binary_expression) (prefix_expression) (postfix_expression)]
+  right: (option_assignment
+           left: (symbol) @type
+           operator: "=>" @constructor))
+
+
+; f ZZ := g
+(assignment_expression
+  left: (binary_expression
+          left: (symbol) @constructor
+          operator: (space)
+          right: (sequence
+                   "(" @constructor
+                   [(symbol) @type
+                             "," @constructor]*
+                   ")" @constructor))
+  operator: ["=" ":="] @constructor)
+
+
+; ZZ ZZ := g
+
+
+; - ZZ := x -> -x
+(assignment_expression
+  left: (prefix_expression
+          operator: _ @constructor
+          operand: (symbol) @type))
+
+; ZZ ! := n -> if n > 0 then n*(n-1)! else 1
+(assignment_expression
+  left: (postfix_expression
+          operand: (symbol) @type
+          operator: _ @constructor)
+  operator: ["=" ":="] @constructor)
+
+((binary_expression
+   left: (symbol) @function.builtin
+   operator: (space)
+   right: (sequence
+            (locality_operator) .
+            (_) @type .
+            (_) @type))
+ (#eq? @function.builtin "installAssignmentMethod"))
+
+
+; ZZ ! := n -> if n > 0 then n*(n-1)! else 1
+(assignment_expression
+  left: (new_statement
+          "new" @constructor
+          (of_clause 
+            "of"? @constructor)?
+          (from_clause
+            "from" @constructor
+            [(symbol) @type
+                      (sequence (symbol) @type)])?)
+
+  operator: ":=" @constructor)
 
 
 
 ; Builtin variables
 ((symbol) @variable.builtin
- (#match? @variable.builtin "^((o[1-9][0-9]*)|oo|ooo|oooo)$"))
+          (#match? @variable.builtin "^((o[1-9][0-9]*)|oo|ooo|oooo)$"))
 
-
-
+((symbol) @variable.builtin
+          (#any-of? @variable.builtin "allowableThreads" "debugLevel" "defaultPrecision" "engineDebugLevel" "errorDepth" "gbTrace" 
+           "interpreterDepth" "lineNumber" "loadDepth" "maxAllowableThreads" "maxExponent" "minExponent" "numTBBThreads" 
+           "printingAccuracy" "printingLeadLimit" "printingPrecision" "printingTimeLimit" "printingTrailLimit" 
+           "printWidth" "recursionLimit" "typicalValues"))
 ; Special function args
 
 (binary_expression
@@ -182,15 +273,15 @@
   operator: (space)
   right: (sequence 
            (symbol) @type .)
- (#eq? @function.builtin "instance"))
+  (#eq? @function.builtin "instance"))
 
 (binary_expression
   left: (symbol) @function.builtin
   operator: (space)
   right: [(sequence 
-           (symbol) @type)
+            (symbol) @type)
           (symbol) @type]
- (#eq? @function.builtin "parent"))
+  (#eq? @function.builtin "parent"))
 
 
 
@@ -198,58 +289,58 @@
 
 ; Special strings (URL/Regexp helpers)
 ((string_literal) @string.special.url
-  (#match? @string.special.url "^http[s]?://.*"))
+                  (#match? @string.special.url "^http[s]?://.*"))
 
 ((string_literal) @string.special.url
-  (#match? @string.special.url "^www\..*"))
+                  (#match? @string.special.url "^www\..*"))
 
 ((binary_expression
-  left: (symbol) @function.builtin
-  operator: (space)
-  right: [(string_literal) @string.special.url
-          (sequence . (string_literal) @string.special.url)])
-  (#any-of? @function.builtin "splitWWW" "getWWW" "urlEncode"))
+   left: (symbol) @function.builtin
+   operator: (space)
+   right: [(string_literal) @string.special.url
+                            (sequence . (string_literal) @string.special.url)])
+ (#any-of? @function.builtin "splitWWW" "getWWW" "urlEncode"))
 
 ((binary_expression
-  left: (symbol) @function.builtin
-  operator: (space)
-  right: [(string_literal) @string.regexp
-          (sequence . (string_literal) @string.regexp)])
-  (#any-of? @function.builtin "match" "regex" "select"))
+   left: (symbol) @function.builtin
+   operator: (space)
+   right: [(string_literal) @string.regexp
+                            (sequence . (string_literal) @string.regexp)])
+ (#any-of? @function.builtin "match" "regex" "select"))
 
 ((binary_expression
-  left: (symbol) @function.builtin
-  operator: (space)
-  right: (sequence 
-           (string_literal) @string.regexp 
-           (string_literal) @string.special
-		   (_)))
-  (#eq? @function.builtin "replace"))
+   left: (symbol) @function.builtin
+   operator: (space)
+   right: (sequence 
+            (string_literal) @string.regexp 
+            (string_literal) @string.special
+            (_)))
+ (#eq? @function.builtin "replace"))
 
 
 
 ((binary_expression
-  left: (symbol) @function.builtin
-  operator: (space)
-  right: (sequence 
-           (string_literal) @string.regexp
-           (_)+))
+   left: (symbol) @function.builtin
+   operator: (space)
+   right: (sequence 
+            (string_literal) @string.regexp
+            (_)+))
  (#eq? @function.builtin "separate"))
 
 
 ; packages
 ((binary_expression
-  left: (symbol) @function.builtin
-  operator: (space)
-  right: [(symbol) @module.builtin
-         (sequence . (symbol) @module.builtin)
-         (string_literal) @string.special
-         (sequence . (string_literal) @string.special)])
+   left: (symbol) @function.builtin
+   operator: (space)
+   right: [(symbol) @module.builtin
+                    (sequence . (symbol) @module.builtin)
+                    (string_literal) @string.special
+                    (sequence . (string_literal) @string.special)])
  (#any-of? @function.builtin "loadPackage" "installPackage" "uninstallPackage" "needsPackage" 
-                             "export" "endPackage" "newPackage" "importFrom" "exportFrom"))
+  "export" "endPackage" "newPackage" "importFrom" "exportFrom"))
 
 ((binary_expression
-  left: (symbol) @function.builtin
-  operator: "_"
-  right: (symbol) @module.builtin)
-  (#any-of? @function.builtin "importFrom" "exportFrom"))
+   left: (symbol) @function.builtin
+   operator: "_"
+   right: (symbol) @module.builtin)
+ (#any-of? @function.builtin "importFrom" "exportFrom"))

@@ -76,7 +76,11 @@
         "named": true
       },
       {
-        "type": "option_expression",
+        "type": "option_assignment",
+        "named": true
+      },
+      {
+        "type": "option_attachment",
         "named": true
       },
       {
@@ -223,6 +227,10 @@
           },
           {
             "type": ":=",
+            "named": false
+          },
+          {
+            "type": "<-",
             "named": false
           },
           {
@@ -909,16 +917,6 @@
     "type": "new_statement",
     "named": true,
     "fields": {
-      "parent_type": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      },
       "type": {
         "multiple": false,
         "required": true,
@@ -931,18 +929,37 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": false,
       "types": [
         {
           "type": "from_clause",
+          "named": true
+        },
+        {
+          "type": "of_clause",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "option_expression",
+    "type": "of_clause",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "option_assignment",
     "named": true,
     "fields": {
       "left": {
@@ -960,13 +977,41 @@
         "required": true,
         "types": [
           {
-            "type": "<-",
-            "named": false
-          },
-          {
             "type": "=>",
             "named": false
-          },
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "option_attachment",
+    "named": true,
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "operator": {
+        "multiple": false,
+        "required": true,
+        "types": [
           {
             "type": ">>",
             "named": false
@@ -1883,11 +1928,11 @@
   },
   {
     "type": "symbol",
-    "named": false
+    "named": true
   },
   {
     "type": "symbol",
-    "named": true
+    "named": false
   },
   {
     "type": "then",

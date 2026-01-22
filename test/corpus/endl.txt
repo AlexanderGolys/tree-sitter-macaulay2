@@ -1,5 +1,5 @@
 ==================
-(1) Two expressions
+(1) Two expressions [endl]
 ==================
 2
 2
@@ -12,7 +12,7 @@
     (integer_literal)))
 
 ==================
-(1) Broken expression
+(2) Broken addition [endl]
 ==================
 2 + 
 2
@@ -25,20 +25,22 @@
       right: (integer_literal))))
 
 ==================
-(2) Statement after operator (no newline break)
+(3) broken sequence [endl]
 ==================
-2 +
-2
+(
+	a,
+	b
+)
 ---
 
 (source_file
   (cell
-    (binary_expression
-      left: (integer_literal)
-      right: (integer_literal))))
+    (sequence
+      (symbol)
+      (symbol))))
 
 ==================
-(3) Statement after operator (with comment, still no newline break)
+(4) Statement after operator (with comment, still no newline break) [endl]
 ==================
 2 + -- comment
 2
@@ -52,55 +54,35 @@
       right: (integer_literal))))
 
 ==================
-(4) Statement break after complete binary expression
+(5) Broken prefix [endl]
 ==================
-2 + 3
-2
++ 
+3
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (integer_literal))))
+
+==================
+(6) Broken function call [endl]
+==================
+f (
+	a
+)
 ---
 
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
-      right: (integer_literal)))
-  (cell
-    (integer_literal)))
-
-==================
-(5) Statement break after closing paren
-==================
-(2 + 3)
-2
----
-
-(source_file
-  (cell
-    (sequence
-      (binary_expression
-        left: (integer_literal)
-        right: (integer_literal))))
-  (cell
-    (integer_literal)))
-
-==================
-(6) Statement break after assignment
-==================
-a = 5
-b = 7
----
-
-(source_file
-  (cell
-    (assignment_expression
       left: (symbol)
-      right: (integer_literal)))
-  (cell
-    (assignment_expression
-      left: (symbol)
-      right: (integer_literal))))
+	  operator: (space)
+      right: (sequence
+        (symbol)))))
 
 ==================
-(7) No break for continued parentheses
+(7) No break for continued parentheses [endl]
 ==================
 f(
   2
@@ -119,7 +101,7 @@ f(
           right: (integer_literal))))))
 
 ==================
-(8) Newline ends statement before binary op (error)
+(8) Newline ends statement before binary op [endl]
 ==================
 2
 + 3
@@ -131,3 +113,22 @@ f(
   (cell
     (prefix_expression
       operand: (integer_literal))))
+
+==================
+(9) Broken postfix in call [endl]
+==================
+f(
+	2
+	!
+)
+---
+
+(source_file
+  (cell
+	 (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (sequence
+			(postfix_expression
+          		operand: (integer_literal))))))
+

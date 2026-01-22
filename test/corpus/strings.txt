@@ -216,3 +216,18 @@ expressions = separate("--\"\a
 (source_file
   (cell
     (string_literal)))
+==================
+(17) Non escape [strings]
+==================
+expressions = separate(///\n--///)
+---
+
+(source_file
+  (cell
+    (assignment_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (sequence
+          (string_literal))))))

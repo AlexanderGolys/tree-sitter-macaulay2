@@ -32,5 +32,12 @@ for i from 1 to 5 when i^2 < 15 list i^2 do print i
 p(ZZ,ZZ) := p(List,ZZ) := (i,j) -> {i,j}
 gb(ideal(x*y-z^2,y^2-w^2), DegreeLimit => 2)
 MatrixExpression append(applyTable({{x^2-y^2,x^3-y^3},
-{x^2-4*y^2,x^3+y^3}},factor),Degrees=>{{{-2},{-3}},{{0},{0}}})
-2. .. .2
+    {x^2-4*y^2,x^3+y^3}},factor),Degrees=>{{{-2},{-3}},{{0},{0}}})
+2. .. .2 ii ooo o2
+(
+    2,
+    2,
+    2,
+    2,
+    )
+

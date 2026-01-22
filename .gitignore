@@ -1,23 +1,18 @@
-*.log
-.DS_Store
-*.code-workspace
-node_modules/
-.vscode/
-*.obj
-*.o
-*.a
-*.so
-*.so.*
-*.dylib
-*.dll
-*.pc
-*.exp
-*.lib
-.venv/
-dist/
-*.egg-info
-*.whl
-test_output.txt
-.github/
-target/
+# Tree-sitter artifacts
 build/
+target/
+*.o
+*.so
+*.dll
+*.dylib
+node_modules/
+package-lock.json
+
+# Local debug files
+debug_*.m2
+debug_*.txt
+gen_output.txt
+
+# Editor files
+*.code-workspace
+.DS_Store

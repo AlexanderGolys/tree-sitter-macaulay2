@@ -5,5 +5,3 @@ String * String = peek
 - String = peek
 String ~ = peek
 s_2 := 44
-x#3 := "foo"
-x.y := z

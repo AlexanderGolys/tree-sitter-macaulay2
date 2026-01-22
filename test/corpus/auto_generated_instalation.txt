@@ -1,0 +1,141 @@
+==================
+(1) ZZ ZZ := (x, y) -> x + y [auto_generated_instalation]
+==================
+ZZ ZZ := (x, y) -> x + y
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (symbol))
+      right: (function_expression
+        parameters: (sequence
+          (symbol)
+          (symbol))
+        body: (binary_expression
+          left: (symbol)
+          right: (symbol))))))
+
+==================
+(2) f ZZ := x -> x^2 [auto_generated_instalation]
+==================
+f ZZ := x -> x^2
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (symbol))
+      right: (function_expression
+        parameters: (symbol)
+        body: (binary_expression
+          left: (symbol)
+          right: (integer_literal))))))
+
+==================
+(3) ZZ _ ZZ := (x, y) -> x + y [auto_generated_instalation]
+==================
+ZZ _ ZZ := (x, y) -> x + y
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (function_expression
+        parameters: (sequence
+          (symbol)
+          (symbol))
+        body: (binary_expression
+          left: (symbol)
+          right: (symbol))))))
+
+==================
+(4) ZZ + ZZ := (x, y) -> x + y [auto_generated_instalation]
+==================
+ZZ + ZZ := (x, y) -> x + y
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (function_expression
+        parameters: (sequence
+          (symbol)
+          (symbol))
+        body: (binary_expression
+          left: (symbol)
+          right: (symbol))))))
+
+==================
+(5) + ZZ := x -> x + 1 [auto_generated_instalation]
+==================
++ ZZ := x -> x + 1
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (prefix_expression
+        operand: (symbol))
+      right: (function_expression
+        parameters: (symbol)
+        body: (binary_expression
+          left: (symbol)
+          right: (integer_literal))))))
+
+==================
+(6) ZZ ! := x -> x! [auto_generated_instalation]
+==================
+ZZ ! := x -> x!
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (postfix_expression
+        operand: (symbol))
+      right: (function_expression
+        parameters: (symbol)
+        body: (postfix_expression
+          operand: (symbol))))))
+
+==================
+(7) f(A, B, C, D) := f [auto_generated_instalation]
+==================
+f(A, B, C, D) := f
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (sequence
+          (symbol)
+          (symbol)
+          (symbol)
+          (symbol)))
+      right: (symbol))))
+
+==================
+(8) ZZ ZZ := ZZ => f [auto_generated_instalation]
+==================
+ZZ ZZ := ZZ => f
+---
+(source_file
+  (cell
+    (assignment_expression
+      left: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (symbol))
+      right: (option_assignment
+        left: (symbol)
+        right: (symbol)))))
+

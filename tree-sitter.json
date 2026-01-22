@@ -7,6 +7,8 @@
       "path": ".",
       "file-types": ["m2", "M2"],
       "highlights": "queries/macaulay2/highlights.scm",
+	  "indent": "queries/macaulay2/indents.scm",
+	  "folds": "queries/macaulay2/folds.scm",
       "description": "Tree-sitter grammar for the Macaulay2 language",
       "repository": "https://github.com/AlexanderGolys/tree-sitter-macaulay2",
       "version": "0.1.0"

@@ -1,0 +1,319 @@
+==================
+(1) if x==4 then x=5 [auto_generated_control]
+==================
+if x==4 then x=5
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (binary_expression
+        left: (symbol)
+        right: (integer_literal))
+      then: (assignment_expression
+        left: (symbol)
+        right: (integer_literal)))))
+
+==================
+(2) if a > 0 then b else c [auto_generated_control]
+==================
+if a > 0 then b else c
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (binary_expression
+        left: (symbol)
+        right: (integer_literal))
+      then: (symbol)
+      else: (symbol))))
+
+==================
+(3) for i from 0 to 4 do doSomething i [auto_generated_control]
+==================
+for i from 0 to 4 do doSomething i
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (from_clause
+        (integer_literal))
+      (to_clause
+        (integer_literal))
+      (do_clause
+        (binary_expression
+          left: (symbol)
+          operator: (space)
+          right: (symbol))))))
+
+==================
+(4) for i in 1..5 when i>2 do print i [auto_generated_control]
+==================
+for i in 1..5 when i>2 do print i
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (in_clause
+        (binary_expression
+          left: (integer_literal)
+          right: (integer_literal)))
+      (when_clause
+        (binary_expression
+          left: (symbol)
+          right: (integer_literal)))
+      (do_clause
+        (binary_expression
+          left: (symbol)
+          operator: (space)
+          right: (symbol))))))
+
+==================
+(5) while x < 10 do x = x + 1 [auto_generated_control]
+==================
+while x < 10 do x = x + 1
+---
+(source_file
+  (cell
+    (while_statement
+      (binary_expression
+        left: (symbol)
+        right: (integer_literal))
+      (do_clause
+        (assignment_expression
+          left: (symbol)
+          right: (binary_expression
+            left: (symbol)
+            right: (integer_literal)))))))
+
+==================
+(6) break [auto_generated_control]
+==================
+break
+---
+(source_file
+  (cell
+    (break_statement)))
+
+==================
+(7) continue [auto_generated_control]
+==================
+continue
+---
+(source_file
+  (cell
+    (continue_statement)))
+
+==================
+(8) continue x [auto_generated_control]
+==================
+continue x
+---
+(source_file
+  (cell
+    (continue_statement
+      (symbol))))
+
+==================
+(9) return x [auto_generated_control]
+==================
+return x
+---
+(source_file
+  (cell
+    (return_statement
+      (symbol))))
+
+==================
+(10) try a then b else c [auto_generated_control]
+==================
+try a then b else c
+---
+(source_file
+  (cell
+    (try_statement
+      condition: (symbol)
+      consequence: (symbol)
+      alternative: (symbol))))
+
+==================
+(11) if a then if b then x else y [auto_generated_control]
+==================
+if a then if b then x else y
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (symbol)
+      then: (if_statement
+        condition: (symbol)
+        then: (symbol)
+        else: (symbol)))))
+
+==================
+(12) if a then x else if b then y else z [auto_generated_control]
+==================
+if a then x else if b then y else z
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (symbol)
+      then: (symbol)
+      else: (if_statement
+        condition: (symbol)
+        then: (symbol)
+        else: (symbol)))))
+
+==================
+(13) while a do if b then break [auto_generated_control]
+==================
+while a do if b then break
+---
+(source_file
+  (cell
+    (while_statement
+      (symbol)
+      (do_clause
+        (if_statement
+          condition: (symbol)
+          then: (break_statement))))))
+
+==================
+(14) for i in L do if i > 0 then return i else continue [auto_generated_control]
+==================
+for i in L do if i > 0 then return i else continue
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (in_clause
+        (symbol))
+      (do_clause
+        (if_statement
+          condition: (binary_expression
+            left: (symbol)
+            right: (integer_literal))
+          then: (return_statement
+            (symbol))
+          else: (continue_statement))))))
+
+==================
+(15) for i in a list for j in b do print x [auto_generated_control]
+==================
+for i in a list for j in b do print x
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (in_clause
+        (symbol))
+      (list_clause
+        (for_statement
+          variable: (symbol)
+          (in_clause
+            (symbol))
+          (do_clause
+            (binary_expression
+              left: (symbol)
+              operator: (space)
+              right: (symbol))))))))
+
+==================
+(16) if try x then y else z then 1 [auto_generated_control]
+==================
+if try x then y else z then 1
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (try_statement
+        condition: (symbol)
+        consequence: (symbol)
+        alternative: (symbol))
+      then: (integer_literal))))
+
+==================
+(17) catch x [auto_generated_control]
+==================
+catch x
+---
+(source_file
+  (cell
+    (catch_statement
+      (symbol))))
+
+==================
+(18) for i in L list for j in L list j do print 2 [auto_generated_control]
+==================
+for i in L list for j in L list j do print 2
+---
+(source_file
+  (cell
+    (for_statement
+      variable: (symbol)
+      (in_clause
+        (symbol))
+      (list_clause
+        (for_statement
+          variable: (symbol)
+          (in_clause
+            (symbol))
+          (list_clause
+            (symbol))
+          (do_clause
+            (binary_expression
+              left: (symbol)
+              operator: (space)
+              right: (integer_literal))))))))
+
+==================
+(19) if if 1 then 2 then 3 else 5 [auto_generated_control]
+==================
+if if 1 then 2 then 3 else 5
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (if_statement
+        condition: (integer_literal)
+        then: (integer_literal))
+      then: (integer_literal)
+      else: (integer_literal))))
+
+==================
+(20) if 1 then if 2 then 3 else 4 [auto_generated_control]
+==================
+if 1 then if 2 then 3 else 4
+---
+(source_file
+  (cell
+    (if_statement
+      condition: (integer_literal)
+      then: (if_statement
+        condition: (integer_literal)
+        then: (integer_literal)
+        else: (integer_literal)))))
+
+==================
+(21) while for i in L list 1 do 2 do 3 [auto_generated_control]
+==================
+while for i in L list 1 do 2 do 3
+---
+(source_file
+  (cell
+    (while_statement
+      (for_statement
+        variable: (symbol)
+        (in_clause
+          (symbol))
+        (list_clause
+          (integer_literal))
+        (do_clause
+          (integer_literal)))
+      (do_clause
+        (integer_literal)))))
+

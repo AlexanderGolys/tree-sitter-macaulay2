@@ -1,3 +1,10 @@
+const PREC = {
+    CONTROL: 12,
+    FOR_NEW: 16,
+    ASSIGN: 13,
+    LOC_CONTROL: 16,
+    LOCALITY: 74
+};
 
 // Range assignment operators ..= and ..<= not included, as they need to be consumed before float literals
 const augmentedAssignmentOperators = [
@@ -8,11 +15,15 @@ const augmentedAssignmentOperators = [
 ]; 
 
 const assignmentOperators = [
-    {precedence: 13, assoc: prec.right, symbols: ['=', ':=', ...augmentedAssignmentOperators]},
+    {precedence: PREC.ASSIGN, assoc: prec.right, symbols: ['=', ':=', '<-', ...augmentedAssignmentOperators]},
 ];
 
-const optionOperators = [
-    {precedence: 13, assoc: prec.right, symbols: ['=>', '>>', '<-']},
+const optionAttachment = [
+    {precedence: PREC.ASSIGN, assoc: prec.right, symbols: ['>>']},
+];
+
+const optionValueAssignment = [
+    {precedence: PREC.ASSIGN, assoc: prec.right, symbols: ['=>']},
 ];
 
 const binaryOperators = [
@@ -58,15 +69,12 @@ const postfixOperators = [
 	{precedence: 72, symbols: ['!', '^!', '_!']},
 ];
 
-const operatorsSymbols = [... new Set([...binaryOperators, ...prefixOperators, ...postfixOperators, ...optionOperators, ...assignmentOperators]
+const operatorsSymbols = [... new Set([...binaryOperators, ...prefixOperators, ...postfixOperators, ...optionValueAssignment,
+	 								   ...assignmentOperators, ...optionAttachment]
 									  .flatMap(op => op.symbols).concat(['SPACE']))];
 
 const punctuationSymbols = ['(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';'];
 
-const PREC = {
-    CONTROL: 10,
-    SCOPE: 10
-};
 
 function reserved(name, rule) {
     return rule;
@@ -147,13 +155,14 @@ module.exports = grammar({
             '\\',
             choice(
                 /[abeEfrtvn"\\]/,
-                /[0-7]{3}/,
+                /[0-7]{1, 3}[^x]/,
                 /x[0-9a-fA-F]{2}/,
-                /u[0-9a-fA-F]{4}/
+                /u[0-9a-fA-F]{4}/,
+				/[0-9a-fA-F]+x[0-9a-fA-F]+/
             )
         )),
 
-        _string_content: $ => token.immediate(prec(1, /[^"\\\n]+/)),
+        _string_content: $ => token.immediate(prec(1, /[^\"\\]+/)),
 
         _std_string: $ => seq(
             '"',
@@ -205,15 +214,26 @@ module.exports = grammar({
             field('body', $.expression)
         )),
 
-        option_expression: $ => {
+        option_attachment: $ => {
             const OptionOp = (ops, {lhs=$.expression, rhs=$.expression}={}) =>
                 seq(field('left', lhs),
                     field('operator', Choice(...ops)),
                     field('right', rhs));
             return choice(
-                ...optionOperators.map(op => op.assoc(op.precedence, OptionOp(op.symbols)))
+                ...optionAttachment.map(op => op.assoc(op.precedence, OptionOp(op.symbols)))
             );
         },
+
+		option_assignment: $ => {
+            const OptionOp = (ops, {lhs=$.expression, rhs=$.expression}={}) =>
+                seq(field('left', lhs),
+                    field('operator', Choice(...ops)),
+                    field('right', rhs));
+            return choice(
+                ...optionValueAssignment.map(op => op.assoc(op.precedence, OptionOp(op.symbols)))
+            );
+        },
+
 
         assignment_expression: $ => {
 			const AssignOp = (ops, {lhs=$.expression, rhs=$.expression}={}) => 
@@ -267,35 +287,39 @@ module.exports = grammar({
         },
 
 
-        from_clause: ($) => seq(
+        from_clause: ($) => prec(PREC.LOC_CONTROL, seq(
             'from',
-            $.expression),
+            $.expression)),
 
-        to_clause: ($) => seq(
+		of_clause: ($) => prec(PREC.LOC_CONTROL, seq(
+			'of',
+			$.expression)),
+
+        to_clause: ($) => prec(PREC.LOC_CONTROL, seq(
             'to',
-            $.expression),
+            $.expression)),
 
-        when_clause: ($) => seq(
+        when_clause: ($) => prec(PREC.LOC_CONTROL, seq(
             'when',
-            $.expression),
+            $.expression)),
 
-        list_clause: ($) => seq(
+        list_clause: ($) => prec(12, seq(
             'list',
-            $.expression),
+            $.expression)),
 
 
-        do_clause: ($) => seq(
+        do_clause: ($) => prec(12, seq(
             'do',
-            $.expression),
+            $.expression)),
 
-        in_clause: ($) => seq(
+        in_clause: ($) => prec(PREC.LOC_CONTROL, seq(
             'in',
-            $.expression),
+            $.expression)),
 
 
-        _loop_body: ($) => choice(
+        _loop_body: ($) => prec.right(choice(
             seq($.list_clause, optional($.do_clause)),
-            $.do_clause),
+            $.do_clause)),
 
 
 
@@ -310,7 +334,7 @@ module.exports = grammar({
         )),
 
 
-        for_statement: $ => prec.right(PREC.CONTROL, seq(
+        for_statement: $ => prec.right(PREC.FOR_NEW, seq(
             'for',
             field('variable', $.symbol),
 
@@ -334,10 +358,10 @@ module.exports = grammar({
 
 
 
-        new_statement: ($) => prec.left(seq(
+        new_statement: ($) => prec.right(PREC.FOR_NEW, seq(
             'new',
             field('type', $.expression),
-            optional(seq('of', field('parent_type', $.expression))),
+            optional($.of_clause),
             optional($.from_clause)
         )),
 
@@ -400,7 +424,7 @@ module.exports = grammar({
                 field('alternative', $.expression)))
         )),
 
-        locality_operator: ($) => reserved('locality_op', prec(PREC.SCOPE, seq(
+        locality_operator: ($) => reserved('locality_op', prec(PREC.LOCALITY, seq(
             choice(
                 'global', 
                 'local', 
@@ -447,7 +471,8 @@ module.exports = grammar({
             $.postfix_expression,
             $.assignment_expression,
             $.function_expression,
-            $.option_expression,
+            $.option_attachment,
+            $.option_assignment,
 
             $.if_statement,
             $.for_statement,
@@ -502,23 +527,3 @@ function DelimitedSeq(rule, options) {
 }
 
 
-
-
-
-function prefixOp(p, operator, operandRule) {
-    return prec.right(p, seq(
-        field('operator', operator),
-        field('operand', operandRule)
-    ));
-}
-
-
-
-function BinOpRight(p, operator, leftRule, rightRule) {
-    return prec.right(p, BinOp(operator, leftRule, rightRule));
-}
-
-
-function BinOpLeft(p, operator, leftRule, rightRule) {
-    return prec.left(p, BinOp(operator, leftRule, rightRule));
-}

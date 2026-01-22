@@ -31,7 +31,8 @@
       "injection-regex": "^m2$|^macaulay2$",
       "highlights": "queries/macaulay2/highlights.scm",
       "indent": "queries/macaulay2/indents.scm",
-      "locals": "queries/macaulay2/locals.scm"
+      "tags": "queries/macaulay2/tags.scm",
+      "folds": "queries/macaulay2/folds.scm"
     }
   ],
   "install_info": {

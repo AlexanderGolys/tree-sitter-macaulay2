@@ -17,3 +17,4 @@ gen_output.txt
 *.code-workspace
 .DS_Store
 .github/
+.vscode/

@@ -256,7 +256,8 @@
 
   operator: ":=" @constructor)
 
-
+(new_statement 
+  type: _ @type) 
 
 ; Builtin variables
 ((symbol) @variable.builtin
@@ -267,15 +268,20 @@
            "interpreterDepth" "lineNumber" "loadDepth" "maxAllowableThreads" "maxExponent" "minExponent" "numTBBThreads" 
            "printingAccuracy" "printingLeadLimit" "printingPrecision" "printingTimeLimit" "printingTrailLimit" 
            "printWidth" "recursionLimit" "typicalValues"))
-; Special function args
 
+
+
+
+; instance(x, Type)
 (binary_expression
   left: (symbol) @function.builtin
   operator: (space)
   right: (sequence 
+           (_) @variable
            (symbol) @type .)
   (#eq? @function.builtin "instance"))
 
+; parent Type
 (binary_expression
   left: (symbol) @function.builtin
   operator: (space)

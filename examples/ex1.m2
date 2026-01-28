@@ -1,4 +1,6 @@
 -- Macaulay2 example
+-- @@@file[m2-example] 
+-- @@@example[m2.1]
 R = QQ[x,y,z]
 I = ideal(x^2 + y^2, z^20)
 2.3p10e-3 -* lalala 
@@ -40,4 +42,6 @@ MatrixExpression append(applyTable({{x^2-y^2,x^3-y^3},
     2,
     2,
     )
-
+R = QQ[x_1..x_4]
+peek R
+describe R

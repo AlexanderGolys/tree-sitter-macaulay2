@@ -72,6 +72,7 @@
 "xor" @keyword.operator
 "not" @keyword.operator
 
+(try_statement "else" @keyword.conditional)
 
 
 ; f x

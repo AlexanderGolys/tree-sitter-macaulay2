@@ -34,10 +34,12 @@ myReplaceRParen := s -> (
         );
         
         if not inStr and not inRaw and s#i == ")" then (
-            -- Only add comma if NOT followed by -> or = or :=
+            -- Only add comma if NOT followed by -> or = or :=, and do not
+            -- rewrite the postfix operator (*).
             j := i + 1;
             while j < #s and (s#j == " " or s#j == "\n" or s#j == "\t") do j = j + 1;
             follow := false;
+            if i >= 2 and s#(i-1) == "*" and s#(i-2) == "(" then follow = true;
             if j + 1 < #s and s#j == "-" and s#(j+1) == ">" then follow = true;
             if j < #s and s#j == "=" then follow = true;
             if j + 1 < #s and s#j == ":" and s#(j+1) == "=" then follow = true;
@@ -58,11 +60,22 @@ myReplaceRParen := s -> (
 mySplitFirst := (s, delim) -> (
     s = toString s;
     delim = toString delim;
-    parts := separate(delim, s);
-    if #parts <= 1 then (s, "")
+    if #delim == 0 then return (s, "");
+
+    pos := 0;
+    found := false;
+    while pos <= #s - #delim and not found do (
+        matched := true;
+        for j from 0 to #delim - 1 do (
+            if s#(pos + j) != delim#j then (matched = false; break);
+        );
+        if matched then found = true else pos = pos + 1;
+    );
+
+    if not found then (s, "")
     else (
-        firstPart := parts#0;
-        restPart := substring(#firstPart + #delim, #s - #firstPart - #delim, s);
+        firstPart := substring(0, pos, s);
+        restPart := substring(pos + #delim, #s - pos - #delim, s);
         (firstPart, restPart)
     )
 );
@@ -96,6 +109,61 @@ myStartsWith := (prefix, s) -> (
         );
         result
     )
+);
+
+myHasAt := (s, pos, token) -> (
+    s = toString s;
+    token = toString token;
+    if pos < 0 or pos + #token > #s then false else (
+        result := true;
+        for i from 0 to #token - 1 do (
+            if s#(pos + i) != token#i then (result = false; break)
+        );
+        result
+    )
+);
+
+localityKeywords = {"threadVariable", "threadLocal", "global", "local", "symbol"};
+
+sourceLocalityKeyword := s -> (
+    s = myTrim s;
+    match := "";
+    for kw in localityKeywords do (
+        if match == "" and myStartsWith(kw, s) then (
+            boundary := #s == #kw or not (
+                (s#(#kw) >= "a" and s#(#kw) <= "z") or
+                (s#(#kw) >= "A" and s#(#kw) <= "Z") or
+                (s#(#kw) >= "0" and s#(#kw) <= "9") or
+                s#(#kw) == "'"
+            );
+            if boundary then match = kw;
+        );
+    );
+    match
+);
+
+disLocalityKeyword := s -> (
+    if myStartsWith("(threadVariable ", s) then "threadVariable"
+    else if myStartsWith("(threadLocal ", s) then "threadLocal"
+    else if myStartsWith("(global ", s) then "global"
+    else if myStartsWith("(local ", s) then "local"
+    else if myStartsWith("(symbol ", s) then "symbol"
+    else ""
+);
+
+sourceLocalityLength := (src, dis) -> (
+    kw := sourceLocalityKeyword src;
+    disKw := disLocalityKeyword dis;
+    if kw == "" or disKw == "" then return 0;
+
+    pos := #kw;
+    while pos < #src and (src#pos == " " or src#pos == "\n" or src#pos == "\t") do pos = pos + 1;
+
+    inner := myTrim substring(#disKw + 1, #dis - #disKw - 2, dis);
+    arg := if #inner > 0 and inner#0 == "(" then myExtractParenthesized inner else (mySplitFirst(inner, " "))#0;
+    if #arg == 0 then return pos;
+
+    pos + #arg
 );
 
 -- Split M2 source into top-level arguments
@@ -332,21 +400,14 @@ toTreeSitter := (s, indent, src) -> (
     );
 
     if myStartsWith("(global ", s) or myStartsWith("(local ", s) or myStartsWith("(symbol ", s) or myStartsWith("(threadVariable ", s) or myStartsWith("(threadLocal ", s) then (
-        if myStartsWith("(global ", s) then typeName = "global"
-        else if myStartsWith("(local ", s) then typeName = "local"
-        else if myStartsWith("(symbol ", s) then typeName = "symbol"
-        else if myStartsWith("(threadVariable ", s) then typeName = "threadVariable"
-        else if myStartsWith("(threadLocal ", s) then typeName = "threadLocal";
+        typeName = sourceLocalityKeyword src;
+        if typeName == "" then typeName = disLocalityKeyword s;
         
         -- If source does not start with the locality keyword, disassemble has de-sugared it
         -- (e.g. x.y -> x . (global y)). In this case, just treat it as a symbol.
         if not myStartsWith(typeName, src) then return "(symbol)";
 
-        inner = substring(#typeName + 1, #s - #typeName - 2, s);
-        args = splitSExprArgs(inner);
-        sym := args#0;
-        
-        return "(locality_operator\n" | nextSp | "\"" | typeName | "\"\n" | nextSp | "symbol: (resolved_symbol\n" | nextSp | "  (symbol)))";
+        return "(locality_operator\n" | nextSp | "symbol: (resolved_symbol))";
     );
 
     if myStartsWith("(global-fetch", s) then return "(symbol)";
@@ -414,14 +475,26 @@ toTreeSitter := (s, indent, src) -> (
         
         srcX = ""; srcY = "";
         if #src > 0 then (
+            local localityPrefixLen; localityPrefixLen = sourceLocalityLength(src, x);
+            if localityPrefixLen > 0 and myHasAt(src, localityPrefixLen, op) then (
+                srcX = substring(0, localityPrefixLen, src);
+                srcY = substring(localityPrefixLen + #op, #src - localityPrefixLen - #op, src);
+            );
+
             -- List of operators we can reliably split in source
-            opsToSplit := {">>", "=>", "<-", ".", "#", "_"};
-            if any(opsToSplit, o -> o == op) then (
-                local parts; parts = separate(op, src);
-                if #parts >= 2 then (
-                    srcX = parts#0;
-                    srcY = substring(#srcX + #op, #src - #srcX - #op, src);
-                );
+            opsToSplit := {">>", "=>", "<-", "..", ".", "#", "_"};
+            if srcX == "" and any(opsToSplit, o -> o == op) then (
+                    local p; p = mySplitFirst(src, op);
+                    if p#1 != "" then (
+                        srcX = p#0;
+                        srcY = p#1;
+                        if op == ".." then (
+                            local trimmedLeft; trimmedLeft = myTrim srcX;
+                            if #trimmedLeft > 0 and trimmedLeft#(#trimmedLeft - 1) == "." then (
+                                srcX = substring(0, #trimmedLeft - 1, trimmedLeft);
+                            );
+                        );
+                    );
             );
         );
 
@@ -538,8 +611,13 @@ toTreeSitter := (s, indent, src) -> (
         if #src > 0 then (
             local spacePos; spacePos = 0;
             while spacePos < #src and src#spacePos != " " and src#spacePos != "(" do spacePos = spacePos + 1;
-            srcX = myTrim substring(0, spacePos, src);
-            srcY = myTrim substring(spacePos, #src - spacePos, src);
+            if spacePos == #src and #x > 0 and #src > #x and myStartsWith(x, src) and src#(#x) == "." then (
+                srcX = substring(0, #x + 1, src);
+                srcY = substring(#x + 1, #src - #x - 1, src);
+            ) else (
+                srcX = myTrim substring(0, spacePos, src);
+                srcY = myTrim substring(spacePos, #src - spacePos, src);
+            );
         );
 
         return "(binary_expression\n" | nextSp | "left: " | toTreeSitter(x, indent + 2, srcX) | "\n" | nextSp | "operator: (space)\n" | nextSp | "right: " | toTreeSitter(y, indent + 2, srcY) | ")";
@@ -560,7 +638,7 @@ toTreeSitter := (s, indent, src) -> (
         if op == "time" or op == "timing" or op == "elapsedTime" or op == "elapsedTiming" or op == "profile" then return "(time_statement\n" | nextSp | toTreeSitter(x, indent + 2, "") | ")";
         
         if any(postfixOps, p -> p == op) then (
-            return "(postfix_expression\n" | nextSp | "operand: " | toTreeSitter(x, indent + 2, "") | ")";
+            return "(postfix_expression\n" | nextSp | "operand: " | toTreeSitter(x, indent + 2, "") | (if op == "(*)" then "\n" | nextSp | "(space)" else "") | ")";
         ) else (
             return "(prefix_expression\n" | nextSp | "operand: " | toTreeSitter(x, indent + 2, "") | ")";
         );
@@ -569,6 +647,7 @@ toTreeSitter := (s, indent, src) -> (
     if #s > 0 and ((s#0 >= "0" and s#0 <= "9") or s#0 == ".") then (
         local isFloat; isFloat = false;
         for i from 0 to #s-1 do if s#i == "." or s#i == "e" or s#i == "E" or s#i == "p" then isFloat = true;
+        if myTrim(src) == s | "." then isFloat = true;
         if isFloat then return "(float_literal)" else return "(integer_literal)"
     );
     

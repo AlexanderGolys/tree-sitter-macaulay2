@@ -1,0 +1,190 @@
+==================
+(1) symbol x [auto_generated_local]
+==================
+symbol x
+---
+(source_file
+  (cell
+    (locality_operator
+      symbol: (resolved_symbol))))
+
+==================
+(2) symbol not [auto_generated_local]
+==================
+symbol not
+---
+(source_file
+  (cell
+    (locality_operator
+      symbol: (resolved_symbol))))
+
+==================
+(3) symbol symbol [auto_generated_local]
+==================
+symbol symbol
+---
+(source_file
+  (cell
+    (locality_operator
+      symbol: (resolved_symbol))))
+
+==================
+(4) symbol( [auto_generated_local]
+==================
+symbol(
+---
+(source_file
+  (cell
+    (locality_operator
+      symbol: (resolved_symbol))))
+
+==================
+(5) symbol(*) [auto_generated_local]
+==================
+symbol(*)
+---
+(source_file
+  (cell
+    (locality_operator
+      symbol: (resolved_symbol))))
+
+==================
+(6) symbol+ [auto_generated_local]
+==================
+symbol+
+---
+(source_file
+  (cell
+    (locality_operator
+      symbol: (resolved_symbol))))
+
+==================
+(7) symbol, [auto_generated_local]
+==================
+symbol,
+---
+(source_file
+  (cell
+    (locality_operator
+      symbol: (resolved_symbol))))
+
+==================
+(8) symbol; [auto_generated_local]
+==================
+symbol;
+---
+(source_file
+  (cell
+    (locality_operator
+      symbol: (resolved_symbol))))
+
+==================
+(9) symbol. [auto_generated_local]
+==================
+symbol.
+---
+(source_file
+  (cell
+    (locality_operator
+      symbol: (resolved_symbol))))
+
+==================
+(10) symbol.. [auto_generated_local]
+==================
+symbol..
+---
+(source_file
+  (cell
+    (locality_operator
+      symbol: (resolved_symbol))))
+
+==================
+(11) symbol..<<<<<2 [auto_generated_local]
+==================
+symbol..<<<<<2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (prefix_expression
+        operand: (integer_literal)))))
+
+==================
+(12) symbol..<<<<2 [auto_generated_local]
+==================
+symbol..<<<<2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (prefix_expression
+        operand: (integer_literal)))))
+
+==================
+(13) symbol..2 [auto_generated_local]
+==================
+symbol..2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      operator: (space)
+      right: (integer_literal))))
+
+==================
+(14) symbol...2 [auto_generated_local]
+==================
+symbol...2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      operator: (space)
+      right: (float_literal))))
+
+==================
+(15) symbol....2 [auto_generated_local]
+==================
+symbol....2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (integer_literal))))
+
+==================
+(16) symbol.....2 [auto_generated_local]
+==================
+symbol.....2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (float_literal))))
+
+==================
+(17) symbol symbol symbol symbol [auto_generated_local]
+==================
+symbol symbol symbol symbol
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      operator: (space)
+      right: (locality_operator
+        symbol: (resolved_symbol)))))
+

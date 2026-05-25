@@ -66,21 +66,16 @@ const prefixOperators = [
 	{precedence: 61, symbols: ['#']},
 ];
 const postfixOperators = [
-	{precedence: 64, symbols: ['(*)']},
 	{precedence: 70, symbols: ['^*', '_*', '~', '^~', '_~']},
 	{precedence: 72, symbols: ['!', '^!', '_!']},
 ];
 
 const operatorsSymbols = [... new Set([...binaryOperators, ...prefixOperators, ...postfixOperators, ...optionValueAssignment,
 	 								   ...assignmentOperators, ...optionAttachment]
-									  .flatMap(op => op.symbols).concat(['SPACE']))];
+									  .flatMap(op => op.symbols).concat(['SPACE', '(*)']))];
 
 const punctuationSymbols = ['(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';'];
 
-
-function reserved(name, rule) {
-    return rule;
-}
 
 const Choice = (...items) => items.length === 1 ? items[0] : choice(...items);
 
@@ -287,7 +282,14 @@ module.exports = grammar({
 					field('operator', Choice(...op))
 				));
 
-            return choice( ...postfixOperators.map(op => postfixOp(op.precedence, op.symbols)), );
+            return choice(
+                prec.left(64, seq(
+                    field('operand', $.expression),
+                    optional(alias($._space, $.space)),
+                    field('operator', '(*)')
+                )),
+                ...postfixOperators.map(op => postfixOp(op.precedence, op.symbols)),
+            );
         },
 
 
@@ -444,6 +446,7 @@ module.exports = grammar({
             field('symbol', alias(choice(
                 ...operatorsSymbols,
                 ...punctuationSymbols,
+                '..', '..<', '..=', '..<=', '.',
                 $.symbol
             ), $.resolved_symbol))
         ))),
@@ -515,7 +518,3 @@ function DelimitedSeq(rule, options) {
 
     return allow_single ? choice(non_single, rule) : non_single;
 }
-
-
-
-

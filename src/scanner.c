@@ -72,6 +72,11 @@ static void skip_whitespace(TSLexer *lexer) {
     lexer->advance(lexer, true); 
 }
 
+static void skip_inline_whitespace(TSLexer *lexer) {
+  while (lexer->lookahead == ' ' || lexer->lookahead == '\t')
+    lexer->advance(lexer, false);
+}
+
 static bool match_int(TSLexer *lexer) {
   if (!is_digit(lexer->lookahead))
     return false;
@@ -91,11 +96,24 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
       return false;
     
   // Check RANGE first, before FLOAT, to avoid consuming the first '.'
-  if (valid_symbols[RANGE] || valid_symbols[RANGE_LT] || valid_symbols[RANGE_EQ] || valid_symbols[RANGE_LT_EQ]) {
+  if (valid_symbols[SPACE] || valid_symbols[RANGE] || valid_symbols[RANGE_LT] || valid_symbols[RANGE_EQ] || valid_symbols[RANGE_LT_EQ]) {
     if (c == '.') {
+      lexer->mark_end(lexer);
       lexer->advance(lexer, false);
+      if (valid_symbols[SPACE] && is_digit(lexer->lookahead)) {
+        lexer->result_symbol = SPACE;
+        return true;
+      }
+      bool separated_range = false;
+      while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+        separated_range = true;
+        lexer->advance(lexer, false);
+      }
       if (lexer->lookahead == '.') {
         lexer->advance(lexer, false);
+        if (separated_range && lexer->lookahead == '.')
+          lexer->advance(lexer, false);
+        lexer->mark_end(lexer);
         c = lexer->lookahead;
 
         if (valid_symbols[RANGE]) {
@@ -108,6 +126,7 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
         if (valid_symbols[RANGE_EQ]) {
           if (c == '=') {
             lexer->advance(lexer, false);
+            lexer->mark_end(lexer);
             lexer->result_symbol = RANGE_EQ;
             return true;
           }
@@ -119,10 +138,12 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
           if (c == '=') {
             if (valid_symbols[RANGE_LT_EQ]) {
               lexer->advance(lexer, false);
+              lexer->mark_end(lexer);
               lexer->result_symbol = RANGE_LT_EQ;
               return true;
             }
           } else if (valid_symbols[RANGE_LT]) {
+            lexer->mark_end(lexer);
             lexer->result_symbol = RANGE_LT;
             return true;
           }
@@ -147,10 +168,22 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
       lexer->advance(lexer, false);
       if (lexer->lookahead == '.') 
         return false;  // This is '..' range, not a float
+      if (is_digit(lexer->lookahead)) {
+        match_int(lexer);
+        lexer->mark_end(lexer);
+        has_digit = true;
+      } else {
+        lexer->mark_end(lexer);
+        skip_inline_whitespace(lexer);
+        if (lexer->lookahead == '.')
+          return false;
+      }
     }
 
-    if (match_int(lexer)) 
+    if (match_int(lexer)) {
+      lexer->mark_end(lexer);
       has_digit = true;
+    }
 
     if (!has_digit) 
       return false;
@@ -166,6 +199,7 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
       }
       if (!has_prec) 
         return false;
+      lexer->mark_end(lexer);
     }
     
     if (lexer->lookahead == 'e' || lexer->lookahead == 'E') {
@@ -183,6 +217,7 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
       }
       if (!valid_exp) 
         return false;
+      lexer->mark_end(lexer);
     } 
 
     if (valid_symbols[FLOAT] && (has_dot || has_e)) {
@@ -232,7 +267,7 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
       lexer->result_symbol = SPACE;
       return true;
     }
-    
+
     if (c == '[') {
         if (valid_symbols[SPACE_INDEXING]) {
             lexer->result_symbol = SPACE_INDEXING;

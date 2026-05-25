@@ -454,9 +454,9 @@ a..=b..2
         right: (integer_literal)))))
 
 ==================
-(34) a..<b..2 [auto_generated_operators]
+(34) a..<b...2 [auto_generated_operators]
 ==================
-a..<b..2
+a..<b...2
 ---
 (source_file
   (cell
@@ -464,7 +464,7 @@ a..<b..2
       left: (binary_expression
         left: (symbol)
         right: (symbol))
-      right: (integer_literal))))
+      right: (float_literal))))
 
 ==================
 (35) x += 3 + 3 [auto_generated_operators]
@@ -591,7 +591,23 @@ x + y 2! + (z w) q 2
           right: (integer_literal))))))
 
 ==================
-(42) (x)(x, y)((x, y)(x)x) [auto_generated_operators]
+(42) f / g # (x) (*) [auto_generated_operators]
+==================
+f / g # (x) (*)
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (postfix_expression
+        operand: (binary_expression
+          left: (symbol)
+          right: (sequence
+            (symbol)))
+        (space)))))
+
+==================
+(43) (x)(x, y)((x, y)(x)x) [auto_generated_operators]
 ==================
 (x)(x, y)((x, y)(x)x)
 ---
@@ -619,7 +635,7 @@ x + y 2! + (z w) q 2
               right: (symbol))))))))
 
 ==================
-(43) I/R(x, y) [auto_generated_operators]
+(44) I/R(x, y) [auto_generated_operators]
 ==================
 I/R(x, y)
 ---
@@ -635,7 +651,7 @@ I/R(x, y)
           (symbol))))))
 
 ==================
-(44) 2...2 [auto_generated_operators]
+(45) 2...2 [auto_generated_operators]
 ==================
 2...2
 ---
@@ -643,5 +659,172 @@ I/R(x, y)
   (cell
     (binary_expression
       left: (integer_literal)
+      right: (float_literal))))
+
+==================
+(46) 2. ..2 [auto_generated_operators]
+==================
+2. ..2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (integer_literal))))
+
+==================
+(47) 2. .. .2 [auto_generated_operators]
+==================
+2. .. .2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (float_literal))))
+
+==================
+(48) 2...2...2 [auto_generated_operators]
+==================
+2...2...2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (integer_literal)
+        right: (float_literal))
+      right: (float_literal))))
+
+==================
+(49) 2...2.2 [auto_generated_operators]
+==================
+2...2.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (binary_expression
+        left: (float_literal)
+        operator: (space)
+        right: (float_literal)))))
+
+==================
+(50) 2..2.2 [auto_generated_operators]
+==================
+2..2.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (float_literal))))
+
+==================
+(51) .2.2 [auto_generated_operators]
+==================
+.2.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      operator: (space)
+      right: (float_literal))))
+
+==================
+(52) 2.x [auto_generated_operators]
+==================
+2.x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      operator: (space)
+      right: (symbol))))
+
+==================
+(53) 2.2.2 [auto_generated_operators]
+==================
+2.2.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      operator: (space)
+      right: (float_literal))))
+
+==================
+(54) .2.2.2 [auto_generated_operators]
+==================
+.2.2.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      operator: (space)
+      right: (binary_expression
+        left: (float_literal)
+        operator: (space)
+        right: (float_literal)))))
+
+==================
+(55) 2.x.2 [auto_generated_operators]
+==================
+2.x.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      operator: (space)
+      right: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (float_literal)))))
+
+==================
+(56) .2.x.2 [auto_generated_operators]
+==================
+.2.x.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (float_literal)
+        right: (symbol))
+      operator: (space)
+      right: (float_literal))))
+
+==================
+(57) .2..x.2 [auto_generated_operators]
+==================
+.2..x.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (binary_expression
+        left: (symbol)
+        operator: (space)
+        right: (float_literal)))))
+
+==================
+(58) .2..x...2 [auto_generated_operators]
+==================
+.2..x...2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (float_literal)
+        right: (symbol))
       right: (float_literal))))
 

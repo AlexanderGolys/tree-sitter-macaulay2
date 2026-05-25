@@ -211,10 +211,10 @@
           left: (symbol) @function
           operator: (space)
           right: (sequence
-                   "(" @function
+                   "(" @keyword.operator
                    [(symbol) @type
-                             "," @function]*
-                   ")" @function))
+                             "," @keyword.operator]*
+                   ")" @keyword.operator))
   operator: ["=" ":="] @keyword.operator)
 
 

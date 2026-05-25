@@ -109,7 +109,8 @@ module.exports = grammar({
             'for', 'while', 'break', 'continue', 'return', 'try', 'catch', 'throw',
             'time', 'timing', 'elapsedTime', 'elapsedTiming', 'profile',
             'shield', 'TEST', 'breakpoint', 'global', 'local', 'symbol',
-            'threadVariable', 'threadLocal', 'new', 'SPACE', 'and', 'not', 'or', 'xor'
+            'threadVariable', 'threadLocal', 'new', 'SPACE', 'and', 'not', 'or', 'xor',
+            'except', 'trap'
         ],
 
 		locality_op: _ => []
@@ -421,8 +422,16 @@ module.exports = grammar({
             'try',
             field('condition', $.expression),
             optional(seq('then', field('consequence', $.expression))),
-            optional(seq('else', field('alternative', $.expression)))
+            optional(choice(
+                seq('else', field('alternative', $.expression)),
+                seq('except', field('err', $.symbol), 'do', field('alternative', $.expression)),
+            ))
         )),
+
+        trap_statement: $ => prec.left(PREC.CONTROL, seq(
+            'trap',
+            $.expression)),
+
 
         locality_operator: $ => reserved('locality_op', prec(PREC.LOCALITY, seq(
             choice(
@@ -475,6 +484,7 @@ module.exports = grammar({
             $.break_statement,
             $.return_statement,
             $.try_statement,
+            $.trap_statement,
             $.time_statement,
             $.breakpoint_statement,
             $.throw_statement,
@@ -505,7 +515,6 @@ function DelimitedSeq(rule, options) {
 
     return allow_single ? choice(non_single, rule) : non_single;
 }
-
 
 
 

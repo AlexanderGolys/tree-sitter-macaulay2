@@ -57,10 +57,10 @@ static bool is_structural_keyword_ahead(TSLexer *lexer) {
 
   const char *keywords[] = {
     "then", "else", "do", "from", "to", "in", "list",
-    "of", "or", "and", "xor","SPACE", "when"
+    "of", "or", "and", "xor", "SPACE", "when", "except"
   };
 
-  for (int k = 0; k < 13; k++) {
+  for (int k = 0; k < 14; k++) {
     if (strcmp(buffer, keywords[k]) == 0) return true;
   }
 

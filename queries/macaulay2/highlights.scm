@@ -54,6 +54,8 @@
 "try" @keyword.exception
 "catch" @keyword.exception
 "throw" @keyword.exception
+"trap" @keyword.exception
+"except" @keyword.exception
 "global" @keyword.modifier
 "local" @keyword.modifier
 "symbol" @keyword.modifier
@@ -73,6 +75,9 @@
 "not" @keyword.operator
 
 (try_statement "else" @keyword.conditional)
+
+(try_statement
+  err: (symbol) @variable.parameter)
 
 
 ; f x

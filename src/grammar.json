@@ -2889,19 +2889,53 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "SEQ",
+                "type": "CHOICE",
                 "members": [
                   {
-                    "type": "STRING",
-                    "value": "else"
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": "else"
+                      },
+                      {
+                        "type": "FIELD",
+                        "name": "alternative",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "expression"
+                        }
+                      }
+                    ]
                   },
                   {
-                    "type": "FIELD",
-                    "name": "alternative",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "expression"
-                    }
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": "except"
+                      },
+                      {
+                        "type": "FIELD",
+                        "name": "err",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "symbol"
+                        }
+                      },
+                      {
+                        "type": "STRING",
+                        "value": "do"
+                      },
+                      {
+                        "type": "FIELD",
+                        "name": "alternative",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "expression"
+                        }
+                      }
+                    ]
                   }
                 ]
               },
@@ -2909,6 +2943,23 @@
                 "type": "BLANK"
               }
             ]
+          }
+        ]
+      }
+    },
+    "trap_statement": {
+      "type": "PREC_LEFT",
+      "value": 12,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "trap"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "expression"
           }
         ]
       }
@@ -3703,6 +3754,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "trap_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "time_statement"
         },
         {
@@ -3945,6 +4000,14 @@
       {
         "type": "STRING",
         "value": "xor"
+      },
+      {
+        "type": "STRING",
+        "value": "except"
+      },
+      {
+        "type": "STRING",
+        "value": "trap"
       }
     ],
     "locality_op": []

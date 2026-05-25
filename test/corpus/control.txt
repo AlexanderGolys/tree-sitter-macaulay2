@@ -247,3 +247,43 @@ try x
   (cell
     (try_statement
       condition: (symbol))))
+
+==================
+(20) try then except
+==================
+try x then y except err do err
+---
+
+(source_file
+  (cell
+    (try_statement
+      condition: (symbol)
+      consequence: (symbol)
+      err: (symbol)
+      alternative: (symbol))))
+
+==================
+(21) try except
+==================
+try x except err do err
+---
+
+(source_file
+  (cell
+    (try_statement
+      condition: (symbol)
+      err: (symbol)
+      alternative: (symbol))))
+
+==================
+(22) trap
+==================
+trap 1/0
+---
+
+(source_file
+  (cell
+    (trap_statement
+      (binary_expression
+        left: (integer_literal)
+        right: (integer_literal)))))

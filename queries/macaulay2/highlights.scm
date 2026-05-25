@@ -160,10 +160,10 @@
 ((assignment_expression
    left: (binary_expression
            left: (_) @type
-           operator: _ @constructor
+           operator: _ @function
            right: (_) @type)
-   operator: ["=" ":="] @constructor)
- (#not-any-of? @constructor "." ".?" "#" "_"))
+   operator: ["=" ":="] @keyword.operator)
+ (#not-any-of? @function "." ".?" "#" "_"))
 
 
 
@@ -171,19 +171,19 @@
 ; f ZZ := add
 ((assignment_expression
    left: (binary_expression
-           left: (symbol) @constructor
+           left: (symbol) @function
            operator: (space) 
            right: (symbol) @type))
- (#match? @constructor "[a-z].*"))
+ (#match? @function "[a-z].*"))
 
 ; Method Installations 
 ; ZZ ZZ := add
 ((assignment_expression
    left: (binary_expression
-           left: (symbol) @constructor
+           left: (symbol) @function
            operator: (space) 
            right: (symbol) @type))
- (#match? @constructor "[a-z].*"))
+ (#match? @function "[a-z].*"))
 
 ; x_1 := 2   -- NOT installation
 ; A _ B := (x, y) -> x*y    -- closure as value: INSTALLATION
@@ -192,9 +192,9 @@
 (assignment_expression
   left: (binary_expression
           left: (_) @type
-          operator: "_" @constructor
+          operator: "_" @function
           right: (_) @type)
-  operator: ["=" ":="] @constructor
+  operator: ["=" ":="] @keyword.operator
   right: (function_expression))
 
 ; A op B := Y => f  -- specifying typical codomain as Y
@@ -202,20 +202,20 @@
   left: [(binary_expression) (prefix_expression) (postfix_expression)]
   right: (option_assignment
            left: (symbol) @type
-           operator: "=>" @constructor))
+           operator: "=>" @keyword.operator))
 
 
 ; f ZZ := g
 (assignment_expression
   left: (binary_expression
-          left: (symbol) @constructor
+          left: (symbol) @function
           operator: (space)
           right: (sequence
-                   "(" @constructor
+                   "(" @function
                    [(symbol) @type
-                             "," @constructor]*
-                   ")" @constructor))
-  operator: ["=" ":="] @constructor)
+                             "," @function]*
+                   ")" @function))
+  operator: ["=" ":="] @keyword.operator)
 
 
 ; ZZ ZZ := g
@@ -232,7 +232,7 @@
   left: (postfix_expression
           operand: (symbol) @type
           operator: _ @constructor)
-  operator: ["=" ":="] @constructor)
+  operator: ["=" ":="] @keyword.operator)
 
 ((binary_expression
    left: (symbol) @function.builtin
@@ -247,15 +247,15 @@
 ; ZZ ! := n -> if n > 0 then n*(n-1)! else 1
 (assignment_expression
   left: (new_statement
-          "new" @constructor
+          "new" @keyword
           (of_clause 
-            "of"? @constructor)?
+            "of"? @keyword)?
           (from_clause
-            "from" @constructor
+            "from" @keyword
             [(symbol) @type
                       (sequence (symbol) @type)])?)
 
-  operator: ":=" @constructor)
+  operator: ":=" @keyword.operator)
 
 (new_statement 
   type: _ @type) 
@@ -267,7 +267,7 @@
 ((symbol) @variable.builtin
           (#any-of? @variable.builtin "allowableThreads" "debugLevel" "defaultPrecision" "engineDebugLevel" "errorDepth" "gbTrace" 
            "interpreterDepth" "lineNumber" "loadDepth" "maxAllowableThreads" "maxExponent" "minExponent" "numTBBThreads" 
-           "printingAccuracy" "printingLeadLimit" "printingPrecision" "printingTimeLimit" "printingTrailLimit" 
+           "printingAccuracy" "printingLeadLimit" "printingPrecision" "printingTimeLimit" "printingTrailLimit" "version" 
            "printWidth" "recursionLimit" "typicalValues"))
 
 

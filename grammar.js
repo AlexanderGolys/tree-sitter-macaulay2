@@ -153,7 +153,7 @@ module.exports = grammar({
         p_missing: $ => $.p_missing,
         
 
-        escape_sequence: $ => token.immediate(seq(
+        escape_sequence: _ => token.immediate(seq(
             '\\',
             choice(
                 /[abeEfrtvn"\\]/,
@@ -164,7 +164,7 @@ module.exports = grammar({
             )
         )),
 
-        _string_content: $ => token.immediate(prec(1, /[^\"\\]+/)),
+        _string_content: _ => token.immediate(prec(1, /[^\"\\]+/)),
 
         _std_string: $ => seq(
             '"',
@@ -263,7 +263,7 @@ module.exports = grammar({
 				prec.left(48, BinOp([alias($._range, ".."), alias($._range_lt, "..<")])),
 				prec.right(61, BinOp([alias(choice($._space, "SPACE"), $.space)])),
 				prec.right(56, BinOp([alias($._space_indexing, $.space)])),
-				prec.left(70, BinOp(['.', '.?'], {rhs: $.symbol}))
+					prec.left(70, BinOp(['.', '.?'], {rhs: $.symbol}))
 			);
         },
 
@@ -505,5 +505,8 @@ function DelimitedSeq(rule, options) {
 
     return allow_single ? choice(non_single, rule) : non_single;
 }
+
+
+
 
 

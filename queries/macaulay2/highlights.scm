@@ -273,25 +273,6 @@
 
 
 
-; instance(x, Type)
-(binary_expression
-  left: (symbol) @function.builtin
-  operator: (space)
-  right: (sequence 
-           (_) @variable
-           (symbol) @type .)
-  (#eq? @function.builtin "instance"))
-
-; parent Type
-(binary_expression
-  left: (symbol) @function.builtin
-  operator: (space)
-  right: [(sequence 
-            (symbol) @type)
-          (symbol) @type]
-  (#eq? @function.builtin "parent"))
-
-
 
 
 

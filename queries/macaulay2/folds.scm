@@ -1,6 +1,13 @@
-; Collections and grouped expressions
-(list) @fold
-(sequence) @fold
-(array) @fold
-(angle_bar_list) @fold
-(cell) @fold
+[
+  (list)
+  (sequence)
+  (array)
+  (angle_bar_list)
+  (cell)
+  (function_expression)
+  (if_statement)
+  (for_statement)
+  (while_statement)
+  (try_statement)
+  (new_statement)
+] @fold

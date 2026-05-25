@@ -1,10 +1,10 @@
-; Function Definitions
+; Function definitions
 (assignment_expression
   left: (symbol) @name
   operator: [":=" "="]
   right: (function_expression)) @definition.function
 
-; Function with options (e.g., f = opts >> o -> x -> ...)
+; Function with options, e.g. f = opts >> o -> x -> ...
 (assignment_expression
   left: (symbol) @name
   operator: [":=" "="]
@@ -17,12 +17,36 @@
   right: (binary_expression 
            left: (function_expression))) @definition.function
 
-; Variable Definitions
+; Method installations
+((assignment_expression
+   left: (binary_expression
+           left: (symbol) @name
+           operator: (space))
+   operator: [":=" "="]) @definition.function
+ (#match? @name "^[a-z].*"))
+
+((assignment_expression
+   left: (binary_expression
+           operator: _ @name)
+   operator: [":=" "="]) @definition.function
+ (#match? @name "\\S"))
+
+(assignment_expression
+  left: (prefix_expression
+          operator: _ @name)
+  operator: [":=" "="]) @definition.function
+
+(assignment_expression
+  left: (postfix_expression
+          operator: _ @name)
+  operator: [":=" "="]) @definition.function
+
+; Variable definitions
 (assignment_expression
   left: (symbol) @name
   operator: [":=" "="]) @definition.variable
 
-; Method calls (for reference tracking)
+; References
 (binary_expression
   left: (symbol) @name
   operator: (space)) @reference.call
@@ -31,4 +55,9 @@
   left: (binary_expression
           left: (symbol) @name
           operator: "_")
+  operator: (space)) @reference.call
+
+(binary_expression
+  left: (locality_operator
+          symbol: (resolved_symbol) @name)
   operator: (space)) @reference.call

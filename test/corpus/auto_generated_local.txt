@@ -188,3 +188,16 @@ symbol symbol symbol symbol
       right: (locality_operator
         symbol: (resolved_symbol)))))
 
+==================
+(18) symbol ======<===x [auto_generated_local]
+==================
+symbol ======<===x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (prefix_expression
+        operand: (symbol)))))
+

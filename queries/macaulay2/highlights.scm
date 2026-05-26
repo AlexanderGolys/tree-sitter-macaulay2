@@ -10,7 +10,6 @@
 (string_literal) @string
 (escape_sequence) @string.escape
 (boolean_literal) @boolean
-(builtin_constant) @constant.builtin
 
 (symbol) @variable
 
@@ -65,6 +64,7 @@
   "throw"
   "trap"
   "except"
+  "shield"
 ] @keyword.exception
 
 [
@@ -99,7 +99,6 @@
   "do"
 ] @keyword
 
-"shield" @keyword.exception
 
 (try_statement "else" @keyword.conditional)
 
@@ -111,12 +110,11 @@
   left: (symbol) @function.call
   operator: (space))
 
-((binary_expression
-   left: (binary_expression
-           left: (symbol)
-           operator: "_") @function.call
-   operator: (space))
- (#set! priority 101))
+(((binary_expression
+   left: [(integer_literal) (float_literal)]
+   operator: "_"
+   right: (symbol)) @number)
+ (#set! priority 151))
 
 ; Function parameters
 (function_expression
@@ -149,6 +147,8 @@
 (option_assignment
   left: (symbol) @property)
 
+
+
 (binary_expression
   operator: (space)
   right: (sequence
@@ -156,9 +156,9 @@
              left: (symbol) @variable.member)))
 
 (binary_expression
-  left: (_) @type
-  operator: (space)
-  right: (array))
+  operator: "_" @property
+  right: (integer_literal) @property)
+
 
 (array
   (option_assignment
@@ -211,10 +211,11 @@
           left: (symbol) @function
           operator: (space)
           right: (sequence
-                   "(" @keyword.operator
+                   "(" @type
                    [(symbol) @type
-                             "," @keyword.operator]*
-                   ")" @keyword.operator))
+                             "," @type]*
+                   ")" @type
+))
   operator: ["=" ":="] @keyword.operator)
 
 ; - ZZ := x -> -x
@@ -256,6 +257,10 @@
 ; Builtins
 ((symbol) @variable.builtin
  (#match? @variable.builtin "^((o[1-9][0-9]*)|oo|ooo|oooo)$"))
+
+((symbol) @constant.builtin
+ (#any-of? @constant.builtin
+  "CatalanConstant" "EulerConstant" "ii" "pi" "null"))
 
 ((symbol) @variable.builtin
  (#any-of? @variable.builtin

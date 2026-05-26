@@ -53,3 +53,29 @@ a -> b
         (symbol)
         (symbol)
         (symbol)))))
+
+==================
+5. Closure array parameter [operators]
+==================
+[x] -> x
+---
+
+(source_file
+  (cell
+    (function_expression
+      parameters: (array
+        (symbol))
+      body: (symbol))))
+
+==================
+6. Closure angle-bar parameter [operators]
+==================
+<|x|> -> x
+---
+
+(source_file
+  (cell
+    (function_expression
+      parameters: (angle_bar_list
+        (symbol))
+      body: (symbol))))

@@ -32,10 +32,6 @@
         "named": true
       },
       {
-        "type": "builtin_constant",
-        "named": true
-      },
-      {
         "type": "catch_statement",
         "named": true
       },
@@ -651,11 +647,6 @@
     }
   },
   {
-    "type": "builtin_constant",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "catch_statement",
     "named": true,
     "fields": {},
@@ -804,6 +795,14 @@
         "multiple": false,
         "required": true,
         "types": [
+          {
+            "type": "angle_bar_list",
+            "named": true
+          },
+          {
+            "type": "array",
+            "named": true
+          },
           {
             "type": "list",
             "named": true
@@ -1090,16 +1089,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "space",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -1708,14 +1697,6 @@
     "named": false
   },
   {
-    "type": "CatalanConstant",
-    "named": false
-  },
-  {
-    "type": "EulerConstant",
-    "named": false
-  },
-  {
     "type": "TEST",
     "named": false
   },
@@ -1905,10 +1886,6 @@
     "named": false
   },
   {
-    "type": "ii",
-    "named": false
-  },
-  {
     "type": "in",
     "named": false
   },
@@ -1938,19 +1915,11 @@
     "named": false
   },
   {
-    "type": "null",
-    "named": false
-  },
-  {
     "type": "of",
     "named": false
   },
   {
     "type": "or",
-    "named": false
-  },
-  {
-    "type": "pi",
     "named": false
   },
   {

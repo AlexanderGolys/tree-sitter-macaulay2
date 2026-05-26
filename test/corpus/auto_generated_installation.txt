@@ -1,5 +1,5 @@
 ==================
-(1) ZZ ZZ := (x, y) -> x + y [auto_generated_instalation]
+(1) ZZ ZZ := (x, y) -> x + y [auto_generated_installation]
 ==================
 ZZ ZZ := (x, y) -> x + y
 ---
@@ -19,7 +19,7 @@ ZZ ZZ := (x, y) -> x + y
           right: (symbol))))))
 
 ==================
-(2) f ZZ := x -> x^2 [auto_generated_instalation]
+(2) f ZZ := x -> x^2 [auto_generated_installation]
 ==================
 f ZZ := x -> x^2
 ---
@@ -37,7 +37,7 @@ f ZZ := x -> x^2
           right: (integer_literal))))))
 
 ==================
-(3) ZZ _ ZZ := (x, y) -> x + y [auto_generated_instalation]
+(3) ZZ _ ZZ := (x, y) -> x + y [auto_generated_installation]
 ==================
 ZZ _ ZZ := (x, y) -> x + y
 ---
@@ -56,7 +56,7 @@ ZZ _ ZZ := (x, y) -> x + y
           right: (symbol))))))
 
 ==================
-(4) ZZ + ZZ := (x, y) -> x + y [auto_generated_instalation]
+(4) ZZ + ZZ := (x, y) -> x + y [auto_generated_installation]
 ==================
 ZZ + ZZ := (x, y) -> x + y
 ---
@@ -75,7 +75,7 @@ ZZ + ZZ := (x, y) -> x + y
           right: (symbol))))))
 
 ==================
-(5) + ZZ := x -> x + 1 [auto_generated_instalation]
+(5) + ZZ := x -> x + 1 [auto_generated_installation]
 ==================
 + ZZ := x -> x + 1
 ---
@@ -91,7 +91,7 @@ ZZ + ZZ := (x, y) -> x + y
           right: (integer_literal))))))
 
 ==================
-(6) ZZ ! := x -> x! [auto_generated_instalation]
+(6) ZZ ! := x -> x! [auto_generated_installation]
 ==================
 ZZ ! := x -> x!
 ---
@@ -106,7 +106,7 @@ ZZ ! := x -> x!
           operand: (symbol))))))
 
 ==================
-(7) f(A, B, C, D) := f [auto_generated_instalation]
+(7) f(A, B, C, D) := f [auto_generated_installation]
 ==================
 f(A, B, C, D) := f
 ---
@@ -124,7 +124,7 @@ f(A, B, C, D) := f
       right: (symbol))))
 
 ==================
-(8) ZZ ZZ := ZZ => f [auto_generated_instalation]
+(8) ZZ ZZ := ZZ => f [auto_generated_installation]
 ==================
 ZZ ZZ := ZZ => f
 ---

@@ -6,15 +6,14 @@ target/
 *.dll
 *.dylib
 node_modules/
-package-lock.json
 
 # Local debug files
 debug_*.m2
 debug_*.txt
 gen_output.txt
+opencode.json
 
 # Editor files
 *.code-workspace
 .DS_Store
-.github/
 .vscode/

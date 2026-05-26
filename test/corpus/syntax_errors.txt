@@ -1,0 +1,29 @@
+==================
+1. Ambiguous repeated dot sequence [syntax_errors]
+:error
+==================
+2....2
+
+==================
+2. Trailing dot after member-like numeric access [syntax_errors]
+:error
+==================
+x.2.
+
+==================
+3. Numeric member access after locality-like symbol [syntax_errors]
+:error
+==================
+symbol.2
+
+==================
+4. Trailing dot after numeric locality-like access [syntax_errors]
+:error
+==================
+symbol.2.
+
+==================
+5. Non-symbol right side after member access [syntax_errors]
+:error
+==================
+x.[x]

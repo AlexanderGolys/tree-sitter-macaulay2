@@ -274,31 +274,6 @@
         }
       ]
     },
-    "builtin_constant": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "CatalanConstant"
-        },
-        {
-          "type": "STRING",
-          "value": "EulerConstant"
-        },
-        {
-          "type": "STRING",
-          "value": "ii"
-        },
-        {
-          "type": "STRING",
-          "value": "pi"
-        },
-        {
-          "type": "STRING",
-          "value": "null"
-        }
-      ]
-    },
     "array": {
       "type": "PREC_LEFT",
       "value": 56,
@@ -438,6 +413,14 @@
                 {
                   "type": "SYMBOL",
                   "name": "list"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "array"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "angle_bar_list"
                 }
               ]
             }
@@ -2159,23 +2142,6 @@
                 }
               },
               {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "ALIAS",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "_space"
-                    },
-                    "named": true,
-                    "value": "space"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              },
-              {
                 "type": "FIELD",
                 "name": "operator",
                 "content": {
@@ -2188,7 +2154,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 70,
+          "value": 68,
           "content": {
             "type": "SEQ",
             "members": [
@@ -3248,6 +3214,10 @@
                     },
                     {
                       "type": "STRING",
+                      "value": "(*)"
+                    },
+                    {
+                      "type": "STRING",
                       "value": "^*"
                     },
                     {
@@ -3425,10 +3395,6 @@
                     {
                       "type": "STRING",
                       "value": "SPACE"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "(*)"
                     },
                     {
                       "type": "STRING",
@@ -3712,10 +3678,6 @@
         {
           "type": "SYMBOL",
           "name": "string_literal"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "builtin_constant"
         },
         {
           "type": "SYMBOL",

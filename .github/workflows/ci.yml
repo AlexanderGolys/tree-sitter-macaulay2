@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  parser:
+    name: Parser and bindings
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run check
+
+      - run: npm run parse:examples
+
+      - name: Test Rust binding
+        run: cargo test
+
+  generated-corpus:
+    name: Generated Macaulay2 corpus
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Macaulay2
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:macaulay2/macaulay2
+          sudo apt-get update
+          sudo apt-get install -y macaulay2
+          M2 --version
+
+      - run: npm run test:generated
+
+      - name: Check generated corpus is committed
+        run: git diff --exit-code -- test/corpus

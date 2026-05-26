@@ -201,3 +201,127 @@ symbol ======<===x
       right: (prefix_expression
         operand: (symbol)))))
 
+==================
+(19) symbol ===<===x [auto_generated_local]
+==================
+symbol ===<===x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (symbol))))
+
+==================
+(20) symbol.x [auto_generated_local]
+==================
+symbol.x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      operator: (space)
+      right: (symbol))))
+
+==================
+(21) symbol..x [auto_generated_local]
+==================
+symbol..x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      operator: (space)
+      right: (symbol))))
+
+==================
+(22) symbol...x [auto_generated_local]
+==================
+symbol...x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (symbol))))
+
+==================
+(23) symbol....x [auto_generated_local]
+==================
+symbol....x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (symbol))))
+
+==================
+(24) symbol..<====y [auto_generated_local]
+==================
+symbol..<====y
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (symbol))))
+
+==================
+(25) symbol..<===y [auto_generated_local]
+==================
+symbol..<===y
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (symbol))))
+
+==================
+(26) symbol..<=y [auto_generated_local]
+==================
+symbol..<=y
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      operator: (space)
+      right: (symbol))))
+
+==================
+(27) symbol..<y [auto_generated_local]
+==================
+symbol..<y
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      operator: (space)
+      right: (symbol))))
+
+==================
+(28) symbol.<==y [auto_generated_local]
+==================
+symbol.<==y
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (locality_operator
+        symbol: (resolved_symbol))
+      right: (symbol))))
+

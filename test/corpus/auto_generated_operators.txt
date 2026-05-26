@@ -603,11 +603,52 @@ f / g # (x) (*)
         operand: (binary_expression
           left: (symbol)
           right: (sequence
-            (symbol)))
-        (space)))))
+            (symbol)))))))
 
 ==================
-(43) (x)(x, y)((x, y)(x)x) [auto_generated_operators]
+(43) # (x) (*) [auto_generated_operators]
+==================
+# (x) (*)
+---
+(source_file
+  (cell
+    (prefix_expression
+      operand: (postfix_expression
+        operand: (sequence
+          (symbol))))))
+
+==================
+(44) f / g # (x) _* [auto_generated_operators]
+==================
+f / g # (x) _*
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (postfix_expression
+        operand: (binary_expression
+          left: (symbol)
+          right: (sequence
+            (symbol)))))))
+
+==================
+(45) f / g # (x) _! [auto_generated_operators]
+==================
+f / g # (x) _!
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (postfix_expression
+          operand: (sequence
+            (symbol)))))))
+
+==================
+(46) (x)(x, y)((x, y)(x)x) [auto_generated_operators]
 ==================
 (x)(x, y)((x, y)(x)x)
 ---
@@ -635,7 +676,7 @@ f / g # (x) (*)
               right: (symbol))))))))
 
 ==================
-(44) I/R(x, y) [auto_generated_operators]
+(47) I/R(x, y) [auto_generated_operators]
 ==================
 I/R(x, y)
 ---
@@ -651,7 +692,7 @@ I/R(x, y)
           (symbol))))))
 
 ==================
-(45) 2...2 [auto_generated_operators]
+(48) 2...2 [auto_generated_operators]
 ==================
 2...2
 ---
@@ -662,7 +703,7 @@ I/R(x, y)
       right: (float_literal))))
 
 ==================
-(46) 2. ..2 [auto_generated_operators]
+(49) 2. ..2 [auto_generated_operators]
 ==================
 2. ..2
 ---
@@ -673,7 +714,7 @@ I/R(x, y)
       right: (integer_literal))))
 
 ==================
-(47) 2. .. .2 [auto_generated_operators]
+(50) 2. .. .2 [auto_generated_operators]
 ==================
 2. .. .2
 ---
@@ -684,7 +725,7 @@ I/R(x, y)
       right: (float_literal))))
 
 ==================
-(48) 2...2...2 [auto_generated_operators]
+(51) 2...2...2 [auto_generated_operators]
 ==================
 2...2...2
 ---
@@ -697,7 +738,7 @@ I/R(x, y)
       right: (float_literal))))
 
 ==================
-(49) 2...2.2 [auto_generated_operators]
+(52) 2...2.2 [auto_generated_operators]
 ==================
 2...2.2
 ---
@@ -711,7 +752,7 @@ I/R(x, y)
         right: (float_literal)))))
 
 ==================
-(50) 2..2.2 [auto_generated_operators]
+(53) 2..2.2 [auto_generated_operators]
 ==================
 2..2.2
 ---
@@ -722,7 +763,7 @@ I/R(x, y)
       right: (float_literal))))
 
 ==================
-(51) .2.2 [auto_generated_operators]
+(54) .2.2 [auto_generated_operators]
 ==================
 .2.2
 ---
@@ -734,7 +775,7 @@ I/R(x, y)
       right: (float_literal))))
 
 ==================
-(52) 2.x [auto_generated_operators]
+(55) 2.x [auto_generated_operators]
 ==================
 2.x
 ---
@@ -746,7 +787,7 @@ I/R(x, y)
       right: (symbol))))
 
 ==================
-(53) 2.2.2 [auto_generated_operators]
+(56) 2.2.2 [auto_generated_operators]
 ==================
 2.2.2
 ---
@@ -758,7 +799,7 @@ I/R(x, y)
       right: (float_literal))))
 
 ==================
-(54) .2.2.2 [auto_generated_operators]
+(57) .2.2.2 [auto_generated_operators]
 ==================
 .2.2.2
 ---
@@ -773,7 +814,7 @@ I/R(x, y)
         right: (float_literal)))))
 
 ==================
-(55) 2.x.2 [auto_generated_operators]
+(58) 2.x.2 [auto_generated_operators]
 ==================
 2.x.2
 ---
@@ -788,7 +829,7 @@ I/R(x, y)
         right: (float_literal)))))
 
 ==================
-(56) .2.x.2 [auto_generated_operators]
+(59) .2.x.2 [auto_generated_operators]
 ==================
 .2.x.2
 ---
@@ -802,7 +843,7 @@ I/R(x, y)
       right: (float_literal))))
 
 ==================
-(57) .2..x.2 [auto_generated_operators]
+(60) .2..x.2 [auto_generated_operators]
 ==================
 .2..x.2
 ---
@@ -816,7 +857,7 @@ I/R(x, y)
         right: (float_literal)))))
 
 ==================
-(58) .2..x...2 [auto_generated_operators]
+(61) .2..x...2 [auto_generated_operators]
 ==================
 .2..x...2
 ---
@@ -827,4 +868,97 @@ I/R(x, y)
         left: (float_literal)
         right: (symbol))
       right: (float_literal))))
+
+==================
+(62) 2.+.2 [auto_generated_operators]
+==================
+2.+.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (float_literal))))
+
+==================
+(63) x.x [auto_generated_operators]
+==================
+x.x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (symbol))))
+
+==================
+(64) x..x [auto_generated_operators]
+==================
+x..x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (symbol))))
+
+==================
+(65) x...2 [auto_generated_operators]
+==================
+x...2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (float_literal))))
+
+==================
+(66) 2..x [auto_generated_operators]
+==================
+2..x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (symbol))))
+
+==================
+(67) x.2 [auto_generated_operators]
+==================
+x.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      operator: (space)
+      right: (float_literal))))
+
+==================
+(68) x.2.2 [auto_generated_operators]
+==================
+x.2.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      operator: (space)
+      right: (binary_expression
+        left: (float_literal)
+        operator: (space)
+        right: (float_literal)))))
+
+==================
+(69) x..2 [auto_generated_operators]
+==================
+x..2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (integer_literal))))
 

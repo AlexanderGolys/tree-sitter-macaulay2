@@ -46,3 +46,23 @@ aBc
 (source_file
   (cell
     (symbol)))
+==================
+7. Protected object names parse as symbols [identifiers]
+==================
+CatalanConstant
+EulerConstant
+ii
+pi
+null
+---
+(source_file
+  (cell
+    (symbol))
+  (cell
+    (symbol))
+  (cell
+    (symbol))
+  (cell
+    (symbol))
+  (cell
+    (symbol)))

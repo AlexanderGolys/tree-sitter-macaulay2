@@ -422,7 +422,7 @@ toTreeSitter := (s, indent, src) -> (
     );
     
     if s == "(null)" then (
-        if myTrim src == "null" then return "(builtin_constant)"
+        if myTrim src == "null" then return "(symbol)"
         else return ""; -- Skip nulls representing empty slots
     );
     
@@ -482,7 +482,7 @@ toTreeSitter := (s, indent, src) -> (
             );
 
             -- List of operators we can reliably split in source
-            opsToSplit := {">>", "=>", "<-", "..", ".", "#", "_"};
+            opsToSplit := {">>", "=>", "<-", "..", ".", "#", "_", "+"};
             if srcX == "" and any(opsToSplit, o -> o == op) then (
                     local p; p = mySplitFirst(src, op);
                     if p#1 != "" then (
@@ -638,7 +638,7 @@ toTreeSitter := (s, indent, src) -> (
         if op == "time" or op == "timing" or op == "elapsedTime" or op == "elapsedTiming" or op == "profile" then return "(time_statement\n" | nextSp | toTreeSitter(x, indent + 2, "") | ")";
         
         if any(postfixOps, p -> p == op) then (
-            return "(postfix_expression\n" | nextSp | "operand: " | toTreeSitter(x, indent + 2, "") | (if op == "(*)" then "\n" | nextSp | "(space)" else "") | ")";
+            return "(postfix_expression\n" | nextSp | "operand: " | toTreeSitter(x, indent + 2, "") | ")";
         ) else (
             return "(prefix_expression\n" | nextSp | "operand: " | toTreeSitter(x, indent + 2, "") | ")";
         );

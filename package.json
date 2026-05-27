@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Macaulay2 grammar for tree-sitter",
   "main": "bindings/node",
+  "types": "bindings/node",
   "keywords": [
     "parser",
     "lexer",
@@ -34,6 +35,7 @@
   "scripts": {
     "generate": "tree-sitter generate",
     "test": "tree-sitter test",
+    "test:node": "node --test bindings/node/*_test.js",
     "check": "tree-sitter generate && tree-sitter test",
     "parse": "tree-sitter parse",
     "parse:examples": "tree-sitter parse --quiet examples/*.m2 test/test_generator/test_expressions/*.m2"

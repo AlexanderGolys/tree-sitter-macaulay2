@@ -8,12 +8,12 @@
 - [x] Indentation (`indents.scm`)
 - [x] Symbol Tags (`tags.scm`)
 - [x] Folds (`folds.scm`)
-- [x] C, Node, and Rust bindings
+- [x] Node and Rust bindings
 
 ## Supported Bindings
 
-This release supports the C parser sources plus Node and Rust bindings. Go,
-Python, and Swift bindings are not shipped yet.
+This release supports Node and Rust bindings. C/C++, Go, Python, and Swift
+bindings are not shipped yet.
 
 ## Development
 

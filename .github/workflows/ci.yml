@@ -32,5 +32,8 @@ jobs:
 
       - run: npm run parse:examples
 
+      - name: Test Node binding
+        run: npm run test:node
+
       - name: Test Rust binding
         run: cargo test

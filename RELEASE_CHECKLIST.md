@@ -26,6 +26,10 @@ Keep these in the repository:
 - `tree-sitter.json`
 - CI workflows under `.github/workflows/`
 
+The supported bindings for the initial release are C, Node, and Rust. Keep Go,
+Python, and Swift disabled in `tree-sitter.json` until those binding directories
+exist and are tested.
+
 Do not include local or generated build outputs:
 
 - `build/`
@@ -94,7 +98,8 @@ Recommended jobs:
   - install Tree-sitter CLI
   - run `tree-sitter generate`
   - run `tree-sitter test`
-  - test supported bindings, for example Rust and Node if they are supported
+  - test the Rust binding with `cargo test`
+  - test Node package contents with `npm pack --dry-run`
 - Generated M2 corpus tests on Ubuntu:
   - checkout
   - install Tree-sitter CLI
@@ -158,10 +163,10 @@ Release flow:
 
 ```sh
 npm run check
-tree-sitter version 1.3.0
+tree-sitter version 1.0.0
 git status --short
-git commit -am "Release 1.3.0"
-git tag -- v1.3.0
+git commit -am "Release 1.0.0"
+git tag -- v1.0.0
 git push origin main --tags
 ```
 

@@ -6,12 +6,18 @@ target/
 *.dll
 *.dylib
 node_modules/
+*.tgz
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # Local debug files
 debug_*.m2
 debug_*.txt
 gen_output.txt
 opencode.json
+compile_commands.json
 
 # Editor files
 *.code-workspace

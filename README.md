@@ -29,36 +29,12 @@ Regenerate the parser and run the corpus tests:
 npm run check
 ```
 
-Run generated Macaulay2-derived corpus tests:
+## Generated Corpus
 
-```bash
-npm run test:generated
-```
-
-The generated test command requires [Macaulay2](https://macaulay2.com/) to be
-installed and available in `PATH` as `M2`.
-
-## Automatic Test Generation
-
-The repository includes a Macaulay2-based test generation script that automates the creation of Tree-sitter corpus tests by using Macaulay2's internal `disassemble` function to obtain the ground-truth AST.
-
-`disassemble` is used as an AST-like oracle for syntax tests. It is not treated
-as a pure parser API for every semantic edge case, so clear syntax errors are
-kept separately in `test/corpus/syntax_errors.txt`.
-
-### Usage
-
-1. **Add expressions**: Place Macaulay2 code in `.m2` files within `test/test_generator/test_expressions/`. Each non-empty line is treated as a separate test case.
-2. **Generate tests**: Run the generation script from the project root:
-   ```bash
-   bash test/test_generator/generate_tests.sh
-   ```
-3. **Verify**: Run the Tree-sitter test suite:
-   ```bash
-   tree-sitter test
-   ```
-
-The script generates `.txt` corpus files in `test/corpus/` prefixed with `auto_generated_`. This ensures the parser's output exactly matches the behavior of the real Macaulay2 parser.
+The generated corpus files are committed, so normal testing does not require
+Macaulay2. The Macaulay2-based generator is only needed when changing the
+generated-test inputs; see [CONTRIBUTING.md](CONTRIBUTING.md) for that maintainer
+workflow.
 
 ## Neovim
 

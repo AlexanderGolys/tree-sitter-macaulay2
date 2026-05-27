@@ -34,11 +34,9 @@
   "scripts": {
     "generate": "tree-sitter generate",
     "test": "tree-sitter test",
-    "test:generated": "bash test/test_generator/generate_tests.sh && tree-sitter test",
     "check": "tree-sitter generate && tree-sitter test",
-    "check:generated": "bash test/test_generator/generate_tests.sh && tree-sitter test && git diff --exit-code -- test/corpus",
     "parse": "tree-sitter parse",
-    "parse:examples": "tree-sitter parse --quiet examples/*.m2"
+    "parse:examples": "tree-sitter parse --quiet examples/*.m2 test/test_generator/test_expressions/*.m2"
   },
   "tree-sitter": [
     {

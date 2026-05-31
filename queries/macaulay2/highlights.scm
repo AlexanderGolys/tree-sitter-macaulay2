@@ -100,11 +100,6 @@
 ] @keyword
 
 
-(try_statement "else" @keyword.conditional)
-
-(try_statement
-  err: (symbol) @variable.parameter)
-
 ; Calls
 (binary_expression
   left: (symbol) @function.call

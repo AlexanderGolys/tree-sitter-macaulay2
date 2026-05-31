@@ -1,0 +1,2 @@
+symbolDictionaryName := sym -> try toString dictionary sym else 
+null

@@ -253,7 +253,7 @@ module.exports = grammar({
         token.immediate('"'),
       ),
 
-    _raw_string: ($) =>
+    _raw_string: (_) =>
       seq(
         "///",
         repeat(

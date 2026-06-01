@@ -3753,6 +3753,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "step_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "test_statement"
         },
         {
@@ -3939,6 +3943,10 @@
       {
         "type": "STRING",
         "value": "SPACE"
+      },
+      {
+        "type": "STRING",
+        "value": "step"
       },
       {
         "type": "STRING",

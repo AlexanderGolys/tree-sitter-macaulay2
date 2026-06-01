@@ -1271,6 +1271,10 @@
         {
           "type": "escape_sequence",
           "named": true
+        },
+        {
+          "type": "raw_string_escape",
+          "named": true
         }
       ]
     }
@@ -1951,6 +1955,10 @@
   {
     "type": "profile",
     "named": false
+  },
+  {
+    "type": "raw_string_escape",
+    "named": true
   },
   {
     "type": "resolved_symbol",

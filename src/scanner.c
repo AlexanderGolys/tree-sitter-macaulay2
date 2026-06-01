@@ -24,7 +24,15 @@ enum TokenType {
   // the same reason: `.` can begin either a float or a range/adjacency form.
   FLOAT,
   E_MISSING,
-  P_MISSING
+  P_MISSING,
+
+  // Raw strings use `/// ... ///`, but slash runs inside the body are encoded
+  // so that the closing delimiter stays unambiguous. The parser wants to keep
+  // the doubled-slash pieces visible, while ordinary raw-string content and
+  // the closing delimiter can stay anonymous.
+  RAW_STRING_CONTENT,
+  RAW_STRING_ESCAPE,
+  RAW_STRING_END
 };
 
 typedef enum { SCAN_NONE, SCAN_DONE, SCAN_FAIL } ScanResult;
@@ -138,6 +146,11 @@ static bool can_scan_float(const bool *valid_symbols) {
 
 static bool can_scan_adjacency(const bool *valid_symbols) {
   return valid_symbols[SPACE] || valid_symbols[SPACE_INDEXING];
+}
+
+static bool can_scan_raw_string(const bool *valid_symbols) {
+  return valid_symbols[RAW_STRING_CONTENT] || valid_symbols[RAW_STRING_ESCAPE] ||
+         valid_symbols[RAW_STRING_END];
 }
 
 // Handle all dot-led non-float forms first. This is where we decide whether a
@@ -273,6 +286,53 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
   return false;
 }
 
+// Raw strings are delimited by `/// ... ///`. To represent longer slash runs
+// inside the body, Macaulay2 doubles slashes in pairs and leaves either:
+//
+//   * 2 ordinary slashes before more content, or
+//   * the final closing `///`
+//
+// We therefore expose one `raw_string_escape` token per doubled `//` pair and
+// leave the remaining 2-slash or 3-slash suffix to be scanned on the next call.
+static bool scan_raw_string(TSLexer *lexer, const bool *valid_symbols) {
+  lexer->mark_end(lexer);
+
+  if (lexer->eof(lexer))
+    return false;
+
+  if (lexer->lookahead != '/') {
+    do {
+      lexer->advance(lexer, false);
+      lexer->mark_end(lexer);
+    } while (!lexer->eof(lexer) && lexer->lookahead != '/');
+    return emit(lexer, RAW_STRING_CONTENT);
+  }
+
+  uint32_t slash_count = 0;
+  do {
+    lexer->advance(lexer, false);
+    slash_count++;
+
+    if (slash_count <= 2)
+      lexer->mark_end(lexer);
+    else if (slash_count == 3 && lexer->lookahead != '/')
+      lexer->mark_end(lexer);
+  } while (lexer->lookahead == '/');
+
+  bool at_end_of_input = lexer->eof(lexer);
+
+  if (slash_count <= 2)
+    return emit(lexer, RAW_STRING_CONTENT);
+
+  if (slash_count == 3)
+    return emit(lexer, RAW_STRING_END);
+
+  if ((slash_count % 2) == 0 && at_end_of_input)
+    return false;
+
+  return emit(lexer, RAW_STRING_ESCAPE);
+}
+
 static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
                            int32_t c) {
   lexer->mark_end(lexer);
@@ -342,6 +402,12 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
 
 bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
                                                  const bool *valid_symbols) {
+  // Raw strings are the only scanner mode where leading spaces/newlines are
+  // significant content, so we must handle them before generic whitespace
+  // skipping.
+  if (can_scan_raw_string(valid_symbols))
+    return scan_raw_string(lexer, valid_symbols);
+
   skip_whitespace(lexer);
 
   if (lexer->eof(lexer))

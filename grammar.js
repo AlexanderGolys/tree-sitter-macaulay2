@@ -205,6 +205,9 @@ module.exports = grammar({
         $.float_literal, // Floating point literal
         $.exp_missing, // Exponent missing
         $.p_missing, // Precision missing
+        $._raw_string_content, // Raw string text chunks
+        $.raw_string_escape, // Doubled-slash raw string escapes
+        $._raw_string_end, // Raw string terminator ///
     ],
 
     rules: {
@@ -254,17 +257,11 @@ module.exports = grammar({
                 token.immediate('"'),
             ),
 
-        _raw_string: (_) =>
+        _raw_string: ($) =>
             seq(
                 "///",
-                repeat(
-                    choice(
-                        prec(10, token.immediate(/[^/]+/)),
-                        prec(10, token.immediate(/\/[^\/]/)),
-                        prec(10, token.immediate(/\/\/[^\/]/)),
-                    ),
-                ),
-                prec(10, token.immediate("///")),
+                repeat(choice($._raw_string_content, $.raw_string_escape)),
+                $._raw_string_end,
             ),
 
         string_literal: ($) => choice($._std_string, $._raw_string),

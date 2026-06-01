@@ -95,6 +95,50 @@ abc
     (string_literal)))
 
 ==================
+(10) Raw string with escaped interior triple slashes [strings]
+==================
+///-- //// -- /////////
+---
+
+(source_file
+  (cell
+    (string_literal
+      (raw_string_escape)
+      (raw_string_escape)
+      (raw_string_escape)
+      (raw_string_escape))))
+
+==================
+(11) Raw string with escaped interior quadruple slashes [strings]
+==================
+///-- ////// -- ///////////
+---
+
+(source_file
+  (cell
+    (string_literal
+      (raw_string_escape)
+      (raw_string_escape)
+      (raw_string_escape)
+      (raw_string_escape)
+      (raw_string_escape)
+      (raw_string_escape))))
+
+==================
+(12) Raw string ending with four slashes [strings]
+==================
+//////////////
+---
+
+(source_file
+  (cell
+    (string_literal
+      (raw_string_escape)
+      (raw_string_escape)
+      (raw_string_escape)
+      (raw_string_escape))))
+
+==================
 (10) String with comment [strings]
 ==================
 "a--s"
@@ -216,6 +260,7 @@ expressions = separate("--\"\a
 (source_file
   (cell
     (string_literal)))
+
 ==================
 (17) Non escape [strings]
 ==================

@@ -471,7 +471,7 @@ toTreeSitter := (s, indent, src) -> (
         x = if #r1 > 0 and r1#0 == "(" then myExtractParenthesized(r1) else if #r1 > 0 and r1#0 == "\"" then myExtractParenthesized(r1) else (mySplitFirst(r1, " "))#0;
         y = myTrim(substring(#x, #r1 - #x, r1));
         
-        opLine = if op == "SPACE" then "\n" | nextSp | "operator: (space)" else "";
+        opLine = if op == "SPACE" then "\n" | nextSp | "operator: (_space)" else "";
         
         srcX = ""; srcY = "";
         if #src > 0 then (
@@ -620,7 +620,7 @@ toTreeSitter := (s, indent, src) -> (
             );
         );
 
-        return "(binary_expression\n" | nextSp | "left: " | toTreeSitter(x, indent + 2, srcX) | "\n" | nextSp | "operator: (space)\n" | nextSp | "right: " | toTreeSitter(y, indent + 2, srcY) | ")";
+        return "(binary_expression\n" | nextSp | "left: " | toTreeSitter(x, indent + 2, srcX) | "\n" | nextSp | "operator: (_space)\n" | nextSp | "right: " | toTreeSitter(y, indent + 2, srcY) | ")";
     );
     
     if myStartsWith("(1-OP", s) then (

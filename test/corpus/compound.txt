@@ -3,104 +3,117 @@
 ==================
 f(g(1, 2), h(3, 4))
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (symbol)
-      operator: (space)
+      operator: (_space)
       right: (sequence
         (binary_expression
           left: (symbol)
-          operator: (space)
+          operator: (_space)
           right: (sequence
             (integer_literal)
             (integer_literal)))
         (binary_expression
           left: (symbol)
-          operator: (space)
+          operator: (_space)
           right: (sequence
             (integer_literal)
             (integer_literal)))))))
+
 ==================
 2. Function call precedence [compound]
 ==================
 (f 1) + (g 2)
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (sequence
         (binary_expression
           left: (symbol)
-          operator: (space)
+          operator: (_space)
           right: (integer_literal)))
       right: (sequence
         (binary_expression
           left: (symbol)
-          operator: (space)
+          operator: (_space)
           right: (integer_literal))))))
+
 ==================
 (3) Not with function call [compound]
 ==================
 not f(1 + 2)
 ---
+
 (source_file
   (cell
     (prefix_expression
       operand: (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (sequence
           (binary_expression
             left: (integer_literal)
             right: (integer_literal)))))))
+
 ==================
 4. Nested calls without parens [compound]
 ==================
 (f (g (h 1)))
 ---
+
 (source_file
   (cell
     (sequence
       (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (sequence
           (binary_expression
             left: (symbol)
-            operator: (space)
+            operator: (_space)
             right: (sequence
               (binary_expression
                 left: (symbol)
-                operator: (space)
+                operator: (_space)
                 right: (integer_literal)))))))))
+
 ==================
 5. List expression [compound]
 ==================
 {1, 2, 3}
 ---
+
 (source_file
   (cell
     (list
       (integer_literal)
       (integer_literal)
       (integer_literal))))
+
 ==================
 6. Sequence expression with semicolons [compound]
 ==================
 (a; b; c)
 ---
+
 (source_file
   (cell
     (sequence
       (symbol)
       (symbol)
       (symbol))))
+
 ==================
 7. Array expression [compound]
 ==================
 [a, b, c]
 ---
+
 (source_file
   (cell
     (array

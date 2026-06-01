@@ -6,7 +6,7 @@ cd "$SCRIPT_DIR"
 
 bail() { echo "FAIL: $*" >&2; exit 1; }
 
-SKIP_GENERATE=false
+SKIP_M2=false
 SKIP_NODE=false
 SKIP_PUBLISH=false
 
@@ -14,7 +14,7 @@ usage() {
     cat <<EOF
 Usage: $0 [FLAGS]
 
-  --skip-generate   Skip M2 test generation (step 1)
+  --skip-m2        Skip M2 test generation (step 1)
   --skip-node       Skip Node native build and tests (step 5,6)
   --skip-publish    Skip npm/cargo publish dry-runs (step 7,8)
   -h, --help        Show this help
@@ -24,7 +24,7 @@ EOF
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --skip-generate) SKIP_GENERATE=true; shift ;;
+        --skip-m2)       SKIP_M2=true; shift ;;
         --skip-node)     SKIP_NODE=true; shift ;;
         --skip-publish)  SKIP_PUBLISH=true; shift ;;
         -h|--help)       usage ;;
@@ -44,8 +44,8 @@ if [ "$NODE_MAJOR" -gt 25 ]; then
     fi
 fi
 
-if $SKIP_GENERATE; then
-    echo "==> Skipping M2 test generation (--skip-generate)"
+if $SKIP_M2; then
+    echo "==> Skipping M2 test generation (--skip-m2)"
 else
     echo "==> 1. Generating M2 tests"
     bash test/test_generator/generate_tests.sh

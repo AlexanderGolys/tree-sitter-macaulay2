@@ -110,7 +110,7 @@
 ; Calls
 (binary_expression
   left: (symbol) @function.call
-  operator: (space))
+  operator: (_space))
 
 ((binary_expression
   left: [
@@ -160,7 +160,7 @@
   left: (symbol) @property)
 
 (binary_expression
-  operator: (space)
+  operator: (_space)
   right: (sequence
     (option_assignment
       left: (symbol) @variable.member)))
@@ -199,7 +199,7 @@
 ((assignment_expression
   left: (binary_expression
     left: (symbol) @function
-    operator: (space)
+    operator: (_space)
     right: (symbol) @type))
   (#match? @function "[a-z].*"))
 
@@ -230,7 +230,7 @@
 (assignment_expression
   left: (binary_expression
     left: (symbol) @function
-    operator: (space)
+    operator: (_space)
     right: (sequence
       "(" @type
       [
@@ -261,7 +261,7 @@
 
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (space)
+  operator: (_space)
   right: (sequence
     (locality_operator)
     .
@@ -310,7 +310,7 @@
 
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (space)
+  operator: (_space)
   right: [
     (string_literal) @string.special.url
     (sequence
@@ -321,7 +321,7 @@
 
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (space)
+  operator: (_space)
   right: [
     (string_literal) @string.regexp
     (sequence
@@ -332,7 +332,7 @@
 
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (space)
+  operator: (_space)
   right: (sequence
     (string_literal) @string.regexp
     (string_literal) @string.special
@@ -341,7 +341,7 @@
 
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (space)
+  operator: (_space)
   right: (sequence
     (string_literal) @string.regexp
     (_)+))
@@ -350,7 +350,7 @@
 ; Packages
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (space)
+  operator: (_space)
   right: [
     (symbol) @module.builtin
     (sequence

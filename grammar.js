@@ -332,11 +332,11 @@ export default grammar({
                 ),
                 prec.right(
                     61,
-                    OperatorExpression($, [alias(choice($._space, "SPACE"), $.space)]),
+                    OperatorExpression($, [alias(choice($._space, "SPACE"), $._space)]),
                 ),
                 prec.right(
                     56,
-                    OperatorExpression($, [alias($._space_indexing, $.space)]),
+                    OperatorExpression($, [alias($._space_indexing, $._space)]),
                 ),
                 prec.left(70, OperatorExpression($, [".", ".?"], { rhs: $.symbol })),
             ),

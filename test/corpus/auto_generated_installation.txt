@@ -3,12 +3,13 @@
 ==================
 ZZ ZZ := (x, y) -> x + y
 ---
+
 (source_file
   (cell
     (assignment_expression
       left: (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (symbol))
       right: (function_expression
         parameters: (sequence
@@ -23,12 +24,13 @@ ZZ ZZ := (x, y) -> x + y
 ==================
 f ZZ := x -> x^2
 ---
+
 (source_file
   (cell
     (assignment_expression
       left: (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (symbol))
       right: (function_expression
         parameters: (symbol)
@@ -41,6 +43,7 @@ f ZZ := x -> x^2
 ==================
 ZZ _ ZZ := (x, y) -> x + y
 ---
+
 (source_file
   (cell
     (assignment_expression
@@ -60,6 +63,7 @@ ZZ _ ZZ := (x, y) -> x + y
 ==================
 ZZ + ZZ := (x, y) -> x + y
 ---
+
 (source_file
   (cell
     (assignment_expression
@@ -79,6 +83,7 @@ ZZ + ZZ := (x, y) -> x + y
 ==================
 + ZZ := x -> x + 1
 ---
+
 (source_file
   (cell
     (assignment_expression
@@ -95,6 +100,7 @@ ZZ + ZZ := (x, y) -> x + y
 ==================
 ZZ ! := x -> x!
 ---
+
 (source_file
   (cell
     (assignment_expression
@@ -110,12 +116,13 @@ ZZ ! := x -> x!
 ==================
 f(A, B, C, D) := f
 ---
+
 (source_file
   (cell
     (assignment_expression
       left: (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (sequence
           (symbol)
           (symbol)
@@ -128,14 +135,14 @@ f(A, B, C, D) := f
 ==================
 ZZ ZZ := ZZ => f
 ---
+
 (source_file
   (cell
     (assignment_expression
       left: (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (symbol))
       right: (option_assignment
         left: (symbol)
         right: (symbol)))))
-

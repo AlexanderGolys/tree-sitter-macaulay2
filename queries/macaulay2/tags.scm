@@ -21,7 +21,7 @@
 ((assignment_expression
    left: (binary_expression
            left: (symbol) @name
-           operator: (space))
+           operator: (_space))
    operator: [":=" "="]) @definition.function
  (#match? @name "^[a-z].*"))
 
@@ -49,15 +49,15 @@
 ; References
 (binary_expression
   left: (symbol) @name
-  operator: (space)) @reference.call
+  operator: (_space)) @reference.call
 
 (binary_expression
   left: (binary_expression
           left: (symbol) @name
           operator: "_")
-  operator: (space)) @reference.call
+  operator: (_space)) @reference.call
 
 (binary_expression
   left: (locality_operator
           symbol: (resolved_symbol) @name)
-  operator: (space)) @reference.call
+  operator: (_space)) @reference.call

@@ -70,7 +70,7 @@ for i in 1..5 when i>2 do print i
       (do_clause
         (binary_expression
           left: (symbol)
-          operator: (space)
+          operator: (_space)
           right: (symbol))))))
 
 ==================
@@ -90,7 +90,7 @@ for j from 0 to 4 do doSomething j
       (do_clause
         (binary_expression
           left: (symbol)
-          operator: (space)
+          operator: (_space)
           right: (symbol))))))
 
 ==================
@@ -203,6 +203,7 @@ throw err
   (cell
     (throw_statement
       (symbol))))
+
 ==================
 (16) try then else
 ==================
@@ -215,8 +216,9 @@ try x then y else z
       condition: (symbol)
       consequence: (symbol)
       alternative: (symbol))))
+
 ==================
-(17) try then 
+(17) try then
 ==================
 try x then y
 ---
@@ -226,8 +228,9 @@ try x then y
     (try_statement
       condition: (symbol)
       consequence: (symbol))))
+
 ==================
-(18) try else 
+(18) try else
 ==================
 try x else y
 ---
@@ -237,8 +240,9 @@ try x else y
     (try_statement
       condition: (symbol)
       alternative: (symbol))))
+
 ==================
-(19) try 
+(19) try
 ==================
 try x 
 ---

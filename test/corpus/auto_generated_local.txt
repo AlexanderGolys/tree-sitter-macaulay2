@@ -3,6 +3,7 @@
 ==================
 symbol x
 ---
+
 (source_file
   (cell
     (locality_operator
@@ -13,6 +14,7 @@ symbol x
 ==================
 symbol not
 ---
+
 (source_file
   (cell
     (locality_operator
@@ -23,6 +25,7 @@ symbol not
 ==================
 symbol symbol
 ---
+
 (source_file
   (cell
     (locality_operator
@@ -33,6 +36,7 @@ symbol symbol
 ==================
 symbol(
 ---
+
 (source_file
   (cell
     (locality_operator
@@ -43,6 +47,7 @@ symbol(
 ==================
 symbol(*)
 ---
+
 (source_file
   (cell
     (locality_operator
@@ -53,6 +58,7 @@ symbol(*)
 ==================
 symbol+
 ---
+
 (source_file
   (cell
     (locality_operator
@@ -63,6 +69,7 @@ symbol+
 ==================
 symbol,
 ---
+
 (source_file
   (cell
     (locality_operator
@@ -73,6 +80,7 @@ symbol,
 ==================
 symbol;
 ---
+
 (source_file
   (cell
     (locality_operator
@@ -83,6 +91,7 @@ symbol;
 ==================
 symbol.
 ---
+
 (source_file
   (cell
     (locality_operator
@@ -93,6 +102,7 @@ symbol.
 ==================
 symbol..
 ---
+
 (source_file
   (cell
     (locality_operator
@@ -103,6 +113,7 @@ symbol..
 ==================
 symbol..<<<<<2
 ---
+
 (source_file
   (cell
     (binary_expression
@@ -116,6 +127,7 @@ symbol..<<<<<2
 ==================
 symbol..<<<<2
 ---
+
 (source_file
   (cell
     (binary_expression
@@ -129,12 +141,13 @@ symbol..<<<<2
 ==================
 symbol..2
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (locality_operator
         symbol: (resolved_symbol))
-      operator: (space)
+      operator: (_space)
       right: (integer_literal))))
 
 ==================
@@ -142,12 +155,13 @@ symbol..2
 ==================
 symbol...2
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (locality_operator
         symbol: (resolved_symbol))
-      operator: (space)
+      operator: (_space)
       right: (float_literal))))
 
 ==================
@@ -155,6 +169,7 @@ symbol...2
 ==================
 symbol....2
 ---
+
 (source_file
   (cell
     (binary_expression
@@ -167,6 +182,7 @@ symbol....2
 ==================
 symbol.....2
 ---
+
 (source_file
   (cell
     (binary_expression
@@ -179,12 +195,13 @@ symbol.....2
 ==================
 symbol symbol symbol symbol
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (locality_operator
         symbol: (resolved_symbol))
-      operator: (space)
+      operator: (_space)
       right: (locality_operator
         symbol: (resolved_symbol)))))
 
@@ -193,6 +210,7 @@ symbol symbol symbol symbol
 ==================
 symbol ======<===x
 ---
+
 (source_file
   (cell
     (binary_expression
@@ -206,6 +224,7 @@ symbol ======<===x
 ==================
 symbol ===<===x
 ---
+
 (source_file
   (cell
     (binary_expression
@@ -218,12 +237,13 @@ symbol ===<===x
 ==================
 symbol.x
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (locality_operator
         symbol: (resolved_symbol))
-      operator: (space)
+      operator: (_space)
       right: (symbol))))
 
 ==================
@@ -231,12 +251,13 @@ symbol.x
 ==================
 symbol..x
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (locality_operator
         symbol: (resolved_symbol))
-      operator: (space)
+      operator: (_space)
       right: (symbol))))
 
 ==================
@@ -244,6 +265,7 @@ symbol..x
 ==================
 symbol...x
 ---
+
 (source_file
   (cell
     (binary_expression
@@ -256,6 +278,7 @@ symbol...x
 ==================
 symbol....x
 ---
+
 (source_file
   (cell
     (binary_expression
@@ -268,6 +291,7 @@ symbol....x
 ==================
 symbol..<====y
 ---
+
 (source_file
   (cell
     (binary_expression
@@ -280,6 +304,7 @@ symbol..<====y
 ==================
 symbol..<===y
 ---
+
 (source_file
   (cell
     (binary_expression
@@ -292,12 +317,13 @@ symbol..<===y
 ==================
 symbol..<=y
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (locality_operator
         symbol: (resolved_symbol))
-      operator: (space)
+      operator: (_space)
       right: (symbol))))
 
 ==================
@@ -305,12 +331,13 @@ symbol..<=y
 ==================
 symbol..<y
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (locality_operator
         symbol: (resolved_symbol))
-      operator: (space)
+      operator: (_space)
       right: (symbol))))
 
 ==================
@@ -318,10 +345,10 @@ symbol..<y
 ==================
 symbol.<==y
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (locality_operator
         symbol: (resolved_symbol))
       right: (symbol))))
-

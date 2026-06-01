@@ -1711,7 +1711,7 @@
                     ]
                   },
                   "named": true,
-                  "value": "space"
+                  "value": "_space"
                 }
               },
               {
@@ -1749,7 +1749,7 @@
                     "name": "_space_indexing"
                   },
                   "named": true,
-                  "value": "space"
+                  "value": "_space"
                 }
               },
               {

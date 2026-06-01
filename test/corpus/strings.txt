@@ -190,7 +190,7 @@ expressions = separate("\n--")
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (sequence
           (string_literal
             (escape_sequence)))))))
@@ -207,7 +207,7 @@ expressions = separate("\n--\a-*\" ///----*//")
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (sequence
           (string_literal
             (escape_sequence)
@@ -226,7 +226,7 @@ expressions = separate(///\n--///)
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (sequence
           (string_literal))))))
 
@@ -243,7 +243,7 @@ expressions = separate("--\"\a
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (sequence
           (string_literal
             (escape_sequence)
@@ -273,6 +273,6 @@ expressions = separate(///\n--///)
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        operator: (space)
+        operator: (_space)
         right: (sequence
           (string_literal))))))

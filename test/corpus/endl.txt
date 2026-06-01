@@ -77,7 +77,7 @@ f (
   (cell
     (binary_expression
       left: (symbol)
-	  operator: (space)
+      operator: (_space)
       right: (sequence
         (symbol)))))
 
@@ -94,7 +94,7 @@ f(
   (cell
     (binary_expression
       left: (symbol)
-      operator: (space)
+      operator: (_space)
       right: (sequence
         (binary_expression
           left: (integer_literal)
@@ -125,12 +125,12 @@ f(
 
 (source_file
   (cell
-	 (binary_expression
-        left: (symbol)
-        operator: (space)
-        right: (sequence
-			(postfix_expression
-          		operand: (integer_literal))))))
+    (binary_expression
+      left: (symbol)
+      operator: (_space)
+      right: (sequence
+        (postfix_expression
+          operand: (integer_literal))))))
 
 ==================
 (10) Broken postfix in call [endl]
@@ -146,12 +146,12 @@ f(x -> (
 
 (source_file
   (cell
-	 (binary_expression
-        left: (symbol)
-        operator: (space)
-        right: (sequence
-          (function_expression
-            parameters: (symbol)
-            body: (sequence
-              (symbol)
-              (symbol)))))))
+    (binary_expression
+      left: (symbol)
+      operator: (_space)
+      right: (sequence
+        (function_expression
+          parameters: (symbol)
+          body: (sequence
+            (symbol)
+            (symbol)))))))

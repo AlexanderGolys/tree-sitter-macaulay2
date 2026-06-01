@@ -3,6 +3,7 @@
 ==================
 if x==4 then x=5
 ---
+
 (source_file
   (cell
     (if_statement
@@ -18,6 +19,7 @@ if x==4 then x=5
 ==================
 if a > 0 then b else c
 ---
+
 (source_file
   (cell
     (if_statement
@@ -32,6 +34,7 @@ if a > 0 then b else c
 ==================
 for i from 0 to 4 do doSomething i
 ---
+
 (source_file
   (cell
     (for_statement
@@ -43,7 +46,7 @@ for i from 0 to 4 do doSomething i
       (do_clause
         (binary_expression
           left: (symbol)
-          operator: (space)
+          operator: (_space)
           right: (symbol))))))
 
 ==================
@@ -51,6 +54,7 @@ for i from 0 to 4 do doSomething i
 ==================
 for i in 1..5 when i>2 do print i
 ---
+
 (source_file
   (cell
     (for_statement
@@ -66,7 +70,7 @@ for i in 1..5 when i>2 do print i
       (do_clause
         (binary_expression
           left: (symbol)
-          operator: (space)
+          operator: (_space)
           right: (symbol))))))
 
 ==================
@@ -74,6 +78,7 @@ for i in 1..5 when i>2 do print i
 ==================
 while x < 10 do x = x + 1
 ---
+
 (source_file
   (cell
     (while_statement
@@ -92,6 +97,7 @@ while x < 10 do x = x + 1
 ==================
 break
 ---
+
 (source_file
   (cell
     (break_statement)))
@@ -101,6 +107,7 @@ break
 ==================
 continue
 ---
+
 (source_file
   (cell
     (continue_statement)))
@@ -110,6 +117,7 @@ continue
 ==================
 continue x
 ---
+
 (source_file
   (cell
     (continue_statement
@@ -120,6 +128,7 @@ continue x
 ==================
 return x
 ---
+
 (source_file
   (cell
     (return_statement
@@ -130,6 +139,7 @@ return x
 ==================
 try a then b else c
 ---
+
 (source_file
   (cell
     (try_statement
@@ -142,6 +152,7 @@ try a then b else c
 ==================
 if a then if b then x else y
 ---
+
 (source_file
   (cell
     (if_statement
@@ -156,6 +167,7 @@ if a then if b then x else y
 ==================
 if a then x else if b then y else z
 ---
+
 (source_file
   (cell
     (if_statement
@@ -171,6 +183,7 @@ if a then x else if b then y else z
 ==================
 while a do if b then break
 ---
+
 (source_file
   (cell
     (while_statement
@@ -185,6 +198,7 @@ while a do if b then break
 ==================
 for i in L do if i > 0 then return i else continue
 ---
+
 (source_file
   (cell
     (for_statement
@@ -205,6 +219,7 @@ for i in L do if i > 0 then return i else continue
 ==================
 for i in a list for j in b do print x
 ---
+
 (source_file
   (cell
     (for_statement
@@ -219,7 +234,7 @@ for i in a list for j in b do print x
           (do_clause
             (binary_expression
               left: (symbol)
-              operator: (space)
+              operator: (_space)
               right: (symbol))))))))
 
 ==================
@@ -227,6 +242,7 @@ for i in a list for j in b do print x
 ==================
 if try x then y else z then 1
 ---
+
 (source_file
   (cell
     (if_statement
@@ -241,6 +257,7 @@ if try x then y else z then 1
 ==================
 catch x
 ---
+
 (source_file
   (cell
     (catch_statement
@@ -251,6 +268,7 @@ catch x
 ==================
 for i in L list for j in L list j do print 2
 ---
+
 (source_file
   (cell
     (for_statement
@@ -267,7 +285,7 @@ for i in L list for j in L list j do print 2
           (do_clause
             (binary_expression
               left: (symbol)
-              operator: (space)
+              operator: (_space)
               right: (integer_literal))))))))
 
 ==================
@@ -275,6 +293,7 @@ for i in L list for j in L list j do print 2
 ==================
 if if 1 then 2 then 3 else 5
 ---
+
 (source_file
   (cell
     (if_statement
@@ -289,6 +308,7 @@ if if 1 then 2 then 3 else 5
 ==================
 if 1 then if 2 then 3 else 4
 ---
+
 (source_file
   (cell
     (if_statement
@@ -303,6 +323,7 @@ if 1 then if 2 then 3 else 4
 ==================
 while for i in L list 1 do 2 do 3
 ---
+
 (source_file
   (cell
     (while_statement
@@ -316,4 +337,3 @@ while for i in L list 1 do 2 do 3
           (integer_literal)))
       (do_clause
         (integer_literal)))))
-

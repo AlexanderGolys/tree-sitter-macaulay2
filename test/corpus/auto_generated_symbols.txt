@@ -3,6 +3,7 @@
 ==================
 a'a
 ---
+
 (source_file
   (cell
     (symbol)))
@@ -12,6 +13,7 @@ a'a
 ==================
 a''$'$
 ---
+
 (source_file
   (cell
     (symbol)))
@@ -21,6 +23,7 @@ a''$'$
 ==================
 a$$
 ---
+
 (source_file
   (cell
     (symbol)))
@@ -30,6 +33,7 @@ a$$
 ==================
 aa'$''q
 ---
+
 (source_file
   (cell
     (symbol)))
@@ -39,6 +43,7 @@ aa'$''q
 ==================
 a$2
 ---
+
 (source_file
   (cell
     (symbol)))
@@ -48,6 +53,7 @@ a$2
 ==================
 x'2'$2
 ---
+
 (source_file
   (cell
     (symbol)))
@@ -57,10 +63,10 @@ x'2'$2
 ==================
 x$.2
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (symbol)
-      operator: (space)
+      operator: (_space)
       right: (float_literal))))
-

@@ -558,16 +558,16 @@
             "named": false
           },
           {
+            "type": "_space",
+            "named": true
+          },
+          {
             "type": "and",
             "named": false
           },
           {
             "type": "or",
             "named": false
-          },
-          {
-            "type": "space",
-            "named": true
           },
           {
             "type": "xor",
@@ -1858,6 +1858,10 @@
     "named": false
   },
   {
+    "type": "_space",
+    "named": true
+  },
+  {
     "type": "_~",
     "named": false
   },
@@ -1990,10 +1994,6 @@
   {
     "type": "shield",
     "named": false
-  },
-  {
-    "type": "space",
-    "named": true
   },
   {
     "type": "step",

@@ -1,6 +1,5 @@
 #include <string.h>
 #include <tree_sitter/parser.h>
-#include <wctype.h>
 
 enum TokenType {
   // Macaulay2 has an implicit "application by adjacency" operator: `f x`,
@@ -50,27 +49,21 @@ void tree_sitter_macaulay2_external_scanner_deserialize(void *payload,
                                                         const char *buffer,
                                                         unsigned length) {}
 
-static bool is_digit(int32_t c) { return c >= '0' && c <= '9'; }
-
 static bool is_alpha(int32_t c) {
   return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
+static bool is_digit(int32_t c) { return c >= '0' && c <= '9'; }
+
 static bool is_inline_whitespace(int32_t c) { return c == ' ' || c == '\t'; }
 
 static bool is_ident_char(int32_t c) {
-  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-         (c >= '0' && c <= '9') || c == '\'' || c == '$';
+  return is_alpha(c) || is_digit(c) || c == '\'' || c == '$';
 }
 
 static bool emit(TSLexer *lexer, enum TokenType symbol) {
   lexer->result_symbol = symbol;
   return true;
-}
-
-static bool emit_if(bool cond, TSLexer *lexer, enum TokenType symbol) {
-    if (cond) return emit(lexer, symbol);
-    return false;
 }
 
 // This helper is narrower than "is keyword". It answers a parser-specific
@@ -102,13 +95,13 @@ static bool is_adjacency_blocking_keyword_ahead(TSLexer *lexer) {
     return false;
 
   static const char *const keywords[] = {
-      "if",          "then",          "else",    "from",
-      "to",          "when",          "do",      "in",
-      "of",          "list",          "for",     "while",
-      "break",       "continue",      "return",  "try",
-      "catch",       "throw",         "time",    "timing",
-      "elapsedTime", "elapsedTiming", "profile", "shield",
-      "TEST",        "breakpoint",    "except",  "trap",
+    "if",      "then",     "else",    "from",
+    "to",      "when",     "do",      "in",
+    "of",      "list",     "for",     "while",
+    "break",   "continue", "return",  "try",
+    "catch",   "throw",    "time",    "timing",
+    "elapsedTime", "elapsedTiming", "profile", "shield",
+    "TEST",    "breakpoint", "except", "trap",
   };
 
   for (size_t k = 0; k < sizeof(keywords) / sizeof(keywords[0]); k++) {
@@ -301,77 +294,79 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
 // We therefore expose one `raw_string_escape` token per doubled `//` pair and
 // leave the remaining 2-slash or 3-slash suffix to be scanned on the next call.
 
-static bool scan_raw_str_content_step(TSLexer *lexer, bool anything_found, int slashes_found) {
-    if (lexer->eof(lexer)) 
-        return anything_found;
-    if (lexer->lookahead != '/') {
-        lexer->advance(lexer, false);
-        lexer->mark_end(lexer);
-        return scan_raw_str_content_step(lexer, true, 0);
-    }
-    if (slashes_found == 2) 
-        return anything_found;
-
+static bool scan_raw_str_content_step(TSLexer *lexer, bool anything_found,
+                                    int slashes_found) {
+  if (lexer->eof(lexer))
+    return anything_found;
+  if (lexer->lookahead != '/') {
     lexer->advance(lexer, false);
-    return scan_raw_str_content_step(lexer, anything_found, slashes_found + 1);
+    lexer->mark_end(lexer);
+    return scan_raw_str_content_step(lexer, true, 0);
+  }
+  if (slashes_found == 2)
+    return anything_found;
+
+  lexer->advance(lexer, false);
+  return scan_raw_str_content_step(lexer, anything_found, slashes_found + 1);
 }
 
-
 static bool emit_raw_str_content(TSLexer *lexer, const bool *valid_symbols) {
-     if (!valid_symbols[RAW_STRING_CONTENT]) return false;
-     if (!scan_raw_str_content_step(lexer, false, 0)) return false;
-     return emit(lexer, RAW_STRING_CONTENT);
+  if (!valid_symbols[RAW_STRING_CONTENT])
+    return false;
+  if (!scan_raw_str_content_step(lexer, false, 0))
+    return false;
+  return emit(lexer, RAW_STRING_CONTENT);
 }
 
 static bool scan_raw_string(TSLexer *lexer, const bool *valid_symbols) {
-    if (lexer->eof(lexer))
-        return false;
-
-    if (lexer->lookahead != '/')
-        return emit_raw_str_content(lexer, valid_symbols);
-
-    lexer->advance(lexer, false); // consume first /
-    if (lexer->eof(lexer))
-        return false;
-    if (lexer->lookahead != '/')
-        return false;
-
-    lexer->advance(lexer, false); // consume second /
-    lexer->mark_end(lexer);       // tentative mark after //
-
-    // Check how many more slashes follow
-    int extra = 0;
-    while (extra < 3 && lexer->lookahead == '/') {
-        lexer->advance(lexer, false);
-        extra++;
-    }
-
-    // We've consumed 2 + extra slashes. Total slashes = 2 + extra.
-    // extra can be 0, 1, 2.
-
-    if (extra == 0) {
-        // // + non-slash — CONTENT (two slashes not doubled in the middle)
-        if (valid_symbols[RAW_STRING_CONTENT])
-            return emit(lexer, RAW_STRING_CONTENT);
-        return false;
-    }
-
-    if (extra == 1) {
-        // /// + non-slash (or EOF) — END
-        lexer->mark_end(lexer); // include third slash
-        if (valid_symbols[RAW_STRING_END])
-            return emit(lexer, RAW_STRING_END);
-        return false;
-    }
-
-    // extra >= 2: at least //// — greedy ESCAPE of first two
-    // mark_end is still at position after first //
-    // lexer has consumed extra+2 slashes, mark_end at position of first //
-    // When scanner returns, lexer resets to mark_end, so next call
-    // starts at the 3rd slash.
-    if (valid_symbols[RAW_STRING_ESCAPE])
-        return emit(lexer, RAW_STRING_ESCAPE);
+  if (lexer->eof(lexer))
     return false;
+
+  if (lexer->lookahead != '/')
+    return emit_raw_str_content(lexer, valid_symbols);
+
+  lexer->advance(lexer, false); // consume first /
+  if (lexer->eof(lexer))
+    return false;
+  if (lexer->lookahead != '/')
+    return false;
+
+  lexer->advance(lexer, false); // consume second /
+  lexer->mark_end(lexer);       // tentative mark after //
+
+  // Check how many more slashes follow
+  int extra = 0;
+  while (extra < 3 && lexer->lookahead == '/') {
+    lexer->advance(lexer, false);
+    extra++;
+  }
+
+  // We've consumed 2 + extra slashes. Total slashes = 2 + extra.
+  // extra can be 0, 1, 2.
+
+  if (extra == 0) {
+    // // + non-slash — CONTENT (two slashes not doubled in the middle)
+    if (valid_symbols[RAW_STRING_CONTENT])
+      return emit(lexer, RAW_STRING_CONTENT);
+    return false;
+  }
+
+  if (extra == 1) {
+    // /// + non-slash (or EOF) — END
+    lexer->mark_end(lexer); // include third slash
+    if (valid_symbols[RAW_STRING_END])
+      return emit(lexer, RAW_STRING_END);
+    return false;
+  }
+
+  // extra >= 2: at least //// — greedy ESCAPE of first two
+  // mark_end is still at position after first //
+  // lexer has consumed extra+2 slashes, mark_end at position of first //
+  // When scanner returns, lexer resets to mark_end, so next call
+  // starts at the 3rd slash.
+  if (valid_symbols[RAW_STRING_ESCAPE])
+    return emit(lexer, RAW_STRING_ESCAPE);
+  return false;
 }
 
 static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,

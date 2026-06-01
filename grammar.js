@@ -91,8 +91,8 @@ const operatorsSymbols = [
             ...assignmentOperators,
             ...optionAttachment,
         ]
-            .flatMap((op) => op.symbols)
-            .concat(["SPACE"]),
+        .flatMap((op) => op.symbols)
+        .concat(["SPACE"]),
     ),
 ];
 
@@ -191,7 +191,7 @@ export default grammar({
             "xor",
         ],
 
-        locality_op: (_) => [],
+        rebinding_op: (_) => [],
     },
 
     inline: ($) => [$._loop_body],
@@ -330,6 +330,11 @@ export default grammar({
                         alias($._range_lt, "..<"),
                     ]),
                 ),
+                // The adjacency operator (implicit function application) is
+                // produced by the external scanner, but the literal keyword
+                // SPACE can also be used as an explicit operator. Both are
+                // exposed as the hidden _space token so they share the same
+                // AST node and query capture.
                 prec.right(
                     61,
                     OperatorExpression($, [alias(choice($._space, "SPACE"), $._space)]),
@@ -467,9 +472,9 @@ export default grammar({
 
         trap_statement: ($) => prec.left(PREC.CONTROL, seq("trap", $.expression)),
 
-        locality_operator: ($) =>
+        rebinding: ($) =>
             reserved(
-                "locality_op",
+                "rebinding_op",
                 prec(
                     PREC.LOCALITY,
                     seq(
@@ -546,7 +551,7 @@ export default grammar({
                 $.shield_statement,
                 $.step_statement,
                 $.test_statement,
-                $.locality_operator,
+                $.rebinding,
                 $.new_statement,
             ),
     }, // End of rules

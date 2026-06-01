@@ -19,7 +19,7 @@
 
 (symbol) @variable
 
-(locality_operator
+(rebinding
   symbol: (resolved_symbol) @variable)
 
 ; Operators
@@ -263,7 +263,7 @@
   left: (symbol) @function.builtin
   operator: (_space)
   right: (sequence
-    (locality_operator)
+    (rebinding)
     .
     (_) @type
     .

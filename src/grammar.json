@@ -2915,7 +2915,7 @@
         ]
       }
     },
-    "locality_operator": {
+    "rebinding": {
       "type": "RESERVED",
       "content": {
         "type": "PREC",
@@ -3441,7 +3441,7 @@
           ]
         }
       },
-      "context_name": "locality_op"
+      "context_name": "rebinding_op"
     },
     "_multi_expression": {
       "type": "SEQ",
@@ -3761,7 +3761,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "locality_operator"
+          "name": "rebinding"
         },
         {
           "type": "SYMBOL",
@@ -4005,6 +4005,6 @@
         "value": "xor"
       }
     ],
-    "locality_op": []
+    "rebinding_op": []
   }
 }

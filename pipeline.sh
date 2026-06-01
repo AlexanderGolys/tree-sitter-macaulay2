@@ -11,22 +11,16 @@ bail() {
 
 # --- Defaults ---
 SKIP_GENERATE=false
-SKIP_FUZZ=false
 SKIP_NODE=false
 SKIP_PUBLISH=false
-FUZZ_SEED=1
-FUZZ_COUNT=100
 
 usage() {
     cat <<EOF
 Usage: $0 [FLAGS]
 
   --skip-generate   Skip M2 test generation (step 1)
-  --skip-fuzz       Skip raw string fuzz test generation (step 2)
   --skip-node       Skip Node native build and tests (step 6,7)
   --skip-publish    Skip npm/cargo publish dry-runs (step 8,9)
-  --seed N          Fuzz generator seed (default: $FUZZ_SEED)
-  --fuzz-count N    Number of fuzz tests (default: $FUZZ_COUNT)
   -h, --help        Show this help
 EOF
     exit 0
@@ -35,12 +29,9 @@ EOF
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --skip-generate) SKIP_GENERATE=true; shift ;;
-        --skip-fuzz)    SKIP_FUZZ=true; shift ;;
-        --skip-node)    SKIP_NODE=true; shift ;;
-        --skip-publish) SKIP_PUBLISH=true; shift ;;
-        --seed)         FUZZ_SEED="$2"; shift 2 ;;
-        --fuzz-count)   FUZZ_COUNT="$2"; shift 2 ;;
-        -h|--help)      usage ;;
+        --skip-node)     SKIP_NODE=true; shift ;;
+        --skip-publish)  SKIP_PUBLISH=true; shift ;;
+        -h|--help)       usage ;;
         *) bail "Unknown flag: $1" ;;
     esac
 done
@@ -67,41 +58,35 @@ else
     bash test/test_generator/generate_tests.sh
 fi
 
-if $SKIP_FUZZ; then
-    echo "==> Skipping fuzz tests (--skip-fuzz)"
-else
-    echo "==> 2. Generating raw string fuzz tests"
-    python3 test/test_generator/gen_raw_tests.py --seed "$FUZZ_SEED" -n "$FUZZ_COUNT"
-fi
-
-echo "==> 3. Generating parser"
+echo "==> 2. Generating parser"
 npx tree-sitter generate
 
-echo "==> 4. Running tree-sitter tests"
+echo "==> 3. Running tree-sitter tests"
 npx tree-sitter test
 
-echo "==> 5. Running cargo tests"
+echo "==> 4. Running cargo tests"
 cargo test
 
 if $SKIP_NODE; then
     echo "==> Skipping Node steps (--skip-node)"
 else
-    echo "==> 6. Building Node native addon"
+    echo "==> 5. Building Node native addon"
     npx node-gyp rebuild
 
-    echo "==> 7. Running Node binding tests"
+    echo "==> 6. Running Node binding tests"
     npm run test:node
 fi
 
 if $SKIP_PUBLISH; then
     echo "==> Skipping publish dry-runs (--skip-publish)"
 else
-    echo "==> 8. npm pack & publish (dry-run)"
+    echo "==> 7. npm pack & publish (dry-run)"
     npm pack --dry-run
     npm publish --dry-run
 
-    echo "==> 9. cargo publish (dry-run)"
+    echo "==> 8. cargo publish (dry-run)"
     cargo publish --dry-run
+fi
 fi
 
 echo

@@ -13,6 +13,8 @@
 
 (escape_sequence) @string.escape
 
+(raw_string_escape) @string.escape
+
 (boolean_literal) @boolean
 
 (symbol) @variable
@@ -55,6 +57,7 @@
   "in"
   "from"
   "to"
+  "step"
 ] @keyword.repeat
 
 [

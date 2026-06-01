@@ -130,7 +130,7 @@ function PostfixOperatorExpression($, { precedence, symbols }) {
     );
 }
 
-module.exports = grammar({
+export default grammar({
     name: "macaulay2",
 
     supertypes: ($) => [$.expression],

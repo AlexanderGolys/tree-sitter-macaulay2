@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-macaulay2",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Macaulay2 grammar for tree-sitter",
   "main": "bindings/node",
   "types": "bindings/node",
@@ -12,6 +12,7 @@
   ],
   "author": "Alexander Golys <alexandergolys@gmail.com>",
   "license": "MIT",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AlexanderGolys/tree-sitter-macaulay2.git"
@@ -27,16 +28,28 @@
     "LICENCE"
   ],
   "dependencies": {
-    "nan": "^2.17.0"
+    "node-addon-api": "^8.5.0",
+    "node-gyp-build": "^4.8.4"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.25.0"
+  },
+  "peerDependenciesMeta": {
+    "tree-sitter": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "prebuildify": "^6.0.1",
+    "tree-sitter": "^0.25.0",
     "tree-sitter-cli": "^0.26.3"
   },
   "scripts": {
+    "install": "node-gyp-build",
     "generate": "tree-sitter generate",
     "test": "tree-sitter test",
     "test:node": "node --test bindings/node/*_test.js",
-    "check": "tree-sitter generate && tree-sitter test",
+    "check": "tree-sitter test",
     "parse": "tree-sitter parse",
     "parse:examples": "tree-sitter parse --quiet examples/*.m2 test/test_generator/test_expressions/*.m2"
   },
@@ -62,6 +75,6 @@
     ]
   },
   "engines": {
-    "node": ">=18 <23"
+    "node": ">=18 <26"
   }
 }

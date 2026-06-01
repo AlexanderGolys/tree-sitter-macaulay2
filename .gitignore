@@ -1,12 +1,53 @@
-# Tree-sitter artifacts
-build/
+# Rust artifacts
 target/
-*.o
-*.so
-*.dll
-*.dylib
+
+# Node artifacts
+build/
+prebuilds/
 node_modules/
+
+# Swift artifacts
+.build/
+
+# Go artifacts
+_obj/
+
+# Python artifacts
+.venv/
+dist/
+*.egg-info
+*.whl
+
+# C artifacts
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.pc
+*.exp
+*.lib
+
+# Zig artifacts
+.zig-cache/
+zig-cache/
+zig-out/
+
+# Example dirs
+/examples/*/
+
+# Grammar volatiles
+*.wasm
+*.obj
+*.o
+
+# Archives
+*.tar.gz
 *.tgz
+*.zip
+*.jar
+
+# npm logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -16,9 +57,9 @@ pnpm-debug.log*
 debug_*.m2
 debug_*.txt
 gen_output.txt
-opencode.json
 compile_commands.json
 pipeline.sh
+opencode.json
 
 # Editor files
 *.code-workspace

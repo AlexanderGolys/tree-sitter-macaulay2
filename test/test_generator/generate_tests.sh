@@ -15,3 +15,5 @@ else
     echo "Error: Macaulay2 script failed."
     exit 1
 fi
+
+

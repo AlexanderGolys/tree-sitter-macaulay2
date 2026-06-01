@@ -18,6 +18,7 @@ debug_*.txt
 gen_output.txt
 opencode.json
 compile_commands.json
+pipeline.sh
 
 # Editor files
 *.code-workspace

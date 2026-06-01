@@ -3291,7 +3291,8 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
       END_STATE();
     case 39:
       ACCEPT_TOKEN(sym_symbol);
-      if (lookahead == '\'' ||
+      if (lookahead == '$' ||
+          lookahead == '\'' ||
           ('0' <= lookahead && lookahead <= '9') ||
           ('A' <= lookahead && lookahead <= 'Z') ||
           ('a' <= lookahead && lookahead <= 'z')) ADVANCE(39);
@@ -89860,8 +89861,8 @@ TS_PUBLIC const TSLanguage *tree_sitter_macaulay2(void) {
     .max_reserved_word_set_size = 39,
     .metadata = {
       .major_version = 1,
-      .minor_version = 0,
-      .patch_version = 1,
+      .minor_version = 1,
+      .patch_version = 0,
     },
   };
   return &language;

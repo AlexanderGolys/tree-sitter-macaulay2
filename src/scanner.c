@@ -1,12 +1,12 @@
+#include <string.h>
 #include <tree_sitter/parser.h>
 #include <wctype.h>
-#include <string.h>
 
 enum TokenType {
-  SPACE,            // Zero-width adjacency operator
-  SPACE_INDEXING,   // Zero-width adjacency before [ or <|
-  RANGE,            // .. (greedy pair of dots)
-  RANGE_LT,         // ..< (range exclusive)
+  SPACE,          // Zero-width adjacency operator
+  SPACE_INDEXING, // Zero-width adjacency before [ or <|
+  RANGE,          // .. (greedy pair of dots)
+  RANGE_LT,       // ..< (range exclusive)
   RANGE_EQ,
   RANGE_LT_EQ,
   FLOAT,
@@ -14,38 +14,32 @@ enum TokenType {
   P_MISSING
 };
 
-typedef enum {
-  SCAN_NONE,
-  SCAN_DONE,
-  SCAN_FAIL
-} ScanResult;
+typedef enum { SCAN_NONE, SCAN_DONE, SCAN_FAIL } ScanResult;
 
-void *tree_sitter_macaulay2_external_scanner_create() {
-  return NULL;
-}
+void *tree_sitter_macaulay2_external_scanner_create() { return NULL; }
 
 void tree_sitter_macaulay2_external_scanner_destroy(void *payload) {}
 
-unsigned tree_sitter_macaulay2_external_scanner_serialize(void *payload, char *buffer) {
+unsigned tree_sitter_macaulay2_external_scanner_serialize(void *payload,
+                                                          char *buffer) {
   return 0;
 }
 
-void tree_sitter_macaulay2_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {}
+void tree_sitter_macaulay2_external_scanner_deserialize(void *payload,
+                                                        const char *buffer,
+                                                        unsigned length) {}
 
-static bool is_digit(int32_t c) {
-  return c >= '0' && c <= '9';
-}
+static bool is_digit(int32_t c) { return c >= '0' && c <= '9'; }
 
 static bool is_alpha(int32_t c) {
   return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
-static bool is_inline_whitespace(int32_t c) {
-  return c == ' ' || c == '\t';
-}
+static bool is_inline_whitespace(int32_t c) { return c == ' ' || c == '\t'; }
 
 static bool is_ident_char(int32_t c) {
-  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '\'';
+  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+         (c >= '0' && c <= '9') || c == '\'' || c == '$';
 }
 
 static bool emit(TSLexer *lexer, enum TokenType symbol) {
@@ -53,7 +47,7 @@ static bool emit(TSLexer *lexer, enum TokenType symbol) {
   return true;
 }
 
-static bool is_structural_keyword_ahead(TSLexer *lexer) {
+static bool is_adjacency_blocking_keyword_ahead(TSLexer *lexer) {
   char buffer[16];
   int i = 0;
 
@@ -62,19 +56,59 @@ static bool is_structural_keyword_ahead(TSLexer *lexer) {
     lexer->advance(lexer, false);
   }
 
-  if (is_ident_char(lexer->lookahead)) return false;
+  if (is_ident_char(lexer->lookahead))
+    return false;
 
   buffer[i] = '\0';
 
-  if (i == 0) return false;
+  if (i == 0)
+    return false;
 
-  const char *keywords[] = {
-    "then", "else", "do", "from", "to", "in", "list",
-    "of", "or", "and", "xor", "SPACE", "when", "except"
+  static const char *const keywords[] = {
+            "and",
+            "break",
+            "breakpoint",
+            "catch",
+            "continue",
+            "do",
+            "elapsedTime",
+            "elapsedTiming",
+            "else",
+            "except",
+            "for",
+            "from",
+            "global",
+            "if",
+            "in",
+            "list",
+            "local",
+            "new",
+            "not",
+            "of",
+            "or",
+            "profile",
+            "return",
+            "shield",
+            "SPACE",
+            "symbol",
+            "TEST",
+            "then",
+            "threadLocal",
+            "threadVariable",
+            "throw",
+            "time",
+            "timing",
+            "to",
+            "trap",
+            "try",
+            "when",
+            "while",
+            "xor",
   };
 
-  for (int k = 0; k < 14; k++) {
-    if (strcmp(buffer, keywords[k]) == 0) return true;
+  for (size_t k = 0; k < sizeof(keywords) / sizeof(keywords[0]); k++) {
+    if (strcmp(buffer, keywords[k]) == 0)
+      return true;
   }
 
   return false;
@@ -101,12 +135,14 @@ static bool match_int(TSLexer *lexer) {
 }
 
 static bool can_scan_dot_operator(const bool *valid_symbols) {
-  return valid_symbols[SPACE] || valid_symbols[RANGE] || valid_symbols[RANGE_LT] ||
-         valid_symbols[RANGE_EQ] || valid_symbols[RANGE_LT_EQ];
+  return valid_symbols[SPACE] || valid_symbols[RANGE] ||
+         valid_symbols[RANGE_LT] || valid_symbols[RANGE_EQ] ||
+         valid_symbols[RANGE_LT_EQ];
 }
 
 static bool can_scan_float(const bool *valid_symbols) {
-  return valid_symbols[FLOAT] || valid_symbols[E_MISSING] || valid_symbols[P_MISSING];
+  return valid_symbols[FLOAT] || valid_symbols[E_MISSING] ||
+         valid_symbols[P_MISSING];
 }
 
 static bool can_scan_adjacency(const bool *valid_symbols) {
@@ -234,7 +270,8 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
   return false;
 }
 
-static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols, int32_t c) {
+static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
+                           int32_t c) {
   lexer->mark_end(lexer);
 
   if (c == '\n' || c == '\r')
@@ -262,7 +299,7 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols, int32_t c)
   }
 
   if (is_alpha(c)) {
-    if (is_structural_keyword_ahead(lexer))
+    if (is_adjacency_blocking_keyword_ahead(lexer))
       return false;
     return emit(lexer, SPACE);
   }
@@ -290,7 +327,8 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols, int32_t c)
   return false;
 }
 
-bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
+bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
+                                                 const bool *valid_symbols) {
   skip_whitespace(lexer);
 
   if (lexer->eof(lexer))
@@ -311,5 +349,6 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer, 
   if (can_scan_float(valid_symbols))
     return scan_float(lexer, valid_symbols);
 
-  return can_scan_adjacency(valid_symbols) && scan_adjacency(lexer, valid_symbols, c);
+  return can_scan_adjacency(valid_symbols) &&
+         scan_adjacency(lexer, valid_symbols, c);
 }

@@ -1661,19 +1661,19 @@ static const TSMapSlice ts_field_map_slices[PRODUCTION_ID_COUNT] = {
   [2] = {.index = 0, .length = 2},
   [3] = {.index = 2, .length = 1},
   [4] = {.index = 3, .length = 1},
-  [5] = {.index = 4, .length = 1},
-  [6] = {.index = 5, .length = 2},
-  [8] = {.index = 7, .length = 3},
-  [9] = {.index = 10, .length = 1},
-  [10] = {.index = 11, .length = 3},
-  [11] = {.index = 11, .length = 3},
-  [12] = {.index = 14, .length = 2},
-  [13] = {.index = 16, .length = 2},
-  [14] = {.index = 18, .length = 2},
-  [15] = {.index = 20, .length = 3},
-  [16] = {.index = 23, .length = 3},
-  [17] = {.index = 26, .length = 3},
-  [18] = {.index = 29, .length = 4},
+  [5] = {.index = 4, .length = 2},
+  [6] = {.index = 6, .length = 2},
+  [8] = {.index = 8, .length = 3},
+  [9] = {.index = 11, .length = 1},
+  [10] = {.index = 12, .length = 3},
+  [11] = {.index = 12, .length = 3},
+  [12] = {.index = 15, .length = 2},
+  [13] = {.index = 17, .length = 2},
+  [14] = {.index = 19, .length = 2},
+  [15] = {.index = 21, .length = 3},
+  [16] = {.index = 24, .length = 3},
+  [17] = {.index = 27, .length = 3},
+  [18] = {.index = 30, .length = 4},
 };
 
 static const TSFieldMapEntry ts_field_map_entries[] = {
@@ -1685,42 +1685,43 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
   [3] =
     {field_condition, 1},
   [4] =
+    {field_operator, 0},
     {field_symbol, 1},
-  [5] =
+  [6] =
     {field_operand, 0},
     {field_operator, 1},
-  [7] =
+  [8] =
     {field_body, 2},
     {field_operator, 1},
     {field_parameters, 0},
-  [10] =
-    {field_variable, 1},
   [11] =
+    {field_variable, 1},
+  [12] =
     {field_left, 0},
     {field_operator, 1},
     {field_right, 2},
-  [14] =
+  [15] =
     {field_condition, 1},
     {field_then, 3},
-  [16] =
+  [17] =
     {field_condition, 1},
     {field_consequence, 3},
-  [18] =
+  [19] =
     {field_alternative, 3},
     {field_condition, 1},
-  [20] =
+  [21] =
     {field_condition, 1},
     {field_else, 5},
     {field_then, 3},
-  [23] =
+  [24] =
     {field_alternative, 5},
     {field_condition, 1},
     {field_consequence, 3},
-  [26] =
+  [27] =
     {field_alternative, 5},
     {field_condition, 1},
     {field_err, 3},
-  [29] =
+  [30] =
     {field_alternative, 7},
     {field_condition, 1},
     {field_consequence, 3},

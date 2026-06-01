@@ -3,12 +3,25 @@
 #include <wctype.h>
 
 enum TokenType {
-  SPACE,          // Zero-width adjacency operator
-  SPACE_INDEXING, // Zero-width adjacency before [ or <|
-  RANGE,          // .. (greedy pair of dots)
-  RANGE_LT,       // ..< (range exclusive)
+  // Macaulay2 has an implicit "application by adjacency" operator: `f x`,
+  // `f(x)`, `f[x]`, `f<|x|>`, etc. The grammar uses external tokens so the
+  // scanner can decide which implicit operator is intended from the following
+  // character, without requiring literal whitespace in the source.
+  SPACE,
+
+  // Same adjacency operator, but for the lower-precedence indexing-like forms
+  // that begin with `[` or `<|`.
+  SPACE_INDEXING,
+
+  // Dot-led range operators must be recognized externally because they
+  // interact with floats and with adjacency across dots.
+  RANGE,
+  RANGE_LT,
   RANGE_EQ,
   RANGE_LT_EQ,
+
+  // Float and "missing exponent/precision" recovery tokens are external for
+  // the same reason: `.` can begin either a float or a range/adjacency form.
   FLOAT,
   E_MISSING,
   P_MISSING
@@ -47,6 +60,17 @@ static bool emit(TSLexer *lexer, enum TokenType symbol) {
   return true;
 }
 
+// This helper is narrower than "is keyword". It answers a parser-specific
+// question used by adjacency scanning:
+//
+//   If an identifier-like word appears after something that could form the
+//   implicit adjacency operator, should we *block* adjacency because the word
+//   is actually starting a structural construct?
+//
+// For example, after `if x`, the `then` should start an `if` continuation, not
+// be consumed as `x SPACE then`. By contrast, operator-like or locality words
+// such as `not` or `symbol` must *not* be listed here, because they still need
+// to participate in ordinary expression parsing after adjacency.
 static bool is_adjacency_blocking_keyword_ahead(TSLexer *lexer) {
   char buffer[16];
   int i = 0;
@@ -65,45 +89,12 @@ static bool is_adjacency_blocking_keyword_ahead(TSLexer *lexer) {
     return false;
 
   static const char *const keywords[] = {
-            "and",
-            "break",
-            "breakpoint",
-            "catch",
-            "continue",
-            "do",
-            "elapsedTime",
-            "elapsedTiming",
-            "else",
-            "except",
-            "for",
-            "from",
-            "global",
-            "if",
-            "in",
-            "list",
-            "local",
-            "new",
-            "not",
-            "of",
-            "or",
-            "profile",
-            "return",
-            "shield",
-            "SPACE",
-            "symbol",
-            "TEST",
-            "then",
-            "threadLocal",
-            "threadVariable",
-            "throw",
-            "time",
-            "timing",
-            "to",
-            "trap",
-            "try",
-            "when",
-            "while",
-            "xor",
+      "if",          "then",     "else",     "from",         "to",
+      "when",        "do",       "in",       "of",           "list",
+      "for",         "while",    "break",    "continue",     "return",
+      "try",         "catch",    "throw",    "time",         "timing",
+      "elapsedTime", "elapsedTiming",        "profile",      "shield",
+      "TEST",        "breakpoint",           "except",       "trap",
   };
 
   for (size_t k = 0; k < sizeof(keywords) / sizeof(keywords[0]); k++) {
@@ -149,6 +140,15 @@ static bool can_scan_adjacency(const bool *valid_symbols) {
   return valid_symbols[SPACE] || valid_symbols[SPACE_INDEXING];
 }
 
+// Handle all dot-led non-float forms first. This is where we decide whether a
+// dot sequence is:
+//   * adjacency before a numeric literal (`x.2` -> `x SPACE 2`)
+//   * a range operator (`..`, `..<`, `..=`, `..<=`)
+//   * not one of our external dot forms at all
+//
+// Returning SCAN_FAIL is intentional: once we have definitely consumed a dot
+// sequence that should belong to a range/adjaency family, we do not want the
+// caller to fall through and reinterpret the same prefix as a float.
 static ScanResult scan_dot_operator(TSLexer *lexer, const bool *valid_symbols) {
   if (lexer->lookahead != '.')
     return SCAN_NONE;
@@ -208,6 +208,9 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
   bool has_digit = false;
   bool has_e = false;
 
+  // Floats are scanned only after dot/range handling has had first pass. That
+  // lets inputs like `2...2` become `2 .. .2` instead of greedily turning the
+  // first `.` into part of a float.
   if (match_int(lexer))
     has_digit = true;
 
@@ -278,6 +281,9 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
     return false;
 
   if (c == '<') {
+    // `<|` can start the lower-precedence indexing-style adjacency form.
+    // Emit the more specific token when the parser wants it; otherwise fall
+    // back to ordinary adjacency.
     lexer->advance(lexer, false);
     if (lexer->lookahead == '|') {
       if (valid_symbols[SPACE_INDEXING])
@@ -289,6 +295,8 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
   }
 
   if (c == '/') {
+    // `///` starts a raw string literal. After something like `f///...///`,
+    // the adjacency operator is implicit even though there is no whitespace.
     lexer->advance(lexer, false);
     if (lexer->lookahead == '/') {
       lexer->advance(lexer, false);
@@ -299,12 +307,15 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
   }
 
   if (is_alpha(c)) {
+    // For identifier-like words, adjacency is allowed unless the word is one of
+    // the structural continuations that must start a larger statement form.
     if (is_adjacency_blocking_keyword_ahead(lexer))
       return false;
     return emit(lexer, SPACE);
   }
 
   if (c == '[') {
+    // `f[x]` is the bracket analogue of `f<|x|>` above.
     if (valid_symbols[SPACE_INDEXING])
       return emit(lexer, SPACE_INDEXING);
     if (valid_symbols[SPACE])
@@ -312,6 +323,8 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
   }
 
   if (c == '(') {
+    // Parenthesized adjacency is normal function application. The special case
+    // is `(*)`, which is a postfix operator token, not application.
     lexer->advance(lexer, false);
     if (lexer->lookahead == '*') {
       lexer->advance(lexer, false);
@@ -336,8 +349,12 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
 
   int32_t c = lexer->lookahead;
 
-  // Dots must try range/adjacency forms before floats so cases like 2...2
-  // can fall back to "2 .. .2" instead of greedily forming a float.
+  // The order here is the heart of the scanner:
+  //   1. dot-led range/adjacency forms
+  //   2. floats and float-recovery tokens
+  //   3. ordinary implicit adjacency
+  //
+  // That priority matches the language ambiguities we have to resolve.
   if (can_scan_dot_operator(valid_symbols)) {
     ScanResult result = scan_dot_operator(lexer, valid_symbols);
     if (result == SCAN_DONE)

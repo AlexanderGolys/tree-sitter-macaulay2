@@ -1,0 +1,66 @@
+==================
+(1) a'a [auto_generated_symbols]
+==================
+a'a
+---
+(source_file
+  (cell
+    (symbol)))
+
+==================
+(2) a''$'$ [auto_generated_symbols]
+==================
+a''$'$
+---
+(source_file
+  (cell
+    (symbol)))
+
+==================
+(3) a$$ [auto_generated_symbols]
+==================
+a$$
+---
+(source_file
+  (cell
+    (symbol)))
+
+==================
+(4) aa'$''q [auto_generated_symbols]
+==================
+aa'$''q
+---
+(source_file
+  (cell
+    (symbol)))
+
+==================
+(5) a$2 [auto_generated_symbols]
+==================
+a$2
+---
+(source_file
+  (cell
+    (symbol)))
+
+==================
+(6) x'2'$2 [auto_generated_symbols]
+==================
+x'2'$2
+---
+(source_file
+  (cell
+    (symbol)))
+
+==================
+(7) x$.2 [auto_generated_symbols]
+==================
+x$.2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      operator: (space)
+      right: (float_literal))))
+

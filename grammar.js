@@ -475,13 +475,13 @@ module.exports = grammar({
                 prec(
                     PREC.LOCALITY,
                     seq(
-                        choice(
+                        field("operator", choice(
                             "global",
                             "local",
                             "symbol",
                             "threadVariable",
                             "threadLocal",
-                        ),
+                        )),
 
                         field(
                             "symbol",

@@ -904,6 +904,32 @@
     "type": "locality_operator",
     "named": true,
     "fields": {
+      "operator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "global",
+            "named": false
+          },
+          {
+            "type": "local",
+            "named": false
+          },
+          {
+            "type": "symbol",
+            "named": false
+          },
+          {
+            "type": "threadLocal",
+            "named": false
+          },
+          {
+            "type": "threadVariable",
+            "named": false
+          }
+        ]
+      },
       "symbol": {
         "multiple": false,
         "required": true,

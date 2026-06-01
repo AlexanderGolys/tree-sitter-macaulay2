@@ -2956,29 +2956,33 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "global"
-                },
-                {
-                  "type": "STRING",
-                  "value": "local"
-                },
-                {
-                  "type": "STRING",
-                  "value": "symbol"
-                },
-                {
-                  "type": "STRING",
-                  "value": "threadVariable"
-                },
-                {
-                  "type": "STRING",
-                  "value": "threadLocal"
-                }
-              ]
+              "type": "FIELD",
+              "name": "operator",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "global"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "local"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "symbol"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "threadVariable"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "threadLocal"
+                  }
+                ]
+              }
             },
             {
               "type": "FIELD",
@@ -3858,51 +3862,7 @@
     "keywords": [
       {
         "type": "STRING",
-        "value": "if"
-      },
-      {
-        "type": "STRING",
-        "value": "then"
-      },
-      {
-        "type": "STRING",
-        "value": "else"
-      },
-      {
-        "type": "STRING",
-        "value": "from"
-      },
-      {
-        "type": "STRING",
-        "value": "to"
-      },
-      {
-        "type": "STRING",
-        "value": "when"
-      },
-      {
-        "type": "STRING",
-        "value": "do"
-      },
-      {
-        "type": "STRING",
-        "value": "in"
-      },
-      {
-        "type": "STRING",
-        "value": "of"
-      },
-      {
-        "type": "STRING",
-        "value": "list"
-      },
-      {
-        "type": "STRING",
-        "value": "for"
-      },
-      {
-        "type": "STRING",
-        "value": "while"
+        "value": "and"
       },
       {
         "type": "STRING",
@@ -3910,7 +3870,83 @@
       },
       {
         "type": "STRING",
+        "value": "breakpoint"
+      },
+      {
+        "type": "STRING",
+        "value": "catch"
+      },
+      {
+        "type": "STRING",
         "value": "continue"
+      },
+      {
+        "type": "STRING",
+        "value": "do"
+      },
+      {
+        "type": "STRING",
+        "value": "elapsedTime"
+      },
+      {
+        "type": "STRING",
+        "value": "elapsedTiming"
+      },
+      {
+        "type": "STRING",
+        "value": "else"
+      },
+      {
+        "type": "STRING",
+        "value": "except"
+      },
+      {
+        "type": "STRING",
+        "value": "for"
+      },
+      {
+        "type": "STRING",
+        "value": "from"
+      },
+      {
+        "type": "STRING",
+        "value": "global"
+      },
+      {
+        "type": "STRING",
+        "value": "if"
+      },
+      {
+        "type": "STRING",
+        "value": "in"
+      },
+      {
+        "type": "STRING",
+        "value": "list"
+      },
+      {
+        "type": "STRING",
+        "value": "local"
+      },
+      {
+        "type": "STRING",
+        "value": "new"
+      },
+      {
+        "type": "STRING",
+        "value": "not"
+      },
+      {
+        "type": "STRING",
+        "value": "of"
+      },
+      {
+        "type": "STRING",
+        "value": "or"
+      },
+      {
+        "type": "STRING",
+        "value": "profile"
       },
       {
         "type": "STRING",
@@ -3918,11 +3954,31 @@
       },
       {
         "type": "STRING",
-        "value": "try"
+        "value": "shield"
       },
       {
         "type": "STRING",
-        "value": "catch"
+        "value": "SPACE"
+      },
+      {
+        "type": "STRING",
+        "value": "symbol"
+      },
+      {
+        "type": "STRING",
+        "value": "TEST"
+      },
+      {
+        "type": "STRING",
+        "value": "then"
+      },
+      {
+        "type": "STRING",
+        "value": "threadLocal"
+      },
+      {
+        "type": "STRING",
+        "value": "threadVariable"
       },
       {
         "type": "STRING",
@@ -3938,79 +3994,27 @@
       },
       {
         "type": "STRING",
-        "value": "elapsedTime"
-      },
-      {
-        "type": "STRING",
-        "value": "elapsedTiming"
-      },
-      {
-        "type": "STRING",
-        "value": "profile"
-      },
-      {
-        "type": "STRING",
-        "value": "shield"
-      },
-      {
-        "type": "STRING",
-        "value": "TEST"
-      },
-      {
-        "type": "STRING",
-        "value": "breakpoint"
-      },
-      {
-        "type": "STRING",
-        "value": "global"
-      },
-      {
-        "type": "STRING",
-        "value": "local"
-      },
-      {
-        "type": "STRING",
-        "value": "symbol"
-      },
-      {
-        "type": "STRING",
-        "value": "threadVariable"
-      },
-      {
-        "type": "STRING",
-        "value": "threadLocal"
-      },
-      {
-        "type": "STRING",
-        "value": "new"
-      },
-      {
-        "type": "STRING",
-        "value": "SPACE"
-      },
-      {
-        "type": "STRING",
-        "value": "and"
-      },
-      {
-        "type": "STRING",
-        "value": "not"
-      },
-      {
-        "type": "STRING",
-        "value": "or"
-      },
-      {
-        "type": "STRING",
-        "value": "xor"
-      },
-      {
-        "type": "STRING",
-        "value": "except"
+        "value": "to"
       },
       {
         "type": "STRING",
         "value": "trap"
+      },
+      {
+        "type": "STRING",
+        "value": "try"
+      },
+      {
+        "type": "STRING",
+        "value": "when"
+      },
+      {
+        "type": "STRING",
+        "value": "while"
+      },
+      {
+        "type": "STRING",
+        "value": "xor"
       }
     ],
     "locality_op": []

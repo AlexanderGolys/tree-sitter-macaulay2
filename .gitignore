@@ -58,10 +58,12 @@ debug_*.m2
 debug_*.txt
 gen_output.txt
 compile_commands.json
-pipeline.sh
 opencode.json
 
 # Editor files
 *.code-workspace
 .DS_Store
 .vscode/
+
+# Generated test corpus
+test/corpus/auto_raw_slashes.txt

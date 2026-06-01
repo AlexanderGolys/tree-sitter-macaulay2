@@ -2915,7 +2915,7 @@
         ]
       }
     },
-    "rebinding": {
+    "cobinding": {
       "type": "RESERVED",
       "content": {
         "type": "PREC",
@@ -3441,7 +3441,7 @@
           ]
         }
       },
-      "context_name": "rebinding_op"
+      "context_name": "cobinding_op"
     },
     "_multi_expression": {
       "type": "SEQ",
@@ -3761,7 +3761,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "rebinding"
+          "name": "cobinding"
         },
         {
           "type": "SYMBOL",
@@ -4005,6 +4005,6 @@
         "value": "xor"
       }
     ],
-    "rebinding_op": []
+    "cobinding_op": []
   }
 }

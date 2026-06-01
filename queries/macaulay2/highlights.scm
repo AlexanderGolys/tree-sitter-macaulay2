@@ -19,7 +19,7 @@
 
 (symbol) @variable
 
-(rebinding
+(cobinding
   symbol: (resolved_symbol) @variable)
 
 ; Operators
@@ -263,7 +263,7 @@
   left: (symbol) @function.builtin
   operator: (_space)
   right: (sequence
-    (rebinding)
+    (cobinding)
     .
     (_) @type
     .

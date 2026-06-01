@@ -36,6 +36,10 @@
         "named": true
       },
       {
+        "type": "cobinding",
+        "named": true
+      },
+      {
         "type": "continue_statement",
         "named": true
       },
@@ -81,10 +85,6 @@
       },
       {
         "type": "prefix_expression",
-        "named": true
-      },
-      {
-        "type": "rebinding",
         "named": true
       },
       {
@@ -681,6 +681,48 @@
     }
   },
   {
+    "type": "cobinding",
+    "named": true,
+    "fields": {
+      "operator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "global",
+            "named": false
+          },
+          {
+            "type": "local",
+            "named": false
+          },
+          {
+            "type": "symbol",
+            "named": false
+          },
+          {
+            "type": "threadLocal",
+            "named": false
+          },
+          {
+            "type": "threadVariable",
+            "named": false
+          }
+        ]
+      },
+      "symbol": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "resolved_symbol",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "continue_statement",
     "named": true,
     "fields": {},
@@ -1156,48 +1198,6 @@
           {
             "type": "|-",
             "named": false
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "rebinding",
-    "named": true,
-    "fields": {
-      "operator": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "global",
-            "named": false
-          },
-          {
-            "type": "local",
-            "named": false
-          },
-          {
-            "type": "symbol",
-            "named": false
-          },
-          {
-            "type": "threadLocal",
-            "named": false
-          },
-          {
-            "type": "threadVariable",
-            "named": false
-          }
-        ]
-      },
-      "symbol": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "resolved_symbol",
-            "named": true
           }
         ]
       }

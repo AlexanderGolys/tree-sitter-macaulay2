@@ -58,6 +58,6 @@
   operator: (_space)) @reference.call
 
 (binary_expression
-  left: (rebinding
+  left: (cobinding
           symbol: (resolved_symbol) @name)
   operator: (_space)) @reference.call

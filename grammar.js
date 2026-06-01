@@ -191,7 +191,7 @@ export default grammar({
             "xor",
         ],
 
-        rebinding_op: (_) => [],
+        cobinding_op: (_) => [],
     },
 
     inline: ($) => [$._loop_body],
@@ -472,9 +472,9 @@ export default grammar({
 
         trap_statement: ($) => prec.left(PREC.CONTROL, seq("trap", $.expression)),
 
-        rebinding: ($) =>
+        cobinding: ($) =>
             reserved(
-                "rebinding_op",
+                "cobinding_op",
                 prec(
                     PREC.LOCALITY,
                     seq(
@@ -551,7 +551,7 @@ export default grammar({
                 $.shield_statement,
                 $.step_statement,
                 $.test_statement,
-                $.rebinding,
+                $.cobinding,
                 $.new_statement,
             ),
     }, // End of rules

@@ -407,7 +407,7 @@ toTreeSitter := (s, indent, src) -> (
         -- (e.g. x.y -> x . (global y)). In this case, just treat it as a symbol.
         if not myStartsWith(typeName, src) then return "(symbol)";
 
-        return "(rebinding\n" | nextSp | "symbol: (resolved_symbol))";
+        return "(cobinding\n" | nextSp | "symbol: (resolved_symbol))";
     );
 
     if myStartsWith("(global-fetch", s) then return "(symbol)";

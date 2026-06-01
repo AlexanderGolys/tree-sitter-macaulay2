@@ -4,12 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-bail() {
-    echo "FAIL: $*" >&2
-    exit 1
-}
+bail() { echo "FAIL: $*" >&2; exit 1; }
 
-# --- Defaults ---
 SKIP_GENERATE=false
 SKIP_NODE=false
 SKIP_PUBLISH=false
@@ -19,8 +15,8 @@ usage() {
 Usage: $0 [FLAGS]
 
   --skip-generate   Skip M2 test generation (step 1)
-  --skip-node       Skip Node native build and tests (step 6,7)
-  --skip-publish    Skip npm/cargo publish dry-runs (step 8,9)
+  --skip-node       Skip Node native build and tests (step 5,6)
+  --skip-publish    Skip npm/cargo publish dry-runs (step 7,8)
   -h, --help        Show this help
 EOF
     exit 0
@@ -36,7 +32,6 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# --- Node version guard ---
 NODE_MAJOR=$(node -v | cut -d. -f1 | tr -d 'v')
 if [ "$NODE_MAJOR" -gt 25 ]; then
     MISENODE_ROOT="$HOME/.local/share/mise/installs/node"
@@ -48,8 +43,6 @@ if [ "$NODE_MAJOR" -gt 25 ]; then
         bail "Node >= 26 is unsupported. Install Node 18–25 via 'mise install node@22'."
     fi
 fi
-
-# --- Pipeline ---
 
 if $SKIP_GENERATE; then
     echo "==> Skipping M2 test generation (--skip-generate)"
@@ -86,7 +79,6 @@ else
 
     echo "==> 8. cargo publish (dry-run)"
     cargo publish --dry-run
-fi
 fi
 
 echo

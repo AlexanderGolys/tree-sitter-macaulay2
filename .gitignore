@@ -64,3 +64,4 @@ opencode.json
 *.code-workspace
 .DS_Store
 .vscode/
+pipeline.sh

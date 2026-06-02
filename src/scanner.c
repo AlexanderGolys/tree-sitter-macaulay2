@@ -1,6 +1,23 @@
 #include <string.h>
 #include <tree_sitter/parser.h>
 
+// Uncomment the #define lines below to enable scanner debug output.
+// Every advance/skip will print the lookahead char and source line.
+
+static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
+static inline void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
+
+// #define advance(lexer) {                                               \
+//     printf("advance '%c' (%d) at L%d\n", (char)lexer->lookahead,         \
+//            lexer->lookahead, __LINE__);                                  \
+//     advance(lexer);                                                      \
+// }
+// #define skip(lexer) {                                                  \
+//     printf("skip '%c' (%d) at L%d\n", (char)lexer->lookahead,            \
+//            lexer->lookahead, __LINE__);                                  \
+//     skip(lexer);                                                         \
+// }
+
 enum TokenType {
   // Macaulay2 has an implicit "application by adjacency" operator: `f x`,
   // `f(x)`, `f[x]`, `f<|x|>`, etc. The grammar uses external tokens so the
@@ -83,7 +100,7 @@ static bool is_adjacency_blocking_keyword_ahead(TSLexer *lexer) {
 
   while (is_ident_char(lexer->lookahead) && i < 15) {
     buffer[i++] = (char)lexer->lookahead;
-    lexer->advance(lexer, false);
+    advance(lexer);
   }
 
   if (is_ident_char(lexer->lookahead))
@@ -114,12 +131,12 @@ static bool is_adjacency_blocking_keyword_ahead(TSLexer *lexer) {
 
 static void skip_whitespace(TSLexer *lexer) {
   while (is_inline_whitespace(lexer->lookahead))
-    lexer->advance(lexer, true);
+    skip(lexer);
 }
 
 static void skip_inline_whitespace(TSLexer *lexer) {
   while (is_inline_whitespace(lexer->lookahead))
-    lexer->advance(lexer, false);
+    advance(lexer);
 }
 
 static bool match_int(TSLexer *lexer) {
@@ -127,7 +144,7 @@ static bool match_int(TSLexer *lexer) {
     return false;
 
   while (is_digit(lexer->lookahead))
-    lexer->advance(lexer, false);
+    advance(lexer);
 
   return true;
 }
@@ -166,7 +183,7 @@ static ScanResult scan_dot_operator(TSLexer *lexer, const bool *valid_symbols) {
     return SCAN_NONE;
 
   lexer->mark_end(lexer);
-  lexer->advance(lexer, false);
+  advance(lexer);
 
   if (valid_symbols[SPACE] && is_digit(lexer->lookahead))
     return emit(lexer, SPACE) ? SCAN_DONE : SCAN_FAIL;
@@ -174,15 +191,15 @@ static ScanResult scan_dot_operator(TSLexer *lexer, const bool *valid_symbols) {
   bool separated_range = false;
   while (is_inline_whitespace(lexer->lookahead)) {
     separated_range = true;
-    lexer->advance(lexer, false);
+    advance(lexer);
   }
 
   if (lexer->lookahead != '.')
     return SCAN_NONE;
 
-  lexer->advance(lexer, false);
+  advance(lexer);
   if (separated_range && lexer->lookahead == '.')
-    lexer->advance(lexer, false);
+    advance(lexer);
 
   lexer->mark_end(lexer);
   int32_t c = lexer->lookahead;
@@ -191,18 +208,18 @@ static ScanResult scan_dot_operator(TSLexer *lexer, const bool *valid_symbols) {
     return emit(lexer, RANGE) ? SCAN_DONE : SCAN_FAIL;
 
   if (valid_symbols[RANGE_EQ] && c == '=') {
-    lexer->advance(lexer, false);
+    advance(lexer);
     lexer->mark_end(lexer);
     return emit(lexer, RANGE_EQ) ? SCAN_DONE : SCAN_FAIL;
   }
 
   if (c == '<') {
-    lexer->advance(lexer, false);
+    advance(lexer);
     c = lexer->lookahead;
 
     if (c == '=') {
       if (valid_symbols[RANGE_LT_EQ]) {
-        lexer->advance(lexer, false);
+        advance(lexer);
         lexer->mark_end(lexer);
         return emit(lexer, RANGE_LT_EQ) ? SCAN_DONE : SCAN_FAIL;
       }
@@ -228,7 +245,7 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
 
   if (lexer->lookahead == '.') {
     has_dot = true;
-    lexer->advance(lexer, false);
+    advance(lexer);
     if (lexer->lookahead == '.')
       return false;
     if (is_digit(lexer->lookahead)) {
@@ -252,7 +269,7 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
     return false;
 
   if (lexer->lookahead == 'p') {
-    lexer->advance(lexer, false);
+    advance(lexer);
 
     bool has_prec = match_int(lexer);
 
@@ -265,10 +282,10 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
 
   if (lexer->lookahead == 'e' || lexer->lookahead == 'E') {
     has_e = true;
-    lexer->advance(lexer, false);
+    advance(lexer);
 
     if (lexer->lookahead == '+' || lexer->lookahead == '-')
-      lexer->advance(lexer, false);
+      advance(lexer);
 
     bool valid_exp = match_int(lexer);
 
@@ -299,14 +316,14 @@ static bool scan_raw_str_content_step(TSLexer *lexer, bool anything_found,
   if (lexer->eof(lexer))
     return anything_found;
   if (lexer->lookahead != '/') {
-    lexer->advance(lexer, false);
+    advance(lexer);
     lexer->mark_end(lexer);
     return scan_raw_str_content_step(lexer, true, 0);
   }
   if (slashes_found == 2)
     return anything_found;
 
-  lexer->advance(lexer, false);
+  advance(lexer);
   return scan_raw_str_content_step(lexer, anything_found, slashes_found + 1);
 }
 
@@ -325,19 +342,19 @@ static bool scan_raw_string(TSLexer *lexer, const bool *valid_symbols) {
   if (lexer->lookahead != '/')
     return emit_raw_str_content(lexer, valid_symbols);
 
-  lexer->advance(lexer, false); // consume first /
+  advance(lexer); // consume first /
   if (lexer->eof(lexer))
     return false;
   if (lexer->lookahead != '/')
     return false;
 
-  lexer->advance(lexer, false); // consume second /
+  advance(lexer); // consume second /
   lexer->mark_end(lexer);       // tentative mark after //
 
   // Check how many more slashes follow
   int extra = 0;
   while (extra < 3 && lexer->lookahead == '/') {
-    lexer->advance(lexer, false);
+    advance(lexer);
     extra++;
   }
 
@@ -380,7 +397,7 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
     // `<|` can start the lower-precedence indexing-style adjacency form.
     // Emit the more specific token when the parser wants it; otherwise fall
     // back to ordinary adjacency.
-    lexer->advance(lexer, false);
+    advance(lexer);
     if (lexer->lookahead == '|') {
       if (valid_symbols[SPACE_INDEXING])
         return emit(lexer, SPACE_INDEXING);
@@ -393,9 +410,9 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
   if (c == '/') {
     // `///` starts a raw string literal. After something like `f///...///`,
     // the adjacency operator is implicit even though there is no whitespace.
-    lexer->advance(lexer, false);
+    advance(lexer);
     if (lexer->lookahead == '/') {
-      lexer->advance(lexer, false);
+      advance(lexer);
       if (lexer->lookahead == '/')
         return emit(lexer, SPACE);
     }
@@ -421,9 +438,9 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
   if (c == '(') {
     // Parenthesized adjacency is normal function application. The special case
     // is `(*)`, which is a postfix operator token, not application.
-    lexer->advance(lexer, false);
+    advance(lexer);
     if (lexer->lookahead == '*') {
-      lexer->advance(lexer, false);
+      advance(lexer);
       if (lexer->lookahead == ')')
         return false;
     }

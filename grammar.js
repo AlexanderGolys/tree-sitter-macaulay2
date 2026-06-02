@@ -449,6 +449,17 @@ export default grammar({
                 ),
             ),
 
+        _try_alternative: ($) =>
+            choice(
+                seq("else", field("alternative", $.expression)),
+                seq(
+                    "except",
+                    field("err", $.symbol),
+                    "do",
+                    field("alternative", $.expression),
+                ),
+            ),
+
         try_statement: ($) =>
             prec.right(
                 PREC.CONTROL,
@@ -456,17 +467,7 @@ export default grammar({
                     "try",
                     field("condition", $.expression),
                     optional(seq("then", field("consequence", $.expression))),
-                    optional(
-                        choice(
-                            seq("else", field("alternative", $.expression)),
-                            seq(
-                                "except",
-                                field("err", $.symbol),
-                                "do",
-                                field("alternative", $.expression),
-                            ),
-                        ),
-                    ),
+                    optional($._try_alternative),
                 ),
             ),
 

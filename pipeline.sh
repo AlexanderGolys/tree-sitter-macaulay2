@@ -108,6 +108,43 @@ print_highlighted_matches() {
     $had_any || true
 }
 
+extract_prefixed_count() {
+    local text="$1"
+    local prefix="$2"
+    awk -v prefix="$prefix" '
+        index($0, prefix) == 1 {
+            value = substr($0, length(prefix) + 1)
+            sub(/^[[:space:]]+/, "", value)
+            sub(/[[:space:]].*$/, "", value)
+            print value
+            found = 1
+            exit
+        }
+        END {
+            if (!found) print 0
+        }
+    ' <<< "$text"
+}
+
+extract_cargo_count() {
+    local text="$1"
+    local label="$2"
+    awk -v label="$label" '
+        match($0, /[0-9]+ (passed|failed|ignored)/) {
+            chunk = substr($0, RSTART, RLENGTH)
+            split(chunk, parts, " ")
+            if (parts[2] == label) {
+                print parts[1]
+                found = 1
+                exit
+            }
+        }
+        END {
+            if (!found) print 0
+        }
+    ' <<< "$text"
+}
+
 badge() {
     local passed="$1" total="$2" skipped="${3:-0}"
     local effective=$((passed + skipped))
@@ -252,9 +289,9 @@ else
         fail_badge
         exit 1
     }
-    CARGO_PASS=$(echo "$CARGO_OUT" | grep -oP '(\d+) passed' | head -1 | grep -oP '\d+' || echo 0)
-    CARGO_FAIL=$(echo "$CARGO_OUT" | grep -oP '(\d+) failed' | head -1 | grep -oP '\d+' || echo 0)
-    CARGO_SKIP=$(echo "$CARGO_OUT" | grep -oP '(\d+) ignored' | head -1 | grep -oP '\d+' || echo 0)
+    CARGO_PASS=$(extract_cargo_count "$CARGO_OUT" "passed")
+    CARGO_FAIL=$(extract_cargo_count "$CARGO_OUT" "failed")
+    CARGO_SKIP=$(extract_cargo_count "$CARGO_OUT" "ignored")
     CARGO_TOTAL=$((CARGO_PASS + CARGO_FAIL))
     badge "$CARGO_PASS" "$CARGO_TOTAL" "$CARGO_SKIP"
     print_highlighted_matches "$CARGO_OUT"
@@ -292,16 +329,19 @@ elif $SKIP_NODE; then
     skip_step 7 "Node tests" "--skip-node"
 else
     step 7 "Node tests: "
-    NODE_OUT=$(npm run test:node 2>&1) || true
-    NODE_TESTS=$(echo "$NODE_OUT" | grep -oP 'ℹ tests \K\d+' || echo 0)
-    NODE_SUITES=$(echo "$NODE_OUT" | grep -oP 'ℹ suites \K\d+' || echo 0)
-    NODE_PASS=$(echo "$NODE_OUT" | grep -oP 'ℹ pass \K\d+' || echo 0)
-    NODE_FAIL=$(echo "$NODE_OUT" | grep -oP 'ℹ fail \K\d+' || echo 0)
-    NODE_SKIP=$(echo "$NODE_OUT" | grep -oP 'ℹ skipped \K\d+' || echo 0)
-    NODE_TODO=$(echo "$NODE_OUT" | grep -oP 'ℹ todo \K\d+' || echo 0)
-    NODE_DURATION=$(echo "$NODE_OUT" | grep -oP 'ℹ duration_ms \K[0-9.]+' || echo 0)
+    set +e
+    NODE_OUT=$(npm run test:node 2>&1)
+    NODE_STATUS=$?
+    set -e
+    NODE_TESTS=$(extract_prefixed_count "$NODE_OUT" "ℹ tests ")
+    NODE_SUITES=$(extract_prefixed_count "$NODE_OUT" "ℹ suites ")
+    NODE_PASS=$(extract_prefixed_count "$NODE_OUT" "ℹ pass ")
+    NODE_FAIL=$(extract_prefixed_count "$NODE_OUT" "ℹ fail ")
+    NODE_SKIP=$(extract_prefixed_count "$NODE_OUT" "ℹ skipped ")
+    NODE_TODO=$(extract_prefixed_count "$NODE_OUT" "ℹ todo ")
+    NODE_DURATION=$(extract_prefixed_count "$NODE_OUT" "ℹ duration_ms ")
     NODE_TOTAL=$((NODE_PASS + NODE_FAIL + NODE_SKIP))
-    if [ "$NODE_FAIL" -gt 0 ]; then
+    if [ "$NODE_STATUS" -ne 0 ] || [ "$NODE_FAIL" -gt 0 ]; then
         badge "$NODE_PASS" "$NODE_TOTAL" "$NODE_SKIP"
         print_highlighted_matches "$NODE_OUT"
         echo "$NODE_OUT"

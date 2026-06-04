@@ -344,18 +344,23 @@ tsWriteFuzzCorpus = () -> (
                 invalidCount = (invalidCount + 1) % FUZZGROUPSIZE;
                 if invalidCount == 0 then invalid = append(invalid, word);
             ) else (
-                validCount = (validCount + 1) % FUZZGROUPSIZE;
-                if validCount == 0 then (
+                if validCount == FUZZGROUPSIZE then (
                     valid = append(valid, {validExpression, validWords});
-                    validExpression = word | ";\n";
-                    validWords = {word};
-                ) else (
-                    validExpression = validExpression | word | ";\n";
-                    validWords = append(validWords, word);
+                );
+                validExpression = validExpression | word | ";\n";
+                validWords = append(validWords, word);
+                validCount = validCount + 1;
+                if validCount == FUZZGROUPSIZE then (
+                    valid = append(valid, {validExpression, validWords});
+                    validExpression = "";
+                    validWords = {};
+                    validCount = 0;
                 );
             );
         );
     );
+
+    if validCount > 0 then valid = append(valid, {validExpression, validWords});
 
     out := openOut outputPath;
     emitted := 0;

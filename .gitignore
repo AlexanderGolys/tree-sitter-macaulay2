@@ -59,6 +59,7 @@ debug_*.txt
 gen_output.txt
 compile_commands.json
 opencode.json
+nvim.log
 
 # Editor files
 *.code-workspace

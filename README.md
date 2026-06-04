@@ -21,17 +21,10 @@ that load Tree-sitter languages in Wasm form.
 
 ## Package
 
-The npm package is published to GitHub Packages as
-`@alexandergolys/tree-sitter-macaulay2`.
+The npm package is published as `tree-sitter-macaulay2`.
 
 ```bash
-npm install @alexandergolys/tree-sitter-macaulay2
-```
-
-Consumers need an npm scope mapping for GitHub Packages:
-
-```text
-@alexandergolys:registry=https://npm.pkg.github.com
+npm install tree-sitter-macaulay2
 ```
 
 ## Development

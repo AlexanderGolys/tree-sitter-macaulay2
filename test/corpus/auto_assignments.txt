@@ -73,13 +73,7 @@ String * String = peek
 
 
 ==================
-(6) String ~ = peek [auto assignments]
-:error
-==================
-String ~ = peek
-
-==================
-(7) s_2 := 44 [auto assignments]
+(6) s_2 := 44 [auto assignments]
 ==================
 s_2 := 44
 ---
@@ -91,3 +85,37 @@ s_2 := 44
         left: (symbol)
         right: (integer_literal))
       right: (integer_literal))))
+
+
+==================
+(7) f = opts >> o -> x [auto assignments]
+==================
+f = opts >> o -> x
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (lambda_expression
+          parameters: (symbol)
+          body: (symbol))))))
+
+
+==================
+(8) ZZ ZZ := ZZ => f [auto assignments]
+==================
+ZZ ZZ := ZZ => f
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (binary_expression
+        left: (symbol)
+        right: (symbol)))))

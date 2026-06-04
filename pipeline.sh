@@ -170,7 +170,6 @@ else
         fi
     fi
     if $VERBOSE; then
-        echo "    avg speed:    $(color_num "$TS_AVG_SPEED bytes/ms")"
         echo "    tokens:       $(color_num "$(parser_stat_from_line 14)")"
         echo "    symbols:      $(color_num "$(parser_stat_from_line 12)")"
         echo "    states:       $(color_num "$(parser_stat_from_line 10)")"
@@ -229,7 +228,9 @@ process.stdin.on("end", () => {
   process.stdout.write(avg.toFixed(0));
 });
 ' || true)
-
+    if $VERBOSE; then
+        echo "    avg speed:    $(color_num "$TS_AVG_SPEED bytes/ms")"
+    fi
     print_highlighted_matches "$TS_OUT"
     if $SHOW_TESTS; then
         echo "$TS_OUT"
@@ -325,23 +326,23 @@ else
     step 8 "npm publish dry-run: "
     NPM_OUT=$(npm publish --dry-run 2>&1) || {
         echo
-        echo "$NPM_OUT"
+        echo "    $NPM_OUT"
         warn_badge
         print_highlighted_matches "$NPM_OUT"
         if $SHOW_TESTS; then
-            echo "$NPM_OUT"
+            echo "    $NPM_OUT"
         fi
         exit 1
     }
     if echo "$NPM_OUT" | grep -qi 'err'; then
         warn_badge
         print_highlighted_matches "$NPM_OUT"
-        echo "$NPM_OUT"
+        echo "    $NPM_OUT"
     else
         ok
         print_highlighted_matches "$NPM_OUT"
         if $SHOW_TESTS; then
-            echo "$NPM_OUT"
+            echo "    $NPM_OUT"
         fi
     fi
 fi
@@ -367,7 +368,7 @@ else
     }
     CARGO_WARN=$(echo "$CARGO_DRY" | grep -ci 'warning' || true)
     if [ "$CARGO_WARN" -gt 0 ]; then
-        echo -e "${YELLOW}${CARGO_WARN} warning(s)${NC}"
+        echo -e "    ${YELLOW}${CARGO_WARN} warning(s)${NC}"
     else
         ok
     fi

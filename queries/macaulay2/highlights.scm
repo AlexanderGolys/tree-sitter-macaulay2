@@ -11,19 +11,26 @@
 
 (string_literal) @string
 
-(escape_sequence) @string.escape
+(escape_sequence) @character.special
 
-(raw_string_escape) @string.escape
-
-(boolean_literal) @boolean
+(raw_string_escape) @character.special
 
 (symbol) @variable
 
-(cobinding
+(_
   symbol: (resolved_symbol) @variable)
 
 ; Operators
-(_
+(binary_expression
+  operator: _ @operator)
+
+(prefix_expression
+  operator: _ @operator)
+
+(postfix_expression
+  operator: _ @operator)
+
+(lambda_expression
   operator: _ @operator)
 
 ; Punctuation
@@ -57,7 +64,6 @@
   "in"
   "from"
   "to"
-  "step"
 ] @keyword.repeat
 
 [
@@ -91,6 +97,7 @@
   "profile"
   "TEST"
   "breakpoint"
+  "step"
 ] @keyword.debug
 
 [
@@ -110,7 +117,7 @@
 ; Calls
 (binary_expression
   left: (symbol) @function.call
-  operator: (_space))
+  operator: "SPACE")
 
 ((binary_expression
   left: [
@@ -122,7 +129,7 @@
   (#set! priority 151))
 
 ; Function parameters
-(function_expression
+(lambda_expression
   parameters: [
     (symbol) @variable.parameter
     (sequence
@@ -132,21 +139,16 @@
   ])
 
 ; Function definitions
-(assignment_expression
+(binary_expression
   left: (symbol) @function
-  right: (function_expression))
+  operator: [":=" "="]
+  right: (lambda_expression))
 
-(assignment_expression
+(binary_expression
   left: (symbol) @function
-  right: (option_attachment
-    left: [
-      (list
-        (option_assignment
-          left: (symbol) @variable.member))
-      (symbol)
-    ]
-    right: (function_expression
-      parameters: (symbol) @variable.member)))
+  operator: [":=" "="]
+  right: (binary_expression
+    right: (lambda_expression)))
 
 ; Members, options, and properties
 (binary_expression
@@ -156,23 +158,9 @@
   ]
   right: (symbol) @variable.member)
 
-(option_assignment
-  left: (symbol) @property)
-
-(binary_expression
-  operator: (_space)
-  right: (sequence
-    (option_assignment
-      left: (symbol) @variable.member)))
-
 (binary_expression
   operator: "_" @property
   right: (integer_literal) @property)
-
-(array
-  (option_assignment
-    left: (symbol) @variable.parameter
-    right: _ @variable.member))
 
 ; Types
 (new_statement
@@ -185,7 +173,7 @@
     "from" @keyword))
 
 ; Method installations
-((assignment_expression
+((binary_expression
   left: (binary_expression
     left: (_) @type
     operator: _ @function
@@ -196,41 +184,31 @@
   ] @keyword.operator)
   (#not-any-of? @function "." ".?" "#" "_"))
 
-((assignment_expression
+((binary_expression
   left: (binary_expression
     left: (symbol) @function
-    operator: (_space)
-    right: (symbol) @type))
+    operator: "SPACE"
+    right: (symbol) @type)
+  operator: [
+    "="
+    ":="
+  ] @keyword.operator)
   (#match? @function "[a-z].*"))
 
 ; A _ B := (x, y) -> x*y
-(assignment_expression
+(binary_expression
   left: (binary_expression
     left: (_) @type
     operator: "_" @function
     right: (_) @type)
-  operator: [
-    "="
-    ":="
-  ] @keyword.operator
-  right: (function_expression))
-
-; A op B := Y => f
-(assignment_expression
-  left: [
-    (binary_expression)
-    (prefix_expression)
-    (postfix_expression)
-  ]
-  right: (option_assignment
-    left: (symbol) @type
-    operator: "=>" @keyword.operator))
+  operator: ["=" ":="] @keyword.operator
+  right: (lambda_expression))
 
 ; f ZZ := g
-(assignment_expression
+(binary_expression
   left: (binary_expression
     left: (symbol) @function
-    operator: (_space)
+    operator: "SPACE"
     right: (sequence
       "(" @type
       [
@@ -244,13 +222,17 @@
   ] @keyword.operator)
 
 ; - ZZ := x -> -x
-(assignment_expression
+(binary_expression
   left: (prefix_expression
     operator: _ @constructor
-    operand: (symbol) @type))
+    operand: (symbol) @type)
+  operator: [
+    "="
+    ":="
+  ] @keyword.operator)
 
 ; ZZ ! := n -> if n > 0 then n*(n-1)! else 1
-(assignment_expression
+(binary_expression
   left: (postfix_expression
     operand: (symbol) @type
     operator: _ @constructor)
@@ -261,16 +243,21 @@
 
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (_space)
+  operator: "SPACE"
   right: (sequence
-    (cobinding)
+    [
+      (cobinding)
+      (local_cobinding)
+      (global_cobinding)
+      (thread_cobinding)
+    ]
     .
     (_) @type
     .
     (_) @type))
   (#eq? @function.builtin "installAssignmentMethod"))
 
-(assignment_expression
+(binary_expression
   left: (new_statement
     "new" @keyword
     (of_clause
@@ -310,7 +297,7 @@
 
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (_space)
+  operator: "SPACE"
   right: [
     (string_literal) @string.special.url
     (sequence
@@ -321,7 +308,7 @@
 
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (_space)
+  operator: "SPACE"
   right: [
     (string_literal) @string.regexp
     (sequence
@@ -332,7 +319,7 @@
 
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (_space)
+  operator: "SPACE"
   right: (sequence
     (string_literal) @string.regexp
     (string_literal) @string.special
@@ -341,7 +328,7 @@
 
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (_space)
+  operator: "SPACE"
   right: (sequence
     (string_literal) @string.regexp
     (_)+))
@@ -350,7 +337,7 @@
 ; Packages
 ((binary_expression
   left: (symbol) @function.builtin
-  operator: (_space)
+  operator: "SPACE"
   right: [
     (symbol) @module.builtin
     (sequence

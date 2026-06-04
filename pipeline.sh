@@ -62,7 +62,7 @@ done
 NODE_MAJOR=$(node -v | cut -d. -f1 | tr -d 'v')
 if [ "$NODE_MAJOR" -gt 25 ]; then
     MISENODE_ROOT="$HOME/.local/share/mise/installs/node"
-    COMPATIBLE=$(ls -1 "$MISENODE_ROOT" 2>/dev/null | grep -E '^2[0-5]\.' | sort -V | tail -1 || true)
+    COMPATIBLE=$(ls -1 "$MISENODE_ROOT" 2>/dev/null | grep -E '^(1[89]|2[0-5])\.' | sort -V | tail -1 || true)
     if [ -n "$COMPATIBLE" ]; then
         export PATH="$MISENODE_ROOT/$COMPATIBLE/bin:$PATH"
         echo "==> Switched to Node $COMPATIBLE"
@@ -292,7 +292,7 @@ else
     CARGO_PASS=$(extract_cargo_count "$CARGO_OUT" "passed")
     CARGO_FAIL=$(extract_cargo_count "$CARGO_OUT" "failed")
     CARGO_SKIP=$(extract_cargo_count "$CARGO_OUT" "ignored")
-    CARGO_TOTAL=$((CARGO_PASS + CARGO_FAIL))
+    CARGO_TOTAL=$((CARGO_PASS + CARGO_FAIL + CARGO_SKIP))
     badge "$CARGO_PASS" "$CARGO_TOTAL" "$CARGO_SKIP"
     print_highlighted_matches "$CARGO_OUT"
     if $SHOW_TESTS; then
@@ -333,13 +333,9 @@ else
     NODE_OUT=$(npm run test:node 2>&1)
     NODE_STATUS=$?
     set -e
-    NODE_TESTS=$(extract_prefixed_count "$NODE_OUT" "ℹ tests ")
-    NODE_SUITES=$(extract_prefixed_count "$NODE_OUT" "ℹ suites ")
     NODE_PASS=$(extract_prefixed_count "$NODE_OUT" "ℹ pass ")
     NODE_FAIL=$(extract_prefixed_count "$NODE_OUT" "ℹ fail ")
     NODE_SKIP=$(extract_prefixed_count "$NODE_OUT" "ℹ skipped ")
-    NODE_TODO=$(extract_prefixed_count "$NODE_OUT" "ℹ todo ")
-    NODE_DURATION=$(extract_prefixed_count "$NODE_OUT" "ℹ duration_ms ")
     NODE_TOTAL=$((NODE_PASS + NODE_FAIL + NODE_SKIP))
     if [ "$NODE_STATUS" -ne 0 ] || [ "$NODE_FAIL" -gt 0 ]; then
         badge "$NODE_PASS" "$NODE_TOTAL" "$NODE_SKIP"
@@ -374,7 +370,7 @@ else
         fi
         exit 1
     }
-    if echo "$NPM_OUT" | grep -qi 'err'; then
+    if echo "$NPM_OUT" | grep -qiE '(^|[^[:alnum:]_])(error|err)([^[:alnum:]_]|$)'; then
         warn_badge
         print_highlighted_matches "$NPM_OUT"
         echo "    $NPM_OUT"

@@ -332,19 +332,22 @@ static bool scan_number(TSLexer *lexer, const bool *valid_symbols) {
 // leave the remaining 2-slash or 3-slash suffix to be scanned on the next call.
 
 static bool scan_raw_str_content_step(TSLexer *lexer, bool anything_found,
-                                    int slashes_found) {
-  if (lexer->eof(lexer))
-    return anything_found;
-  if (lexer->lookahead != '/') {
-    advance(lexer);
-    lexer->mark_end(lexer);
-    return scan_raw_str_content_step(lexer, true, 0);
-  }
-  if (slashes_found == 2)
-    return anything_found;
+                                      int slashes_found) {
+  while (!lexer->eof(lexer)) {
+    if (lexer->lookahead != '/') {
+      advance(lexer);
+      lexer->mark_end(lexer);
+      anything_found = true;
+      slashes_found = 0;
+      continue;
+    }
+    if (slashes_found == 2)
+      return anything_found;
 
-  advance(lexer);
-  return scan_raw_str_content_step(lexer, anything_found, slashes_found + 1);
+    advance(lexer);
+    slashes_found += 1;
+  }
+  return anything_found;
 }
 
 static bool emit_raw_str_content(TSLexer *lexer, const bool *valid_symbols) {

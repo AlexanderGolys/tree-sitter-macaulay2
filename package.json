@@ -26,7 +26,6 @@
     "queries",
     "src",
     "grammar.js",
-    "tree-sitter-macaulay2.wasm",
     "tree-sitter.json",
     "README.md",
     "LICENCE"

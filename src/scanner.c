@@ -10,12 +10,12 @@ static inline void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
 // #define advance(lexer) {                                               \
 //     printf("advance '%c' (%d) at L%d\n", (char)lexer->lookahead,         \
 //            lexer->lookahead, __LINE__);                                  \
-//     advance(lexer);                                                      \
+//     lexer->advance(lexer, false);                                         \
 // }
 // #define skip(lexer) {                                                  \
 //     printf("skip '%c' (%d) at L%d\n", (char)lexer->lookahead,            \
 //            lexer->lookahead, __LINE__);                                  \
-//     skip(lexer);                                                         \
+//     lexer->advance(lexer, true);                                          \
 // }
 
 enum TokenType {
@@ -36,11 +36,14 @@ enum TokenType {
   RANGE_EQ,
   RANGE_LT_EQ,
 
-  // Float and "missing exponent/precision" recovery tokens are external for
-  // the same reason: `.` can begin either a float or a range/adjacency form.
+  // Integers are external so glued numeric suffixes cannot fall back to
+  // adjacency. `1x` is `1 SPACE x`, but `1e` and `1p` are incomplete numeric
+  // literals in Macaulay2 and must remain syntax errors.
+  INTEGER,
+
+  // Floats are external for the same reason: `.` can begin either a float or a
+  // range/adjacency form.
   FLOAT,
-  E_MISSING,
-  P_MISSING,
 
   // Raw strings use `/// ... ///`, but slash runs inside the body are encoded
   // so that the closing delimiter stays unambiguous. The parser wants to keep
@@ -74,6 +77,10 @@ static bool is_digit(int32_t c) { return c >= '0' && c <= '9'; }
 
 static bool is_inline_whitespace(int32_t c) { return c == ' ' || c == '\t'; }
 
+static bool is_whitespace(int32_t c) {
+  return is_inline_whitespace(c) || c == '\n' || c == '\r';
+}
+
 static bool is_ident_char(int32_t c) {
   return is_alpha(c) || is_digit(c) || c == '\'' || c == '$';
 }
@@ -91,9 +98,10 @@ static bool emit(TSLexer *lexer, enum TokenType symbol) {
 //   is actually starting a structural construct?
 //
 // For example, after `if x`, the `then` should start an `if` continuation, not
-// be consumed as `x SPACE then`. By contrast, operator-like or locality words
-// such as `not` or `symbol` must *not* be listed here, because they still need
-// to participate in ordinary expression parsing after adjacency.
+// be consumed as `x SPACE then`. Binary word operators such as `or` also need
+// to be blocked here. By contrast, prefix/locality words such as `not` or
+// `symbol` must *not* be listed, because they still need to participate in
+// ordinary expression parsing after adjacency.
 static bool is_adjacency_blocking_keyword_ahead(TSLexer *lexer) {
   char buffer[16];
   int i = 0;
@@ -115,6 +123,7 @@ static bool is_adjacency_blocking_keyword_ahead(TSLexer *lexer) {
     "if",      "then",     "else",    "from",
     "to",      "when",     "do",      "in",
     "of",      "list",     "for",     "while",
+    "and",     "or",       "xor",     "SPACE",
     "break",   "continue", "return",  "try",
     "catch",   "throw",    "time",    "timing",
     "elapsedTime", "elapsedTiming", "profile", "shield",
@@ -134,7 +143,12 @@ static void skip_whitespace(TSLexer *lexer) {
     skip(lexer);
 }
 
-static void skip_inline_whitespace(TSLexer *lexer) {
+static void skip_number_whitespace(TSLexer *lexer) {
+  while (is_whitespace(lexer->lookahead))
+    skip(lexer);
+}
+
+static void consume_inline_whitespace(TSLexer *lexer) {
   while (is_inline_whitespace(lexer->lookahead))
     advance(lexer);
 }
@@ -155,9 +169,8 @@ static bool can_scan_dot_operator(const bool *valid_symbols) {
          valid_symbols[RANGE_LT_EQ];
 }
 
-static bool can_scan_float(const bool *valid_symbols) {
-  return valid_symbols[FLOAT] || valid_symbols[E_MISSING] ||
-         valid_symbols[P_MISSING];
+static bool can_scan_number(const bool *valid_symbols) {
+  return valid_symbols[INTEGER] || valid_symbols[FLOAT];
 }
 
 static bool can_scan_adjacency(const bool *valid_symbols) {
@@ -232,7 +245,7 @@ static ScanResult scan_dot_operator(TSLexer *lexer, const bool *valid_symbols) {
   return SCAN_FAIL;
 }
 
-static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
+static bool scan_number(TSLexer *lexer, const bool *valid_symbols) {
   bool has_dot = false;
   bool has_digit = false;
   bool has_e = false;
@@ -240,23 +253,31 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
   // Floats are scanned only after dot/range handling has had first pass. That
   // lets inputs like `2...2` become `2 .. .2` instead of greedily turning the
   // first `.` into part of a float.
-  if (match_int(lexer))
+  if (match_int(lexer)) {
     has_digit = true;
+    lexer->mark_end(lexer);
+  }
 
   if (lexer->lookahead == '.') {
     has_dot = true;
     advance(lexer);
-    if (lexer->lookahead == '.')
+    if (lexer->lookahead == '.') {
+      if (has_digit && valid_symbols[INTEGER])
+        return emit(lexer, INTEGER);
       return false;
+    }
     if (is_digit(lexer->lookahead)) {
       match_int(lexer);
       lexer->mark_end(lexer);
       has_digit = true;
     } else {
       lexer->mark_end(lexer);
-      skip_inline_whitespace(lexer);
-      if (lexer->lookahead == '.')
+      consume_inline_whitespace(lexer);
+      if (lexer->lookahead == '.') {
+        if (has_digit && valid_symbols[INTEGER])
+          return emit(lexer, INTEGER);
         return false;
+      }
     }
   }
 
@@ -273,8 +294,6 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
 
     bool has_prec = match_int(lexer);
 
-    if (valid_symbols[P_MISSING] && !has_prec)
-      return emit(lexer, P_MISSING);
     if (!has_prec)
       return false;
     lexer->mark_end(lexer);
@@ -289,8 +308,6 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
 
     bool valid_exp = match_int(lexer);
 
-    if (valid_symbols[E_MISSING] && !valid_exp)
-      return emit(lexer, E_MISSING);
     if (!valid_exp)
       return false;
     lexer->mark_end(lexer);
@@ -298,6 +315,9 @@ static bool scan_float(TSLexer *lexer, const bool *valid_symbols) {
 
   if (valid_symbols[FLOAT] && (has_dot || has_e))
     return emit(lexer, FLOAT);
+
+  if (valid_symbols[INTEGER] && !has_dot && !has_e)
+    return emit(lexer, INTEGER);
 
   return false;
 }
@@ -461,7 +481,11 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
   if (can_scan_raw_string(valid_symbols))
     return scan_raw_string(lexer, valid_symbols);
 
-  skip_whitespace(lexer);
+  if (can_scan_number(valid_symbols) && !can_scan_adjacency(valid_symbols) &&
+      !can_scan_dot_operator(valid_symbols))
+    skip_number_whitespace(lexer);
+  else
+    skip_whitespace(lexer);
 
   if (lexer->eof(lexer))
     return false;
@@ -470,7 +494,7 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
 
   // The order here is the heart of the scanner:
   //   1. dot-led range/adjacency forms
-  //   2. floats and float-recovery tokens
+  //   2. floats
   //   3. ordinary implicit adjacency
   //
   // That priority matches the language ambiguities we have to resolve.
@@ -482,8 +506,8 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
       return false;
   }
 
-  if (can_scan_float(valid_symbols))
-    return scan_float(lexer, valid_symbols);
+  if (can_scan_number(valid_symbols))
+    return scan_number(lexer, valid_symbols);
 
   return can_scan_adjacency(valid_symbols) &&
          scan_adjacency(lexer, valid_symbols, c);

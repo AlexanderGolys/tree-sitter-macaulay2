@@ -77,7 +77,6 @@ f (
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (sequence
         (symbol)))))
 
@@ -94,7 +93,6 @@ f(
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (sequence
         (binary_expression
           left: (integer_literal)
@@ -127,7 +125,6 @@ f(
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (sequence
         (postfix_expression
           operand: (integer_literal))))))
@@ -148,9 +145,8 @@ f(x -> (
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (sequence
-        (function_expression
+        (lambda_expression
           parameters: (symbol)
           body: (sequence
             (symbol)

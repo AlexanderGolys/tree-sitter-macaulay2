@@ -66,3 +66,27 @@ null
     (symbol))
   (cell
     (symbol)))
+
+==================
+8. Control keyword prefixes parse as symbols [identifiers]
+==================
+stepstep
+breakbreak
+returnreturn
+continuecontinue
+traptrap
+timetime
+---
+(source_file
+  (cell
+    (symbol))
+  (cell
+    (symbol))
+  (cell
+    (symbol))
+  (cell
+    (symbol))
+  (cell
+    (symbol))
+  (cell
+    (symbol)))

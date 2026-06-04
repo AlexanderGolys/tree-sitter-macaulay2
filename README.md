@@ -9,11 +9,30 @@
 - [x] Symbol Tags (`tags.scm`)
 - [x] Folds (`folds.scm`)
 - [x] Node and Rust bindings
+- [x] WebAssembly parser (`tree-sitter-macaulay2.wasm`)
 
 ## Supported Bindings
 
 This release supports Node and Rust bindings. C/C++, Go, Python, and Swift
 bindings are not shipped yet.
+
+The WebAssembly parser is committed as `tree-sitter-macaulay2.wasm` for tools
+that load Tree-sitter languages in Wasm form.
+
+## Package
+
+The npm package is published to GitHub Packages as
+`@alexandergolys/tree-sitter-macaulay2`.
+
+```bash
+npm install @alexandergolys/tree-sitter-macaulay2
+```
+
+Consumers need an npm scope mapping for GitHub Packages:
+
+```text
+@alexandergolys:registry=https://npm.pkg.github.com
+```
 
 ## Development
 
@@ -27,6 +46,12 @@ Regenerate the parser and run the corpus tests:
 
 ```bash
 npm run check
+```
+
+Rebuild the WebAssembly parser:
+
+```bash
+npm run build:wasm
 ```
 
 ## Generated Corpus

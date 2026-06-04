@@ -25,7 +25,7 @@ type NodeInfo =
  *
  * @example
  * import Parser from "tree-sitter";
- * import Macaulay2 from "tree-sitter-macaulay2";
+ * import Macaulay2 from "@alexandergolys/tree-sitter-macaulay2";
  *
  * const parser = new Parser();
  * parser.setLanguage(Macaulay2);

@@ -3,28 +3,34 @@
 ==================
 -- comment
 ---
+
 (source_file
   (line_comment))
+
 ==================
 2. Comment after expression [comments]
 ==================
 1 -- comment
 ---
+
 (source_file
   (cell
     (integer_literal))
   (line_comment))
+
 ==================
 3. Block comment inline [comments]
 ==================
 1 + -* comment *- 2
 ---
+
 (source_file
   (cell
     (binary_expression
       left: (integer_literal)
       (block_comment)
       right: (integer_literal))))
+
 ==================
 4. Block comment multiline [comments]
 ==================
@@ -32,28 +38,38 @@
   comment
 *-
 ---
+
 (source_file
   (block_comment))
+
 ==================
 5. Nested block comments (if supported, or just checking behavior) [comments]
-:skip
 ==================
--* outer -* inner *- outer *-
+-* outer -* inner *- 1 *- 1
 ---
-(source_file)
+
+(source_file
+  (block_comment)
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (prefix_expression
+        operand: (integer_literal)))))
 
 ==================
 6. Comment with weird chars [comments]
 ==================
 -- !@#$%^&*()
 ---
+
 (source_file
   (line_comment))
-  
+
 ==================
 7. Block comment with stars [comments]
 ==================
 -***-
 ---
+
 (source_file
   (block_comment))

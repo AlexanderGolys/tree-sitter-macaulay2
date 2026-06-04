@@ -1,5 +1,5 @@
 ==================
-(1) "abc" [auto_generated_operators]
+(1) "abc" [auto operators]
 ==================
 "abc"
 ---
@@ -8,8 +8,9 @@
   (cell
     (string_literal)))
 
+
 ==================
-(2) {1, 2, 3} [auto_generated_operators]
+(2) {1, 2, 3} [auto operators]
 ==================
 {1, 2, 3}
 ---
@@ -21,8 +22,9 @@
       (integer_literal)
       (integer_literal))))
 
+
 ==================
-(3) (a, b, c) [auto_generated_operators]
+(3) (a, b, c) [auto operators]
 ==================
 (a, b, c)
 ---
@@ -34,8 +36,9 @@
       (symbol)
       (symbol))))
 
+
 ==================
-(4) [x, y, z] [auto_generated_operators]
+(4) [x, y, z] [auto operators]
 ==================
 [x, y, z]
 ---
@@ -47,8 +50,9 @@
       (symbol)
       (symbol))))
 
+
 ==================
-(5) f("a", {b}, (c)) [auto_generated_operators]
+(5) f("a", {b}, (c)) [auto operators]
 ==================
 f("a", {b}, (c))
 ---
@@ -57,7 +61,6 @@ f("a", {b}, (c))
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (sequence
         (string_literal)
         (list
@@ -65,8 +68,9 @@ f("a", {b}, (c))
         (sequence
           (symbol))))))
 
+
 ==================
-(6) {a,} [auto_generated_operators]
+(6) {a,} [auto operators]
 ==================
 {a,}
 ---
@@ -76,8 +80,9 @@ f("a", {b}, (c))
     (list
       (symbol))))
 
+
 ==================
-(7) () [auto_generated_operators]
+(7) () [auto operators]
 ==================
 ()
 ---
@@ -86,8 +91,9 @@ f("a", {b}, (c))
   (cell
     (sequence)))
 
+
 ==================
-(8) (,) [auto_generated_operators]
+(8) (,) [auto operators]
 ==================
 (,)
 ---
@@ -96,8 +102,9 @@ f("a", {b}, (c))
   (cell
     (sequence)))
 
+
 ==================
-(9) (a,,b) [auto_generated_operators]
+(9) (a,,b) [auto operators]
 ==================
 (a,,b)
 ---
@@ -108,8 +115,9 @@ f("a", {b}, (c))
       (symbol)
       (symbol))))
 
+
 ==================
-(10) (g not x) + y [auto_generated_operators]
+(10) (g not x) + y [auto operators]
 ==================
 (g not x) + y
 ---
@@ -120,13 +128,13 @@ f("a", {b}, (c))
       left: (sequence
         (binary_expression
           left: (symbol)
-          operator: (_space)
           right: (prefix_expression
             operand: (symbol))))
       right: (symbol))))
 
+
 ==================
-(11) x_2.e-2 [auto_generated_operators]
+(11) x_2.e-2 [auto operators]
 ==================
 x_2.e-2
 ---
@@ -137,8 +145,9 @@ x_2.e-2
       left: (symbol)
       right: (float_literal))))
 
+
 ==================
-(12) R / I [x] [auto_generated_operators]
+(12) R / I [x] [auto operators]
 ==================
 R / I [x]
 ---
@@ -149,12 +158,12 @@ R / I [x]
       left: (binary_expression
         left: (symbol)
         right: (symbol))
-      operator: (_space)
       right: (array
         (symbol)))))
 
+
 ==================
-(13) f g [x] [auto_generated_operators]
+(13) f g [x] [auto operators]
 ==================
 f g [x]
 ---
@@ -164,14 +173,13 @@ f g [x]
     (binary_expression
       left: (binary_expression
         left: (symbol)
-        operator: (_space)
         right: (symbol))
-      operator: (_space)
       right: (array
         (symbol)))))
 
+
 ==================
-(14) f(2)^2 [auto_generated_operators]
+(14) f(2)^2 [auto operators]
 ==================
 f(2)^2
 ---
@@ -180,14 +188,14 @@ f(2)^2
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (binary_expression
         left: (sequence
           (integer_literal))
         right: (integer_literal)))))
 
+
 ==================
-(15) f / g (s) [auto_generated_operators]
+(15) f / g (s) [auto operators]
 ==================
 f / g (s)
 ---
@@ -198,12 +206,12 @@ f / g (s)
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        operator: (_space)
         right: (sequence
           (symbol))))))
 
+
 ==================
-(16) f / g [x] [auto_generated_operators]
+(16) f / g [x] [auto operators]
 ==================
 f / g [x]
 ---
@@ -214,12 +222,12 @@ f / g [x]
       left: (binary_expression
         left: (symbol)
         right: (symbol))
-      operator: (_space)
       right: (array
         (symbol)))))
 
+
 ==================
-(17) f / g # (x) [auto_generated_operators]
+(17) f / g # (x) [auto operators]
 ==================
 f / g # (x)
 ---
@@ -233,8 +241,9 @@ f / g # (x)
         right: (sequence
           (symbol))))))
 
+
 ==================
-(18) f / g # [x] [auto_generated_operators]
+(18) f / g # [x] [auto operators]
 ==================
 f / g # [x]
 ---
@@ -248,8 +257,9 @@ f / g # [x]
         right: (array
           (symbol))))))
 
+
 ==================
-(19) a + b [x] [auto_generated_operators]
+(19) a + b [x] [auto operators]
 ==================
 a + b [x]
 ---
@@ -260,12 +270,12 @@ a + b [x]
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        operator: (_space)
         right: (array
           (symbol))))))
 
+
 ==================
-(20) a * b [x] [auto_generated_operators]
+(20) a * b [x] [auto operators]
 ==================
 a * b [x]
 ---
@@ -276,12 +286,12 @@ a * b [x]
       left: (binary_expression
         left: (symbol)
         right: (symbol))
-      operator: (_space)
       right: (array
         (symbol)))))
 
+
 ==================
-(21) f / g <| 1 |> [auto_generated_operators]
+(21) f / g <| 1 |> [auto operators]
 ==================
 f / g <| 1 |>
 ---
@@ -292,12 +302,12 @@ f / g <| 1 |>
       left: (binary_expression
         left: (symbol)
         right: (symbol))
-      operator: (_space)
       right: (angle_bar_list
         (integer_literal)))))
 
+
 ==================
-(22) f/g#(x) [auto_generated_operators]
+(22) f/g#(x) [auto operators]
 ==================
 f/g#(x)
 ---
@@ -311,8 +321,9 @@ f/g#(x)
         right: (sequence
           (symbol))))))
 
+
 ==================
-(23) f/g#[x] [auto_generated_operators]
+(23) f/g#[x] [auto operators]
 ==================
 f/g#[x]
 ---
@@ -326,8 +337,9 @@ f/g#[x]
         right: (array
           (symbol))))))
 
+
 ==================
-(24) a + b * c - d / e [auto_generated_operators]
+(24) a + b * c - d / e [auto operators]
 ==================
 a + b * c - d / e
 ---
@@ -344,8 +356,9 @@ a + b * c - d / e
         left: (symbol)
         right: (symbol)))))
 
+
 ==================
-(25) x_3 + y^2 - z_1.e-5 [auto_generated_operators]
+(25) x_3 + y^2 - z_1.e-5 [auto operators]
 ==================
 x_3 + y^2 - z_1.e-5
 ---
@@ -364,8 +377,9 @@ x_3 + y^2 - z_1.e-5
         left: (symbol)
         right: (float_literal)))))
 
+
 ==================
-(26) a + b * c ^ d [auto_generated_operators]
+(26) a + b * c ^ d [auto operators]
 ==================
 a + b * c ^ d
 ---
@@ -380,8 +394,9 @@ a + b * c ^ d
           left: (symbol)
           right: (symbol))))))
 
+
 ==================
-(27) x - y / z ++ w [auto_generated_operators]
+(27) x - y / z ++ w [auto operators]
 ==================
 x - y / z ++ w
 ---
@@ -396,8 +411,9 @@ x - y / z ++ w
           right: (symbol)))
       right: (symbol))))
 
+
 ==================
-(28) a - b * c ^ d [auto_generated_operators]
+(28) a - b * c ^ d [auto operators]
 ==================
 a - b * c ^ d
 ---
@@ -412,8 +428,9 @@ a - b * c ^ d
           left: (symbol)
           right: (symbol))))))
 
+
 ==================
-(29) x - y / z ++ w [auto_generated_operators]
+(29) x - y / z ++ w [auto operators]
 ==================
 x - y / z ++ w
 ---
@@ -428,8 +445,9 @@ x - y / z ++ w
           right: (symbol)))
       right: (symbol))))
 
+
 ==================
-(30) a - b * c ^ d [auto_generated_operators]
+(30) a - b * c ^ d [auto operators]
 ==================
 a - b * c ^ d
 ---
@@ -444,8 +462,9 @@ a - b * c ^ d
           left: (symbol)
           right: (symbol))))))
 
+
 ==================
-(31) a..b..2 [auto_generated_operators]
+(31) a..b..2 [auto operators]
 ==================
 a..b..2
 ---
@@ -458,8 +477,9 @@ a..b..2
         right: (symbol))
       right: (integer_literal))))
 
+
 ==================
-(32) a..<b..2 [auto_generated_operators]
+(32) a..<b..2 [auto operators]
 ==================
 a..<b..2
 ---
@@ -472,22 +492,24 @@ a..<b..2
         right: (symbol))
       right: (integer_literal))))
 
+
 ==================
-(33) a..=b..2 [auto_generated_operators]
+(33) a..=b..2 [auto operators]
 ==================
 a..=b..2
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (symbol)
       right: (binary_expression
         left: (symbol)
         right: (integer_literal)))))
 
+
 ==================
-(34) a..<b...2 [auto_generated_operators]
+(34) a..<b...2 [auto operators]
 ==================
 a..<b...2
 ---
@@ -500,34 +522,37 @@ a..<b...2
         right: (symbol))
       right: (float_literal))))
 
+
 ==================
-(35) x += 3 + 3 [auto_generated_operators]
+(35) x += 3 + 3 [auto operators]
 ==================
 x += 3 + 3
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (symbol)
       right: (binary_expression
         left: (integer_literal)
         right: (integer_literal)))))
 
+
 ==================
-(36) x := y [auto_generated_operators]
+(36) x := y [auto operators]
 ==================
 x := y
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (symbol)
       right: (symbol))))
 
+
 ==================
-(37) sin (2 * x + 3) [auto_generated_operators]
+(37) sin (2 * x + 3) [auto operators]
 ==================
 sin (2 * x + 3)
 ---
@@ -536,7 +561,6 @@ sin (2 * x + 3)
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (sequence
         (binary_expression
           left: (binary_expression
@@ -544,8 +568,9 @@ sin (2 * x + 3)
             right: (symbol))
           right: (integer_literal))))))
 
+
 ==================
-(38) sin(x+y)^6 [auto_generated_operators]
+(38) sin(x+y)^6 [auto operators]
 ==================
 sin(x+y)^6
 ---
@@ -554,7 +579,6 @@ sin(x+y)^6
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (binary_expression
         left: (sequence
           (binary_expression
@@ -562,8 +586,43 @@ sin(x+y)^6
             right: (symbol)))
         right: (integer_literal)))))
 
+
 ==================
-(39) I/R[x, y, z] [auto_generated_operators]
+(39) sin(x+y)! [auto operators]
+==================
+sin(x+y)!
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (postfix_expression
+        operand: (sequence
+          (binary_expression
+            left: (symbol)
+            right: (symbol)))))))
+
+
+==================
+(40) sin(x+y) ! [auto operators]
+==================
+sin(x+y) !
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (postfix_expression
+        operand: (sequence
+          (binary_expression
+            left: (symbol)
+            right: (symbol)))))))
+
+
+==================
+(41) I/R[x, y, z] [auto operators]
 ==================
 I/R[x, y, z]
 ---
@@ -574,14 +633,14 @@ I/R[x, y, z]
       left: (binary_expression
         left: (symbol)
         right: (symbol))
-      operator: (_space)
       right: (array
         (symbol)
         (symbol)
         (symbol)))))
 
+
 ==================
-(40) sin(2)! + sin sin 2 [auto_generated_operators]
+(42) sin(2)! + sin sin 2 [auto operators]
 ==================
 sin(2)! + sin sin 2
 ---
@@ -591,20 +650,18 @@ sin(2)! + sin sin 2
     (binary_expression
       left: (binary_expression
         left: (symbol)
-        operator: (_space)
         right: (postfix_expression
           operand: (sequence
             (integer_literal))))
       right: (binary_expression
         left: (symbol)
-        operator: (_space)
         right: (binary_expression
           left: (symbol)
-          operator: (_space)
           right: (integer_literal))))))
 
+
 ==================
-(41) x + y 2! + (z w) q 2 [auto_generated_operators]
+(43) x + y 2! + (z w) q 2 [auto operators]
 ==================
 x + y 2! + (z w) q 2
 ---
@@ -616,23 +673,20 @@ x + y 2! + (z w) q 2
         left: (symbol)
         right: (binary_expression
           left: (symbol)
-          operator: (_space)
           right: (postfix_expression
             operand: (integer_literal))))
       right: (binary_expression
         left: (sequence
           (binary_expression
             left: (symbol)
-            operator: (_space)
             right: (symbol)))
-        operator: (_space)
         right: (binary_expression
           left: (symbol)
-          operator: (_space)
           right: (integer_literal))))))
 
+
 ==================
-(42) f / g # (x) (*) [auto_generated_operators]
+(44) f / g # (x) (*) [auto operators]
 ==================
 f / g # (x) (*)
 ---
@@ -647,8 +701,9 @@ f / g # (x) (*)
           right: (sequence
             (symbol)))))))
 
+
 ==================
-(43) # (x) (*) [auto_generated_operators]
+(45) # (x) (*) [auto operators]
 ==================
 # (x) (*)
 ---
@@ -660,8 +715,9 @@ f / g # (x) (*)
         operand: (sequence
           (symbol))))))
 
+
 ==================
-(44) f / g # (x) _* [auto_generated_operators]
+(46) f / g # (x) _* [auto operators]
 ==================
 f / g # (x) _*
 ---
@@ -676,8 +732,9 @@ f / g # (x) _*
           right: (sequence
             (symbol)))))))
 
+
 ==================
-(45) f / g # (x) _! [auto_generated_operators]
+(47) f / g # (x) _! [auto operators]
 ==================
 f / g # (x) _!
 ---
@@ -692,8 +749,9 @@ f / g # (x) _!
           operand: (sequence
             (symbol)))))))
 
+
 ==================
-(46) (x)(x, y)((x, y)(x)x) [auto_generated_operators]
+(48) (x)(x, y)((x, y)(x)x) [auto operators]
 ==================
 (x)(x, y)((x, y)(x)x)
 ---
@@ -703,26 +761,23 @@ f / g # (x) _!
     (binary_expression
       left: (sequence
         (symbol))
-      operator: (_space)
       right: (binary_expression
         left: (sequence
           (symbol)
           (symbol))
-        operator: (_space)
         right: (sequence
           (binary_expression
             left: (sequence
               (symbol)
               (symbol))
-            operator: (_space)
             right: (binary_expression
               left: (sequence
                 (symbol))
-              operator: (_space)
               right: (symbol))))))))
 
+
 ==================
-(47) I/R(x, y) [auto_generated_operators]
+(49) I/R(x, y) [auto operators]
 ==================
 I/R(x, y)
 ---
@@ -733,300 +788,58 @@ I/R(x, y)
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        operator: (_space)
         right: (sequence
           (symbol)
           (symbol))))))
 
+
 ==================
-(48) 2...2 [auto_generated_operators]
+(50) x."a" [auto operators]
 ==================
-2...2
+x."a"
 ---
 
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
-      right: (float_literal))))
+      left: (symbol)
+      right: (string_literal))))
+
 
 ==================
-(49) 2. ..2 [auto_generated_operators]
+(51) "a"."a" [auto operators]
 ==================
-2. ..2
+"a"."a"
 ---
 
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left: (string_literal)
+      right: (string_literal))))
+
+
+==================
+(52) "a".?2 [auto operators]
+==================
+"a".?2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (string_literal)
       right: (integer_literal))))
 
+
 ==================
-(50) 2. .. .2 [auto_generated_operators]
+(53) "a".2 [auto operators]
 ==================
-2. .. .2
+"a".2
 ---
 
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left: (string_literal)
       right: (float_literal))))
-
-==================
-(51) 2...2...2 [auto_generated_operators]
-==================
-2...2...2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (binary_expression
-        left: (integer_literal)
-        right: (float_literal))
-      right: (float_literal))))
-
-==================
-(52) 2...2.2 [auto_generated_operators]
-==================
-2...2.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (integer_literal)
-      right: (binary_expression
-        left: (float_literal)
-        operator: (_space)
-        right: (float_literal)))))
-
-==================
-(53) 2..2.2 [auto_generated_operators]
-==================
-2..2.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (integer_literal)
-      right: (float_literal))))
-
-==================
-(54) .2.2 [auto_generated_operators]
-==================
-.2.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (float_literal)
-      operator: (_space)
-      right: (float_literal))))
-
-==================
-(55) 2.x [auto_generated_operators]
-==================
-2.x
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (float_literal)
-      operator: (_space)
-      right: (symbol))))
-
-==================
-(56) 2.2.2 [auto_generated_operators]
-==================
-2.2.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (float_literal)
-      operator: (_space)
-      right: (float_literal))))
-
-==================
-(57) .2.2.2 [auto_generated_operators]
-==================
-.2.2.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (float_literal)
-      operator: (_space)
-      right: (binary_expression
-        left: (float_literal)
-        operator: (_space)
-        right: (float_literal)))))
-
-==================
-(58) 2.x.2 [auto_generated_operators]
-==================
-2.x.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (float_literal)
-      operator: (_space)
-      right: (binary_expression
-        left: (symbol)
-        operator: (_space)
-        right: (float_literal)))))
-
-==================
-(59) .2.x.2 [auto_generated_operators]
-==================
-.2.x.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (binary_expression
-        left: (float_literal)
-        right: (symbol))
-      operator: (_space)
-      right: (float_literal))))
-
-==================
-(60) .2..x.2 [auto_generated_operators]
-==================
-.2..x.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (float_literal)
-      right: (binary_expression
-        left: (symbol)
-        operator: (_space)
-        right: (float_literal)))))
-
-==================
-(61) .2..x...2 [auto_generated_operators]
-==================
-.2..x...2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (binary_expression
-        left: (float_literal)
-        right: (symbol))
-      right: (float_literal))))
-
-==================
-(62) 2.+.2 [auto_generated_operators]
-==================
-2.+.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (float_literal)
-      right: (float_literal))))
-
-==================
-(63) x.x [auto_generated_operators]
-==================
-x.x
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (symbol)
-      right: (symbol))))
-
-==================
-(64) x..x [auto_generated_operators]
-==================
-x..x
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (symbol)
-      right: (symbol))))
-
-==================
-(65) x...2 [auto_generated_operators]
-==================
-x...2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (symbol)
-      right: (float_literal))))
-
-==================
-(66) 2..x [auto_generated_operators]
-==================
-2..x
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (integer_literal)
-      right: (symbol))))
-
-==================
-(67) x.2 [auto_generated_operators]
-==================
-x.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (symbol)
-      operator: (_space)
-      right: (float_literal))))
-
-==================
-(68) x.2.2 [auto_generated_operators]
-==================
-x.2.2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (symbol)
-      operator: (_space)
-      right: (binary_expression
-        left: (float_literal)
-        operator: (_space)
-        right: (float_literal)))))
-
-==================
-(69) x..2 [auto_generated_operators]
-==================
-x..2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (symbol)
-      right: (integer_literal))))

@@ -7,13 +7,11 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 cd "$PROJECT_ROOT" || exit 1
 
-M2 --script test/test_generator/generate_test.m2
+M2 --script test/test_generator/generate_tests.m2
 
 if [ $? -eq 0 ]; then
     :
 else
-    echo "Error: Macaulay2 script failed."
+    echo "Error: generated corpus refresh failed."
     exit 1
 fi
-
-

@@ -1,89 +1,93 @@
 ==================
-(1) s_2 = 44 [auto_generated_assignments]
+(1) s_2 = 44 [auto assignments]
 ==================
 s_2 = 44
 ---
+
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
         right: (integer_literal))
       right: (integer_literal))))
 
+
 ==================
-(2) x#3 = "foo" [auto_generated_assignments]
+(2) x#3 = "foo" [auto assignments]
 ==================
 x#3 = "foo"
 ---
+
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
         right: (integer_literal))
       right: (string_literal))))
 
+
 ==================
-(3) x.y = z [auto_generated_assignments]
+(3) x.y = z [auto assignments]
 ==================
 x.y = z
 ---
+
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
         right: (symbol))
       right: (symbol))))
 
+
 ==================
-(4) String * String = peek [auto_generated_assignments]
+(4) String * String = peek [auto assignments]
 ==================
 String * String = peek
 ---
+
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
         right: (symbol))
       right: (symbol))))
 
+
 ==================
-(5) - String = peek [auto_generated_assignments]
+(5) - String = peek [auto assignments]
 ==================
 - String = peek
 ---
+
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (prefix_expression
         operand: (symbol))
       right: (symbol))))
 
-==================
-(6) String ~ = peek [auto_generated_assignments]
-==================
-String ~ = peek
----
-(source_file
-  (cell
-    (assignment_expression
-      left: (postfix_expression
-        operand: (symbol))
-      right: (symbol))))
 
 ==================
-(7) s_2 := 44 [auto_generated_assignments]
+(6) String ~ = peek [auto assignments]
+:error
+==================
+String ~ = peek
+
+==================
+(7) s_2 := 44 [auto assignments]
 ==================
 s_2 := 44
 ---
+
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
         right: (integer_literal))
       right: (integer_literal))))
-

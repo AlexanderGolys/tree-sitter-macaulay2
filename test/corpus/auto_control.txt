@@ -1,5 +1,5 @@
 ==================
-(1) if x==4 then x=5 [auto_generated_control]
+(1) if x==4 then x=5 [auto control]
 ==================
 if x==4 then x=5
 ---
@@ -10,12 +10,13 @@ if x==4 then x=5
       condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      then: (assignment_expression
+      then: (binary_expression
         left: (symbol)
         right: (integer_literal)))))
 
+
 ==================
-(2) if a > 0 then b else c [auto_generated_control]
+(2) if a > 0 then b else c [auto control]
 ==================
 if a > 0 then b else c
 ---
@@ -29,8 +30,9 @@ if a > 0 then b else c
       then: (symbol)
       else: (symbol))))
 
+
 ==================
-(3) for i from 0 to 4 do doSomething i [auto_generated_control]
+(3) for i from 0 to 4 do doSomething i [auto control]
 ==================
 for i from 0 to 4 do doSomething i
 ---
@@ -46,11 +48,11 @@ for i from 0 to 4 do doSomething i
       (do_clause
         (binary_expression
           left: (symbol)
-          operator: (_space)
           right: (symbol))))))
 
+
 ==================
-(4) for i in 1..5 when i>2 do print i [auto_generated_control]
+(4) for i in 1..5 when i>2 do print i [auto control]
 ==================
 for i in 1..5 when i>2 do print i
 ---
@@ -70,11 +72,11 @@ for i in 1..5 when i>2 do print i
       (do_clause
         (binary_expression
           left: (symbol)
-          operator: (_space)
           right: (symbol))))))
 
+
 ==================
-(5) while x < 10 do x = x + 1 [auto_generated_control]
+(5) while x < 10 do x = x + 1 [auto control]
 ==================
 while x < 10 do x = x + 1
 ---
@@ -86,56 +88,61 @@ while x < 10 do x = x + 1
         left: (symbol)
         right: (integer_literal))
       (do_clause
-        (assignment_expression
+        (binary_expression
           left: (symbol)
           right: (binary_expression
             left: (symbol)
             right: (integer_literal)))))))
 
+
 ==================
-(6) break [auto_generated_control]
+(6) break [auto control]
 ==================
 break
 ---
 
 (source_file
   (cell
-    (break_statement)))
+    (control_statement)))
+
 
 ==================
-(7) continue [auto_generated_control]
+(7) continue [auto control]
 ==================
 continue
 ---
 
 (source_file
   (cell
-    (continue_statement)))
+    (control_statement)))
+
 
 ==================
-(8) continue x [auto_generated_control]
+(8) continue x [auto control]
 ==================
 continue x
 ---
 
 (source_file
   (cell
-    (continue_statement
+    (control_statement
       (symbol))))
 
+
 ==================
-(9) return x [auto_generated_control]
+(9) return x [auto control]
 ==================
 return x
 ---
 
 (source_file
   (cell
-    (return_statement
+    (control_statement
       (symbol))))
 
+
 ==================
-(10) try a then b else c [auto_generated_control]
+(10) try a then b else c [auto control]
 ==================
 try a then b else c
 ---
@@ -147,8 +154,9 @@ try a then b else c
       consequence: (symbol)
       alternative: (symbol))))
 
+
 ==================
-(11) if a then if b then x else y [auto_generated_control]
+(11) if a then if b then x else y [auto control]
 ==================
 if a then if b then x else y
 ---
@@ -162,8 +170,9 @@ if a then if b then x else y
         then: (symbol)
         else: (symbol)))))
 
+
 ==================
-(12) if a then x else if b then y else z [auto_generated_control]
+(12) if a then x else if b then y else z [auto control]
 ==================
 if a then x else if b then y else z
 ---
@@ -178,8 +187,9 @@ if a then x else if b then y else z
         then: (symbol)
         else: (symbol)))))
 
+
 ==================
-(13) while a do if b then break [auto_generated_control]
+(13) while a do if b then break [auto control]
 ==================
 while a do if b then break
 ---
@@ -191,10 +201,11 @@ while a do if b then break
       (do_clause
         (if_statement
           condition: (symbol)
-          then: (break_statement))))))
+          then: (control_statement))))))
+
 
 ==================
-(14) for i in L do if i > 0 then return i else continue [auto_generated_control]
+(14) for i in L do if i > 0 then return i else continue [auto control]
 ==================
 for i in L do if i > 0 then return i else continue
 ---
@@ -210,12 +221,13 @@ for i in L do if i > 0 then return i else continue
           condition: (binary_expression
             left: (symbol)
             right: (integer_literal))
-          then: (return_statement
+          then: (control_statement
             (symbol))
-          else: (continue_statement))))))
+          else: (control_statement))))))
+
 
 ==================
-(15) for i in a list for j in b do print x [auto_generated_control]
+(15) for i in a list for j in b do print x [auto control]
 ==================
 for i in a list for j in b do print x
 ---
@@ -234,11 +246,11 @@ for i in a list for j in b do print x
           (do_clause
             (binary_expression
               left: (symbol)
-              operator: (_space)
               right: (symbol))))))))
 
+
 ==================
-(16) if try x then y else z then 1 [auto_generated_control]
+(16) if try x then y else z then 1 [auto control]
 ==================
 if try x then y else z then 1
 ---
@@ -252,19 +264,21 @@ if try x then y else z then 1
         alternative: (symbol))
       then: (integer_literal))))
 
+
 ==================
-(17) catch x [auto_generated_control]
+(17) catch x [auto control]
 ==================
 catch x
 ---
 
 (source_file
   (cell
-    (catch_statement
+    (control_statement
       (symbol))))
 
+
 ==================
-(18) for i in L list for j in L list j do print 2 [auto_generated_control]
+(18) for i in L list for j in L list j do print 2 [auto control]
 ==================
 for i in L list for j in L list j do print 2
 ---
@@ -285,11 +299,11 @@ for i in L list for j in L list j do print 2
           (do_clause
             (binary_expression
               left: (symbol)
-              operator: (_space)
               right: (integer_literal))))))))
 
+
 ==================
-(19) if if 1 then 2 then 3 else 5 [auto_generated_control]
+(19) if if 1 then 2 then 3 else 5 [auto control]
 ==================
 if if 1 then 2 then 3 else 5
 ---
@@ -303,8 +317,9 @@ if if 1 then 2 then 3 else 5
       then: (integer_literal)
       else: (integer_literal))))
 
+
 ==================
-(20) if 1 then if 2 then 3 else 4 [auto_generated_control]
+(20) if 1 then if 2 then 3 else 4 [auto control]
 ==================
 if 1 then if 2 then 3 else 4
 ---
@@ -318,8 +333,9 @@ if 1 then if 2 then 3 else 4
         then: (integer_literal)
         else: (integer_literal)))))
 
+
 ==================
-(21) while for i in L list 1 do 2 do 3 [auto_generated_control]
+(21) while for i in L list 1 do 2 do 3 [auto control]
 ==================
 while for i in L list 1 do 2 do 3
 ---

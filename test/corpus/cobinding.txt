@@ -10,7 +10,7 @@ if x==4 then x=5
       condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      then: (assignment_expression
+      then: (binary_expression
         left: (symbol)
         right: (integer_literal)))))
 
@@ -70,7 +70,6 @@ for i in 1..5 when i>2 do print i
       (do_clause
         (binary_expression
           left: (symbol)
-          operator: (_space)
           right: (symbol))))))
 
 ==================
@@ -90,7 +89,6 @@ for j from 0 to 4 do doSomething j
       (do_clause
         (binary_expression
           left: (symbol)
-          operator: (_space)
           right: (symbol))))))
 
 ==================
@@ -110,7 +108,7 @@ while x < 10 when x > 1 do x = x + 1
           left: (symbol)
           right: (integer_literal)))
       (do_clause
-        (assignment_expression
+        (binary_expression
           left: (symbol)
           right: (binary_expression
             left: (symbol)
@@ -124,7 +122,7 @@ break
 
 (source_file
   (cell
-    (break_statement)))
+    (control_statement)))
 
 ==================
 (8) continue
@@ -134,7 +132,7 @@ continue
 
 (source_file
   (cell
-    (continue_statement)))
+    (control_statement)))
 
 ==================
 (9) return
@@ -144,7 +142,7 @@ return x
 
 (source_file
   (cell
-    (return_statement
+    (control_statement
       (symbol))))
 
 ==================
@@ -155,7 +153,7 @@ breakpoint 42
 
 (source_file
   (cell
-    (breakpoint_statement
+    (control_statement
       (integer_literal))))
 
 ==================
@@ -166,7 +164,7 @@ catch expr
 
 (source_file
   (cell
-    (catch_statement
+    (control_statement
       (symbol))))
 
 ==================
@@ -177,7 +175,7 @@ shield something
 
 (source_file
   (cell
-    (shield_statement
+    (control_statement
       (symbol))))
 
 ==================
@@ -188,7 +186,7 @@ TEST a + b
 
 (source_file
   (cell
-    (test_statement
+    (control_statement
       (binary_expression
         left: (symbol)
         right: (symbol)))))
@@ -201,7 +199,7 @@ throw err
 
 (source_file
   (cell
-    (throw_statement
+    (control_statement
       (symbol))))
 
 ==================
@@ -240,6 +238,27 @@ try x else y
     (try_statement
       condition: (symbol)
       alternative: (symbol))))
+
+==================
+(19) try else after implicit calls
+==================
+extractName = x -> try toString symbol x else toString x
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (lambda_expression
+        parameters: (symbol)
+        body: (try_statement
+          condition: (binary_expression
+            left: (symbol)
+            right: (cobinding
+              symbol: (resolved_symbol)))
+          alternative: (binary_expression
+            left: (symbol)
+            right: (symbol)))))))
 
 ==================
 (19) try
@@ -287,7 +306,7 @@ trap 1/0
 
 (source_file
   (cell
-    (trap_statement
+    (control_statement
       (binary_expression
         left: (integer_literal)
         right: (integer_literal)))))

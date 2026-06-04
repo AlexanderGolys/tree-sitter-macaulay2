@@ -1,17 +1,16 @@
 ==================
-(1) ZZ ZZ := (x, y) -> x + y [auto_generated_installation]
+(1) ZZ ZZ := (x, y) -> x + y [auto installation]
 ==================
 ZZ ZZ := (x, y) -> x + y
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
-        operator: (_space)
         right: (symbol))
-      right: (function_expression
+      right: (lambda_expression
         parameters: (sequence
           (symbol)
           (symbol))
@@ -19,38 +18,39 @@ ZZ ZZ := (x, y) -> x + y
           left: (symbol)
           right: (symbol))))))
 
+
 ==================
-(2) f ZZ := x -> x^2 [auto_generated_installation]
+(2) f ZZ := x -> x^2 [auto installation]
 ==================
 f ZZ := x -> x^2
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
-        operator: (_space)
         right: (symbol))
-      right: (function_expression
+      right: (lambda_expression
         parameters: (symbol)
         body: (binary_expression
           left: (symbol)
           right: (integer_literal))))))
 
+
 ==================
-(3) ZZ _ ZZ := (x, y) -> x + y [auto_generated_installation]
+(3) ZZ _ ZZ := (x, y) -> x + y [auto installation]
 ==================
 ZZ _ ZZ := (x, y) -> x + y
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
         right: (symbol))
-      right: (function_expression
+      right: (lambda_expression
         parameters: (sequence
           (symbol)
           (symbol))
@@ -58,19 +58,20 @@ ZZ _ ZZ := (x, y) -> x + y
           left: (symbol)
           right: (symbol))))))
 
+
 ==================
-(4) ZZ + ZZ := (x, y) -> x + y [auto_generated_installation]
+(4) ZZ + ZZ := (x, y) -> x + y [auto installation]
 ==================
 ZZ + ZZ := (x, y) -> x + y
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
         right: (symbol))
-      right: (function_expression
+      right: (lambda_expression
         parameters: (sequence
           (symbol)
           (symbol))
@@ -78,51 +79,53 @@ ZZ + ZZ := (x, y) -> x + y
           left: (symbol)
           right: (symbol))))))
 
+
 ==================
-(5) + ZZ := x -> x + 1 [auto_generated_installation]
+(5) + ZZ := x -> x + 1 [auto installation]
 ==================
 + ZZ := x -> x + 1
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (prefix_expression
         operand: (symbol))
-      right: (function_expression
+      right: (lambda_expression
         parameters: (symbol)
         body: (binary_expression
           left: (symbol)
           right: (integer_literal))))))
 
+
 ==================
-(6) ZZ ! := x -> x! [auto_generated_installation]
+(6) ZZ ! := x -> x! [auto installation]
 ==================
 ZZ ! := x -> x!
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (postfix_expression
         operand: (symbol))
-      right: (function_expression
+      right: (lambda_expression
         parameters: (symbol)
         body: (postfix_expression
           operand: (symbol))))))
 
+
 ==================
-(7) f(A, B, C, D) := f [auto_generated_installation]
+(7) f(A, B, C, D) := f [auto installation]
 ==================
 f(A, B, C, D) := f
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
-        operator: (_space)
         right: (sequence
           (symbol)
           (symbol)
@@ -130,19 +133,19 @@ f(A, B, C, D) := f
           (symbol)))
       right: (symbol))))
 
+
 ==================
-(8) ZZ ZZ := ZZ => f [auto_generated_installation]
+(8) ZZ ZZ := ZZ => f [auto installation]
 ==================
 ZZ ZZ := ZZ => f
 ---
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (binary_expression
         left: (symbol)
-        operator: (_space)
         right: (symbol))
-      right: (option_assignment
+      right: (binary_expression
         left: (symbol)
         right: (symbol)))))

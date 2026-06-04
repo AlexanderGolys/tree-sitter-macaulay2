@@ -1,5 +1,5 @@
 ==================
-(1) a'a [auto_generated_symbols]
+(1) a'a [auto symbols]
 ==================
 a'a
 ---
@@ -8,8 +8,9 @@ a'a
   (cell
     (symbol)))
 
+
 ==================
-(2) a''$'$ [auto_generated_symbols]
+(2) a''$'$ [auto symbols]
 ==================
 a''$'$
 ---
@@ -18,8 +19,9 @@ a''$'$
   (cell
     (symbol)))
 
+
 ==================
-(3) a$$ [auto_generated_symbols]
+(3) a$$ [auto symbols]
 ==================
 a$$
 ---
@@ -28,8 +30,9 @@ a$$
   (cell
     (symbol)))
 
+
 ==================
-(4) aa'$''q [auto_generated_symbols]
+(4) aa'$''q [auto symbols]
 ==================
 aa'$''q
 ---
@@ -38,8 +41,9 @@ aa'$''q
   (cell
     (symbol)))
 
+
 ==================
-(5) a$2 [auto_generated_symbols]
+(5) a$2 [auto symbols]
 ==================
 a$2
 ---
@@ -48,8 +52,9 @@ a$2
   (cell
     (symbol)))
 
+
 ==================
-(6) x'2'$2 [auto_generated_symbols]
+(6) x'2'$2 [auto symbols]
 ==================
 x'2'$2
 ---
@@ -58,8 +63,9 @@ x'2'$2
   (cell
     (symbol)))
 
+
 ==================
-(7) x$.2 [auto_generated_symbols]
+(7) x$.2 [auto symbols]
 ==================
 x$.2
 ---
@@ -68,5 +74,4 @@ x$.2
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (float_literal))))

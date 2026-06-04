@@ -1,115 +1,173 @@
 ==================
-(1) symbol x [auto_generated_local]
+(1) symbol x [auto cobinding]
 ==================
 symbol x
 ---
 
 (source_file
   (cell
-    (locality_operator
+    (cobinding
       symbol: (resolved_symbol))))
 
+
 ==================
-(2) symbol not [auto_generated_local]
+(2) local x [auto cobinding]
+==================
+local x
+---
+
+(source_file
+  (cell
+    (local_cobinding
+      symbol: (resolved_symbol))))
+
+
+==================
+(3) global x [auto cobinding]
+==================
+global x
+---
+
+(source_file
+  (cell
+    (global_cobinding
+      symbol: (resolved_symbol))))
+
+
+==================
+(4) threadLocal x [auto cobinding]
+==================
+threadLocal x
+---
+
+(source_file
+  (cell
+    (thread_cobinding
+      symbol: (resolved_symbol))))
+
+
+==================
+(5) threadVariable x [auto cobinding]
+==================
+threadVariable x
+---
+
+(source_file
+  (cell
+    (thread_cobinding
+      symbol: (resolved_symbol))))
+
+
+==================
+(6) symbol not [auto cobinding]
 ==================
 symbol not
 ---
 
 (source_file
   (cell
-    (locality_operator
+    (cobinding
       symbol: (resolved_symbol))))
 
+
 ==================
-(3) symbol symbol [auto_generated_local]
+(7) symbol symbol [auto cobinding]
 ==================
 symbol symbol
 ---
 
 (source_file
   (cell
-    (locality_operator
+    (cobinding
       symbol: (resolved_symbol))))
 
+
 ==================
-(4) symbol( [auto_generated_local]
+(8) symbol( [auto cobinding]
 ==================
 symbol(
 ---
 
 (source_file
   (cell
-    (locality_operator
+    (cobinding
       symbol: (resolved_symbol))))
 
+
 ==================
-(5) symbol(*) [auto_generated_local]
+(9) symbol(*) [auto cobinding]
 ==================
 symbol(*)
 ---
 
 (source_file
   (cell
-    (locality_operator
+    (cobinding
       symbol: (resolved_symbol))))
 
+
 ==================
-(6) symbol+ [auto_generated_local]
+(10) symbol+ [auto cobinding]
 ==================
 symbol+
 ---
 
 (source_file
   (cell
-    (locality_operator
+    (cobinding
       symbol: (resolved_symbol))))
 
+
 ==================
-(7) symbol, [auto_generated_local]
+(11) symbol, [auto cobinding]
 ==================
 symbol,
 ---
 
 (source_file
   (cell
-    (locality_operator
+    (cobinding
       symbol: (resolved_symbol))))
 
+
 ==================
-(8) symbol; [auto_generated_local]
+(12) symbol; [auto cobinding]
 ==================
 symbol;
 ---
 
 (source_file
   (cell
-    (locality_operator
+    (cobinding
       symbol: (resolved_symbol))))
 
+
 ==================
-(9) symbol. [auto_generated_local]
+(13) symbol. [auto cobinding]
 ==================
 symbol.
 ---
 
 (source_file
   (cell
-    (locality_operator
+    (cobinding
       symbol: (resolved_symbol))))
 
+
 ==================
-(10) symbol.. [auto_generated_local]
+(14) symbol.. [auto cobinding]
 ==================
 symbol..
 ---
 
 (source_file
   (cell
-    (locality_operator
+    (cobinding
       symbol: (resolved_symbol))))
 
+
 ==================
-(11) symbol..<<<<<2 [auto_generated_local]
+(15) symbol..<<<<<2 [auto cobinding]
 ==================
 symbol..<<<<<2
 ---
@@ -117,13 +175,14 @@ symbol..<<<<<2
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (prefix_expression
         operand: (integer_literal)))))
 
+
 ==================
-(12) symbol..<<<<2 [auto_generated_local]
+(16) symbol..<<<<2 [auto cobinding]
 ==================
 symbol..<<<<2
 ---
@@ -131,13 +190,14 @@ symbol..<<<<2
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (prefix_expression
         operand: (integer_literal)))))
 
+
 ==================
-(13) symbol..2 [auto_generated_local]
+(17) symbol..2 [auto cobinding]
 ==================
 symbol..2
 ---
@@ -145,13 +205,13 @@ symbol..2
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
-      operator: (_space)
       right: (integer_literal))))
 
+
 ==================
-(14) symbol...2 [auto_generated_local]
+(18) symbol...2 [auto cobinding]
 ==================
 symbol...2
 ---
@@ -159,13 +219,13 @@ symbol...2
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
-      operator: (_space)
       right: (float_literal))))
 
+
 ==================
-(15) symbol....2 [auto_generated_local]
+(19) symbol....2 [auto cobinding]
 ==================
 symbol....2
 ---
@@ -173,12 +233,13 @@ symbol....2
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (integer_literal))))
 
+
 ==================
-(16) symbol.....2 [auto_generated_local]
+(20) symbol.....2 [auto cobinding]
 ==================
 symbol.....2
 ---
@@ -186,12 +247,13 @@ symbol.....2
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (float_literal))))
 
+
 ==================
-(17) symbol symbol symbol symbol [auto_generated_local]
+(21) symbol symbol symbol symbol [auto cobinding]
 ==================
 symbol symbol symbol symbol
 ---
@@ -199,14 +261,102 @@ symbol symbol symbol symbol
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
-      operator: (_space)
-      right: (locality_operator
+      right: (cobinding
         symbol: (resolved_symbol)))))
 
+
 ==================
-(18) symbol ======<===x [auto_generated_local]
+(22) f symbol x [auto cobinding]
+==================
+f symbol x
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (cobinding
+        symbol: (resolved_symbol)))))
+
+
+==================
+(23) f symbol x y [auto cobinding]
+==================
+f symbol x y
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (cobinding
+          symbol: (resolved_symbol))
+        right: (symbol)))))
+
+
+==================
+(24) f g symbol x [auto cobinding]
+==================
+f g symbol x
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (cobinding
+          symbol: (resolved_symbol))))))
+
+
+==================
+(25) symbol x y [auto cobinding]
+==================
+symbol x y
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (symbol))))
+
+
+==================
+(26) symbol symbol x [auto cobinding]
+==================
+symbol symbol x
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (symbol))))
+
+
+==================
+(27) toString symbol x [auto cobinding]
+==================
+toString symbol x
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (cobinding
+        symbol: (resolved_symbol)))))
+
+
+==================
+(28) symbol ======<===x [auto cobinding]
 ==================
 symbol ======<===x
 ---
@@ -214,13 +364,14 @@ symbol ======<===x
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (prefix_expression
         operand: (symbol)))))
 
+
 ==================
-(19) symbol ===<===x [auto_generated_local]
+(29) symbol ===<===x [auto cobinding]
 ==================
 symbol ===<===x
 ---
@@ -228,12 +379,13 @@ symbol ===<===x
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (symbol))))
 
+
 ==================
-(20) symbol.x [auto_generated_local]
+(30) symbol.x [auto cobinding]
 ==================
 symbol.x
 ---
@@ -241,13 +393,13 @@ symbol.x
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
-      operator: (_space)
       right: (symbol))))
 
+
 ==================
-(21) symbol..x [auto_generated_local]
+(31) symbol..x [auto cobinding]
 ==================
 symbol..x
 ---
@@ -255,13 +407,13 @@ symbol..x
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
-      operator: (_space)
       right: (symbol))))
 
+
 ==================
-(22) symbol...x [auto_generated_local]
+(32) symbol...x [auto cobinding]
 ==================
 symbol...x
 ---
@@ -269,12 +421,13 @@ symbol...x
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (symbol))))
 
+
 ==================
-(23) symbol....x [auto_generated_local]
+(33) symbol....x [auto cobinding]
 ==================
 symbol....x
 ---
@@ -282,12 +435,13 @@ symbol....x
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (symbol))))
 
+
 ==================
-(24) symbol..<====y [auto_generated_local]
+(34) symbol..<====y [auto cobinding]
 ==================
 symbol..<====y
 ---
@@ -295,12 +449,13 @@ symbol..<====y
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (symbol))))
 
+
 ==================
-(25) symbol..<===y [auto_generated_local]
+(35) symbol..<===y [auto cobinding]
 ==================
 symbol..<===y
 ---
@@ -308,12 +463,13 @@ symbol..<===y
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (symbol))))
 
+
 ==================
-(26) symbol..<=y [auto_generated_local]
+(36) symbol..<=y [auto cobinding]
 ==================
 symbol..<=y
 ---
@@ -321,13 +477,13 @@ symbol..<=y
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
-      operator: (_space)
       right: (symbol))))
 
+
 ==================
-(27) symbol..<y [auto_generated_local]
+(37) symbol..<y [auto cobinding]
 ==================
 symbol..<y
 ---
@@ -335,13 +491,13 @@ symbol..<y
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
-      operator: (_space)
       right: (symbol))))
 
+
 ==================
-(28) symbol.<==y [auto_generated_local]
+(38) symbol.<==y [auto cobinding]
 ==================
 symbol.<==y
 ---
@@ -349,6 +505,6 @@ symbol.<==y
 (source_file
   (cell
     (binary_expression
-      left: (locality_operator
+      left: (cobinding
         symbol: (resolved_symbol))
       right: (symbol))))

@@ -6,7 +6,7 @@ a = b
 
 (source_file
   (cell
-    (assignment_expression
+    (binary_expression
       left: (symbol)
       right: (symbol))))
 
@@ -18,7 +18,7 @@ a -> b
 
 (source_file
   (cell
-    (function_expression
+    (lambda_expression
       parameters: (symbol)
       body: (symbol))))
 
@@ -30,7 +30,7 @@ a -> b
 
 (source_file
   (cell
-    (function_expression
+    (lambda_expression
       parameters: (sequence
         (symbol))
       body: (integer_literal))))
@@ -43,7 +43,7 @@ a -> b
 
 (source_file
   (cell
-    (function_expression
+    (lambda_expression
       parameters: (sequence
         (symbol)
         (symbol)
@@ -62,7 +62,7 @@ a -> b
 
 (source_file
   (cell
-    (function_expression
+    (lambda_expression
       parameters: (array
         (symbol))
       body: (symbol))))
@@ -75,7 +75,7 @@ a -> b
 
 (source_file
   (cell
-    (function_expression
+    (lambda_expression
       parameters: (angle_bar_list
         (symbol))
       body: (symbol))))

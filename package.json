@@ -1,6 +1,6 @@
 {
-  "name": "tree-sitter-macaulay2",
-  "version": "1.3.0",
+  "name": "@alexandergolys/tree-sitter-macaulay2",
+  "version": "2.0.0",
   "description": "Macaulay2 grammar for tree-sitter",
   "main": "bindings/node",
   "types": "bindings/node",
@@ -16,6 +16,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AlexanderGolys/tree-sitter-macaulay2.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "files": [
     "bindings",
@@ -47,6 +50,7 @@
   "scripts": {
     "install": "node-gyp-build",
     "generate": "tree-sitter generate",
+    "build:wasm": "tree-sitter build --wasm",
     "test": "tree-sitter test",
     "test:node": "node --test bindings/node/*_test.js",
     "check": "tree-sitter test",

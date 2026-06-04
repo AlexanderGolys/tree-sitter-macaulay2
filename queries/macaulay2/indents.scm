@@ -3,7 +3,7 @@
   (list)
   (array)
   (angle_bar_list)
-  (function_expression)
+  (lambda_expression)
   (if_statement)
   (for_statement)
   (while_statement)

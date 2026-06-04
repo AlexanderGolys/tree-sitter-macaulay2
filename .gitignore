@@ -59,6 +59,7 @@ debug_*.txt
 gen_output.txt
 compile_commands.json
 opencode.json
+nvim.log
 
 # Editor files
 *.code-workspace
@@ -67,4 +68,3 @@ opencode.json
 
 # Local notes
 M2_BUILD_NOTES.md
-pipeline.sh

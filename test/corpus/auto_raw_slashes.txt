@@ -215,7 +215,8 @@ auto_raw_15: n=2 esc=0 middle [strings]
 ==================
 auto_raw_16: n=14 esc=6 middle [strings]
 ==================
-///abc//////////////a///
+///abc//////////////
+a///
 ---
 
 (source_file
@@ -231,7 +232,7 @@ auto_raw_16: n=14 esc=6 middle [strings]
 ==================
 auto_raw_17: n=4 esc=1 middle [strings]
 ==================
-///x////xyz///
+///x"////xy"z///
 ---
 
 (source_file
@@ -291,25 +292,22 @@ auto_raw_20: n=11 esc=4 end [strings]
 ==================
 auto_raw_21: n=6 esc=2 middle [strings]
 ==================
-///abc//////world///
+///abc//"//"//world///
 ---
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape))))
+    (string_literal)))
 
 ==================
 auto_raw_22: n=9 esc=3 end [strings]
 ==================
-///test /////////
+///test //--///////
 ---
 
 (source_file
   (cell
     (string_literal
-      (raw_string_escape)
       (raw_string_escape)
       (raw_string_escape))))
 
@@ -332,13 +330,12 @@ auto_raw_23: n=15 esc=6 end [strings]
 ==================
 auto_raw_24: n=12 esc=5 middle [strings]
 ==================
-///x////////////a///
+///x//--//////--////a/////
 ---
 
 (source_file
   (cell
     (string_literal
-      (raw_string_escape)
       (raw_string_escape)
       (raw_string_escape)
       (raw_string_escape)
@@ -363,14 +360,12 @@ auto_raw_25: n=15 esc=6 end [strings]
 ==================
 auto_raw_26: n=19 esc=8 end [strings]
 ==================
-///test ///////////////////
+///test //-*//////////*-///////
 ---
 
 (source_file
   (cell
     (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
       (raw_string_escape)
       (raw_string_escape)
       (raw_string_escape)
@@ -1389,4 +1384,3 @@ auto_raw_99: n=9 esc=3 end [strings]
       (raw_string_escape)
       (raw_string_escape)
       (raw_string_escape))))
-

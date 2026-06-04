@@ -7,7 +7,7 @@ This repository contains the Tree-sitter grammar, generated parser sources, bind
 The main thing to know is that there are two testing workflows:
 
 1. **normal corpus testing**, which uses committed Tree-sitter corpus files and does not require Macaulay2;
-2. **generated corpus testing**, which regenerates some corpus tests from Macaulay2 parser/debug output and requires a working `M2` installation.
+2. **generated corpus testing**, which regenerates some corpus tests from Macaulay2's own `parse` CST and requires a working `M2` installation.
 
 Most contributors only need the first workflow.
 
@@ -73,9 +73,9 @@ CI:
 
 ## Generated tests
 
-Some corpus tests are generated from Macaulay2 parser/debug output.
+Some corpus tests are generated from Macaulay2's own `parse` CST.
 
-The generator exists because some Macaulay2 parse trees are tedious or error-prone to write by hand. For those cases, the generator asks Macaulay2 for parser/debug output and converts that output into Tree-sitter corpus format.
+The generator exists because some Macaulay2 parse trees are tedious or error-prone to write by hand. For those cases, the generator asks Macaulay2 for `parse` CST output and converts that output into Tree-sitter corpus format.
 
 Run the generator with:
 
@@ -119,7 +119,7 @@ You need Macaulay2 installed if:
 - you add a new generated test input;
 - you refresh generated tests;
 - you change the generated-test converter;
-- you want to compare a new expression against Macaulay2's own parser/debug output;
+- you want to compare a new expression against Macaulay2's own `parse` CST;
 - you are debugging the generator itself.
 
 Check that `M2` is available:
@@ -165,7 +165,7 @@ Commit the grammar change, generated parser files, and corpus test together.
 
 ## Adding a generated corpus test
 
-Use a generated test when the expected CST is difficult to reconstruct manually, or when it is useful to derive the expected tree from Macaulay2's own parser/debug output.
+Use a generated test when the expected CST is difficult to reconstruct manually, or when it is useful to derive the expected tree from Macaulay2's own `parse` CST.
 
 The usual process is:
 
@@ -191,11 +191,11 @@ Generated corpus files should be committed. Contributors and CI should be able t
 
 The generated-test converter does not cover every possible Macaulay2 expression shape.
 
-It translates Macaulay2 parser/debug output into Tree-sitter corpus format, but conversion logic only exists for the output shapes that have already been implemented.
+It translates Macaulay2 `parse` CST output into Tree-sitter corpus format, but conversion logic only exists for the output shapes that have already been implemented.
 
 If you add a new generated input and the converter fails or produces bad output, either:
 
-1. extend the converter so it understands the new disassembly/debug-output shape;
+1. extend the converter so it understands the new `parse` CST shape;
 2. simplify the test case to the relevant syntax feature;
 3. add the corpus test manually.
 

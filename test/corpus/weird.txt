@@ -8,7 +8,6 @@ f(3)^2
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (binary_expression
         left: (sequence
           (integer_literal))
@@ -39,7 +38,6 @@ x not + + x
   (cell
     (binary_expression
       left: (symbol)
-      operator: (_space)
       right: (prefix_expression
         operand: (prefix_expression
           operand: (prefix_expression
@@ -106,5 +104,4 @@ x_2.d
       left: (binary_expression
         left: (symbol)
         right: (float_literal))
-      operator: (_space)
       right: (symbol))))

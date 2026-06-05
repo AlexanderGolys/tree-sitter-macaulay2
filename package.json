@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-macaulay2",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Macaulay2 grammar for tree-sitter",
   "main": "bindings/node",
   "types": "bindings/node",
@@ -42,7 +42,7 @@
   "devDependencies": {
     "prebuildify": "^6.0.1",
     "tree-sitter": "^0.25.0",
-    "tree-sitter-cli": "^0.26.3"
+    "tree-sitter-cli": "^0.26.9"
   },
   "scripts": {
     "install": "node-gyp-build",

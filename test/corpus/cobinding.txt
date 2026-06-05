@@ -10,9 +10,10 @@ if x==4 then x=5
       condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      then: (binary_expression
-        left: (symbol)
-        right: (integer_literal)))))
+      (then_clause
+        (binary_expression
+          left: (symbol)
+          right: (integer_literal))))))
 
 ==================
 (2) if-then-else
@@ -26,8 +27,10 @@ if a > 0 then b else c
       condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      then: (symbol)
-      else: (symbol))))
+      (then_clause
+        (symbol))
+      (else_clause
+        (symbol)))))
 
 ==================
 (3) nested if-then-else
@@ -41,13 +44,17 @@ if x < 3 then if y < 2 then a else b else c
       condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      then: (if_statement
-        condition: (binary_expression
-          left: (symbol)
-          right: (integer_literal))
-        then: (symbol)
-        else: (symbol))
-      else: (symbol))))
+      (then_clause
+        (if_statement
+          condition: (binary_expression
+            left: (symbol)
+            right: (integer_literal))
+          (then_clause
+            (symbol))
+          (else_clause
+            (symbol))))
+      (else_clause
+        (symbol)))))
 
 ==================
 (4) for statement (with in, when, do)
@@ -237,9 +244,11 @@ try x then y else z
 (source_file
   (cell
     (try_statement
-      condition: (symbol)
-      consequence: (symbol)
-      alternative: (symbol))))
+      (symbol)
+      (then_clause
+        (symbol))
+      (else_clause
+        (symbol)))))
 
 ==================
 (18) try then
@@ -250,24 +259,26 @@ try x then y
 (source_file
   (cell
     (try_statement
-      condition: (symbol)
-      consequence: (symbol))))
+      (symbol)
+      (then_clause
+        (symbol)))))
 
 ==================
 (19) try else
-==================
+===================
 try x else y
 ---
 
 (source_file
   (cell
     (try_statement
-      condition: (symbol)
-      alternative: (symbol))))
+      (symbol)
+      (else_clause
+        (symbol)))))
 
 ==================
 (20) try else after implicit calls
-==================
+===================
 extractName = x -> try toString symbol x else toString x
 ---
 
@@ -278,24 +289,25 @@ extractName = x -> try toString symbol x else toString x
       right: (lambda_expression
         parameters: (symbol)
         body: (try_statement
-          condition: (binary_expression
+          (binary_expression
             left: (symbol)
             right: (cobinding
               symbol: (resolved_symbol)))
-          alternative: (binary_expression
-            left: (symbol)
-            right: (symbol)))))))
+          (else_clause
+            (binary_expression
+              left: (symbol)
+              right: (symbol))))))))
 
 ==================
 (21) try
-==================
-try x 
+===================
+try x
 ---
 
 (source_file
   (cell
     (try_statement
-      condition: (symbol))))
+      (symbol))))
 
 ==================
 (22) try then except
@@ -306,10 +318,13 @@ try x then y except err do err
 (source_file
   (cell
     (try_statement
-      condition: (symbol)
-      consequence: (symbol)
-      err: (symbol)
-      alternative: (symbol))))
+      (symbol)
+      (then_clause
+        (symbol))
+      (except_clause
+        (symbol))
+      (do_clause
+        (symbol)))))
 
 ==================
 (23) try except
@@ -320,9 +335,11 @@ try x except err do err
 (source_file
   (cell
     (try_statement
-      condition: (symbol)
-      err: (symbol)
-      alternative: (symbol))))
+      (symbol)
+      (except_clause
+        (symbol))
+      (do_clause
+        (symbol)))))
 
 ==================
 (24) trap

@@ -2563,6 +2563,40 @@
         ]
       }
     },
+    "then_clause": {
+      "type": "PREC_LEFT",
+      "value": 12,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "then"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "expression"
+          }
+        ]
+      }
+    },
+    "else_clause": {
+      "type": "PREC_LEFT",
+      "value": 12,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "else"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "expression"
+          }
+        ]
+      }
+    },
     "_loop_body": {
       "type": "PREC_RIGHT",
       "value": 0,
@@ -2616,36 +2650,15 @@
             }
           },
           {
-            "type": "STRING",
-            "value": "then"
-          },
-          {
-            "type": "FIELD",
-            "name": "then",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
+            "type": "SYMBOL",
+            "name": "then_clause"
           },
           {
             "type": "CHOICE",
             "members": [
               {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "else"
-                  },
-                  {
-                    "type": "FIELD",
-                    "name": "else",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "expression"
-                    }
-                  }
-                ]
+                "type": "SYMBOL",
+                "name": "else_clause"
               },
               {
                 "type": "BLANK"
@@ -3063,56 +3076,22 @@
         ]
       }
     },
-    "_try_alternative": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "else"
-            },
-            {
-              "type": "FIELD",
-              "name": "alternative",
-              "content": {
-                "type": "SYMBOL",
-                "name": "expression"
-              }
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "except"
-            },
-            {
-              "type": "FIELD",
-              "name": "err",
-              "content": {
-                "type": "SYMBOL",
-                "name": "symbol"
-              }
-            },
-            {
-              "type": "STRING",
-              "value": "do"
-            },
-            {
-              "type": "FIELD",
-              "name": "alternative",
-              "content": {
-                "type": "SYMBOL",
-                "name": "expression"
-              }
-            }
-          ]
-        }
-      ]
+    "except_clause": {
+      "type": "PREC_LEFT",
+      "value": 12,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "except"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "symbol"
+          }
+        ]
+      }
     },
     "try_statement": {
       "type": "PREC_RIGHT",
@@ -3125,32 +3104,15 @@
             "value": "try"
           },
           {
-            "type": "FIELD",
-            "name": "condition",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
+            "type": "SYMBOL",
+            "name": "expression"
           },
           {
             "type": "CHOICE",
             "members": [
               {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "then"
-                  },
-                  {
-                    "type": "FIELD",
-                    "name": "consequence",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "expression"
-                    }
-                  }
-                ]
+                "type": "SYMBOL",
+                "name": "then_clause"
               },
               {
                 "type": "BLANK"
@@ -3161,8 +3123,26 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "_try_alternative"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "except_clause"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "do_clause"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "else_clause"
+                  }
+                ]
               },
               {
                 "type": "BLANK"

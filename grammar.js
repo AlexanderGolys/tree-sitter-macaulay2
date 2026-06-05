@@ -1,6 +1,6 @@
 // @ts-nocheck
 const PREC = {
-  CONTROL_STATEMENT: 12,
+  CONTROL: 12,
   FOR_OR_NEW_STATEMENT: 16,
   ASSIGNMENT_OR_LAMBDA_EXPRESSION: 13,
   LOOP_CLAUSE: 16,
@@ -223,45 +223,13 @@ export default grammar({
 
   reserved: {
     keywords: _ => [
-      'and', 'break',
-      'breakpoint',
-      'catch',
-      'continue',
-      'do',
-      'elapsedTime',
-      'elapsedTiming',
-      'else',
-      'except',
-      'for',
-      'from',
-      'global',
-      'if',
-      'in',
-      'list',
-      'local',
-      'new',
-      'not',
-      'of',
-      'or',
-      'profile',
-      'return',
-      'shield',
-      'SPACE',
-      'step',
-      'symbol',
-      'TEST',
-      'then',
-      'threadLocal',
-      'threadVariable',
-      'throw',
-      'time',
-      'timing',
-      'to',
-      'trap',
-      'try',
-      'when',
-      'while',
-      'xor',
+      'and', 'break', 'breakpoint', 'catch', 'continue',
+      'do', 'elapsedTime', 'elapsedTiming', 'else', 'except',
+      'for', 'from', 'global', 'if', 'in', 'list', 'local',
+      'new', 'not', 'of', 'or', 'profile', 'return', 'shield',
+      'SPACE', 'step', 'symbol', 'TEST', 'then', 'threadLocal',
+      'threadVariable', 'throw', 'time', 'timing', 'to', 'trap',
+      'try', 'when', 'while', 'xor',
     ],
 
     cobinding_op: _ => [],
@@ -396,23 +364,27 @@ export default grammar({
 
     when_clause: $ => prec(PREC.LOOP_CLAUSE, seq('when', $.expression)),
 
-    list_clause: $ => prec(PREC.CONTROL_STATEMENT, seq('list', $.expression)),
+    list_clause: $ => prec(PREC.CONTROL, seq('list', $.expression)),
 
-    do_clause: $ => prec(PREC.CONTROL_STATEMENT, seq('do', $.expression)),
+    do_clause: $ => prec(PREC.CONTROL, seq('do', $.expression)),
 
     in_clause: $ => prec(PREC.LOOP_CLAUSE, seq('in', $.expression)),
+
+    then_clause: $ => prec.left(PREC.CONTROL, seq('then', $.expression)),
+
+    else_clause: $ => prec.left(PREC.CONTROL, seq('else', $.expression)),
+
 
     _loop_body: $ => prec.right(choice(seq($.list_clause, optional($.do_clause)), $.do_clause)),
 
     if_statement: $ =>
       prec.right(
-        PREC.CONTROL_STATEMENT,
+        PREC.CONTROL,
         seq(
           'if',
           field('condition', $.expression),
-          'then',
-          field('then', $.expression),
-          optional(seq('else', field('else', $.expression))),
+          $.then_clause,
+          optional($.else_clause),
         ),
       ),
 
@@ -422,16 +394,14 @@ export default grammar({
         seq(
           'for',
           field('variable', $.symbol),
-
           choice(seq(optional($.from_clause), optional($.to_clause)), $.in_clause),
-
           optional($.when_clause),
           $._loop_body,
         ),
       ),
 
     while_statement: $ =>
-      prec.right(PREC.CONTROL_STATEMENT, seq('while', $.expression, optional($.when_clause), $._loop_body)),
+      prec.right(PREC.CONTROL, seq('while', $.expression, optional($.when_clause), $._loop_body)),
 
     new_statement: $ =>
       prec.right(
@@ -441,7 +411,7 @@ export default grammar({
 
     debug_clause: $ =>
       prec.left(
-        PREC.CONTROL_STATEMENT,
+        PREC.CONTROL,
         choice(
           $.break_statement,
           $.continue_statement,
@@ -460,36 +430,36 @@ export default grammar({
         ),
       ),
 
-    break_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('break', optional($.expression))),
+    break_statement: $ => prec.left(PREC.CONTROL, seq('break', optional($.expression))),
 
-    continue_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('continue', optional($.expression))),
+    continue_statement: $ => prec.left(PREC.CONTROL, seq('continue', optional($.expression))),
 
-    return_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('return', optional($.expression))),
+    return_statement: $ => prec.left(PREC.CONTROL, seq('return', optional($.expression))),
 
-    catch_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('catch', $.expression)),
+    catch_statement: $ => prec.left(PREC.CONTROL, seq('catch', $.expression)),
 
-    step_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('step', optional($.expression))),
+    step_statement: $ => prec.left(PREC.CONTROL, seq('step', optional($.expression))),
 
-    throw_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('throw', $.expression)),
+    throw_statement: $ => prec.left(PREC.CONTROL, seq('throw', $.expression)),
 
-    trap_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('trap', $.expression)),
+    trap_statement: $ => prec.left(PREC.CONTROL, seq('trap', $.expression)),
 
-    _try_alternative: $ =>
-      choice(
-        seq('else', field('alternative', $.expression)),
-        seq('except', field('err', $.symbol), 'do', field('alternative', $.expression)),
-      ),
 
-    try_statement: $ =>
-      prec.right(
-        PREC.CONTROL_STATEMENT,
-        seq(
-          'try',
-          field('condition', $.expression),
-          optional(seq('then', field('consequence', $.expression))),
-          optional($._try_alternative),
-        ),
-      ),
+    except_clause: $ => prec.left(PREC.CONTROL, seq('except', $.symbol)),
+
+    try_statement: $ => prec.right(PREC.CONTROL,
+      seq(
+        'try',
+        $.expression,
+        optional($.then_clause),
+        optional(
+          choice(
+            seq($.except_clause, $.do_clause),
+            $.else_clause,
+          )
+        )
+      )
+    ),
 
     cobinding: $ => CobindingExpression($, 'symbol'),
 

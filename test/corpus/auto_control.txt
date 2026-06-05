@@ -10,9 +10,10 @@ if x==4 then x=5
       condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      then: (binary_expression
-        left: (symbol)
-        right: (integer_literal)))))
+      (then_clause
+        (binary_expression
+          left: (symbol)
+          right: (integer_literal))))))
 
 
 ==================
@@ -27,8 +28,10 @@ if a > 0 then b else c
       condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      then: (symbol)
-      else: (symbol))))
+      (then_clause
+        (symbol))
+      (else_clause
+        (symbol)))))
 
 
 ==================
@@ -154,9 +157,11 @@ try a then b else c
 (source_file
   (cell
     (try_statement
-      condition: (symbol)
-      consequence: (symbol)
-      alternative: (symbol))))
+      (symbol)
+      (then_clause
+        (symbol))
+      (else_clause
+        (symbol)))))
 
 
 ==================
@@ -169,10 +174,13 @@ if a then if b then x else y
   (cell
     (if_statement
       condition: (symbol)
-      then: (if_statement
-        condition: (symbol)
-        then: (symbol)
-        else: (symbol)))))
+      (then_clause
+        (if_statement
+          condition: (symbol)
+          (then_clause
+            (symbol))
+          (else_clause
+            (symbol)))))))
 
 
 ==================
@@ -185,11 +193,15 @@ if a then x else if b then y else z
   (cell
     (if_statement
       condition: (symbol)
-      then: (symbol)
-      else: (if_statement
-        condition: (symbol)
-        then: (symbol)
-        else: (symbol)))))
+      (then_clause
+        (symbol))
+      (else_clause
+        (if_statement
+          condition: (symbol)
+          (then_clause
+            (symbol))
+          (else_clause
+            (symbol)))))))
 
 
 ==================
@@ -205,8 +217,9 @@ while a do if b then break
       (do_clause
         (if_statement
           condition: (symbol)
-          then: (debug_clause
-            (break_statement)))))))
+          (then_clause
+            (debug_clause
+              (break_statement))))))))
 
 
 ==================
@@ -226,11 +239,13 @@ for i in L do if i > 0 then return i else continue
           condition: (binary_expression
             left: (symbol)
             right: (integer_literal))
-          then: (debug_clause
-            (return_statement
-              (symbol)))
-          else: (debug_clause
-            (continue_statement)))))))
+          (then_clause
+            (debug_clause
+              (return_statement
+                (symbol))))
+          (else_clause
+            (debug_clause
+              (continue_statement))))))))
 
 
 ==================
@@ -266,10 +281,13 @@ if try x then y else z then 1
   (cell
     (if_statement
       condition: (try_statement
-        condition: (symbol)
-        consequence: (symbol)
-        alternative: (symbol))
-      then: (integer_literal))))
+        (symbol)
+        (then_clause
+          (symbol))
+        (else_clause
+          (symbol)))
+      (then_clause
+        (integer_literal)))))
 
 
 ==================
@@ -344,9 +362,12 @@ if if 1 then 2 then 3 else 5
     (if_statement
       condition: (if_statement
         condition: (integer_literal)
-        then: (integer_literal))
-      then: (integer_literal)
-      else: (integer_literal))))
+        (then_clause
+          (integer_literal)))
+      (then_clause
+        (integer_literal))
+      (else_clause
+        (integer_literal)))))
 
 
 ==================
@@ -359,10 +380,13 @@ if 1 then if 2 then 3 else 4
   (cell
     (if_statement
       condition: (integer_literal)
-      then: (if_statement
-        condition: (integer_literal)
-        then: (integer_literal)
-        else: (integer_literal)))))
+      (then_clause
+        (if_statement
+          condition: (integer_literal)
+          (then_clause
+            (integer_literal))
+          (else_clause
+            (integer_literal)))))))
 
 
 ==================

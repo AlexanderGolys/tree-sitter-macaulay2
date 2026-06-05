@@ -151,9 +151,9 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
     else if name == "IfThen" or name == "IfThenElse" then (
         ifChildren := {
             tsChild("condition", tsConvertExpr expr#1),
-            tsChild("then", tsConvertExpr expr#2)
+            tsAnon tsNode("then_clause", {tsAnon tsConvertExpr expr#2})
         };
-        if name == "IfThenElse" then ifChildren = append(ifChildren, tsChild("else", tsConvertExpr expr#3));
+        if name == "IfThenElse" then ifChildren = append(ifChildren, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#3}));
         tsNode("if_statement", ifChildren)
     )
     else if name == "WhileDo" then tsNode("while_statement", {
@@ -213,12 +213,12 @@ tsConvertFor(List) := expr -> (
 
 tsConvertTry(List) := expr -> (
     name := tsTag expr;
-    children := {tsChild("condition", tsConvertExpr expr#1)};
-    if name == "TryThen" then children = append(children, tsChild("consequence", tsConvertExpr expr#2))
-    else if name == "TryElse" then children = append(children, tsChild("alternative", tsConvertExpr expr#2))
+    children := {tsAnon tsConvertExpr expr#1};
+    if name == "TryThen" then children = append(children, tsAnon tsNode("then_clause", {tsAnon tsConvertExpr expr#2}))
+    else if name == "TryElse" then children = append(children, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#2}))
     else if name == "TryThenElse" then (
-        children = append(children, tsChild("consequence", tsConvertExpr expr#2));
-        children = append(children, tsChild("alternative", tsConvertExpr expr#3));
+        children = append(children, tsAnon tsNode("then_clause", {tsAnon tsConvertExpr expr#2}));
+        children = append(children, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#3}));
     );
     tsNode("try_statement", children)
 )

@@ -439,35 +439,40 @@ export default grammar({
         seq('new', field('type', $.expression), optional($.of_clause), optional($.from_clause)),
       ),
 
-    control_statement: $ =>
+    debug_clause: $ =>
       prec.left(
         PREC.CONTROL_STATEMENT,
         choice(
-          seq(
-            field('operator', Choice('break', 'continue', 'return', 'breakpoint')),
-            optional($.expression),
-          ),
+          $.break_statement,
+          $.continue_statement,
+          $.return_statement,
+          $.catch_statement,
+          $.throw_statement,
+          $.trap_statement,
+          seq(field('operator', Choice('breakpoint')), optional($.expression)),
           seq(
             field(
               'operator',
-              Choice(
-                'catch',
-                'shield',
-                'TEST',
-                'step',
-                'throw',
-                'trap',
-                'time',
-                'timing',
-                'elapsedTime',
-                'elapsedTiming',
-                'profile',
-              ),
+              Choice('shield', 'TEST', 'time', 'timing', 'elapsedTime', 'elapsedTiming', 'profile'),
             ),
             $.expression,
           ),
         ),
       ),
+
+    break_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('break', optional($.expression))),
+
+    continue_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('continue', optional($.expression))),
+
+    return_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('return', optional($.expression))),
+
+    catch_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('catch', $.expression)),
+
+    step_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('step', optional($.expression))),
+
+    throw_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('throw', $.expression)),
+
+    trap_statement: $ => prec.left(PREC.CONTROL_STATEMENT, seq('trap', $.expression)),
 
     _try_alternative: $ =>
       choice(
@@ -525,7 +530,8 @@ export default grammar({
         $.if_statement,
         $.for_statement,
         $.while_statement,
-        $.control_statement,
+        $.step_statement,
+        $.debug_clause,
         $.try_statement,
         $.cobinding,
         $.local_cobinding,

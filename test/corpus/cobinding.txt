@@ -122,7 +122,8 @@ break
 
 (source_file
   (cell
-    (control_statement)))
+    (debug_clause
+      (break_statement))))
 
 ==================
 (8) continue
@@ -132,7 +133,8 @@ continue
 
 (source_file
   (cell
-    (control_statement)))
+    (debug_clause
+      (continue_statement))))
 
 ==================
 (9) return
@@ -142,8 +144,9 @@ return x
 
 (source_file
   (cell
-    (control_statement
-      (symbol))))
+    (debug_clause
+      (return_statement
+        (symbol)))))
 
 ==================
 (10) breakpoint
@@ -153,7 +156,7 @@ breakpoint 42
 
 (source_file
   (cell
-    (control_statement
+    (debug_clause
       (integer_literal))))
 
 ==================
@@ -164,8 +167,9 @@ catch expr
 
 (source_file
   (cell
-    (control_statement
-      (symbol))))
+    (debug_clause
+      (catch_statement
+        (symbol)))))
 
 ==================
 (12) shield
@@ -175,7 +179,7 @@ shield something
 
 (source_file
   (cell
-    (control_statement
+    (debug_clause
       (symbol))))
 
 ==================
@@ -186,24 +190,46 @@ TEST a + b
 
 (source_file
   (cell
-    (control_statement
+    (debug_clause
       (binary_expression
         left: (symbol)
         right: (symbol)))))
 
 ==================
-(15) throw
+(14) step
+==================
+step
+---
+
+(source_file
+  (cell
+    (step_statement)))
+
+==================
+(15) step with arg
+==================
+step x
+---
+
+(source_file
+  (cell
+    (step_statement
+      (symbol))))
+
+==================
+(16) throw
 ==================
 throw err
 ---
 
 (source_file
   (cell
-    (control_statement
-      (symbol))))
+    (debug_clause
+      (throw_statement
+        (symbol)))))
 
 ==================
-(16) try then else
+(17) try then else
 ==================
 try x then y else z
 ---
@@ -216,7 +242,7 @@ try x then y else z
       alternative: (symbol))))
 
 ==================
-(17) try then
+(18) try then
 ==================
 try x then y
 ---
@@ -228,7 +254,7 @@ try x then y
       consequence: (symbol))))
 
 ==================
-(18) try else
+(19) try else
 ==================
 try x else y
 ---
@@ -240,7 +266,7 @@ try x else y
       alternative: (symbol))))
 
 ==================
-(19) try else after implicit calls
+(20) try else after implicit calls
 ==================
 extractName = x -> try toString symbol x else toString x
 ---
@@ -261,7 +287,7 @@ extractName = x -> try toString symbol x else toString x
             right: (symbol)))))))
 
 ==================
-(19) try
+(21) try
 ==================
 try x 
 ---
@@ -272,7 +298,7 @@ try x
       condition: (symbol))))
 
 ==================
-(20) try then except
+(22) try then except
 ==================
 try x then y except err do err
 ---
@@ -286,7 +312,7 @@ try x then y except err do err
       alternative: (symbol))))
 
 ==================
-(21) try except
+(23) try except
 ==================
 try x except err do err
 ---
@@ -299,14 +325,15 @@ try x except err do err
       alternative: (symbol))))
 
 ==================
-(22) trap
+(24) trap
 ==================
 trap 1/0
 ---
 
 (source_file
   (cell
-    (control_statement
-      (binary_expression
-        left: (integer_literal)
-        right: (integer_literal)))))
+    (debug_clause
+      (trap_statement
+        (binary_expression
+          left: (integer_literal)
+          right: (integer_literal))))))

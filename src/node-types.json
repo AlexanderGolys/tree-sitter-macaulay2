@@ -20,7 +20,7 @@
         "named": true
       },
       {
-        "type": "control_statement",
+        "type": "debug_clause",
         "named": true
       },
       {
@@ -69,6 +69,10 @@
       },
       {
         "type": "sequence",
+        "named": true
+      },
+      {
+        "type": "step_statement",
         "named": true
       },
       {
@@ -548,6 +552,36 @@
     }
   },
   {
+    "type": "break_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "catch_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "cell",
     "named": true,
     "fields": {},
@@ -589,31 +623,34 @@
     }
   },
   {
-    "type": "control_statement",
+    "type": "continue_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "debug_clause",
     "named": true,
     "fields": {
       "operator": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "TEST",
             "named": false
           },
           {
-            "type": "break",
-            "named": false
-          },
-          {
             "type": "breakpoint",
-            "named": false
-          },
-          {
-            "type": "catch",
-            "named": false
-          },
-          {
-            "type": "continue",
             "named": false
           },
           {
@@ -629,19 +666,7 @@
             "named": false
           },
           {
-            "type": "return",
-            "named": false
-          },
-          {
             "type": "shield",
-            "named": false
-          },
-          {
-            "type": "step",
-            "named": false
-          },
-          {
-            "type": "throw",
             "named": false
           },
           {
@@ -650,10 +675,6 @@
           },
           {
             "type": "timing",
-            "named": false
-          },
-          {
-            "type": "trap",
             "named": false
           }
         ]
@@ -664,7 +685,31 @@
       "required": false,
       "types": [
         {
+          "type": "break_statement",
+          "named": true
+        },
+        {
+          "type": "catch_statement",
+          "named": true
+        },
+        {
+          "type": "continue_statement",
+          "named": true
+        },
+        {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "return_statement",
+          "named": true
+        },
+        {
+          "type": "throw_statement",
+          "named": true
+        },
+        {
+          "type": "trap_statement",
           "named": true
         }
       ]
@@ -1117,6 +1162,21 @@
     }
   },
   {
+    "type": "return_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "sequence",
     "named": true,
     "fields": {},
@@ -1142,6 +1202,21 @@
       "types": [
         {
           "type": "cell",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "step_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
           "named": true
         }
       ]
@@ -1197,7 +1272,37 @@
     }
   },
   {
+    "type": "throw_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "to_clause",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "trap_statement",
     "named": true,
     "fields": {},
     "children": {

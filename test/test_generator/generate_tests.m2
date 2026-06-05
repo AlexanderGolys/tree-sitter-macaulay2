@@ -81,10 +81,18 @@ tsTokenValue = expr -> (
     toString expr#1
 )
 
-controlUnary = set {
+debugUnary = set {
     "break", "continue", "return", "breakpoint", "throw", "shield",
-    "TEST", "step", "trap", "time", "timing", "elapsedTime",
+    "TEST", "trap", "time", "timing", "elapsedTime",
     "elapsedTiming", "profile"
+}
+
+debugNamedUnary = new MutableHashTable from {
+    "break" => "break_statement",
+    "continue" => "continue_statement",
+    "return" => "return_statement",
+    "throw" => "throw_statement",
+    "trap" => "trap_statement"
 }
 
 tsConvertExpr = method()
@@ -119,7 +127,12 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
     else if name == "Unary" then (
         op := tsTokenValue expr#1;
         children := if tsIsDummy expr#2 then {} else {tsChild("operand", tsConvertExpr expr#2)};
-        if member(op, controlUnary) then tsNode("control_statement", apply(children, c -> tsAnon c#1))
+        if op == "step" then tsNode("step_statement", apply(children, c -> tsAnon c#1))
+        else if member(op, debugUnary) then (
+            if debugNamedUnary#?op
+            then tsNode("debug_clause", {tsAnon tsNode(debugNamedUnary#op, apply(children, c -> tsAnon c#1))})
+            else tsNode("debug_clause", apply(children, c -> tsAnon c#1))
+        )
         else tsNode("prefix_expression", children)
     )
     else if name == "Postfix" then tsNode("postfix_expression", {
@@ -149,7 +162,7 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
     })
     else if name == "For" then tsConvertFor expr
     else if name == "TryThen" or name == "TryElse" or name == "TryThenElse" then tsConvertTry expr
-    else if name == "Catch" then tsNode("control_statement", {tsAnon tsConvertExpr expr#1})
+    else if name == "Catch" then tsNode("debug_clause", {tsAnon tsNode("catch_statement", {tsAnon tsConvertExpr expr#1})})
     else if name == "New" then (
         newChildren := {tsChild("type", tsConvertExpr expr#1)};
         if not tsIsDummy expr#2 then newChildren = append(newChildren, tsAnon tsNode("of_clause", {tsAnon tsConvertExpr expr#2}));

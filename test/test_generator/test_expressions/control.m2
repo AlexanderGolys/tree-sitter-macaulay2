@@ -15,6 +15,8 @@ for i in L do if i > 0 then return i else continue
 for i in a list for j in b do print x
 if try x then y else z then 1
 catch x
+step
+step x
 for i in L list for j in L list j do print 2
 if if 1 then 2 then 3 else 5
 if 1 then if 2 then 3 else 4

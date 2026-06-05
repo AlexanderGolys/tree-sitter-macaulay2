@@ -103,7 +103,8 @@ break
 
 (source_file
   (cell
-    (control_statement)))
+    (debug_clause
+      (break_statement))))
 
 
 ==================
@@ -114,7 +115,8 @@ continue
 
 (source_file
   (cell
-    (control_statement)))
+    (debug_clause
+      (continue_statement))))
 
 
 ==================
@@ -125,8 +127,9 @@ continue x
 
 (source_file
   (cell
-    (control_statement
-      (symbol))))
+    (debug_clause
+      (continue_statement
+        (symbol)))))
 
 
 ==================
@@ -137,8 +140,9 @@ return x
 
 (source_file
   (cell
-    (control_statement
-      (symbol))))
+    (debug_clause
+      (return_statement
+        (symbol)))))
 
 
 ==================
@@ -201,7 +205,8 @@ while a do if b then break
       (do_clause
         (if_statement
           condition: (symbol)
-          then: (control_statement))))))
+          then: (debug_clause
+            (break_statement)))))))
 
 
 ==================
@@ -221,9 +226,11 @@ for i in L do if i > 0 then return i else continue
           condition: (binary_expression
             left: (symbol)
             right: (integer_literal))
-          then: (control_statement
-            (symbol))
-          else: (control_statement))))))
+          then: (debug_clause
+            (return_statement
+              (symbol)))
+          else: (debug_clause
+            (continue_statement)))))))
 
 
 ==================
@@ -273,12 +280,36 @@ catch x
 
 (source_file
   (cell
-    (control_statement
+    (debug_clause
+      (catch_statement
+        (symbol)))))
+
+
+==================
+(18) step [auto control]
+==================
+step
+---
+
+(source_file
+  (cell
+    (step_statement)))
+
+
+==================
+(19) step x [auto control]
+==================
+step x
+---
+
+(source_file
+  (cell
+    (step_statement
       (symbol))))
 
 
 ==================
-(18) for i in L list for j in L list j do print 2 [auto control]
+(20) for i in L list for j in L list j do print 2 [auto control]
 ==================
 for i in L list for j in L list j do print 2
 ---
@@ -303,7 +334,7 @@ for i in L list for j in L list j do print 2
 
 
 ==================
-(19) if if 1 then 2 then 3 else 5 [auto control]
+(21) if if 1 then 2 then 3 else 5 [auto control]
 ==================
 if if 1 then 2 then 3 else 5
 ---
@@ -319,7 +350,7 @@ if if 1 then 2 then 3 else 5
 
 
 ==================
-(20) if 1 then if 2 then 3 else 4 [auto control]
+(22) if 1 then if 2 then 3 else 4 [auto control]
 ==================
 if 1 then if 2 then 3 else 4
 ---
@@ -335,7 +366,7 @@ if 1 then if 2 then 3 else 4
 
 
 ==================
-(21) while for i in L list 1 do 2 do 3 [auto control]
+(23) while for i in L list 1 do 2 do 3 [auto control]
 ==================
 while for i in L list 1 do 2 do 3
 ---

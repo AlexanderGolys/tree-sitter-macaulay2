@@ -50,7 +50,8 @@
   ";"
 ] @punctuation.delimiter
 
-; Keywords
+
+
 [
   "if"
   "else"
@@ -152,11 +153,8 @@
 
 ; Members, options, and properties
 (binary_expression
-  operator: [
-    "."
-    ".?"
-  ]
-  right: (symbol) @variable.member)
+  operator: ["." ".?" "#" "#?" "_"]
+  right: (symbol) @property)
 
 (binary_expression
   operator: "_" @property
@@ -280,6 +278,10 @@
 
 ((symbol) @constant.builtin
   (#any-of? @constant.builtin "CatalanConstant" "EulerConstant" "ii" "pi" "null"))
+
+((symbol) @boolean
+  (#any-of? @boolean "true" "false"))
+
 
 ((symbol) @variable.builtin
   (#any-of? @variable.builtin

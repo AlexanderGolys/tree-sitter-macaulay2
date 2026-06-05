@@ -21,3 +21,4 @@ for i in L list for j in L list j do print 2
 if if 1 then 2 then 3 else 5
 if 1 then if 2 then 3 else 4
 while for i in L list 1 do 2 do 3
+p = x -> toString if instance(x, Package) then x else if package x =!= null then package x else Core

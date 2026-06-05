@@ -508,3 +508,61 @@ symbol.<==y
       left: (cobinding
         symbol: (resolved_symbol))
       right: (symbol))))
+
+
+==================
+(39) symbol s_1 [auto cobinding]
+==================
+symbol s_1
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (integer_literal))))
+
+
+==================
+(40) symbol s_1_1 [auto cobinding]
+==================
+symbol s_1_1
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (cobinding
+          symbol: (resolved_symbol))
+        right: (integer_literal))
+      right: (integer_literal))))
+
+
+==================
+(41) symbol s.a [auto cobinding]
+==================
+symbol s.a
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (symbol))))
+
+
+==================
+(42) symbol s_s [auto cobinding]
+==================
+symbol s_s
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (symbol))))

@@ -408,3 +408,40 @@ while for i in L list 1 do 2 do 3
           (integer_literal)))
       (do_clause
         (integer_literal)))))
+
+
+==================
+(24) p = x -> toString if instance(x, Package) then x else if package x =!= null then package x else Core [auto control]
+==================
+p = x -> toString if instance(x, Package) then x else if package x =!= null then package x else Core
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (lambda_expression
+        parameters: (symbol)
+        body: (binary_expression
+          left: (symbol)
+          right: (if_statement
+            condition: (binary_expression
+              left: (symbol)
+              right: (sequence
+                (symbol)
+                (symbol)))
+            (then_clause
+              (symbol))
+            (else_clause
+              (if_statement
+                condition: (binary_expression
+                  left: (binary_expression
+                    left: (symbol)
+                    right: (symbol))
+                  right: (symbol))
+                (then_clause
+                  (binary_expression
+                    left: (symbol)
+                    right: (symbol)))
+                (else_clause
+                  (symbol))))))))))

@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-macaulay2"
 description = "Macaulay2 grammar for the tree-sitter parsing library"
-version = "2.3.0"
+version = "2.3.1"
 keywords = ["incremental", "parsing", "macaulay2"]
 categories = ["parsing", "text-editors"]
 repository = "https://github.com/AlexanderGolys/tree-sitter-macaulay2"

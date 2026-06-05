@@ -120,14 +120,10 @@ static bool is_adjacency_blocking_keyword_ahead(TSLexer *lexer) {
     return false;
 
   static const char *const keywords[] = {
-    "if",      "then",     "else",    "from",
-    "to",      "when",     "do",      "in",
-    "of",      "list",     "for",     "while",
-    "and",     "or",       "xor",     "SPACE",
-    "break",   "continue", "return",  "try",
-    "catch",   "throw",    "time",    "timing",
-    "elapsedTime", "elapsedTiming", "profile", "shield",
-    "TEST",    "breakpoint", "except", "trap",
+    "then",    "else",    "from",     "to",
+    "when",     "do",      "in",      "of",
+    "list",     "and",     "or",       "xor",
+    "SPACE",    "except", 
   };
 
   for (size_t k = 0; k < sizeof(keywords) / sizeof(keywords[0]); k++) {

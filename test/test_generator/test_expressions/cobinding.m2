@@ -36,3 +36,8 @@ symbol..<===y
 symbol..<=y
 symbol..<y
 symbol.<==y
+symbol s_1
+symbol s_1_1
+symbol s.a
+symbol s_s
+

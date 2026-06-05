@@ -1,11 +1,11 @@
 // @ts-nocheck
 const PREC = {
   CONTROL: 12,
-  FOR_OR_NEW_STATEMENT: 16,
-  ASSIGNMENT_OR_LAMBDA_EXPRESSION: 13,
+  FOR_NEW: 16,
+  ASSIGNMENT: 13,
   LOOP_CLAUSE: 16,
-  BRACKET_EXPRESSION_LOW: 56,
-  BRACKET_EXPRESSION_HIGH: 62,
+  BRACKET_LOW: 56,
+  BRACKET_HIGH: 62,
   COBINDING: 74,
 };
 
@@ -19,14 +19,14 @@ const augmentedAssignmentOperators = [
 
 const assignmentOperators = [
   {
-    precedence: PREC.ASSIGNMENT_OR_LAMBDA_EXPRESSION,
+    precedence: PREC.ASSIGNMENT,
     assoc: prec.right,
     symbols: ['=', ':=', '<-', '>>', '=>', ...augmentedAssignmentOperators],
   },
 ];
 
 const rangeAssignmentOperators = {
-  precedence: PREC.ASSIGNMENT_OR_LAMBDA_EXPRESSION,
+  precedence: PREC.ASSIGNMENT,
   assoc: prec.right,
   symbols: [
     { token: '_range_eq', value: '..=' },
@@ -44,7 +44,7 @@ const rangeOperators = {
 };
 
 const lambdaOperator = {
-  precedence: PREC.ASSIGNMENT_OR_LAMBDA_EXPRESSION,
+  precedence: PREC.ASSIGNMENT,
   assoc: prec.right,
   symbol: '->',
 };
@@ -77,7 +77,7 @@ const binaryOperators = [
   { precedence: 27, assoc: prec.right, symbols: ['or', '??'] },
   { precedence: 29, assoc: prec.right, symbols: ['xor'] },
   { precedence: 31, assoc: prec.right, symbols: ['and'] },
-  { precedence: 35, assoc: prec.right, symbols: ['==', '!=', '===', '=!=', '<', '>', '<=', '>=', '?']},
+  { precedence: 35, assoc: prec.right, symbols: ['==', '!=', '===', '=!=', '<', '>', '<=', '>=', '?', '~']},
   { precedence: 38, assoc: prec.left, symbols: ['||'] },
   { precedence: 39, assoc: prec.right, symbols: [':'] },
   { precedence: 42, assoc: prec.left, symbols: ['|'] },
@@ -100,7 +100,7 @@ const prefixOperators = [
   { precedence: 26, symbols: ['<=='] },
   { precedence: 28, symbols: ['??'] },
   { precedence: 34, symbols: ['not'] },
-  { precedence: 36, symbols: ['<', '<=', '>', '>=', '?'] },
+  { precedence: 36, symbols: ['<', '<=', '>', '>=', '?', '~'] },
   { precedence: 50, symbols: ['+', '-'] },
   { precedence: 58, symbols: ['*'] },
   { precedence: 61, symbols: ['#'] },
@@ -108,7 +108,7 @@ const prefixOperators = [
 
 const postfixOperators = [
   { precedence: 64, symbols: ['(*)'] },
-  { precedence: 68, symbols: ['^*', '_*', '~', '^~', '_~'] },
+  { precedence: 68, symbols: ['^*', '_*', '^~', '_~'] },
   { precedence: 72, symbols: ['!', '^!', '_!'] },
 ];
 
@@ -299,14 +299,14 @@ export default grammar({
 
     string_literal: $ => choice($._std_string, $._raw_string),
 
-    array: $ => prec.left(PREC.BRACKET_EXPRESSION_LOW, seq('[', optional($._multi_expression), ']')),
+    array: $ => prec.left(PREC.BRACKET_LOW, seq('[', optional($._multi_expression), ']')),
 
-    sequence: $ => prec.left(PREC.BRACKET_EXPRESSION_HIGH, seq('(', optional($._multi_expression), ')')),
+    sequence: $ => prec.left(PREC.BRACKET_HIGH, seq('(', optional($._multi_expression), ')')),
 
-    list: $ => prec.left(PREC.BRACKET_EXPRESSION_HIGH, seq('{', optional($._multi_expression), '}')),
+    list: $ => prec.left(PREC.BRACKET_HIGH, seq('{', optional($._multi_expression), '}')),
 
     angle_bar_list: $ =>
-      prec.left(PREC.BRACKET_EXPRESSION_LOW, seq('<|', optional($._multi_expression), '|>')),
+      prec.left(PREC.BRACKET_LOW, seq('<|', optional($._multi_expression), '|>')),
 
     lambda_expression: $ =>
       lambdaOperator.assoc(
@@ -390,7 +390,7 @@ export default grammar({
 
     for_statement: $ =>
       prec.right(
-        PREC.FOR_OR_NEW_STATEMENT,
+        PREC.FOR_NEW,
         seq(
           'for',
           field('variable', $.symbol),
@@ -405,7 +405,7 @@ export default grammar({
 
     new_statement: $ =>
       prec.right(
-        PREC.FOR_OR_NEW_STATEMENT,
+        PREC.FOR_NEW,
         seq('new', field('type', $.expression), optional($.of_clause), optional($.from_clause)),
       ),
 

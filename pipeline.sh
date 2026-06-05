@@ -21,7 +21,6 @@ SKIP_GENERATE=false
 SKIP_WASM=false
 SKIP_TESTS=false
 SKIP_CARGO=false
-SKIP_NODE=false
 RUN_DRY_PUBLISH=false
 
 usage() {
@@ -33,10 +32,9 @@ Usage: $0 [FLAGS]
   -Sm, --skip-m2        Skip M2 test generation (step 1)
   -Sg, --skip-generate  Skip parser generation (step 2)
   -Sw, --skip-wasm      Skip Wasm generation (step 3)
-  -St, --skip-tests     Skip tree-sitter, Cargo, and Node tests (steps 4, 5, 7)
-  -Sc, --skip-cargo     Skip Cargo tests and Cargo publish dry-run (steps 5, 9)
-  -Sn, --skip-node      Skip Node native build, tests, and npm publish dry-run (steps 6, 7, 8)
-  -Dp, --dry-publish    Run npm/cargo publish dry-runs (steps 8, 9)
+  -St, --skip-tests     Skip tree-sitter, Cargo, and Node tests (steps 4, 5, 6)
+  -Sc, --skip-cargo     Skip Cargo tests and Cargo publish dry-run (steps 5, 8)
+  -Dp, --dry-publish    Run npm/cargo publish dry-runs (steps 7, 8)
   -h, --help            Show this help
 EOF
     exit 0
@@ -51,7 +49,6 @@ while [[ $# -gt 0 ]]; do
         -Sw|--skip-wasm)     SKIP_WASM=true ;;
         -St|--skip-tests)    SKIP_TESTS=true ;;
         -Sc|--skip-cargo)    SKIP_CARGO=true ;;
-        -Sn|--skip-node)     SKIP_NODE=true ;;
         -Dp|--dry-publish)   RUN_DRY_PUBLISH=true ;;
         -h|--help)           usage ;;
         *)                   bail "Unknown flag: $1" ;;
@@ -301,34 +298,12 @@ else
 fi
 
 # -------------------------------------------------------------------
-# Step 6 – Node native build
-# -------------------------------------------------------------------
-if $SKIP_NODE; then
-    skip_step 6 "Node native build" "--skip-node"
-else
-    step 6 "Node native build: "
-    NODE_BUILD_OUT=$(npx node-gyp rebuild 2>&1) || {
-        echo
-        echo "$NODE_BUILD_OUT"
-        fail_badge
-        exit 1
-    }
-    ok
-    print_highlighted_matches "$NODE_BUILD_OUT"
-    if $SHOW_TESTS; then
-        echo "$NODE_BUILD_OUT"
-    fi
-fi
-
-# -------------------------------------------------------------------
-# Step 7 – Node tests
+# Step 6 – Node tests
 # -------------------------------------------------------------------
 if $SKIP_TESTS; then
-    skip_step 7 "Node tests" "--skip-tests"
-elif $SKIP_NODE; then
-    skip_step 7 "Node tests" "--skip-node"
+    skip_step 6 "Node tests" "--skip-tests"
 else
-    step 7 "Node tests: "
+    step 6 "Node tests: "
     set +e
     NODE_OUT=$(npm run test:node 2>&1)
     NODE_STATUS=$?
@@ -352,14 +327,12 @@ else
 fi
 
 # -------------------------------------------------------------------
-# Step 8 – npm publish dry-run
+# Step 7 – npm publish dry-run
 # -------------------------------------------------------------------
-if $SKIP_NODE; then
-    skip_step 8 "npm publish dry-run" "--skip-node"
-elif ! $RUN_DRY_PUBLISH; then
-    skip_step 8 "npm publish dry-run" "--dry-publish not set"
+if ! $RUN_DRY_PUBLISH; then
+    skip_step 7 "npm publish dry-run" "--dry-publish not set"
 else
-    step 8 "npm publish dry-run: "
+    step 7 "npm publish dry-run: "
     NPM_OUT=$(npm publish --dry-run 2>&1) || {
         echo
         echo "    $NPM_OUT"
@@ -384,14 +357,14 @@ else
 fi
 
 # -------------------------------------------------------------------
-# Step 9 – Cargo publish dry-run
+# Step 8 – Cargo publish dry-run
 # -------------------------------------------------------------------
 if $SKIP_CARGO; then
-    skip_step 9 "Cargo publish dry run" "--skip-cargo"
+    skip_step 8 "Cargo publish dry run" "--skip-cargo"
 elif ! $RUN_DRY_PUBLISH; then
-    skip_step 9 "Cargo publish dry run" "--dry-publish not set"
+    skip_step 8 "Cargo publish dry run" "--dry-publish not set"
 else
-    step 9 "Cargo publish dry run"
+    step 8 "Cargo publish dry run"
     CARGO_DRY=$(cargo publish --dry-run --allow-dirty 2>&1) || {
         echo
         echo "$CARGO_DRY"

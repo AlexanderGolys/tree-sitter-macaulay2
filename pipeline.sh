@@ -166,6 +166,17 @@ parser_stat_from_line() {
 }
 
 # -------------------------------------------------------------------
+# Sync Cargo.lock with the (possibly just-bumped) Cargo.toml version. cargo
+# only rewrites the lockfile's version when it next runs, which otherwise
+# lands *after* a manual bump + 'git add .' and surfaces as a dirty file
+# during 'cargo publish'. Running it here keeps the lockfile staged-ready.
+# -------------------------------------------------------------------
+if ! $SKIP_CARGO; then
+    cargo generate-lockfile --offline >/dev/null 2>&1 \
+        || cargo generate-lockfile >/dev/null 2>&1 || true
+fi
+
+# -------------------------------------------------------------------
 # Step 1 – M2 tests
 # -------------------------------------------------------------------
 if $SKIP_M2; then

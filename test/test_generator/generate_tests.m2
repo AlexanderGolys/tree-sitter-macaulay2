@@ -115,7 +115,7 @@ tsConvertToken(String, Boolean) := (value, trailingDotAsInt) -> (
 tsConvertExpr(List) := expr -> tsConvertExpr(expr, false)
 
 tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
-    if tsIsDummy expr then error "dummy cannot be converted as an expression";
+    if tsIsDummy expr then tsLeaf "sequence" else (
     name := tsTag expr;
 
     if name == "Token" then tsConvertToken(tsTokenValue expr, trailingDotAsInt)
@@ -170,6 +170,7 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
         tsNode("new_statement", newChildren)
     )
     else error("unsupported M2 CST tsNode " | toString name | ": " | toString expr)
+    )
 )
 
 tsFlattenComma = expr -> (
@@ -197,7 +198,7 @@ tsConvertParentheses(List) := expr -> (
         else if opener == "<|" then "angle_bar_list"
         else error("unsupported parenthesized opener " | opener);
     if opener == "(" and closer != ")" then error("mismatched parentheses closer " | closer);
-    tsNode(kind, apply(tsFlattenComma expr#2, item -> tsAnon tsConvertExpr item))
+    tsNode(kind, tsConvertMultiChildren expr#2)
 )
 
 tsConvertFor(List) := expr -> (
@@ -223,45 +224,39 @@ tsConvertTry(List) := expr -> (
     tsNode("try_statement", children)
 )
 
-tsCell = expr -> tsNode("cell", {tsAnon tsConvertExpr expr})
-
-tsConvertTop = cst -> tsNode("source_file", apply(cst, expr -> tsAnon tsCell expr))
-
-tsStartsOwnCell = word -> (
-    word = toString word;
-    #word > 0 and (tsIsLetter word#0 or word#0 == "-")
+-- A trailing ';' silences an expression: it is evaluated but its value is
+-- discarded.  parse models this (in bracket context) as a right-associative
+-- Binary with operator ';'; a trailing ';' leaves a dummy right operand.
+-- tsFlattenSemicolon splits such a chain into {silenced, content} items.
+tsFlattenSemicolon = expr -> (
+    if tsIsDummy expr then {}
+    else if instance(expr, List) and tsTag expr == "Binary" and tsTokenValue expr#2 == ";"
+        then join({{true, expr#1}}, tsFlattenSemicolon expr#3)
+    else {{false, expr}}
 )
 
-tsJoinStatements = words -> (
-    text := "";
-    for i from 0 to #words - 1 do text = text | words#i | ";\n";
-    text
-)
+tsCommaChildren = content -> apply(tsFlattenComma content, item -> tsAnon tsConvertExpr item)
 
-tsConvertFuzzCell = words -> (
-    text := tsJoinStatements words;
-    tsNode("cell", apply(parse text, expr -> tsAnon tsConvertExpr expr))
-)
+tsSilencedNode = content -> tsNode("silenced_expression", tsCommaChildren content)
 
-tsConvertFuzzTop = words -> (
-    cells := {};
-    run := {};
+-- Children of a container ('(', '{', '[', '<|'): a silenced item becomes a
+-- single silenced_expression node, a bare item splices in its comma elements.
+tsConvertMultiChildren = inner -> flatten apply(tsFlattenSemicolon inner, item ->
+    if item#0 then {tsAnon tsSilencedNode item#1} else tsCommaChildren item#1)
 
-    for word in words do (
-        if tsStartsOwnCell word then (
-            if #run > 0 then (
-                cells = append(cells, tsAnon tsConvertFuzzCell run);
-                run = {};
-            );
-            cells = append(cells, tsAnon tsConvertFuzzCell {word});
-        ) else (
-            run = append(run, word);
-        );
-    );
+-- parse drops ';' at top level, so the caller parses the line wrapped in
+-- '(...)'; we recover the silencing from the parenthesized CST and split it
+-- into cells (silenced cells wrap a silenced_expression, bare cells do not).
+tsConvertTop = wrapped -> tsNode("source_file",
+    apply(tsFlattenSemicolon wrapped#0#2, item ->
+        if item#0 then tsAnon tsNode("cell", {tsAnon tsSilencedNode item#1})
+        else tsAnon tsNode("cell", tsCommaChildren item#1)))
 
-    if #run > 0 then cells = append(cells, tsAnon tsConvertFuzzCell run);
-    tsNode("source_file", cells)
-)
+-- Every fuzz word is emitted as 'word;', i.e. a single silenced cell.
+tsConvertFuzzCell = word -> tsNode("cell", {tsAnon tsSilencedNode (parse word)#0})
+
+tsConvertFuzzTop = words ->
+    tsNode("source_file", apply(words, word -> tsAnon tsConvertFuzzCell word))
 
 tsSpaces = n -> (
     result := "";
@@ -296,10 +291,22 @@ tsIsSyntaxError = err -> (
     text == "--backtrace: parse error--" or tsContainsString("syntax error", text)
 )
 
+tsEofTokenLiteral = "-*end of file*-"
+
+-- A trailing cobinding makes parse swallow the wrapper ')' (or, unwrapped, the
+-- EOF) as its bound symbol, leaving an EOF token in the CST.  That literal is
+-- block-comment syntax, so it can never occur in real source -- its presence
+-- means the input did not actually parse, and the input is rejected.
+tsContainsEOF = expr -> instance(expr, List) and #expr > 0 and (
+    if tsTag expr === "Token" then tsTokenValue expr == tsEofTokenLiteral
+    else any(expr, tsContainsEOF)
+)
+
+-- parse drops ';' at top level and accepts some malformed trailing cobindings,
+-- so every line is parsed wrapped in '(...)' where bracket context is correct.
 tsParse = expression -> (
-    parseInput := "" | expression;
-    try parse parseInput except err do if tsIsSyntaxError err then
-        "SYNTAX_ERROR" else error(toString err)
+    result := try parse("(" | expression | ")") else "SYNTAX_ERROR";
+    if result === "SYNTAX_ERROR" or tsContainsEOF result then "SYNTAX_ERROR" else result
 )
 
 tsWriteCorpus = (name, expressions) -> (

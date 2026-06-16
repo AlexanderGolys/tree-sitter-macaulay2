@@ -4,3 +4,17 @@
 1p
 1e
 1p1e
+symbol 2
+symbol(2)
+symbol "
+symbol""
+symbol ""
+symbol /// ///
+symbol///2
+symbol/// ///
+symbol 
+symbol.2
+symbol ////// 
+{;}
+{,;;}
+{;,}

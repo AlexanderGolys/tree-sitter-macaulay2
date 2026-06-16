@@ -40,4 +40,16 @@ symbol s_1
 symbol s_1_1
 symbol s.a
 symbol s_s
+symbol//2
+symbol/2
+symbol(2
+symbol (2
+symbol (*)
+symbolsymbol
+symbol..2
+symbol. 2
+symbol. .2
+symbol . . 2
+symbol;
+symbol;;
 

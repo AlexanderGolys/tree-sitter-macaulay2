@@ -254,12 +254,20 @@ export default grammar({
   rules: {
     source_file: $ =>
       optional(
-        DelimitedSeq(alias($._multi_expression, $.cell), {
-          allow_empty: true,
-          allow_single: true,
-          delim: '\n',
-        }),
+        seq(
+          repeat(
+            choice(
+              $.cell,
+              seq(alias($._comma_expression, $.cell), '\n'),
+            ),
+          ),
+          optional(alias($._comma_expression, $.cell)),
+        ),
       ),
+
+    cell: $ => $.silenced_expression,
+
+    silenced_expression: $ => seq($._comma_expression, ';'),
 
     symbol: _ => /[a-zA-Z][a-zA-Z0-9'\$]*/,
 
@@ -472,12 +480,12 @@ export default grammar({
     _comma_expression: $ => DelimitedSeq($.expression, { delim: ',' }),
 
     _multi_expression: $ =>
-      seq(
-        DelimitedSeq($._comma_expression, {
-          delim: ';',
-          allow_empty: false,
-        }),
-        optional(';'),
+      choice(
+        $._comma_expression,
+        seq(
+          repeat1($.silenced_expression),
+          optional($._comma_expression),
+        ),
       ),
 
     expression: $ =>

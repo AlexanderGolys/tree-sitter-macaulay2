@@ -108,6 +108,10 @@
         {
           "type": "expression",
           "named": true
+        },
+        {
+          "type": "silenced_expression",
+          "named": true
         }
       ]
     }
@@ -122,6 +126,10 @@
       "types": [
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "silenced_expression",
           "named": true
         }
       ]
@@ -596,6 +604,10 @@
         {
           "type": "expression",
           "named": true
+        },
+        {
+          "type": "silenced_expression",
+          "named": true
         }
       ]
     }
@@ -959,6 +971,10 @@
         {
           "type": "expression",
           "named": true
+        },
+        {
+          "type": "silenced_expression",
+          "named": true
         }
       ]
     }
@@ -1206,6 +1222,25 @@
   },
   {
     "type": "sequence",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "silenced_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "silenced_expression",
     "named": true,
     "fields": {},
     "children": {

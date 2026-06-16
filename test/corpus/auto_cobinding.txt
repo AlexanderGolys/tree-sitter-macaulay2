@@ -566,3 +566,163 @@ symbol s_s
       left: (cobinding
         symbol: (resolved_symbol))
       right: (symbol))))
+
+
+==================
+(43) symbol//2 [auto cobinding]
+==================
+symbol//2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (integer_literal))))
+
+
+==================
+(44) symbol/2 [auto cobinding]
+==================
+symbol/2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (integer_literal))))
+
+
+==================
+(45) symbol(2 [auto cobinding]
+==================
+symbol(2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (integer_literal))))
+
+
+==================
+(46) symbol (2 [auto cobinding]
+==================
+symbol (2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (integer_literal))))
+
+
+==================
+(47) symbol (*) [auto cobinding]
+==================
+symbol (*)
+---
+
+(source_file
+  (cell
+    (cobinding
+      symbol: (resolved_symbol))))
+
+
+==================
+(48) symbolsymbol [auto cobinding]
+==================
+symbolsymbol
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(49) symbol..2 [auto cobinding]
+==================
+symbol..2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (integer_literal))))
+
+
+==================
+(50) symbol. 2 [auto cobinding]
+==================
+symbol. 2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (integer_literal))))
+
+
+==================
+(51) symbol. .2 [auto cobinding]
+==================
+symbol. .2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (float_literal))))
+
+
+==================
+(52) symbol . . 2 [auto cobinding]
+==================
+symbol . . 2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (resolved_symbol))
+      right: (integer_literal))))
+
+
+==================
+(53) symbol; [auto cobinding]
+==================
+symbol;
+---
+
+(source_file
+  (cell
+    (cobinding
+      symbol: (resolved_symbol))))
+
+
+==================
+(54) symbol;; [auto cobinding]
+==================
+symbol;;
+---
+
+(source_file
+  (cell
+    (silenced_expression
+      (cobinding
+        symbol: (resolved_symbol)))))

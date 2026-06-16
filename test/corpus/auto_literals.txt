@@ -484,3 +484,18 @@ e.1.1.1.e.1.p.1.e.1
       right: (binary_expression
         left: (float_literal)
         right: (float_literal)))))
+
+
+==================
+(35) (2,2;2) [auto literals]
+==================
+(2,2;2)
+---
+
+(source_file
+  (cell
+    (sequence
+      (silenced_expression
+        (integer_literal)
+        (integer_literal))
+      (integer_literal))))

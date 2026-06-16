@@ -33,3 +33,87 @@
 :error
 ==================
 1p1e
+
+==================
+(7) symbol 2 [auto errors]
+:error
+==================
+symbol 2
+
+==================
+(8) symbol(2) [auto errors]
+:error
+==================
+symbol(2)
+
+==================
+(9) symbol " [auto errors]
+:error
+==================
+symbol "
+
+==================
+(10) symbol"" [auto errors]
+:error
+==================
+symbol""
+
+==================
+(11) symbol "" [auto errors]
+:error
+==================
+symbol ""
+
+==================
+(12) symbol /// /// [auto errors]
+:error
+==================
+symbol /// ///
+
+==================
+(13) symbol///2 [auto errors]
+:error
+==================
+symbol///2
+
+==================
+(14) symbol/// /// [auto errors]
+:error
+==================
+symbol/// ///
+
+==================
+(15) symbol [auto errors]
+:error
+==================
+symbol
+
+==================
+(16) symbol.2 [auto errors]
+:error
+==================
+symbol.2
+
+==================
+(17) symbol ////// [auto errors]
+:error
+==================
+symbol //////
+
+==================
+(18) {;} [auto errors]
+:error
+==================
+{;}
+
+==================
+(19) {,;;} [auto errors]
+:error
+==================
+{,;;}
+
+==================
+(20) {;,} [auto errors]
+:error
+==================
+{;,}

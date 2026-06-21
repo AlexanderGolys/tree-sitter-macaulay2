@@ -3235,18 +3235,18 @@
       }
     },
     "cobinding": {
-      "type": "RESERVED",
+      "type": "PREC",
+      "value": 74,
       "content": {
-        "type": "PREC",
-        "value": 74,
-        "content": {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "symbol"
-            },
-            {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "symbol"
+          },
+          {
+            "type": "RESERVED",
+            "content": {
               "type": "FIELD",
               "name": "symbol",
               "content": {
@@ -3900,25 +3900,25 @@
                   }
                 ]
               }
-            }
-          ]
-        }
-      },
-      "context_name": "cobinding_op"
+            },
+            "context_name": "cobinding_op"
+          }
+        ]
+      }
     },
     "local_cobinding": {
-      "type": "RESERVED",
+      "type": "PREC",
+      "value": 74,
       "content": {
-        "type": "PREC",
-        "value": 74,
-        "content": {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "local"
-            },
-            {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "local"
+          },
+          {
+            "type": "RESERVED",
+            "content": {
               "type": "FIELD",
               "name": "symbol",
               "content": {
@@ -4572,25 +4572,25 @@
                   }
                 ]
               }
-            }
-          ]
-        }
-      },
-      "context_name": "cobinding_op"
+            },
+            "context_name": "cobinding_op"
+          }
+        ]
+      }
     },
     "global_cobinding": {
-      "type": "RESERVED",
+      "type": "PREC",
+      "value": 74,
       "content": {
-        "type": "PREC",
-        "value": 74,
-        "content": {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "global"
-            },
-            {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "global"
+          },
+          {
+            "type": "RESERVED",
+            "content": {
               "type": "FIELD",
               "name": "symbol",
               "content": {
@@ -5244,34 +5244,34 @@
                   }
                 ]
               }
-            }
-          ]
-        }
-      },
-      "context_name": "cobinding_op"
+            },
+            "context_name": "cobinding_op"
+          }
+        ]
+      }
     },
     "thread_cobinding": {
-      "type": "RESERVED",
+      "type": "PREC",
+      "value": 74,
       "content": {
-        "type": "PREC",
-        "value": 74,
-        "content": {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "threadVariable"
-                },
-                {
-                  "type": "STRING",
-                  "value": "threadLocal"
-                }
-              ]
-            },
-            {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "threadVariable"
+              },
+              {
+                "type": "STRING",
+                "value": "threadLocal"
+              }
+            ]
+          },
+          {
+            "type": "RESERVED",
+            "content": {
               "type": "FIELD",
               "name": "symbol",
               "content": {
@@ -5925,11 +5925,11 @@
                   }
                 ]
               }
-            }
-          ]
-        }
-      },
-      "context_name": "cobinding_op"
+            },
+            "context_name": "cobinding_op"
+          }
+        ]
+      }
     },
     "_comma_list": {
       "type": "SEQ",

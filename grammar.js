@@ -208,12 +208,17 @@ function MemberPrefixExpression($, { precedence, symbols }) {
 }
 
 function CobindingExpression($, operator) {
-  return reserved(
-    'cobinding_op',
-    prec(
-      PREC.COBINDING,
-      seq(
-        operator,
+  // The empty `cobinding_op` reserved set must scope ONLY to the named symbol
+  // slot (so `symbol if`, `symbol +`, `local x` can name keywords/operators).
+  // Wrapping the whole seq would bleed the empty set onto the cobinding's start
+  // state, which is also a cell-start state — that un-reserves every keyword in
+  // any non-first cell, letting `else`/`then`/... leak through as plain symbols.
+  return prec(
+    PREC.COBINDING,
+    seq(
+      operator,
+      reserved(
+        'cobinding_op',
         field('symbol', choice(
           $.symbol,
           alias(choice(...cobindingOperatorTokens), $.operator),

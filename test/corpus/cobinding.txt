@@ -354,3 +354,73 @@ trap 1/0
         (binary_expression
           left: (integer_literal)
           right: (integer_literal))))))
+
+==================
+(25) cobinding naming a keyword, then empty raw string
+==================
+symbol symbol //////
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (cobinding
+        symbol: (keyword))
+      right: (string_literal))))
+
+==================
+(26) multiline if-then completes; stray else starts a new cell and errors
+==================
+if x
+then y
+else z
+---
+
+(source_file
+  (cell
+    (if_statement
+      condition: (symbol)
+      (then_clause
+        (symbol))))
+  (ERROR))
+
+==================
+(27) parenthesized newlines are whitespace: one 3-part if
+==================
+(
+if x
+then y
+else z
+)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (if_statement
+        condition: (symbol)
+        (then_clause
+          (symbol))
+        (else_clause
+          (symbol))))))
+
+==================
+(28) incomplete if absorbs newlines: nested if, single statement
+==================
+if if x
+then y
+else z
+then w
+---
+
+(source_file
+  (cell
+    (if_statement
+      condition: (if_statement
+        condition: (symbol)
+        (then_clause
+          (symbol))
+        (else_clause
+          (symbol)))
+      (then_clause
+        (symbol)))))

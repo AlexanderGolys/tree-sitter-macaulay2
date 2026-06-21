@@ -309,7 +309,17 @@ export default grammar({
 
     array: $ => prec.left(PREC.BRACKET_LOW, seq('[', optional($._multi_expression), ']')),
 
-    sequence: $ => prec.left(PREC.BRACKET_HIGH, seq('(', optional($._multi_expression), ')')),
+    parenthesized_expression: $ =>
+      prec.left(PREC.BRACKET_HIGH, seq('(', choice(
+        seq(repeat($.silenced_expression), $.expression), // (x), (a;b;c), (a,b;c): single final stmt
+        repeat1($.silenced_expression),                   // (a;), (1,2;), (a;b;): trailing ';'
+      ), ')')),
+
+    sequence: $ =>
+      prec.left(PREC.BRACKET_HIGH, choice(
+        seq('(', ')'),                                                // ()
+        seq('(', repeat($.silenced_expression), $._comma_list, ')'),  // (a,b), (a,), (a;b,c), (,)
+      )),
 
     list: $ => prec.left(PREC.BRACKET_HIGH, seq('{', optional($._multi_expression), '}')),
 
@@ -320,7 +330,7 @@ export default grammar({
       lambdaOperator.assoc(
         lambdaOperator.precedence,
         seq(
-          field('parameters', choice($.symbol, $.sequence, $.list, $.array, $.angle_bar_list)),
+          field('parameters', choice($.symbol, $.parenthesized_expression, $.sequence, $.list, $.array, $.angle_bar_list)),
           field('operator', lambdaOperator.symbol),
           field('body', $.expression),
         ),
@@ -358,6 +368,7 @@ export default grammar({
         $.string_literal,
         $.symbol,
         $.sequence,
+        $.parenthesized_expression,
         $.array,
         $.angle_bar_list,
         $.list,
@@ -477,7 +488,9 @@ export default grammar({
 
     thread_cobinding: $ => CobindingExpression($, choice('threadVariable', 'threadLocal')),
 
-    _comma_expression: $ => DelimitedSeq($.expression, { delim: ',' }),
+    _comma_list: $ => CommaList($.expression),
+
+    _comma_expression: $ => choice($._comma_list, $.expression),
 
     _multi_expression: $ =>
       choice(
@@ -496,6 +509,7 @@ export default grammar({
 
         $.symbol,
         $.sequence,
+        $.parenthesized_expression,
         $.array,
         $.angle_bar_list,
         $.list,
@@ -520,9 +534,12 @@ export default grammar({
   }, // End of rules
 });
 
-function DelimitedSeq(rule, { allow_empty = true, allow_single = true, delim = ',' }) {
+function CommaList(rule, { allow_empty = true, delim = ',' } = {}) {
   const item = allow_empty ? optional(rule) : rule;
-  const sequence = seq(repeat1(seq(item, delim)), item);
+  return seq(repeat1(seq(item, delim)), item);
+}
 
+function DelimitedSeq(rule, { allow_empty = true, allow_single = true, delim = ',' }) {
+  const sequence = CommaList(rule, { allow_empty, delim });
   return allow_single ? choice(sequence, rule) : sequence;
 }

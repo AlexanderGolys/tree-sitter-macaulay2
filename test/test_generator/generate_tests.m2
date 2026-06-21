@@ -71,6 +71,23 @@ tsLeaf = kind -> tsNode(kind, {})
 tsChild = (field, tree) -> {field, tree}
 tsAnon = tree -> tsChild("", tree)
 
+-- Lexical kind of the name quoted after a cobinding keyword (e.g. `symbol +`).
+-- These token sets mirror the cobinding branches in grammar.js; the grammar
+-- prefers an explicit operator/keyword/punctuation token over a bare symbol,
+-- so anything outside these sets is a plain symbol.
+tsCobindingOperatorTokens = set {"=", ":=", "<-", ">>", "=>", "%=", "&=", "**=", "*=", "++=", "+=", "-=", "//=", "/=", "<<=", "<==>=", "===>=", "==>=", ">>=", "??=", "@=", "@@=", "@@?=", "\\=", "\\\\=", "^**=", "^=", "^^=", "_=", "|-=", "|=", "|_=", "||=", "·=", "⊠=", "⧢=", "<<", "|-", "<===", "===>", "<==>", "<==", "==>", "or", "??", "xor", "and", "==", "!=", "===", "=!=", "<", ">", "<=", ">=", "?", "~", "||", ":", "|", "^^", "&", "++", "+", "-", "·", "**", "⊠", "⧢", "\\", "\\\\", "%", "//", "/", "*", "@", "@@", "@@?", "|_", "^", "^**", "^<", "^<=", "^>", "^>=", "_<", "_<=", "_>", "_>=", "_", "#", "#?", "not", "(*)", "^*", "_*", "^~", "_~", "!", "^!", "_!", "SPACE", "..=", "..<=", "..", "..<", ".", ".?"}
+tsCobindingKeywordTokens = set {"break", "breakpoint", "catch", "continue", "do", "elapsedTime", "elapsedTiming", "else", "except", "for", "from", "global", "if", "in", "list", "local", "new", "of", "profile", "return", "shield", "step", "symbol", "TEST", "then", "threadLocal", "threadVariable", "throw", "time", "timing", "to", "trap", "try", "when", "while"}
+tsCobindingPunctuationTokens = set {"(", ")", "{", "}", "[", "]", "<|", "|>", ",", ";"}
+
+tsCobindingSymbolKind = value -> (
+    if tsCobindingPunctuationTokens#?value then "punctuation"
+    else if tsCobindingKeywordTokens#?value then "keyword"
+    else if tsCobindingOperatorTokens#?value then "operator"
+    else "symbol"
+)
+
+tsCobindingChild = expr -> tsChild("symbol", tsLeaf tsCobindingSymbolKind tsTokenValue expr#1)
+
 tsTag = expr -> expr#0
 
 tsIsDummy = expr -> instance(expr, List) and #expr == 1 and expr#0 == "dummy"
@@ -138,10 +155,10 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
     else if name == "Postfix" then tsNode("postfix_expression", {
         tsChild("operand", tsConvertExpr expr#1)
     })
-    else if name == "Quote" then tsNode("cobinding", {tsChild("symbol", tsLeaf "resolved_symbol")})
-    else if name == "LocalQuote" then tsNode("local_cobinding", {tsChild("symbol", tsLeaf "resolved_symbol")})
-    else if name == "GlobalQuote" then tsNode("global_cobinding", {tsChild("symbol", tsLeaf "resolved_symbol")})
-    else if name == "ThreadQuote" then tsNode("thread_cobinding", {tsChild("symbol", tsLeaf "resolved_symbol")})
+    else if name == "Quote" then tsNode("cobinding", {tsCobindingChild expr})
+    else if name == "LocalQuote" then tsNode("local_cobinding", {tsCobindingChild expr})
+    else if name == "GlobalQuote" then tsNode("global_cobinding", {tsCobindingChild expr})
+    else if name == "ThreadQuote" then tsNode("thread_cobinding", {tsCobindingChild expr})
     else if name == "Parentheses" then tsConvertParentheses expr
     else if name == "EmptyParentheses" then tsLeaf "sequence"
     else if name == "Arrow" then tsNode("lambda_expression", {

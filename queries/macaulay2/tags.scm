@@ -53,5 +53,5 @@
 
 (binary_expression
   left: (_
-          symbol: (resolved_symbol) @name)
+          symbol: _ @name)
   operator: "SPACE") @reference.call

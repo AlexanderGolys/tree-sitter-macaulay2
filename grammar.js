@@ -127,12 +127,28 @@ const externalRangeOperatorSymbols = [
   ...rangeOperators.symbols,
 ].map(({ value }) => value);
 
-const localityResolvedSymbolTokens = [
-  ...operatorsSymbols,
-  ...punctuationSymbols,
-  ...externalRangeOperatorSymbols,
-  ...memberAccessOperators.symbols,
+const keywords = [
+  'and', 'break', 'breakpoint', 'catch', 'continue',
+  'do', 'elapsedTime', 'elapsedTiming', 'else', 'except',
+  'for', 'from', 'global', 'if', 'in', 'list', 'local',
+  'new', 'not', 'of', 'or', 'profile', 'return', 'shield',
+  'SPACE', 'step', 'symbol', 'TEST', 'then', 'threadLocal',
+  'threadVariable', 'throw', 'time', 'timing', 'to', 'trap',
+  'try', 'when', 'while', 'xor',
 ];
+
+// Operator tokens nameable after a cobinding keyword (e.g. `symbol +`, `symbol ..`, `symbol and`).
+// This includes the word-shaped operators (and/or/xor/not/SPACE), which live in `operatorsSymbols`.
+const cobindingOperatorTokens = [
+  ...new Set([
+    ...operatorsSymbols,
+    ...externalRangeOperatorSymbols,
+    ...memberAccessOperators.symbols,
+  ]),
+];
+
+// Reserved keywords that are not operators (e.g. `symbol if`, `symbol for`).
+const cobindingKeywordTokens = keywords.filter(keyword => !operatorsSymbols.includes(keyword));
 
 const Choice = (...items) => (items.length === 1 ? items[0] : choice(...items));
 
@@ -197,8 +213,13 @@ function CobindingExpression($, operator) {
     prec(
       PREC.COBINDING,
       seq(
-        field('operator', operator),
-        field('symbol', alias(choice(...localityResolvedSymbolTokens, $.symbol), $.resolved_symbol)),
+        operator,
+        field('symbol', choice(
+          $.symbol,
+          alias(choice(...cobindingOperatorTokens), $.operator),
+          alias(choice(...cobindingKeywordTokens), $.keyword),
+          alias(choice(...punctuationSymbols), $.punctuation),
+        )),
       ),
     ),
   );
@@ -222,15 +243,7 @@ export default grammar({
   word: $ => $.symbol,
 
   reserved: {
-    keywords: _ => [
-      'and', 'break', 'breakpoint', 'catch', 'continue',
-      'do', 'elapsedTime', 'elapsedTiming', 'else', 'except',
-      'for', 'from', 'global', 'if', 'in', 'list', 'local',
-      'new', 'not', 'of', 'or', 'profile', 'return', 'shield',
-      'SPACE', 'step', 'symbol', 'TEST', 'then', 'threadLocal',
-      'threadVariable', 'throw', 'time', 'timing', 'to', 'trap',
-      'try', 'when', 'while', 'xor',
-    ],
+    keywords: _ => keywords,
 
     cobinding_op: _ => [],
   },

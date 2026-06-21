@@ -620,22 +620,24 @@
     "type": "cobinding",
     "named": true,
     "fields": {
-      "operator": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "symbol",
-            "named": false
-          }
-        ]
-      },
       "symbol": {
         "multiple": false,
         "required": true,
         "types": [
           {
-            "type": "resolved_symbol",
+            "type": "keyword",
+            "named": true
+          },
+          {
+            "type": "operator",
+            "named": true
+          },
+          {
+            "type": "punctuation",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           }
         ]
@@ -845,22 +847,24 @@
     "type": "global_cobinding",
     "named": true,
     "fields": {
-      "operator": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "global",
-            "named": false
-          }
-        ]
-      },
       "symbol": {
         "multiple": false,
         "required": true,
         "types": [
           {
-            "type": "resolved_symbol",
+            "type": "keyword",
+            "named": true
+          },
+          {
+            "type": "operator",
+            "named": true
+          },
+          {
+            "type": "punctuation",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           }
         ]
@@ -1006,22 +1010,24 @@
     "type": "local_cobinding",
     "named": true,
     "fields": {
-      "operator": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "local",
-            "named": false
-          }
-        ]
-      },
       "symbol": {
         "multiple": false,
         "required": true,
         "types": [
           {
-            "type": "resolved_symbol",
+            "type": "keyword",
+            "named": true
+          },
+          {
+            "type": "operator",
+            "named": true
+          },
+          {
+            "type": "punctuation",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           }
         ]
@@ -1350,26 +1356,24 @@
     "type": "thread_cobinding",
     "named": true,
     "fields": {
-      "operator": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "threadLocal",
-            "named": false
-          },
-          {
-            "type": "threadVariable",
-            "named": false
-          }
-        ]
-      },
       "symbol": {
         "multiple": false,
         "required": true,
         "types": [
           {
-            "type": "resolved_symbol",
+            "type": "keyword",
+            "named": true
+          },
+          {
+            "type": "operator",
+            "named": true
+          },
+          {
+            "type": "punctuation",
+            "named": true
+          },
+          {
+            "type": "symbol",
             "named": true
           }
         ]
@@ -1976,6 +1980,10 @@
     "named": true
   },
   {
+    "type": "keyword",
+    "named": true
+  },
+  {
     "type": "line_comment",
     "named": true,
     "extra": true
@@ -2001,6 +2009,10 @@
     "named": false
   },
   {
+    "type": "operator",
+    "named": true
+  },
+  {
     "type": "or",
     "named": false
   },
@@ -2009,11 +2021,11 @@
     "named": false
   },
   {
-    "type": "raw_string_escape",
+    "type": "punctuation",
     "named": true
   },
   {
-    "type": "resolved_symbol",
+    "type": "raw_string_escape",
     "named": true
   },
   {

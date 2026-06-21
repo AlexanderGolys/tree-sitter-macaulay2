@@ -292,7 +292,7 @@ extractName = x -> try toString symbol x else toString x
           (binary_expression
             left: (symbol)
             right: (cobinding
-              symbol: (resolved_symbol)))
+              symbol: (symbol)))
           (else_clause
             (binary_expression
               left: (symbol)

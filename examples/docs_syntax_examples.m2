@@ -63,9 +63,11 @@ findProgram("gfan", "gfan _version --help", Verbose => true,
         "gfan _version | head -2 | tail -1 | sed 's/gfan//'"
     )
 )
-///-- ////// -- ///////////
+-- $$$skip(100)
+-- $$$nohl(100)
+///-- //////--///////////
 /// \ " ///
-///-- //// -- /////////
+///--//// --/////////
 minimalPresentation(Matrix) := prune(Matrix) := Matrix => opts -> (m) -> (
     M := source m;
     if not M.cache.?pruningMap then m = m * (minimalPresentation M).cache.pruningMap;

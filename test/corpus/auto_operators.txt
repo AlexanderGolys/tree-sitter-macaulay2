@@ -1576,3 +1576,46 @@ x.x()
     (binary_expression
       left: (float_literal)
       right: (symbol))))
+
+
+==================
+(103) a ~= b [auto operators]
+==================
+a ~= b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (symbol))))
+
+
+==================
+(104) f @@ g @@ h [auto operators]
+==================
+f @@ g @@ h
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (symbol))))
+
+
+==================
+(105) f @@? g @@? h [auto operators]
+==================
+f @@? g @@? h
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (symbol))))

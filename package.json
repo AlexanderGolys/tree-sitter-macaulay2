@@ -23,6 +23,7 @@
     "queries",
     "src",
     "grammar.js",
+    "operator-info.json",
     "tree-sitter.json",
     "README.md",
     "LICENCE"
@@ -52,7 +53,8 @@
     "test:node": "node --test bindings/node/*_test.js",
     "check": "tree-sitter test --rebuild",
     "parse": "tree-sitter parse",
-    "parse:examples": "tree-sitter parse --quiet examples/*.m2 test/test_generator/test_expressions/*.m2"
+    "parse:examples": "tree-sitter parse --quiet examples/*.m2 test/test_generator/test_expressions/*.m2",
+    "update-operators": "M2 --script get-operators.m2"
   },
   "tree-sitter": [
     {

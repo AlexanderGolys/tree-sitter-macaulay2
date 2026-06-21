@@ -1,51 +1,74 @@
 // @ts-nocheck
 // $$$ignore()
 
+// The operator tables below are not written by hand. `get-operators.m2` walks
+// every Keyword in Macaulay2's Core dictionary, asks the interpreter itself for
+// each one's precedence and arity via `getParsing`, and writes the result to
+// `operator-info.json`. Regenerate with `npm run update-operators` (requires M2)
+// whenever a Macaulay2 release adds or re-prioritizes an operator.
+import operator_info from './operator-info.json' with { type: 'json' };
+
+// Precedences with no counterpart in `getParsing`; these are ours alone.
 const PREC = {
   CONTROL: 12,
-  ASSIGNMENT: 13,
   LOOP_CLAUSE: 16,
   BRACKET_LOW: 56,
   BRACKET_HIGH: 62,
 };
 
+// Symbols that `getParsing` files under the generic binary table but that this
+// grammar routes to a dedicated rule, so they must not also appear in the
+// generated tables.
+const LAMBDA_SYMBOL = '->'; // lambda_expression
+const ASSIGNMENT_SYMBOLS = ['=', ':=', '<-', '=>']; // assignmentExpression rules
+const MEMBER_ACCESS_SYMBOLS = ['.', '.?']; // binary_expression, member-access branch
+const RANGE_SYMBOLS = ['..', '..<']; // external scanner tokens, below
+const RANGE_ASSIGN_SYMBOLS = ['..=', '..<=']; // external scanner tokens, below
+const SEQUENCE_SYMBOL = ','; // sequence / naked_sequence
+
+const routedElsewhere = new Set([
+  LAMBDA_SYMBOL,
+  SEQUENCE_SYMBOL,
+  ...ASSIGNMENT_SYMBOLS,
+  ...MEMBER_ACCESS_SYMBOLS,
+  ...RANGE_SYMBOLS,
+  ...RANGE_ASSIGN_SYMBOLS,
+]);
+
+const associativity = group => (group.associativity === 'left' ? prec.left : prec.right);
+const groupContaining = symbol => operator_info.binary.find(group => group.symbols.includes(symbol));
+
+const ASSIGNMENT_PREC = groupContaining('=').precedence;
+const MEMBER_ACCESS_PREC = groupContaining('.').precedence;
+const RANGE_PREC = groupContaining('..').precedence;
+
+// `getParsing` reports a unary operator's binding STRENGTH. Macaulay2's Pratt
+// parser absorbs a following binary operator when that operator's PRECEDENCE
+// exceeds the strength, and a right-associative operator's precedence is its
+// strength plus one. Tree-sitter gets a single number per operator and we hand
+// it the strength, so a prefix operator that ties a right-associative binary
+// operator has to sit one level lower to group the same way. In current
+// Macaulay2 this affects only `#`, whose strength 61 ties adjacency: `#f x` is
+// `#(f x)`, whereas `-a - b` (a left-associative tie) is `(-a) - b`.
+const rightAssociativeStrengths = new Set([
+  ...operator_info.binary
+    .filter(group => group.associativity === 'right')
+    .map(group => group.precedence),
+  operator_info.adjacent,
+]);
+const prefixPrecedence = strength =>
+  (rightAssociativeStrengths.has(strength) ? strength - 1 : strength);
+
 const binaryOperators = [
+  ...operator_info.binary
+    .map(group => ({
+      precedence: group.precedence,
+      assoc: associativity(group),
+      symbols: group.symbols.filter(symbol => !routedElsewhere.has(symbol)),
+    }))
+    .filter(group => group.symbols.length > 0),
   {
-    precedence: 13,
-    assoc: prec.right,
-    symbols: [
-      '>>',
-      '%=', '&=', '**=', '*=', '++=', '+=',
-      '-=', '//=', '/=', '<<=', '<==>=', '===>=',
-      '==>=', '>>=', '??=', '@=', '@@=', '@@?=',
-      '\\=', '\\\\=', '^**=', '^=', '^^=', '_=',
-      '|-=', '|=', '|_=', '||=', '·=', '⊠=', '⧢=',
-    ],
-  },
-  { precedence: 18, assoc: prec.left, symbols: ['<<'] },
-  { precedence: 19, assoc: prec.right, symbols: ['|-'] },
-  { precedence: 21, assoc: prec.right, symbols: ['<===', '===>'] },
-  { precedence: 23, assoc: prec.right, symbols: ['<==>'] },
-  { precedence: 25, assoc: prec.right, symbols: ['<==', '==>'] },
-  { precedence: 27, assoc: prec.right, symbols: ['or', '??'] },
-  { precedence: 29, assoc: prec.right, symbols: ['xor'] },
-  { precedence: 31, assoc: prec.right, symbols: ['and'] },
-  { precedence: 35, assoc: prec.right, symbols: ['==', '!=', '===', '=!=', '<', '>', '<=', '>=', '?', '~'] },
-  { precedence: 38, assoc: prec.left, symbols: ['||'] },
-  { precedence: 39, assoc: prec.right, symbols: [':'] },
-  { precedence: 42, assoc: prec.left, symbols: ['|'] },
-  { precedence: 44, assoc: prec.left, symbols: ['^^'] },
-  { precedence: 46, assoc: prec.left, symbols: ['&'] },
-  { precedence: 50, assoc: prec.left, symbols: ['++', '+', '-'] },
-  { precedence: 52, assoc: prec.left, symbols: ['·'] },
-  { precedence: 54, assoc: prec.left, symbols: ['**', '⊠', '⧢'] },
-  { precedence: 57, assoc: prec.right, symbols: ['\\', '\\\\'] },
-  { precedence: 58, assoc: prec.left, symbols: ['%', '//', '/', '*'] },
-  { precedence: 59, assoc: prec.right, symbols: ['@'] },
-  { precedence: 66, assoc: prec.left, symbols: ['@@', '@@?'] },
-  { precedence: 70, assoc: prec.left, symbols: ['|_', '^', '^**', '^<', '^<=', '^>', '^>=', '_<', '_<=', '_>', '_>=', '_', '#', '#?'] },
-  {
-    precedence: 13,
+    precedence: ASSIGNMENT_PREC,
     assoc: prec.right,
     symbols: [
       { token: '_range_eq', value: '..=' },
@@ -53,7 +76,7 @@ const binaryOperators = [
     ],
   },
   {
-    precedence: 48,
+    precedence: RANGE_PREC,
     assoc: prec.left,
     symbols: [
       { token: '_range', value: '..' },
@@ -61,7 +84,7 @@ const binaryOperators = [
     ],
   },
   {
-    precedence: 61,
+    precedence: operator_info.adjacent,
     assoc: prec.right,
     symbols: [{ token: '_space', value: 'SPACE', explicit: 'SPACE' }],
   },
@@ -72,24 +95,17 @@ const binaryOperators = [
   },
 ];
 
-const prefixOperators = [
-  { precedence: 18, symbols: ['<<'] },
-  { precedence: 20, symbols: ['|-'] },
-  { precedence: 22, symbols: ['<==='] },
-  { precedence: 26, symbols: ['<=='] },
-  { precedence: 28, symbols: ['??'] },
-  { precedence: 34, symbols: ['not'] },
-  { precedence: 36, symbols: ['<', '<=', '>', '>=', '?', '~'] },
-  { precedence: 50, symbols: ['+', '-'] },
-  { precedence: 58, symbols: ['*'] },
-  { precedence: 60, symbols: ['#'] },
-];
+const prefixOperators = operator_info.unary
+  // `break`, `return`, `throw` and friends are unary in Macaulay2 but have
+  // dedicated statement rules here.
+  .filter(group => !(group.binary === false && group.precedence === PREC.CONTROL))
+  .map(group => ({
+    precedence: prefixPrecedence(group.precedence),
+    symbols: group.symbols.filter(symbol => !routedElsewhere.has(symbol)),
+  }))
+  .filter(group => group.symbols.length > 0);
 
-const postfixOperators = [
-  { precedence: 64, symbols: ['(*)'] },
-  { precedence: 68, symbols: ['^*', '_*', '^~', '_~'] },
-  { precedence: 72, symbols: ['!', '^!', '_!'] },
-];
+const postfixOperators = operator_info.postfix;
 
 const spaceBinaryOperators = binaryOperators.filter(op => op.symbols.some(
   symbol => typeof symbol !== 'string' &&
@@ -126,7 +142,7 @@ const quotedTokens = [
       .flatMap(op => op.symbols)
       .filter(op => typeof op !== 'string')
       .map(op => op.value),
-    '.', '.?',
+    ...MEMBER_ACCESS_SYMBOLS,
     // Reserved keywords that are not operators (e.g. `symbol if`, `symbol for`).
     ...keywords,
     '(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';',
@@ -289,7 +305,7 @@ export default grammar({
 
     lambda_expression: $ =>
       prec.right(
-        PREC.ASSIGNMENT,
+        ASSIGNMENT_PREC,
         seq(
           field('parameters', choice(
             $.symbol,
@@ -298,7 +314,7 @@ export default grammar({
             $.list,
             $.array,
             $.angle_bar_list)),
-          fieldOperator('->'),
+          fieldOperator(LAMBDA_SYMBOL),
           fieldExpr($, 'body'),
         ),
       ),
@@ -369,9 +385,9 @@ export default grammar({
     binary_expression: $ =>
       choice(
         ...operatorTable($, binaryOperators),
-        LeftSeq(70,
+        LeftSeq(MEMBER_ACCESS_PREC,
             fieldExpr($, 'left'),
-            fieldOperator('.', '.?'),
+            fieldOperator(...MEMBER_ACCESS_SYMBOLS),
             field('right', $.symbol),
           ),
       ),
@@ -603,7 +619,7 @@ function fieldExpr($, name) {
 
 function assignmentExpression($, left, operator, dynamicPrecedence = 1) {
   return prec.dynamic(dynamicPrecedence,
-    RightSeq(PREC.ASSIGNMENT,
+    RightSeq(ASSIGNMENT_PREC,
       field('left', left),
       fieldOperator(operator),
       fieldExpr($, 'right'),

@@ -148,7 +148,7 @@ not (1 + 2)
 (source_file
   (cell
     (prefix_expression
-      operand: (sequence
+      operand: (parenthesized_expression
         (binary_expression
           left: (integer_literal)
           right: (integer_literal))))))

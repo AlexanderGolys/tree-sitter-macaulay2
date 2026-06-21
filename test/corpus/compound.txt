@@ -29,11 +29,11 @@ f(g(1, 2), h(3, 4))
 (source_file
   (cell
     (binary_expression
-      left: (sequence
+      left: (parenthesized_expression
         (binary_expression
           left: (symbol)
           right: (integer_literal)))
-      right: (sequence
+      right: (parenthesized_expression
         (binary_expression
           left: (symbol)
           right: (integer_literal))))))
@@ -49,7 +49,7 @@ not f(1 + 2)
     (prefix_expression
       operand: (binary_expression
         left: (symbol)
-        right: (sequence
+        right: (parenthesized_expression
           (binary_expression
             left: (integer_literal)
             right: (integer_literal)))))))
@@ -62,13 +62,13 @@ not f(1 + 2)
 
 (source_file
   (cell
-    (sequence
+    (parenthesized_expression
       (binary_expression
         left: (symbol)
-        right: (sequence
+        right: (parenthesized_expression
           (binary_expression
             left: (symbol)
-            right: (sequence
+            right: (parenthesized_expression
               (binary_expression
                 left: (symbol)
                 right: (integer_literal)))))))))
@@ -94,7 +94,7 @@ not f(1 + 2)
 
 (source_file
   (cell
-    (sequence
+    (parenthesized_expression
       (silenced_expression
         (symbol))
       (silenced_expression
@@ -125,9 +125,9 @@ isFunctionValue(value) or isFunctorValue(value)
     (binary_expression
       left: (binary_expression
         left: (symbol)
-        right: (sequence
+        right: (parenthesized_expression
           (symbol)))
       right: (binary_expression
         left: (symbol)
-        right: (sequence
+        right: (parenthesized_expression
           (symbol))))))

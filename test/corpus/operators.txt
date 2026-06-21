@@ -31,7 +31,7 @@ a -> b
 (source_file
   (cell
     (lambda_expression
-      parameters: (sequence
+      parameters: (parenthesized_expression
         (symbol))
       body: (integer_literal))))
 

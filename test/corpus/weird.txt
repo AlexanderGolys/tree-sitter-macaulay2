@@ -9,7 +9,7 @@ f(3)^2
     (binary_expression
       left: (symbol)
       right: (binary_expression
-        left: (sequence
+        left: (parenthesized_expression
           (integer_literal))
         right: (integer_literal)))))
 

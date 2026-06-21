@@ -1,0 +1,111 @@
+==================
+Single expression is parenthesized
+==================
+(x)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (symbol))))
+
+==================
+Semicolon block is parenthesized
+==================
+(a; b; c)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (silenced_expression
+        (symbol))
+      (silenced_expression
+        (symbol))
+      (symbol))))
+
+==================
+Mixed block with single final statement is parenthesized
+==================
+(a, b; c)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (silenced_expression
+        (symbol)
+        (symbol))
+      (symbol))))
+
+==================
+Trailing semicolon is parenthesized
+==================
+(a;)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (silenced_expression
+        (symbol)))))
+
+==================
+Empty parens are a sequence
+==================
+()
+---
+
+(source_file
+  (cell
+    (sequence)))
+
+==================
+Comma form is a sequence
+==================
+(a, b)
+---
+
+(source_file
+  (cell
+    (sequence
+      (symbol)
+      (symbol))))
+
+==================
+Trailing comma is a sequence
+==================
+(a,)
+---
+
+(source_file
+  (cell
+    (sequence
+      (symbol))))
+
+==================
+Block with comma-list final statement is a sequence
+==================
+(a; b, c)
+---
+
+(source_file
+  (cell
+    (sequence
+      (silenced_expression
+        (symbol))
+      (symbol)
+      (symbol))))
+
+==================
+Single parameter lambda
+==================
+(x) -> x
+---
+
+(source_file
+  (cell
+    (lambda_expression
+      parameters: (parenthesized_expression
+        (symbol))
+      body: (symbol))))

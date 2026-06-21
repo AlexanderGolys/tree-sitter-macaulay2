@@ -1,6 +1,7 @@
 [
   (list)
   (sequence)
+  (parenthesized_expression)
   (array)
   (angle_bar_list)
   (cell)

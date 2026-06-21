@@ -65,7 +65,7 @@ f("a", {b}, (c))
         (string_literal)
         (list
           (symbol))
-        (sequence
+        (parenthesized_expression
           (symbol))))))
 
 
@@ -125,7 +125,7 @@ f("a", {b}, (c))
 (source_file
   (cell
     (binary_expression
-      left: (sequence
+      left: (parenthesized_expression
         (binary_expression
           left: (symbol)
           right: (prefix_expression
@@ -189,7 +189,7 @@ f(2)^2
     (binary_expression
       left: (symbol)
       right: (binary_expression
-        left: (sequence
+        left: (parenthesized_expression
           (integer_literal))
         right: (integer_literal)))))
 
@@ -206,7 +206,7 @@ f / g (s)
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        right: (sequence
+        right: (parenthesized_expression
           (symbol))))))
 
 
@@ -238,7 +238,7 @@ f / g # (x)
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        right: (sequence
+        right: (parenthesized_expression
           (symbol))))))
 
 
@@ -318,7 +318,7 @@ f/g#(x)
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        right: (sequence
+        right: (parenthesized_expression
           (symbol))))))
 
 
@@ -561,7 +561,7 @@ sin (2 * x + 3)
   (cell
     (binary_expression
       left: (symbol)
-      right: (sequence
+      right: (parenthesized_expression
         (binary_expression
           left: (binary_expression
             left: (integer_literal)
@@ -580,7 +580,7 @@ sin(x+y)^6
     (binary_expression
       left: (symbol)
       right: (binary_expression
-        left: (sequence
+        left: (parenthesized_expression
           (binary_expression
             left: (symbol)
             right: (symbol)))
@@ -598,7 +598,7 @@ sin(x+y)!
     (binary_expression
       left: (symbol)
       right: (postfix_expression
-        operand: (sequence
+        operand: (parenthesized_expression
           (binary_expression
             left: (symbol)
             right: (symbol)))))))
@@ -615,7 +615,7 @@ sin(x+y) !
     (binary_expression
       left: (symbol)
       right: (postfix_expression
-        operand: (sequence
+        operand: (parenthesized_expression
           (binary_expression
             left: (symbol)
             right: (symbol)))))))
@@ -651,7 +651,7 @@ sin(2)! + sin sin 2
       left: (binary_expression
         left: (symbol)
         right: (postfix_expression
-          operand: (sequence
+          operand: (parenthesized_expression
             (integer_literal))))
       right: (binary_expression
         left: (symbol)
@@ -676,7 +676,7 @@ x + y 2! + (z w) q 2
           right: (postfix_expression
             operand: (integer_literal))))
       right: (binary_expression
-        left: (sequence
+        left: (parenthesized_expression
           (binary_expression
             left: (symbol)
             right: (symbol)))
@@ -698,7 +698,7 @@ f / g # (x) (*)
       right: (postfix_expression
         operand: (binary_expression
           left: (symbol)
-          right: (sequence
+          right: (parenthesized_expression
             (symbol)))))))
 
 
@@ -712,7 +712,7 @@ f / g # (x) (*)
   (cell
     (prefix_expression
       operand: (postfix_expression
-        operand: (sequence
+        operand: (parenthesized_expression
           (symbol))))))
 
 
@@ -729,7 +729,7 @@ f / g # (x) _*
       right: (postfix_expression
         operand: (binary_expression
           left: (symbol)
-          right: (sequence
+          right: (parenthesized_expression
             (symbol)))))))
 
 
@@ -746,7 +746,7 @@ f / g # (x) _!
       right: (binary_expression
         left: (symbol)
         right: (postfix_expression
-          operand: (sequence
+          operand: (parenthesized_expression
             (symbol)))))))
 
 
@@ -759,19 +759,19 @@ f / g # (x) _!
 (source_file
   (cell
     (binary_expression
-      left: (sequence
+      left: (parenthesized_expression
         (symbol))
       right: (binary_expression
         left: (sequence
           (symbol)
           (symbol))
-        right: (sequence
+        right: (parenthesized_expression
           (binary_expression
             left: (sequence
               (symbol)
               (symbol))
             right: (binary_expression
-              left: (sequence
+              left: (parenthesized_expression
                 (symbol))
               right: (symbol))))))))
 

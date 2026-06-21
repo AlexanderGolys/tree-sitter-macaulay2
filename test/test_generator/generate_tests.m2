@@ -192,13 +192,16 @@ tsConvertBinary(List) := expr -> (
 tsConvertParentheses(List) := expr -> (
     opener := tsTokenValue expr#1;
     closer := tsTokenValue expr#3;
-    kind := if opener == "(" then "sequence"
-        else if opener == "{" then "list"
-        else if opener == "[" then "array"
-        else if opener == "<|" then "angle_bar_list"
-        else error("unsupported parenthesized opener " | opener);
-    if opener == "(" and closer != ")" then error("mismatched parentheses closer " | closer);
-    tsNode(kind, tsConvertMultiChildren expr#2)
+    if opener == "(" then (
+        if closer != ")" then error("mismatched parentheses closer " | closer);
+        tsNode(tsRoundParenKind expr#2, tsConvertMultiChildren expr#2)
+    ) else (
+        kind := if opener == "{" then "list"
+            else if opener == "[" then "array"
+            else if opener == "<|" then "angle_bar_list"
+            else error("unsupported parenthesized opener " | opener);
+        tsNode(kind, tsConvertMultiChildren expr#2)
+    )
 )
 
 tsConvertFor(List) := expr -> (
@@ -233,6 +236,29 @@ tsFlattenSemicolon = expr -> (
     else if instance(expr, List) and tsTag expr == "Binary" and tsTokenValue expr#2 == ";"
         then join({{true, expr#1}}, tsFlattenSemicolon expr#3)
     else {{false, expr}}
+)
+
+-- A statement is a comma-list (=> Sequence) when its top node is a comma
+-- operator: Binary `a , b` (incl. trailing-comma `a ,` with a dummy operand)
+-- or Unary `, x` / `,` (leading/empty comma, e.g. `(,)`).
+tsIsCommaList = expr -> (
+    instance(expr, List) and #expr >= 2 and (
+        (tsTag expr == "Binary" and #expr >= 3 and tsTokenValue expr#2 == ",")
+        or (tsTag expr == "Unary" and tsTokenValue expr#1 == ",")
+    )
+)
+
+-- A round-paren `(...)` is a `sequence` only when its final UNSILENCED statement
+-- is a comma-list; otherwise it is grouping/block => `parenthesized_expression`.
+-- (`()` never reaches here; it is EmptyParentheses.)
+tsRoundParenKind = inner -> (
+    items := tsFlattenSemicolon inner;
+    if #items == 0 then "sequence"
+    else (
+        last := items#(#items - 1);
+        if (not last#0) and tsIsCommaList last#1 then "sequence"
+        else "parenthesized_expression"
+    )
 )
 
 tsCommaChildren = content -> apply(tsFlattenComma content, item -> tsAnon tsConvertExpr item)

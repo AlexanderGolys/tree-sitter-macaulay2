@@ -127,6 +127,8 @@
 (lambda_expression
   parameters: [
     (symbol) @variable.parameter
+    (parenthesized_expression
+      (symbol) @variable.parameter)
     (sequence
       (symbol) @variable.parameter)
     (list
@@ -204,13 +206,18 @@
   left: (binary_expression
     left: (symbol) @function
     operator: "SPACE"
-    right: (sequence
-      "(" @type
-      [
+    right: [
+      (sequence
+        "(" @type
+        [
+          (symbol) @type
+          "," @type
+        ]*
+        ")" @type)
+      (parenthesized_expression
+        "(" @type
         (symbol) @type
-        "," @type
-      ]*
-      ")" @type))
+        ")" @type)])
   operator: [
     "="
     ":="
@@ -261,6 +268,8 @@
       "from" @keyword
       [
         (symbol) @type
+        (parenthesized_expression
+          (symbol) @type)
         (sequence
           (symbol) @type)
       ])?)
@@ -303,6 +312,9 @@
   operator: "SPACE"
   right: [
     (string_literal) @string.special.url
+    (parenthesized_expression
+      .
+      (string_literal) @string.special.url)
     (sequence
       .
       (string_literal) @string.special.url)
@@ -314,6 +326,9 @@
   operator: "SPACE"
   right: [
     (string_literal) @string.regexp
+    (parenthesized_expression
+      .
+      (string_literal) @string.regexp)
     (sequence
       .
       (string_literal) @string.regexp)
@@ -343,10 +358,16 @@
   operator: "SPACE"
   right: [
     (symbol) @module.builtin
+    (parenthesized_expression
+      .
+      (symbol) @module.builtin)
     (sequence
       .
       (symbol) @module.builtin)
     (string_literal) @string.special
+    (parenthesized_expression
+      .
+      (string_literal) @string.special)
     (sequence
       .
       (string_literal) @string.special)

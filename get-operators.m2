@@ -44,27 +44,29 @@ scan(keywords, k -> (
 	if prec == binstr then (
 	    binary#("left", binstr) ??= {};
 	    binary#("left", binstr) |= {k});
+	-- Key the unary table on 1/0 rather than true/false: Boolean has no ?
+	-- method, so a (Boolean, ZZ) key would make the sort below fail.
 	if binstr != -1 and unstr != -1 then (
-	    unary#(true, unstr) ??= {};
-	    unary#(true, unstr) |= {k});
+	    unary#(1, unstr) ??= {};
+	    unary#(1, unstr) |= {k});
 	if binstr == -1 and unstr != -1 then (
-	    unary#(false, unstr) ??= {};
-	    unary#(false, unstr) |= {k});
+	    unary#(0, unstr) ??= {};
+	    unary#(0, unstr) |= {k});
 	if binstr == -1 and unstr == -1 then (
 	    postfix#prec ??= {};
 	    postfix#prec |= {k})))
 
 operatorInfo = hashTable {
     "adjacent" => (getParsing symbol SPACE)#1,
-    "binary" => apply(keys binary, (assoc, prec) -> hashTable {
+    "binary" => apply(sort keys binary, (assoc, prec) -> hashTable {
 	    "associativity" => assoc,
 	    "precedence" => prec,
 	    "symbols" => sort binary#(assoc, prec)}),
-    "unary" => apply(keys unary, (bin, prec) -> hashTable {
-	    "binary" => bin,
+    "unary" => apply(sort keys unary, (bin, prec) -> hashTable {
+	    "binary" => bin == 1,
 	    "precedence" => prec,
 	    "symbols" => sort unary#(bin, prec)}),
-    "postfix" => apply(keys postfix, prec -> hashTable {
+    "postfix" => apply(sort keys postfix, prec -> hashTable {
 	    "precedence" => prec,
 	    "symbols" => sort postfix#prec})}
 

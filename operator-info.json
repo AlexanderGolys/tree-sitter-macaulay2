@@ -3,6 +3,91 @@
   "binary": [
     {
       "associativity": "left",
+      "precedence": 10,
+      "symbols": [
+        ","
+      ]
+    },
+    {
+      "associativity": "left",
+      "precedence": 18,
+      "symbols": [
+        "<<"
+      ]
+    },
+    {
+      "associativity": "left",
+      "precedence": 38,
+      "symbols": [
+        "||"
+      ]
+    },
+    {
+      "associativity": "left",
+      "precedence": 42,
+      "symbols": [
+        "|"
+      ]
+    },
+    {
+      "associativity": "left",
+      "precedence": 44,
+      "symbols": [
+        "^^"
+      ]
+    },
+    {
+      "associativity": "left",
+      "precedence": 46,
+      "symbols": [
+        "&"
+      ]
+    },
+    {
+      "associativity": "left",
+      "precedence": 48,
+      "symbols": [
+        "..",
+        "..<"
+      ]
+    },
+    {
+      "associativity": "left",
+      "precedence": 50,
+      "symbols": [
+        "+",
+        "++",
+        "-"
+      ]
+    },
+    {
+      "associativity": "left",
+      "precedence": 52,
+      "symbols": [
+        "·"
+      ]
+    },
+    {
+      "associativity": "left",
+      "precedence": 54,
+      "symbols": [
+        "**",
+        "⊠",
+        "⧢"
+      ]
+    },
+    {
+      "associativity": "left",
+      "precedence": 58,
+      "symbols": [
+        "%",
+        "*",
+        "/",
+        "//"
+      ]
+    },
+    {
+      "associativity": "left",
       "precedence": 66,
       "symbols": [
         "@@",
@@ -29,35 +114,6 @@
         "_>",
         "_>=",
         "|_"
-      ]
-    },
-    {
-      "associativity": "left",
-      "precedence": 10,
-      "symbols": [
-        ","
-      ]
-    },
-    {
-      "associativity": "right",
-      "precedence": 57,
-      "symbols": [
-        "\\",
-        "\\\\"
-      ]
-    },
-    {
-      "associativity": "right",
-      "precedence": 59,
-      "symbols": [
-        "@"
-      ]
-    },
-    {
-      "associativity": "left",
-      "precedence": 18,
-      "symbols": [
-        "<<"
       ]
     },
     {
@@ -107,24 +163,10 @@
       ]
     },
     {
-      "associativity": "left",
-      "precedence": 38,
-      "symbols": [
-        "||"
-      ]
-    },
-    {
       "associativity": "right",
       "precedence": 19,
       "symbols": [
         "|-"
-      ]
-    },
-    {
-      "associativity": "left",
-      "precedence": 42,
-      "symbols": [
-        "|"
       ]
     },
     {
@@ -140,20 +182,6 @@
       "precedence": 23,
       "symbols": [
         "<==>"
-      ]
-    },
-    {
-      "associativity": "left",
-      "precedence": 44,
-      "symbols": [
-        "^^"
-      ]
-    },
-    {
-      "associativity": "left",
-      "precedence": 46,
-      "symbols": [
-        "&"
       ]
     },
     {
@@ -173,23 +201,6 @@
       ]
     },
     {
-      "associativity": "left",
-      "precedence": 48,
-      "symbols": [
-        "..",
-        "..<"
-      ]
-    },
-    {
-      "associativity": "left",
-      "precedence": 50,
-      "symbols": [
-        "+",
-        "++",
-        "-"
-      ]
-    },
-    {
       "associativity": "right",
       "precedence": 29,
       "symbols": [
@@ -201,22 +212,6 @@
       "precedence": 31,
       "symbols": [
         "and"
-      ]
-    },
-    {
-      "associativity": "left",
-      "precedence": 52,
-      "symbols": [
-        "·"
-      ]
-    },
-    {
-      "associativity": "left",
-      "precedence": 54,
-      "symbols": [
-        "**",
-        "⊠",
-        "⧢"
       ]
     },
     {
@@ -236,20 +231,25 @@
       ]
     },
     {
-      "associativity": "left",
-      "precedence": 58,
-      "symbols": [
-        "%",
-        "*",
-        "/",
-        "//"
-      ]
-    },
-    {
       "associativity": "right",
       "precedence": 39,
       "symbols": [
         ":"
+      ]
+    },
+    {
+      "associativity": "right",
+      "precedence": 57,
+      "symbols": [
+        "\\",
+        "\\\\"
+      ]
+    },
+    {
+      "associativity": "right",
+      "precedence": 59,
+      "symbols": [
+        "@"
       ]
     }
   ],
@@ -280,34 +280,6 @@
   ],
   "unary": [
     {
-      "binary": true,
-      "precedence": 22,
-      "symbols": [
-        "<==="
-      ]
-    },
-    {
-      "binary": true,
-      "precedence": 26,
-      "symbols": [
-        "<=="
-      ]
-    },
-    {
-      "binary": true,
-      "precedence": 58,
-      "symbols": [
-        "*"
-      ]
-    },
-    {
-      "binary": true,
-      "precedence": 10,
-      "symbols": [
-        ","
-      ]
-    },
-    {
       "binary": false,
       "precedence": 12,
       "symbols": [
@@ -330,20 +302,6 @@
       ]
     },
     {
-      "binary": true,
-      "precedence": 28,
-      "symbols": [
-        "??"
-      ]
-    },
-    {
-      "binary": true,
-      "precedence": 61,
-      "symbols": [
-        "#"
-      ]
-    },
-    {
       "binary": false,
       "precedence": 34,
       "symbols": [
@@ -352,10 +310,9 @@
     },
     {
       "binary": true,
-      "precedence": 50,
+      "precedence": 10,
       "symbols": [
-        "+",
-        "-"
+        ","
       ]
     },
     {
@@ -374,6 +331,27 @@
     },
     {
       "binary": true,
+      "precedence": 22,
+      "symbols": [
+        "<==="
+      ]
+    },
+    {
+      "binary": true,
+      "precedence": 26,
+      "symbols": [
+        "<=="
+      ]
+    },
+    {
+      "binary": true,
+      "precedence": 28,
+      "symbols": [
+        "??"
+      ]
+    },
+    {
+      "binary": true,
       "precedence": 36,
       "symbols": [
         "<",
@@ -382,6 +360,28 @@
         ">=",
         "?",
         "~"
+      ]
+    },
+    {
+      "binary": true,
+      "precedence": 50,
+      "symbols": [
+        "+",
+        "-"
+      ]
+    },
+    {
+      "binary": true,
+      "precedence": 58,
+      "symbols": [
+        "*"
+      ]
+    },
+    {
+      "binary": true,
+      "precedence": 61,
+      "symbols": [
+        "#"
       ]
     }
   ]

@@ -1,12 +1,15 @@
 // @ts-nocheck
 // $$$ignore()
 
+import { readFileSync } from 'fs';
+
 // The operator tables below are not written by hand. `get-operators.m2` walks
 // every Keyword in Macaulay2's Core dictionary, asks the interpreter itself for
 // each one's precedence and arity via `getParsing`, and writes the result to
 // `operator-info.json`. Regenerate with `npm run update-operators` (requires M2)
 // whenever a Macaulay2 release adds or re-prioritizes an operator.
-import operator_info from './operator-info.json' with { type: 'json' };
+const operator_info = JSON.parse(
+  readFileSync(new URL('./operator-info.json', import.meta.url), 'utf8'));
 
 // Precedences with no counterpart in `getParsing`; these are ours alone.
 const PREC = {

@@ -267,8 +267,8 @@ export default grammar({
 
         sequence: $ =>
             prec.left(PREC.BRACKET_HIGH, choice(
-                seq('(', ')'),                                                // ()
-                seq('(', repeat($._silenced_expression), $._comma_expression, ')'),  // (a,b), (a,), (a;b,c), (,)
+                seq('(', ')'),                                                
+                seq('(', repeat($._silenced_expression), $._comma_expression, ')'), 
             )),
 
         list: $ => prec.left(PREC.BRACKET_HIGH, seq('{', optional($._multi_expression), '}')),
@@ -287,8 +287,8 @@ export default grammar({
                         $.list,
                         $.array,
                         $.angle_bar_list)),
-                    field('operator', lambdaOperator.symbol),
-                    field('body', $.expression),
+                    fieldOperator(lambdaOperator.symbol),
+                    fieldExpr($, 'body'),
                 ),
             ),
         binary_expression: $ =>
@@ -301,8 +301,8 @@ export default grammar({
                 memberAccessOperators.assoc(
                     memberAccessOperators.precedence,
                     seq(
-                        field('left', $.expression),
-                        field('operator', Choice(...memberAccessOperators.symbols)),
+                        fieldExpr($, 'left'),
+                        fieldOperator(...memberAccessOperators.symbols),
                         field('right', $._member_access_rhs),
                     ),
                 ),
@@ -399,11 +399,12 @@ export default grammar({
                     seq(
                         field(
                             'keyword',
-                            choice('shield', 'TEST', 'time', 'timing', 'elapsedTime', 'elapsedTiming', 'profile'),
+                            choice('shield', 'TEST', 'time', 'timing',
+                                   'elapsedTime', 'elapsedTiming', 'profile'),
                         ),
                         $.expression,
-                    ),
-                ),
+                    )
+                )
             ),
 
         break_statement: $ => prec.left(PREC.CONTROL, seq('break', optional($.expression))),
@@ -528,22 +529,25 @@ function Choice(...items) {
 
 function OperatorExpression($, ops) {
     return seq(
-        field('left', $.expression),
-        field('operator', Choice(...ops)),
-        field('right', $.expression),
+        fieldExpr($, 'left'),
+        fieldOperator(...ops),
+        fieldExpr($, 'right'),
     );
 }
 
 function OperatorTable($, table) {
-    return table.map(op => op.assoc(op.precedence, OperatorExpression($, op.symbols)));
+    return table.map(
+        op => op.assoc(
+            op.precedence, 
+            OperatorExpression($, op.symbols)));
 }
 
 function ExternalOperatorExpression($, op) {
     return op.assoc(
         op.precedence,
-        OperatorExpression(
-            $,
-            op.symbols.map(({ token, value }) => alias($[token], value)),
+        OperatorExpression($,
+            op.symbols.map(({ token, value }) => 
+                alias($[token], value)),
         ),
     );
 }
@@ -551,8 +555,7 @@ function ExternalOperatorExpression($, op) {
 function AdjacencyOperatorExpression($, op) {
     return op.assoc(
         op.precedence,
-        OperatorExpression(
-            $,
+        OperatorExpression($,
             op.symbols.map(({ token, value, explicit }) =>
                 alias(explicit ? choice($[token], explicit) : $[token], value),
             ),
@@ -563,20 +566,23 @@ function AdjacencyOperatorExpression($, op) {
 function PrefixOperatorExpression($, { precedence, symbols }) {
     return prec.left(
         precedence,
-        seq(field('operator', Choice(...symbols)), field('operand', $.expression)),
+        seq(fieldOperator(...symbols), 
+            fieldExpr($, 'operand')),
     );
 }
 
 function PostfixOperatorExpression($, { precedence, symbols }) {
     return prec.left(
         precedence,
-        seq(field('operand', $.expression), field('operator', Choice(...symbols))),
+        seq(fieldExpr($, 'operand'), 
+            fieldOperator(...symbols)),
     );
 }
 
 function MemberPrefixExpression($, { precedence, symbols }) {
     return prec.left(
         precedence,
-        seq(field('operator', Choice(...symbols)), field('operand', $._member_access_rhs)),
+        seq(fieldOperator(...symbols),
+            field('operand', $._member_access_rhs)),
     );
 }

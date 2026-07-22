@@ -723,6 +723,5 @@ symbol;;
 
 (source_file
   (cell
-    (silenced_expression
-      (quote_expression
-        symbol: (keyword)))))
+    (quote_expression
+      symbol: (keyword))))

@@ -495,7 +495,6 @@ e.1.1.1.e.1.p.1.e.1
 (source_file
   (cell
     (parenthesized_expression
-      (silenced_expression
-        (integer_literal)
-        (integer_literal))
+      (integer_literal)
+      (integer_literal)
       (integer_literal))))

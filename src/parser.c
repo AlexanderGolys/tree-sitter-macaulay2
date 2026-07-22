@@ -197,7 +197,7 @@ enum ts_symbol_identifiers {
   sym_raw_string_escape = 175,
   sym__raw_string_end = 176,
   sym_source_file = 177,
-  sym_silenced_expression = 178,
+  sym__silenced_expression = 178,
   sym__std_string = 179,
   sym__raw_string = 180,
   sym_string_literal = 181,
@@ -427,7 +427,7 @@ static const char * const ts_symbol_names[] = {
   [sym_raw_string_escape] = "raw_string_escape",
   [sym__raw_string_end] = "///",
   [sym_source_file] = "source_file",
-  [sym_silenced_expression] = "silenced_expression",
+  [sym__silenced_expression] = "_silenced_expression",
   [sym__std_string] = "_std_string",
   [sym__raw_string] = "_raw_string",
   [sym_string_literal] = "string_literal",
@@ -657,7 +657,7 @@ static const TSSymbol ts_symbol_map[] = {
   [sym_raw_string_escape] = sym_raw_string_escape,
   [sym__raw_string_end] = anon_sym_SLASH_SLASH_SLASH,
   [sym_source_file] = sym_source_file,
-  [sym_silenced_expression] = sym_silenced_expression,
+  [sym__silenced_expression] = sym__silenced_expression,
   [sym__std_string] = sym__std_string,
   [sym__raw_string] = sym__raw_string,
   [sym_string_literal] = sym_string_literal,
@@ -1421,8 +1421,8 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .visible = true,
     .named = true,
   },
-  [sym_silenced_expression] = {
-    .visible = true,
+  [sym__silenced_expression] = {
+    .visible = false,
     .named = true,
   },
   [sym__std_string] = {
@@ -1710,8 +1710,8 @@ static const TSSymbol ts_alias_sequences[PRODUCTION_ID_COUNT][MAX_ALIAS_SEQUENCE
 };
 
 static const uint16_t ts_non_terminal_alias_map[] = {
-  sym_silenced_expression, 2,
-    sym_silenced_expression,
+  sym__silenced_expression, 2,
+    sym__silenced_expression,
     alias_sym_cell,
   sym__possibly_comma_expression, 2,
     sym__possibly_comma_expression,
@@ -5731,7 +5731,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
   },
   [STATE(1)] = {
     [sym_source_file] = STATE(913),
-    [sym_silenced_expression] = STATE(780),
+    [sym__silenced_expression] = STATE(780),
     [sym__std_string] = STATE(208),
     [sym__raw_string] = STATE(208),
     [sym_string_literal] = STATE(260),
@@ -70362,7 +70362,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym__range_lt_eq] = ACTIONS(273),
   },
   [STATE(517)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -70453,7 +70453,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(999),
   },
   [STATE(518)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -70542,7 +70542,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(519)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -70631,7 +70631,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(520)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -70720,7 +70720,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(521)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -70809,7 +70809,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(522)] = {
-    [sym_silenced_expression] = STATE(550),
+    [sym__silenced_expression] = STATE(550),
     [sym__std_string] = STATE(339),
     [sym__raw_string] = STATE(339),
     [sym_string_literal] = STATE(287),
@@ -70898,7 +70898,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(243),
   },
   [STATE(523)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -70987,7 +70987,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(524)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -71076,7 +71076,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(525)] = {
-    [sym_silenced_expression] = STATE(550),
+    [sym__silenced_expression] = STATE(550),
     [sym__std_string] = STATE(339),
     [sym__raw_string] = STATE(339),
     [sym_string_literal] = STATE(287),
@@ -71165,7 +71165,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(243),
   },
   [STATE(526)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -71254,7 +71254,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(527)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -71343,7 +71343,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(528)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -71432,7 +71432,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(529)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -71521,7 +71521,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(530)] = {
-    [sym_silenced_expression] = STATE(550),
+    [sym__silenced_expression] = STATE(550),
     [sym__std_string] = STATE(339),
     [sym__raw_string] = STATE(339),
     [sym_string_literal] = STATE(287),
@@ -71610,7 +71610,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(243),
   },
   [STATE(531)] = {
-    [sym_silenced_expression] = STATE(550),
+    [sym__silenced_expression] = STATE(550),
     [sym__std_string] = STATE(339),
     [sym__raw_string] = STATE(339),
     [sym_string_literal] = STATE(287),
@@ -71699,7 +71699,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(243),
   },
   [STATE(532)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -71788,7 +71788,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(533)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -71877,7 +71877,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(534)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -71966,7 +71966,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(535)] = {
-    [sym_silenced_expression] = STATE(550),
+    [sym__silenced_expression] = STATE(550),
     [sym__std_string] = STATE(339),
     [sym__raw_string] = STATE(339),
     [sym_string_literal] = STATE(287),
@@ -72055,7 +72055,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(243),
   },
   [STATE(536)] = {
-    [sym_silenced_expression] = STATE(550),
+    [sym__silenced_expression] = STATE(550),
     [sym__std_string] = STATE(339),
     [sym__raw_string] = STATE(339),
     [sym_string_literal] = STATE(287),
@@ -72144,7 +72144,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(243),
   },
   [STATE(537)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -72233,7 +72233,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(538)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -72322,7 +72322,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(539)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -72411,7 +72411,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(540)] = {
-    [sym_silenced_expression] = STATE(550),
+    [sym__silenced_expression] = STATE(550),
     [sym__std_string] = STATE(339),
     [sym__raw_string] = STATE(339),
     [sym_string_literal] = STATE(287),
@@ -72500,7 +72500,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(243),
   },
   [STATE(541)] = {
-    [sym_silenced_expression] = STATE(532),
+    [sym__silenced_expression] = STATE(532),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -72589,7 +72589,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(542)] = {
-    [sym_silenced_expression] = STATE(550),
+    [sym__silenced_expression] = STATE(550),
     [sym__std_string] = STATE(339),
     [sym__raw_string] = STATE(339),
     [sym_string_literal] = STATE(287),
@@ -72678,7 +72678,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(243),
   },
   [STATE(543)] = {
-    [sym_silenced_expression] = STATE(548),
+    [sym__silenced_expression] = STATE(548),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -72766,7 +72766,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(544)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -72942,7 +72942,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(1210),
   },
   [STATE(546)] = {
-    [sym_silenced_expression] = STATE(780),
+    [sym__silenced_expression] = STATE(780),
     [sym__std_string] = STATE(208),
     [sym__raw_string] = STATE(208),
     [sym_string_literal] = STATE(260),
@@ -73030,7 +73030,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(75),
   },
   [STATE(547)] = {
-    [sym_silenced_expression] = STATE(780),
+    [sym__silenced_expression] = STATE(780),
     [sym__std_string] = STATE(342),
     [sym__raw_string] = STATE(342),
     [sym_string_literal] = STATE(338),
@@ -73118,7 +73118,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(1319),
   },
   [STATE(548)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -73206,7 +73206,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(549)] = {
-    [sym_silenced_expression] = STATE(551),
+    [sym__silenced_expression] = STATE(551),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -73294,7 +73294,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(550)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(339),
     [sym__raw_string] = STATE(339),
     [sym_string_literal] = STATE(287),
@@ -73382,7 +73382,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(243),
   },
   [STATE(551)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -73470,7 +73470,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(552)] = {
-    [sym_silenced_expression] = STATE(553),
+    [sym__silenced_expression] = STATE(553),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -73558,7 +73558,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(553)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -73646,7 +73646,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(554)] = {
-    [sym_silenced_expression] = STATE(555),
+    [sym__silenced_expression] = STATE(555),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -73734,7 +73734,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(555)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -73822,7 +73822,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(556)] = {
-    [sym_silenced_expression] = STATE(557),
+    [sym__silenced_expression] = STATE(557),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -73910,7 +73910,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(557)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -73998,7 +73998,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(558)] = {
-    [sym_silenced_expression] = STATE(559),
+    [sym__silenced_expression] = STATE(559),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -74086,7 +74086,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(559)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -74174,7 +74174,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(560)] = {
-    [sym_silenced_expression] = STATE(561),
+    [sym__silenced_expression] = STATE(561),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -74262,7 +74262,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(561)] = {
-    [sym_silenced_expression] = STATE(517),
+    [sym__silenced_expression] = STATE(517),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -74350,7 +74350,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
     [sym_float_literal] = ACTIONS(125),
   },
   [STATE(562)] = {
-    [sym_silenced_expression] = STATE(544),
+    [sym__silenced_expression] = STATE(544),
     [sym__std_string] = STATE(116),
     [sym__raw_string] = STATE(116),
     [sym_string_literal] = STATE(61),
@@ -96962,8 +96962,8 @@ static const TSParseActionEntry ts_parse_actions[] = {
   [1442] = {.entry = {.count = 1, .reusable = true}}, SHIFT(591),
   [1444] = {.entry = {.count = 1, .reusable = true}}, SHIFT(592),
   [1446] = {.entry = {.count = 1, .reusable = true}}, SHIFT(593),
-  [1448] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_silenced_expression, 2, 0, 0),
-  [1450] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_silenced_expression, 2, 0, 0),
+  [1448] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym__silenced_expression, 2, 0, 0),
+  [1450] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym__silenced_expression, 2, 0, 0),
   [1452] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_source_file_repeat1, 1, 0, 2),
   [1454] = {.entry = {.count = 1, .reusable = false}}, REDUCE(aux_sym_source_file_repeat1, 1, 0, 2),
   [1456] = {.entry = {.count = 1, .reusable = true}}, SHIFT(783),

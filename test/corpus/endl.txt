@@ -149,6 +149,5 @@ f(x -> (
         (lambda_expression
           parameters: (symbol)
           body: (parenthesized_expression
-            (silenced_expression
-              (symbol))
+            (symbol)
             (symbol)))))))

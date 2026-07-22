@@ -193,7 +193,7 @@ export default grammar({
             optional(
                 seq(
                     repeat(choice(
-                        seq(alias($.silenced_expression, $.cell), optional('\n')),
+                        seq(alias($._silenced_expression, $.cell), optional('\n')),
                         seq(alias($._possibly_comma_expression, $.cell), '\n'),
                     )),
                     optional(alias($._possibly_comma_expression, $.cell)),
@@ -204,7 +204,7 @@ export default grammar({
         // A semicolon terminates exactly one non-empty expression.  It is a
         // separator between statements, not a repeatable postfix operator:
         // `x;x;` is two silenced expressions, while `x;;` is invalid.
-        silenced_expression: $ => seq($._possibly_comma_expression, ';'),
+        _silenced_expression: $ => seq($._possibly_comma_expression, ';'),
 
         symbol: _ => /[a-zA-Z][a-zA-Z0-9'\$]*/,
 
@@ -260,15 +260,15 @@ export default grammar({
 
         parenthesized_expression: $ =>
             prec.left(PREC.BRACKET_HIGH, seq('(', choice(
-                seq(repeat($.silenced_expression), $.expression),
-                repeat1($.silenced_expression),
+                seq(repeat($._silenced_expression), $.expression),
+                repeat1($._silenced_expression),
             ), ')')),
         
 
         sequence: $ =>
             prec.left(PREC.BRACKET_HIGH, choice(
                 seq('(', ')'),                                                // ()
-                seq('(', repeat($.silenced_expression), $._comma_expression, ')'),  // (a,b), (a,), (a;b,c), (,)
+                seq('(', repeat($._silenced_expression), $._comma_expression, ')'),  // (a,b), (a,), (a;b,c), (,)
             )),
 
         list: $ => prec.left(PREC.BRACKET_HIGH, seq('{', optional($._multi_expression), '}')),
@@ -473,7 +473,7 @@ export default grammar({
             choice(
                 $._possibly_comma_expression,
                 seq(
-                    repeat1($.silenced_expression),
+                    repeat1($._silenced_expression),
                     optional($._possibly_comma_expression),
                 ),
             ),

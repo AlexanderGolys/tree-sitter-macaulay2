@@ -18,10 +18,8 @@ Semicolon block is parenthesized
 (source_file
   (cell
     (parenthesized_expression
-      (silenced_expression
-        (symbol))
-      (silenced_expression
-        (symbol))
+      (symbol)
+      (symbol)
       (symbol))))
 
 ==================
@@ -33,9 +31,8 @@ Mixed block with single final statement is parenthesized
 (source_file
   (cell
     (parenthesized_expression
-      (silenced_expression
-        (symbol)
-        (symbol))
+      (symbol)
+      (symbol)
       (symbol))))
 
 ==================
@@ -47,8 +44,7 @@ Trailing semicolon is parenthesized
 (source_file
   (cell
     (parenthesized_expression
-      (silenced_expression
-        (symbol)))))
+      (symbol))))
 
 ==================
 Empty parens are a sequence
@@ -92,8 +88,7 @@ Block with comma-list final statement is a sequence
 (source_file
   (cell
     (sequence
-      (silenced_expression
-        (symbol))
+      (symbol)
       (symbol)
       (symbol))))
 

@@ -95,10 +95,8 @@ not f(1 + 2)
 (source_file
   (cell
     (parenthesized_expression
-      (silenced_expression
-        (symbol))
-      (silenced_expression
-        (symbol))
+      (symbol)
+      (symbol)
       (symbol))))
 
 ==================

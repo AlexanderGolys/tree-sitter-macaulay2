@@ -28,8 +28,7 @@
 
 (source_file
   (cell
-    (silenced_expression
-      (sequence))))
+    (sequence)))
 
 
 ==================
@@ -40,9 +39,7 @@
 
 (source_file
   (cell
-    (silenced_expression
-      (sequence
-        (silenced_expression)))))
+    (sequence)))
 
 
 ==================
@@ -53,9 +50,7 @@
 
 (source_file
   (cell
-    (list
-      (silenced_expression)
-      (silenced_expression))))
+    (list)))
 
 
 ==================
@@ -67,14 +62,11 @@
 (source_file
   (cell
     (parenthesized_expression
-      (silenced_expression
-        (integer_literal)
-        (integer_literal))
-      (silenced_expression
-        (integer_literal)
-        (integer_literal))
-      (silenced_expression
-        (integer_literal)))))
+      (integer_literal)
+      (integer_literal)
+      (integer_literal)
+      (integer_literal)
+      (integer_literal))))
 
 
 ==================
@@ -86,8 +78,7 @@
 (source_file
   (cell
     (parenthesized_expression
-      (silenced_expression
-        (integer_literal)))))
+      (integer_literal))))
 
 
 ==================
@@ -97,34 +88,30 @@
 ---
 
 (source_file
+  (cell)
   (cell
-    (prefix_expression))
-  (cell
-    (sequence
-      (list
-        (binary_expression
-          left: (parenthesized_expression
-            (list
+    (list
+      (binary_expression
+        left: (parenthesized_expression
+          (list
+            (binary_expression
+              left: (list)
+              right: (binary_expression
+                left: (list)
+                right: (list
+                  (list))))))
+        right: (angle_bar_list
+          (binary_expression
+            left: (list
+              (sequence))
+            right: (sequence
               (binary_expression
                 left: (list)
-                right: (binary_expression
-                  left: (list)
-                  right: (list
-                    (list))))))
-          right: (angle_bar_list
-            (binary_expression
-              left: (list
-                (sequence))
-              right: (sequence
-                (binary_expression
-                  left: (list)
-                  right: (angle_bar_list
-                    (silenced_expression))))))))
-      (list)))
-  (cell
+                right: (angle_bar_list)))))))
     (list))
   (cell
-    (silenced_expression)))
+    (list))
+  (cell))
 
 
 ==================
@@ -161,12 +148,11 @@
 (source_file
   (cell
     (parenthesized_expression
-      (silenced_expression
-        (binary_expression
-          left: (string_literal
-            (escape_sequence)
-            (escape_sequence))
-          right: (sequence))))))
+      (binary_expression
+        left: (string_literal
+          (escape_sequence)
+          (escape_sequence))
+        right: (sequence)))))
 
 
 ==================

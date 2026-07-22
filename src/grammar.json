@@ -21,7 +21,7 @@
                         "type": "ALIAS",
                         "content": {
                           "type": "SYMBOL",
-                          "name": "silenced_expression"
+                          "name": "_silenced_expression"
                         },
                         "named": true,
                         "value": "cell"
@@ -85,7 +85,7 @@
         }
       ]
     },
-    "silenced_expression": {
+    "_silenced_expression": {
       "type": "SEQ",
       "members": [
         {
@@ -293,7 +293,7 @@
                     "type": "REPEAT",
                     "content": {
                       "type": "SYMBOL",
-                      "name": "silenced_expression"
+                      "name": "_silenced_expression"
                     }
                   },
                   {
@@ -306,7 +306,7 @@
                 "type": "REPEAT1",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "silenced_expression"
+                  "name": "_silenced_expression"
                 }
               }
             ]
@@ -348,7 +348,7 @@
                 "type": "REPEAT",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "silenced_expression"
+                  "name": "_silenced_expression"
                 }
               },
               {
@@ -3961,7 +3961,7 @@
               "type": "REPEAT1",
               "content": {
                 "type": "SYMBOL",
-                "name": "silenced_expression"
+                "name": "_silenced_expression"
               }
             },
             {

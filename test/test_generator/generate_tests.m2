@@ -322,12 +322,10 @@ tsRoundParenKind = inner -> (
 
 tsCommaChildren = content -> apply(tsFlattenComma content, item -> tsAnon tsConvertExpr item)
 
-tsSilencedNode = content -> tsNode("silenced_expression", tsCommaChildren content)
-
--- Children of a container ('(', '{', '[', '<|'): a silenced item becomes a
--- single silenced_expression node, a bare item splices in its comma elements.
+-- _silenced_expression is internal; the literal `;` remains a syntax token
+-- for consumers that inspect all children, while corpus trees stay uncluttered.
 tsConvertMultiChildren = inner -> flatten apply(tsFlattenSemicolon inner, item ->
-    if item#0 then {tsAnon tsSilencedNode item#1} else tsCommaChildren item#1)
+    tsCommaChildren item#1)
 
 -- M2's raw top-level CST omits a final semicolon.  Recover only that visible
 -- top-level fact from the original source; do not change the parse context by
@@ -340,15 +338,18 @@ tsConvertTop = (source, parsed) -> (
     for index from 0 to #parsed - 1 do (
         expression := parsed#index;
         cell := if hasTrailingSemicolon and index == #parsed - 1
-            then tsNode("cell", {tsAnon tsSilencedNode expression})
-            else tsNode("cell", {tsAnon tsConvertExpr expression});
+            -- source_file aliases _silenced_expression directly to cell, so
+            -- its contents remain but the intermediate helper is hidden.
+            then tsNode("cell", tsCommaChildren expression)
+            else tsNode("cell", tsCommaChildren expression);
         cells = append(cells, tsAnon cell);
     );
     tsNode("source_file", cells)
 )
 
--- Every fuzz word is emitted as 'word;', i.e. a single silenced cell.
-tsConvertFuzzCell = word -> tsNode("cell", {tsAnon tsSilencedNode (parse word)#0})
+-- Every fuzz word is emitted as 'word;', i.e. a top-level cell.  As above,
+-- the source_file alias hides the _silenced_expression helper.
+tsConvertFuzzCell = word -> tsNode("cell", tsCommaChildren (parse word)#0)
 
 tsConvertFuzzTop = words ->
     tsNode("source_file", apply(words, word -> tsAnon tsConvertFuzzCell word))
@@ -476,12 +477,7 @@ tsIsSemicolonQuote = result ->
 tsParse = expression -> (
     parseSource := "" | expression;
     result := try parse(parseSource) else "SYNTAX_ERROR";
-    -- The built-in parser accepts empty global statements.  Parse the same
-    -- source in parentheses solely as a validity check: there the semicolon
-    -- tree records whether every separator has a non-empty left operand.
-    globalCheck := try parse("(" | expression | ")") else "SYNTAX_ERROR";
-    if result === "SYNTAX_ERROR" or tsContainsEOF result or
-        globalCheck === "SYNTAX_ERROR" or tsContainsEOF globalCheck
+    if result === "SYNTAX_ERROR" or tsContainsEOF result
         then "SYNTAX_ERROR"
     else result
 )

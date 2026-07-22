@@ -2,6 +2,11 @@
 
 [Macaulay2](https://www.macaulay2.com/) grammar for [tree-sitter](https://github.com/tree-sitter/tree-sitter).
 
+
+<img width="3840" height="2160" alt="screenshot-2026-06-18_07-40-19" src="https://github.com/user-attachments/assets/06c3daba-1785-48fc-93b4-c9171081db05" />
+
+> Showcase of the tree-sitter parser used in mdbook with mdbook-tsitter preprocessor for m2 code + comparison between tree-sitter and highlightjs parser on a Rust example. (I'll make this app accessible soon and paste the link below)
+> 
 ## Features
 
 - [x] Highlighting (`highlights.scm`)

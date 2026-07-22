@@ -6,7 +6,7 @@ symbol x
 
 (source_file
   (cell
-    (cobinding
+    (quote_expression
       symbol: (symbol))))
 
 
@@ -18,7 +18,7 @@ local x
 
 (source_file
   (cell
-    (local_cobinding
+    (quote_expression
       symbol: (symbol))))
 
 
@@ -30,7 +30,7 @@ global x
 
 (source_file
   (cell
-    (global_cobinding
+    (quote_expression
       symbol: (symbol))))
 
 
@@ -42,7 +42,7 @@ threadLocal x
 
 (source_file
   (cell
-    (thread_cobinding
+    (quote_expression
       symbol: (symbol))))
 
 
@@ -54,7 +54,7 @@ threadVariable x
 
 (source_file
   (cell
-    (thread_cobinding
+    (quote_expression
       symbol: (symbol))))
 
 
@@ -66,8 +66,8 @@ symbol not
 
 (source_file
   (cell
-    (cobinding
-      symbol: (operator))))
+    (quote_expression
+      symbol: (keyword))))
 
 
 ==================
@@ -78,7 +78,7 @@ symbol symbol
 
 (source_file
   (cell
-    (cobinding
+    (quote_expression
       symbol: (keyword))))
 
 
@@ -90,8 +90,8 @@ symbol(
 
 (source_file
   (cell
-    (cobinding
-      symbol: (punctuation))))
+    (quote_expression
+      symbol: (keyword))))
 
 
 ==================
@@ -102,8 +102,8 @@ symbol(*)
 
 (source_file
   (cell
-    (cobinding
-      symbol: (operator))))
+    (quote_expression
+      symbol: (keyword))))
 
 
 ==================
@@ -114,8 +114,8 @@ symbol+
 
 (source_file
   (cell
-    (cobinding
-      symbol: (operator))))
+    (quote_expression
+      symbol: (keyword))))
 
 
 ==================
@@ -126,8 +126,8 @@ symbol,
 
 (source_file
   (cell
-    (cobinding
-      symbol: (punctuation))))
+    (quote_expression
+      symbol: (keyword))))
 
 
 ==================
@@ -138,8 +138,8 @@ symbol;
 
 (source_file
   (cell
-    (cobinding
-      symbol: (punctuation))))
+    (quote_expression
+      symbol: (keyword))))
 
 
 ==================
@@ -150,8 +150,8 @@ symbol.
 
 (source_file
   (cell
-    (cobinding
-      symbol: (operator))))
+    (quote_expression
+      symbol: (keyword))))
 
 
 ==================
@@ -162,8 +162,8 @@ symbol..
 
 (source_file
   (cell
-    (cobinding
-      symbol: (operator))))
+    (quote_expression
+      symbol: (keyword))))
 
 
 ==================
@@ -175,8 +175,8 @@ symbol..<<<<<2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (prefix_expression
         operand: (integer_literal)))))
 
@@ -190,8 +190,8 @@ symbol..<<<<2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (prefix_expression
         operand: (integer_literal)))))
 
@@ -205,8 +205,8 @@ symbol..2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (integer_literal))))
 
 
@@ -219,8 +219,8 @@ symbol...2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (float_literal))))
 
 
@@ -233,8 +233,8 @@ symbol....2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (integer_literal))))
 
 
@@ -247,8 +247,8 @@ symbol.....2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (float_literal))))
 
 
@@ -261,9 +261,9 @@ symbol symbol symbol symbol
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
+      left: (quote_expression
         symbol: (keyword))
-      right: (cobinding
+      right: (quote_expression
         symbol: (keyword)))))
 
 
@@ -277,7 +277,7 @@ f symbol x
   (cell
     (binary_expression
       left: (symbol)
-      right: (cobinding
+      right: (quote_expression
         symbol: (symbol)))))
 
 
@@ -292,7 +292,7 @@ f symbol x y
     (binary_expression
       left: (symbol)
       right: (binary_expression
-        left: (cobinding
+        left: (quote_expression
           symbol: (symbol))
         right: (symbol)))))
 
@@ -309,7 +309,7 @@ f g symbol x
       left: (symbol)
       right: (binary_expression
         left: (symbol)
-        right: (cobinding
+        right: (quote_expression
           symbol: (symbol))))))
 
 
@@ -322,7 +322,7 @@ symbol x y
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
+      left: (quote_expression
         symbol: (symbol))
       right: (symbol))))
 
@@ -336,7 +336,7 @@ symbol symbol x
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
+      left: (quote_expression
         symbol: (keyword))
       right: (symbol))))
 
@@ -351,7 +351,7 @@ toString symbol x
   (cell
     (binary_expression
       left: (symbol)
-      right: (cobinding
+      right: (quote_expression
         symbol: (symbol)))))
 
 
@@ -364,8 +364,8 @@ symbol ======<===x
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (prefix_expression
         operand: (symbol)))))
 
@@ -379,8 +379,8 @@ symbol ===<===x
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (symbol))))
 
 
@@ -393,8 +393,8 @@ symbol.x
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (symbol))))
 
 
@@ -407,8 +407,8 @@ symbol..x
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (symbol))))
 
 
@@ -421,8 +421,8 @@ symbol...x
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (symbol))))
 
 
@@ -435,8 +435,8 @@ symbol....x
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (symbol))))
 
 
@@ -449,8 +449,8 @@ symbol..<====y
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (symbol))))
 
 
@@ -463,8 +463,8 @@ symbol..<===y
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (symbol))))
 
 
@@ -477,8 +477,8 @@ symbol..<=y
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (symbol))))
 
 
@@ -491,8 +491,8 @@ symbol..<y
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (symbol))))
 
 
@@ -505,8 +505,8 @@ symbol.<==y
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (symbol))))
 
 
@@ -519,7 +519,7 @@ symbol s_1
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
+      left: (quote_expression
         symbol: (symbol))
       right: (integer_literal))))
 
@@ -534,7 +534,7 @@ symbol s_1_1
   (cell
     (binary_expression
       left: (binary_expression
-        left: (cobinding
+        left: (quote_expression
           symbol: (symbol))
         right: (integer_literal))
       right: (integer_literal))))
@@ -549,7 +549,7 @@ symbol s.a
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
+      left: (quote_expression
         symbol: (symbol))
       right: (symbol))))
 
@@ -563,7 +563,7 @@ symbol s_s
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
+      left: (quote_expression
         symbol: (symbol))
       right: (symbol))))
 
@@ -577,8 +577,8 @@ symbol//2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (integer_literal))))
 
 
@@ -591,8 +591,8 @@ symbol/2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (integer_literal))))
 
 
@@ -605,8 +605,8 @@ symbol(2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (punctuation))
+      left: (quote_expression
+        symbol: (keyword))
       right: (integer_literal))))
 
 
@@ -619,8 +619,8 @@ symbol (2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (punctuation))
+      left: (quote_expression
+        symbol: (keyword))
       right: (integer_literal))))
 
 
@@ -632,8 +632,8 @@ symbol (*)
 
 (source_file
   (cell
-    (cobinding
-      symbol: (operator))))
+    (quote_expression
+      symbol: (keyword))))
 
 
 ==================
@@ -656,8 +656,8 @@ symbol..2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (integer_literal))))
 
 
@@ -670,8 +670,8 @@ symbol. 2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (integer_literal))))
 
 
@@ -684,8 +684,8 @@ symbol. .2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (float_literal))))
 
 
@@ -698,8 +698,8 @@ symbol . . 2
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
-        symbol: (operator))
+      left: (quote_expression
+        symbol: (keyword))
       right: (integer_literal))))
 
 
@@ -711,8 +711,8 @@ symbol;
 
 (source_file
   (cell
-    (cobinding
-      symbol: (punctuation))))
+    (quote_expression
+      symbol: (keyword))))
 
 
 ==================
@@ -724,5 +724,5 @@ symbol;;
 (source_file
   (cell
     (silenced_expression
-      (cobinding
-        symbol: (punctuation)))))
+      (quote_expression
+        symbol: (keyword)))))

@@ -1,0 +1,36 @@
+==================
+(1) finish [auto keywords]
+==================
+finish
+---
+
+(source_file
+  (cell
+    (debug_clause)))
+
+
+==================
+(2) finish 1 [auto keywords]
+==================
+finish 1
+---
+
+(source_file
+  (cell
+    (debug_clause
+      (integer_literal))))
+
+
+==================
+(3) finish finish break finish break [auto keywords]
+==================
+finish finish break finish break
+---
+
+(source_file
+  (cell
+    (debug_clause
+      (debug_clause
+        (break_statement
+          (debug_clause
+            (break_statement)))))))

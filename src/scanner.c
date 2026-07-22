@@ -364,8 +364,15 @@ static bool scan_raw_string(TSLexer *lexer, const bool *valid_symbols) {
   advance(lexer); // consume first /
   if (lexer->eof(lexer))
     return false;
-  if (lexer->lookahead != '/')
+
+  // A single slash is ordinary raw-string content.  Only a second slash
+  // starts one of the doubled-slash or closing-delimiter forms below.
+  if (lexer->lookahead != '/') {
+    if (valid_symbols[RAW_STRING_CONTENT] &&
+        scan_raw_str_content_step(lexer, true, 1))
+      return emit(lexer, RAW_STRING_CONTENT);
     return false;
+  }
 
   advance(lexer); // consume second /
   lexer->mark_end(lexer);       // tentative mark after //

@@ -8,18 +8,26 @@ FUZZALPHABET = {"1", ".", "x", "p", "e", "-"}
 tsTrim = s -> (
     s = toString s;
     start := 0;
-    while start < #s and (s#start == " " or s#start == "\t" or s#start == "\n" or s#start == "\r") do start = start + 1;
+    while start < #s and (s#start == " " or s#start == "\t" or s#start == "\n" or s#start == "\r")
+        do start = start + 1;
     stop := #s - 1;
-    while stop >= start and (s#stop == " " or s#stop == "\t" or s#stop == "\n" or s#stop == "\r") do stop = stop - 1;
-    if start > stop then "" else substring(start, stop - start + 1, s)
+    while stop >= start and (s#stop == " " or s#stop == "\t" or s#stop == "\n" or s#stop == "\r")
+        do stop = stop - 1;
+    if start > stop
+        then ""
+    else substring(start, stop - start + 1, s)
 )
 
 tsStartsWith = (prefix, s) -> (
     prefix = toString prefix;
     s = toString s;
-    if #s < #prefix then false else (
+    if #s < #prefix
+        then false
+    else (
         ok := true;
-        for i from 0 to #prefix - 1 do if s#i != prefix#i then ok = false;
+        for i from 0 to #prefix - 1
+            do if s#i != prefix#i
+                then ok = false;
         ok
     )
 )
@@ -37,7 +45,8 @@ tsContainsString = (needle, haystack) -> (
     else if #haystack < #needle then false
     else (
         found := false;
-        for i from 0 to #haystack - #needle do if substring(i, #needle, haystack) == needle then found = true;
+        for i from 0 to #haystack - #needle
+            do if substring(i, #needle, haystack) == needle then found = true;
         found
     )
 )
@@ -71,37 +80,34 @@ tsLeaf = kind -> tsNode(kind, {})
 tsChild = (field, tree) -> {field, tree}
 tsAnon = tree -> tsChild("", tree)
 
--- Lexical kind of the name quoted after a cobinding keyword (e.g. `symbol +`).
--- These token sets mirror the cobinding branches in grammar.js; the grammar
--- prefers an explicit operator/keyword/punctuation token over a bare symbol,
--- so anything outside these sets is a plain symbol.
-tsCobindingOperatorTokens = set {"=", ":=", "<-", ">>", "=>", "%=", "&=", "**=", "*=", "++=", "+=", "-=", "//=", "/=", "<<=", "<==>=", "===>=", "==>=", ">>=", "??=", "@=", "@@=", "@@?=", "\\=", "\\\\=", "^**=", "^=", "^^=", "_=", "|-=", "|=", "|_=", "||=", "·=", "⊠=", "⧢=", "<<", "|-", "<===", "===>", "<==>", "<==", "==>", "or", "??", "xor", "and", "==", "!=", "===", "=!=", "<", ">", "<=", ">=", "?", "~", "||", ":", "|", "^^", "&", "++", "+", "-", "·", "**", "⊠", "⧢", "\\", "\\\\", "%", "//", "/", "*", "@", "@@", "@@?", "|_", "^", "^**", "^<", "^<=", "^>", "^>=", "_<", "_<=", "_>", "_>=", "_", "#", "#?", "not", "(*)", "^*", "_*", "^~", "_~", "!", "^!", "_!", "SPACE", "..=", "..<=", "..", "..<", ".", ".?"}
-tsCobindingKeywordTokens = set {"break", "breakpoint", "catch", "continue", "do", "elapsedTime", "elapsedTiming", "else", "except", "for", "from", "global", "if", "in", "list", "local", "new", "of", "profile", "return", "shield", "step", "symbol", "TEST", "then", "threadLocal", "threadVariable", "throw", "time", "timing", "to", "trap", "try", "when", "while"}
-tsCobindingPunctuationTokens = set {"(", ")", "{", "}", "[", "]", "<|", "|>", ",", ";"}
+-- Quoted operators, reserved words, and punctuation are all aliased to the
+-- grammar's `keyword` node; ordinary quoted identifiers remain symbols.
+quoteOperatorTokens = set {"=", ":=", "<-", ">>", "=>", "%=", "&=", "**=", "*=", "++=", "+=", "-=", "//=", "/=", "<<=", "<==>=", "===>=", "==>=", ">>=", "??=", "@=", "@@=", "@@?=", "\\=", "\\\\=", "^**=", "^=", "^^=", "_=", "|-=", "|=", "|_=", "||=", "·=", "⊠=", "⧢=", "<<", "|-", "<===", "===>", "<==>", "<==", "==>", "or", "??", "xor", "and", "==", "!=", "===", "=!=", "<", ">", "<=", ">=", "?", "~", "||", ":", "|", "^^", "&", "++", "+", "-", "·", "**", "⊠", "⧢", "\\", "\\\\", "%", "//", "/", "*", "@", "@@", "@@?", "|_", "^", "^**", "^<", "^<=", "^>", "^>=", "_<", "_<=", "_>", "_>=", "_", "#", "#?", "not", "(*)", "^*", "_*", "^~", "_~", "!", "^!", "_!", "SPACE", "..=", "..<=", "..", "..<", ".", ".?"}
+quoteKeywordTokens = set {"break", "breakpoint", "catch", "continue", "do", "elapsedTime", "elapsedTiming", "else", "except", "finish", "for", "from", "global", "if", "in", "list", "local", "new", "of", "profile", "return", "shield", "step", "symbol", "TEST", "then", "threadLocal", "threadVariable", "throw", "time", "timing", "to", "trap", "try", "when", "while"}
+quotePunctuationTokens = set {"(", ")", "{", "}", "[", "]", "<|", "|>", ",", ";"}
 
-tsCobindingSymbolKind = value -> (
-    if tsCobindingPunctuationTokens#?value then "punctuation"
-    else if tsCobindingKeywordTokens#?value then "keyword"
-    else if tsCobindingOperatorTokens#?value then "operator"
+quoteSymbolKind = value -> (
+    if quoteOperatorTokens#?value or quoteKeywordTokens#?value or quotePunctuationTokens#?value
+        then "keyword"
     else "symbol"
 )
 
-tsCobindingChild = expr -> tsChild("symbol", tsLeaf tsCobindingSymbolKind tsTokenValue expr#1)
+quoteChild = expr -> tsChild("symbol", tsLeaf quoteSymbolKind tsTokenValue expr#1)
 
 tsTag = expr -> expr#0
 
 tsIsDummy = expr -> instance(expr, List) and #expr == 1 and expr#0 == "dummy"
 
 tsTokenValue = expr -> (
-    if not instance(expr, List) or #expr != 2 or expr#0 != "Token" then 
+    if not instance(expr, List) or #expr != 2 or expr#0 != "Token" then
         error("expected Token tsNode: " | toString expr);
     toString expr#1
 )
 
 debugUnary = set {
-    "break", "continue", "return", "breakpoint", "throw", "shield",
+    "break", "continue", "return", "breakpoint", "step", "throw", "shield",
     "TEST", "trap", "time", "timing", "elapsedTime",
-    "elapsedTiming", "profile"
+    "elapsedTiming", "profile", "finish"
 }
 
 debugNamedUnary = new MutableHashTable from {
@@ -119,8 +125,18 @@ tsConvertParentheses = method()
 tsConvertFor = method()
 tsConvertTry = method()
 
-tsConvertToken(String, Boolean) := (value, trailingDotAsInt) -> (
-    if tsStartsWith("\"", value) and tsEndsWith("\"", value) then tsLeaf "string_literal"
+tsConvertToken (String, Boolean) := (value, trailingDotAsInt) -> (
+    if tsStartsWith("\"", value) and tsEndsWith("\"", value) then (
+        children := {};
+        index := 1;
+        while index < #value - 1 do (
+            if value#index == "\\" then (
+                children = append(children, tsAnon tsLeaf "escape_sequence");
+                index = index + 2;
+            ) else index = index + 1;
+        );
+        tsNode("string_literal", children)
+    )
     else if tsIsNumber value then (
         if trailingDotAsInt and tsEndsWith(".", value) then tsLeaf "integer_literal"
         else if tsHasFloatMarker value then tsLeaf "float_literal"
@@ -144,10 +160,9 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
     else if name == "Unary" then (
         op := tsTokenValue expr#1;
         children := if tsIsDummy expr#2 then {} else {tsChild("operand", tsConvertExpr expr#2)};
-        if op == "step" then tsNode("step_statement", apply(children, c -> tsAnon c#1))
-        else if member(op, debugUnary) then (
+        if member(op, debugUnary) then (
             if debugNamedUnary#?op
-            then tsNode("debug_clause", {tsAnon tsNode(debugNamedUnary#op, apply(children, c -> tsAnon c#1))})
+            then tsNode(debugNamedUnary#op, apply(children, c -> tsAnon c#1))
             else tsNode("debug_clause", apply(children, c -> tsAnon c#1))
         )
         else tsNode("prefix_expression", children)
@@ -155,12 +170,19 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
     else if name == "Postfix" then tsNode("postfix_expression", {
         tsChild("operand", tsConvertExpr expr#1)
     })
-    else if name == "Quote" then tsNode("cobinding", {tsCobindingChild expr})
-    else if name == "LocalQuote" then tsNode("local_cobinding", {tsCobindingChild expr})
-    else if name == "GlobalQuote" then tsNode("global_cobinding", {tsCobindingChild expr})
-    else if name == "ThreadQuote" then tsNode("thread_cobinding", {tsCobindingChild expr})
+    else if name == "Quote" or name == "LocalQuote" or name == "GlobalQuote" or name == "ThreadQuote"
+        then tsNode("quote_expression", {quoteChild expr})
     else if name == "Parentheses" then tsConvertParentheses expr
-    else if name == "EmptyParentheses" then tsLeaf "sequence"
+    else if name == "EmptyParentheses" then (
+        opener := tsTokenValue expr#1;
+        tsLeaf (
+            if opener == "(" then "sequence"
+            else if opener == "{" then "list"
+            else if opener == "[" then "array"
+            else if opener == "<|" then "angle_bar_list"
+            else error("unsupported empty container opener " | opener)
+        )
+    )
     else if name == "Arrow" then tsNode("lambda_expression", {
         tsChild("parameters", tsConvertExpr expr#1),
         tsChild("body", tsConvertExpr expr#2)
@@ -170,7 +192,8 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
             tsChild("condition", tsConvertExpr expr#1),
             tsAnon tsNode("then_clause", {tsAnon tsConvertExpr expr#2})
         };
-        if name == "IfThenElse" then ifChildren = append(ifChildren, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#3}));
+        if name == "IfThenElse" then
+            ifChildren = append(ifChildren, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#3}));
         tsNode("if_statement", ifChildren)
     )
     else if name == "WhileDo" then tsNode("while_statement", {
@@ -179,21 +202,31 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
     })
     else if name == "For" then tsConvertFor expr
     else if name == "TryThen" or name == "TryElse" or name == "TryThenElse" then tsConvertTry expr
-    else if name == "Catch" then tsNode("debug_clause", {tsAnon tsNode("catch_statement", {tsAnon tsConvertExpr expr#1})})
+    else if name == "Catch" then tsNode("catch_statement", {tsAnon tsConvertExpr expr#1})
     else if name == "New" then (
         newChildren := {tsChild("type", tsConvertExpr expr#1)};
-        if not tsIsDummy expr#2 then newChildren = append(newChildren, tsAnon tsNode("of_clause", {tsAnon tsConvertExpr expr#2}));
-        if not tsIsDummy expr#3 then newChildren = append(newChildren, tsAnon tsNode("from_clause", {tsAnon tsConvertExpr expr#3}));
+        if not tsIsDummy expr#2 then
+            newChildren = append(newChildren, tsAnon tsNode("of_clause", {tsAnon tsConvertExpr expr#2}));
+        if not tsIsDummy expr#3 then
+            newChildren = append(newChildren, tsAnon tsNode("from_clause", {tsAnon tsConvertExpr expr#3}));
         tsNode("new_statement", newChildren)
-    )
-    else error("unsupported M2 CST tsNode " | toString name | ": " | toString expr)
+    ) else
+        error("unsupported M2 CST tsNode " | toString name | ": " | toString expr)
     )
 )
 
 tsFlattenComma = expr -> (
     if tsIsDummy expr then {}
-    else if instance(expr, List) and #expr == 3 and tsTag expr == "Unary" and tsTokenValue expr#1 == "," and tsIsDummy expr#2 then {}
-    else if instance(expr, List) and tsTag expr == "Binary" and tsTokenValue expr#2 == "," then join(tsFlattenComma expr#1, tsFlattenComma expr#3)
+    else if instance(expr, List) and
+            #expr == 3 and
+            tsTag expr == "Unary" and
+            tsTokenValue expr#1 == "," and
+            tsIsDummy expr#2
+        then {}
+    else if instance(expr, List) and
+            tsTag expr == "Binary" and
+            tsTokenValue expr#2 == "," then
+        join(tsFlattenComma expr#1, tsFlattenComma expr#3)
     else {expr}
 )
 
@@ -223,11 +256,18 @@ tsConvertParentheses(List) := expr -> (
 
 tsConvertFor(List) := expr -> (
     children := {tsChild("variable", tsConvertExpr expr#1)};
-    clauseSpecs := {{2, "in_clause"}, {3, "from_clause"}, {4, "to_clause"}, {5, "when_clause"}, {6, "list_clause"}, {7, "do_clause"}};
+    clauseSpecs := {
+        {2, "in_clause"},
+        {3, "from_clause"},
+        {4, "to_clause"},
+        {5, "when_clause"},
+        {6, "list_clause"},
+        {7, "do_clause"}};
     for spec in clauseSpecs do (
         index := spec#0;
         clause := spec#1;
-        if index < #expr and not tsIsDummy expr#index then children = append(children, tsAnon tsNode(clause, {tsAnon tsConvertExpr expr#index}));
+        if index < #expr and not tsIsDummy expr#index then
+            children = append(children, tsAnon tsNode(clause, {tsAnon tsConvertExpr expr#index}));
     );
     tsNode("for_statement", children)
 )
@@ -235,8 +275,10 @@ tsConvertFor(List) := expr -> (
 tsConvertTry(List) := expr -> (
     name := tsTag expr;
     children := {tsAnon tsConvertExpr expr#1};
-    if name == "TryThen" then children = append(children, tsAnon tsNode("then_clause", {tsAnon tsConvertExpr expr#2}))
-    else if name == "TryElse" then children = append(children, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#2}))
+    if name == "TryThen" then
+        children = append(children, tsAnon tsNode("then_clause", {tsAnon tsConvertExpr expr#2}))
+    else if name == "TryElse" then
+        children = append(children, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#2}))
     else if name == "TryThenElse" then (
         children = append(children, tsAnon tsNode("then_clause", {tsAnon tsConvertExpr expr#2}));
         children = append(children, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#3}));
@@ -287,13 +329,23 @@ tsSilencedNode = content -> tsNode("silenced_expression", tsCommaChildren conten
 tsConvertMultiChildren = inner -> flatten apply(tsFlattenSemicolon inner, item ->
     if item#0 then {tsAnon tsSilencedNode item#1} else tsCommaChildren item#1)
 
--- parse drops ';' at top level, so the caller parses the line wrapped in
--- '(...)'; we recover the silencing from the parenthesized CST and split it
--- into cells (silenced cells wrap a silenced_expression, bare cells do not).
-tsConvertTop = wrapped -> tsNode("source_file",
-    apply(tsFlattenSemicolon wrapped#0#2, item ->
-        if item#0 then tsAnon tsNode("cell", {tsAnon tsSilencedNode item#1})
-        else tsAnon tsNode("cell", tsCommaChildren item#1)))
+-- M2's raw top-level CST omits a final semicolon.  Recover only that visible
+-- top-level fact from the original source; do not change the parse context by
+-- wrapping it.
+tsConvertTop = (source, parsed) -> (
+    cells := {};
+    trailingSemicolons := tsTrailingSemicolonCount source;
+    hasTrailingSemicolon := trailingSemicolons > 0 and
+        (not tsIsSemicolonQuote parsed or trailingSemicolons > 1);
+    for index from 0 to #parsed - 1 do (
+        expression := parsed#index;
+        cell := if hasTrailingSemicolon and index == #parsed - 1
+            then tsNode("cell", {tsAnon tsSilencedNode expression})
+            else tsNode("cell", {tsAnon tsConvertExpr expression});
+        cells = append(cells, tsAnon cell);
+    );
+    tsNode("source_file", cells)
+)
 
 -- Every fuzz word is emitted as 'word;', i.e. a single silenced cell.
 tsConvertFuzzCell = word -> tsNode("cell", {tsAnon tsSilencedNode (parse word)#0})
@@ -303,31 +355,86 @@ tsConvertFuzzTop = words ->
 
 tsSpaces = n -> (
     result := "";
-    for i from 1 to n do result = result | " ";
+    for i from 1 to n do
+        result = result | " ";
     result
 )
 
 tsFormatTree = method()
 
-tsFormatTree(List) := tree -> tsFormatTree(tree, 0, "")
+tsFormatTree (List) := tree -> tsFormatTree(tree, 0, "")
 
-tsFormatTree(List, ZZ, String) := (tree, indent, field) -> (
+tsFormatTree (List, ZZ, String) := (tree, indent, field) -> (
     prefix := tsSpaces indent;
     kind := tree#0;
     children := tree#1;
-    head := if field == "" then prefix | "(" | kind else prefix | field | ": (" | kind;
-    if #children == 0 then {head | ")"}
+    head := if field == ""
+                then prefix | "(" | kind
+            else prefix | field | ": (" | kind;
+    if #children == 0
+        then {head | ")"}
     else (
         lines := {head};
-        for entry in children do lines = join(lines, tsFormatTree(entry#1, indent + 2, entry#0));
+        for entry in children
+            do lines = join(lines, tsFormatTree(entry#1, indent + 2, entry#0));
         last := #lines - 1;
-        join(take(lines, last), {lines#last | ")"})
-    )
+        join(take(lines, last), {lines#last | ")"}))
 )
 
 tsFileStem = name -> substring(0, #name - 3, name)
 
-tsReadExpressions = path -> select(apply(lines get path, line -> tsTrim line), line -> line != "")
+tsTestBlockHeader = "--- TEST "
+tsTestBlockFooter = "--- "
+
+tsStartsTestBlock = line -> tsStartsWith(tsTestBlockHeader, line)
+tsEndsTestBlock = line -> line == "---" or tsStartsWith(tsTestBlockFooter, line)
+
+tsJoinLines = lines -> (
+    if #lines == 0 then ""
+    else (
+        result := lines#0;
+        for index from 1 to #lines - 1 do result = result | "\n" | lines#index;
+        result
+    )
+)
+
+-- Test inputs are normally one expression per nonblank line.  A `--- TEST `
+-- header starts a multiline top-level source block; its closing `--- ` line is
+-- excluded.  The next header also closes the current block before starting the
+-- next one, which makes adjacent blocks convenient to write.
+--
+-- Each entry is {source, isMultiline, title}.  Multiline sources retain their
+-- newlines because cells and scope are sensitive to them.
+tsReadExpressions = path -> (
+    entries := {};
+    inBlock := false;
+    blockLines := {};
+    blockTitle := "";
+
+    for line in lines get path do (
+        if tsStartsTestBlock line then (
+            if inBlock then
+                entries = append(entries, {tsJoinLines blockLines, true, blockTitle});
+            inBlock = true;
+            blockLines = {};
+            blockTitle = tsTrim substring(#tsTestBlockHeader, #line - #tsTestBlockHeader, line);
+        ) else if inBlock and tsEndsTestBlock line then (
+            entries = append(entries, {tsJoinLines blockLines, true, blockTitle});
+            inBlock = false;
+            blockLines = {};
+            blockTitle = "";
+        ) else if inBlock then
+            blockLines = append(blockLines, line)
+        else (
+            expression := tsTrim line;
+            if expression != "" then entries = append(entries, {expression, false, expression});
+        );
+    );
+
+    if inBlock then
+        entries = append(entries, {tsJoinLines blockLines, true, blockTitle});
+    entries
+)
 
 tsIsSyntaxError = err -> (
     text := toString err;
@@ -341,16 +448,55 @@ tsEofTokenLiteral = "-*end of file*-"
 -- block-comment syntax, so it can never occur in real source -- its presence
 -- means the input did not actually parse, and the input is rejected.
 tsContainsEOF = expr -> instance(expr, List) and #expr > 0 and (
-    if tsTag expr === "Token" then tsTokenValue expr == tsEofTokenLiteral
+    if tsTag expr === "Token"
+        then tsTokenValue expr == tsEofTokenLiteral
     else any(expr, tsContainsEOF)
 )
 
--- parse drops ';' at top level and accepts some malformed trailing cobindings,
--- so every line is parsed wrapped in '(...)' where bracket context is correct.
+-- The raw CST does not retain top-level separators.  Count the final ones
+-- only to distinguish a quote of `;` (`symbol;`) from that quote followed by
+-- a real terminator (`symbol;;`).
+tsTrailingSemicolonCount = source -> (
+    source = tsTrim source;
+    index := #source - 1;
+    count := 0;
+    while index >= 0 and (source#index == ";" or source#index == " " or source#index == "\\t" or source#index == "\\n" or source#index == "\\r") do (
+        if source#index == ";" then count = count + 1;
+        index = index - 1;
+    );
+    count
+)
+
+tsIsSemicolonQuote = result ->
+    #result == 1 and member(tsTag result#0, {"Quote", "LocalQuote", "GlobalQuote", "ThreadQuote"}) and
+        tsTokenValue(result#0#1) == ";"
+
+-- Parse generated source in its real top-level context.  Never parenthesize
+-- test input: it changes newline and scope-sensitive quote semantics.
 tsParse = expression -> (
-    result := try parse("(" | expression | ")") else "SYNTAX_ERROR";
+    parseSource := "" | expression;
+    result := try parse(parseSource) else "SYNTAX_ERROR";
+    -- The built-in parser accepts empty global statements.  Parse the same
+    -- source in parentheses solely as a validity check: there the semicolon
+    -- tree records whether every separator has a non-empty left operand.
+    globalCheck := try parse("(" | expression | ")") else "SYNTAX_ERROR";
+    if result === "SYNTAX_ERROR" or tsContainsEOF result or
+        globalCheck === "SYNTAX_ERROR" or tsContainsEOF globalCheck
+        then "SYNTAX_ERROR"
+    else result
+)
+
+-- Multiline tests deliberately parse at top level: adding the regular wrapper
+-- would turn their newlines into parenthesized whitespace and hide cell/scope
+-- behavior.
+tsParseMultiline = source -> (
+    parseSource := "" | source;
+    result := try parse(parseSource) else "SYNTAX_ERROR";
     if result === "SYNTAX_ERROR" or tsContainsEOF result then "SYNTAX_ERROR" else result
 )
+
+tsConvertMultilineTop = parsed -> tsNode("source_file",
+    apply(parsed, expression -> tsAnon tsNode("cell", {tsAnon tsConvertExpr expression})))
 
 tsWriteCorpus = (name, expressions) -> (
     corpusName := "auto_" | name;
@@ -359,14 +505,16 @@ tsWriteCorpus = (name, expressions) -> (
     emitted := 0;
     first := true;
 
-    for expression in expressions do (
-        result := tsParse expression;
+    for test in expressions do (
+        expression := test#0;
+        isMultiline := test#1;
+        title := test#2;
+        result := if isMultiline then tsParseMultiline(expression) else tsParse(expression);
         emitted = emitted + 1;
         if not first then out << endl << endl;
         first = false;
         out << "==================" << endl;
-        title := "(" | toString emitted | ") " | expression | " [auto " | name | "]";
-        out << title << endl;
+        out << "(" | toString emitted | ") " | title | " [auto " | name | "]" << endl;
         if result === "SYNTAX_ERROR" then (
             out << ":error" << endl;
             out << "==================" << endl;
@@ -375,7 +523,8 @@ tsWriteCorpus = (name, expressions) -> (
             out << "==================" << endl;
             out << expression << endl;
             out << "---" << endl << endl;
-            for line in tsFormatTree tsConvertTop result do out << line << endl;
+            tree := if isMultiline then tsConvertMultilineTop result else tsConvertTop(expression, result);
+            for line in tsFormatTree tree do out << line << endl;
         );
     );
 

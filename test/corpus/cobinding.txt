@@ -129,8 +129,7 @@ break
 
 (source_file
   (cell
-    (debug_clause
-      (break_statement))))
+    (break_statement)))
 
 ==================
 (8) continue
@@ -140,8 +139,7 @@ continue
 
 (source_file
   (cell
-    (debug_clause
-      (continue_statement))))
+    (continue_statement)))
 
 ==================
 (9) return
@@ -151,9 +149,8 @@ return x
 
 (source_file
   (cell
-    (debug_clause
-      (return_statement
-        (symbol)))))
+    (return_statement
+      (symbol))))
 
 ==================
 (10) breakpoint
@@ -174,9 +171,8 @@ catch expr
 
 (source_file
   (cell
-    (debug_clause
-      (catch_statement
-        (symbol)))))
+    (catch_statement
+      (symbol))))
 
 ==================
 (12) shield
@@ -210,7 +206,7 @@ step
 
 (source_file
   (cell
-    (step_statement)))
+    (debug_clause)))
 
 ==================
 (15) step with arg
@@ -220,7 +216,7 @@ step x
 
 (source_file
   (cell
-    (step_statement
+    (debug_clause
       (symbol))))
 
 ==================
@@ -231,9 +227,8 @@ throw err
 
 (source_file
   (cell
-    (debug_clause
-      (throw_statement
-        (symbol)))))
+    (throw_statement
+      (symbol))))
 
 ==================
 (17) try then else
@@ -265,7 +260,7 @@ try x then y
 
 ==================
 (19) try else
-===================
+==================
 try x else y
 ---
 
@@ -278,7 +273,7 @@ try x else y
 
 ==================
 (20) try else after implicit calls
-===================
+==================
 extractName = x -> try toString symbol x else toString x
 ---
 
@@ -291,7 +286,7 @@ extractName = x -> try toString symbol x else toString x
         body: (try_statement
           (binary_expression
             left: (symbol)
-            right: (cobinding
+            right: (quote_expression
               symbol: (symbol)))
           (else_clause
             (binary_expression
@@ -300,7 +295,7 @@ extractName = x -> try toString symbol x else toString x
 
 ==================
 (21) try
-===================
+==================
 try x
 ---
 
@@ -349,11 +344,10 @@ trap 1/0
 
 (source_file
   (cell
-    (debug_clause
-      (trap_statement
-        (binary_expression
-          left: (integer_literal)
-          right: (integer_literal))))))
+    (trap_statement
+      (binary_expression
+        left: (integer_literal)
+        right: (integer_literal)))))
 
 ==================
 (25) cobinding naming a keyword, then empty raw string
@@ -364,7 +358,7 @@ symbol symbol //////
 (source_file
   (cell
     (binary_expression
-      left: (cobinding
+      left: (quote_expression
         symbol: (keyword))
       right: (string_literal))))
 

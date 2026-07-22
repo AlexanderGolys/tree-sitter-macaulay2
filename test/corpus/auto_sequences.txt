@@ -75,3 +75,160 @@
         (integer_literal))
       (silenced_expression
         (integer_literal)))))
+
+
+==================
+(7) (1;) [auto sequences]
+==================
+(1;)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (silenced_expression
+        (integer_literal)))))
+
+
+==================
+(8) ,;,,{({{}{}{{}}})<|{,,()}({}<|,;|>,)|>},{};{};,; [auto sequences]
+==================
+,;,,{({{}{}{{}}})<|{,,()}({}<|,;|>,)|>},{};{};,;
+---
+
+(source_file
+  (cell
+    (prefix_expression))
+  (cell
+    (sequence
+      (list
+        (binary_expression
+          left: (parenthesized_expression
+            (list
+              (binary_expression
+                left: (list)
+                right: (binary_expression
+                  left: (list)
+                  right: (list
+                    (list))))))
+          right: (angle_bar_list
+            (binary_expression
+              left: (list
+                (sequence))
+              right: (sequence
+                (binary_expression
+                  left: (list)
+                  right: (angle_bar_list
+                    (silenced_expression))))))))
+      (list)))
+  (cell
+    (list))
+  (cell
+    (silenced_expression)))
+
+
+==================
+(9) (   ) [auto sequences]
+==================
+(   )
+---
+
+(source_file
+  (cell
+    (sequence)))
+
+
+==================
+(10) ({ }\t) [auto sequences]
+==================
+({ }\t)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (binary_expression
+        left: (list)
+        right: (symbol)))))
+
+
+==================
+(11) ("\n\\n " ();) [auto sequences]
+==================
+("\n\\n " ();)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (silenced_expression
+        (binary_expression
+          left: (string_literal
+            (escape_sequence)
+            (escape_sequence))
+          right: (sequence))))))
+
+
+==================
+(12) ((( ) )((())) )( )() ()\t()\n"\n"\t\n\\n [auto sequences]
+==================
+((( ) )((())) )( )() ()\t()\n"\n"\t\n\\n
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (parenthesized_expression
+          (binary_expression
+            left: (parenthesized_expression
+              (sequence))
+            right: (parenthesized_expression
+              (parenthesized_expression
+                (sequence)))))
+        right: (binary_expression
+          left: (sequence)
+          right: (binary_expression
+            left: (sequence)
+            right: (sequence))))
+      right: (binary_expression
+        left: (binary_expression
+          left: (symbol)
+          right: (sequence))
+        right: (binary_expression
+          left: (binary_expression
+            left: (symbol)
+            right: (string_literal
+              (escape_sequence)))
+          right: (binary_expression
+            left: (symbol)
+            right: (binary_expression
+              left: (symbol)
+              right: (symbol))))))))
+
+
+==================
+(13) n/n//n///n/n//n///n/n////n//n///n//n [auto sequences]
+==================
+n/n//n///n/n//n///n/n////n//n///n//n
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (binary_expression
+          left: (binary_expression
+            left: (symbol)
+            right: (symbol))
+          right: (binary_expression
+            left: (symbol)
+            right: (binary_expression
+              left: (string_literal)
+              right: (symbol))))
+        right: (binary_expression
+          left: (symbol)
+          right: (binary_expression
+            left: (string_literal)
+            right: (symbol))))
+      right: (symbol))))

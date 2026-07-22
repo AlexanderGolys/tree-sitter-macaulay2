@@ -17,7 +17,7 @@
 
 (symbol) @variable
 
-; A name quoted after a cobinding keyword reads as a variable, whatever its lexical kind
+; A name quoted after a quote specifier reads as a variable, whatever its lexical kind
 (_ symbol: _ @variable)
 
 ; Operators
@@ -100,8 +100,12 @@
   "profile"
   "TEST"
   "breakpoint"
+  "finish"
   "step"
 ] @keyword.debug
+
+(debug_clause
+  keyword: _ @keyword.debug)
 
 [
   "and"
@@ -249,12 +253,7 @@
   left: (symbol) @function.builtin
   operator: "SPACE"
   right: (sequence
-    [
-      (cobinding)
-      (local_cobinding)
-      (global_cobinding)
-      (thread_cobinding)
-    ]
+    (quote_expression)
     .
     (_) @type
     .
@@ -391,4 +390,3 @@
               (string_literal) @string.special.path)
           (string_literal) @string.special.path]
   ) (#eq? @function.builtin "load"))
-

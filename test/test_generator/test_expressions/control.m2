@@ -7,6 +7,8 @@ break
 continue
 continue x
 return x
+finish
+finish x
 try a then b else c
 if a then if b then x else y
 if a then x else if b then y else z
@@ -22,3 +24,14 @@ if if 1 then 2 then 3 else 5
 if 1 then if 2 then 3 else 4
 while for i in L list 1 do 2 do 3
 p = x -> toString if instance(x, Package) then x else if package x =!= null then package x else Core
+
+--- TEST top-level global quote and following cell
+global x
+x
+---
+--- TEST multiline if-then-else
+if x then
+  y
+else
+  z
+---

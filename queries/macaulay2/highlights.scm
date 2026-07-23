@@ -290,7 +290,8 @@
   (#any-of? @boolean "true" "false"))
 
 ((symbol) @error
-  (#any-of? @error "error" "stderr"))
+  (#any-of? @error "error" "stderr")
+  (#set! priority 160))
 
 
 

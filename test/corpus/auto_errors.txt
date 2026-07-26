@@ -117,3 +117,27 @@ symbol //////
 :error
 ==================
 {;,}
+
+==================
+(21) if 1,2 then 3 [auto errors]
+:error
+==================
+if 1,2 then 3
+
+==================
+(22) if 1;2 then 3 [auto errors]
+:error
+==================
+if 1;2 then 3
+
+==================
+(23) if 12 then 3;3 else 4 [auto errors]
+:error
+==================
+if 12 then 3;3 else 4
+
+==================
+(24) if 12 then 3,3 else 4 [auto errors]
+:error
+==================
+if 12 then 3,3 else 4

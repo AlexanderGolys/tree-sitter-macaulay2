@@ -1,0 +1,229 @@
+==================
+Top-level trailing nulls
+==================
+2,,
+---
+
+(source_file
+  (cell
+    (naked_sequence
+      (integer_literal)
+      (null)
+      (null))))
+
+==================
+Top-level naked sequence is muted
+==================
+2,;
+---
+
+(source_file
+  (cell
+    (muted
+      (naked_sequence
+        (integer_literal)
+        (null)))))
+
+==================
+Top-level scalar is muted
+==================
+2;
+---
+
+(source_file
+  (cell
+    (muted
+      (integer_literal))))
+
+==================
+Top-level scalar is ordinary
+==================
+2
+---
+
+(source_file
+  (cell
+    (integer_literal)))
+
+==================
+Leading and trailing nulls
+==================
+(,)
+---
+
+(source_file
+  (cell
+    (sequence
+      (null)
+      (null))))
+
+==================
+Each semicolon has one muted node
+==================
+(1;2;3)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (muted
+        (integer_literal))
+      (muted
+        (integer_literal))
+      (integer_literal))))
+
+==================
+Muted sequence before a scalar
+==================
+(1,;2)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (muted
+        (integer_literal)
+        (null))
+      (integer_literal))))
+
+==================
+Muted scalar before a sequence
+==================
+(1;2,)
+---
+
+(source_file
+  (cell
+    (sequence
+      (muted
+        (integer_literal))
+      (integer_literal)
+      (null))))
+
+==================
+Nulls and muting in a list
+==================
+{,;2,}
+---
+
+(source_file
+  (cell
+    (list
+      (muted
+        (null)
+        (null))
+      (integer_literal)
+      (null))))
+
+==================
+Nulls and muting in an array
+==================
+[,;2,]
+---
+
+(source_file
+  (cell
+    (array
+      (muted
+        (null)
+        (null))
+      (integer_literal)
+      (null))))
+
+==================
+Nulls and muting in an angle-bar list
+==================
+<|,;2,|>
+---
+
+(source_file
+  (cell
+    (angle_bar_list
+      (muted
+        (null)
+        (null))
+      (integer_literal)
+      (null))))
+
+==================
+Top-level newline continues an incomplete naked sequence
+==================
+2,
+3
+---
+
+(source_file
+  (cell
+    (naked_sequence
+      (integer_literal)
+      (integer_literal))))
+
+==================
+Container newline continues the sequence
+==================
+(2,
+3)
+---
+
+(source_file
+  (cell
+    (sequence
+      (integer_literal)
+      (integer_literal))))
+
+==================
+Top-level comment keeps an incomplete naked sequence open
+==================
+2, -- comment
+3
+---
+
+(source_file
+  (cell
+    (naked_sequence
+      (integer_literal)
+      (line_comment)
+      (integer_literal))))
+
+==================
+Container comment continues the sequence
+==================
+(2, -- comment
+3)
+---
+
+(source_file
+  (cell
+    (sequence
+      (integer_literal)
+      (line_comment)
+      (integer_literal))))
+
+==================
+Comma is below assignment
+==================
+a = b, c
+---
+
+(source_file
+  (cell
+    (naked_sequence
+      (binary_expression
+        (symbol)
+        (symbol))
+      (symbol))))
+
+==================
+Comma is below control expressions
+==================
+if a then b, c
+---
+
+(source_file
+  (cell
+    (naked_sequence
+      (if_statement
+        (symbol)
+        (then_clause
+          (symbol)))
+      (symbol))))

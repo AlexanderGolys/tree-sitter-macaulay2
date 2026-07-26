@@ -51,7 +51,16 @@ enum TokenType {
   // the closing delimiter can stay anonymous.
   RAW_STRING_CONTENT,
   RAW_STRING_ESCAPE,
-  RAW_STRING_END
+  RAW_STRING_END,
+
+  // Missing comma operands are real null values in Macaulay2. These external
+  // tokens are zero-width, like SPACE, but remain context-specific because
+  // source cells and bracketed containers have different possible closing
+  // boundaries. A separate token for operands immediately before a comma
+  // prevents `()` from acquiring a spurious null.
+  NULL_BEFORE_COMMA,
+  CELL_TRAILING_NULL,
+  CONTAINER_TRAILING_NULL
 };
 
 typedef enum { SCAN_NONE, SCAN_DONE, SCAN_FAIL } ScanResult;
@@ -176,6 +185,48 @@ static bool can_scan_adjacency(const bool *valid_symbols) {
 static bool can_scan_raw_string(const bool *valid_symbols) {
   return valid_symbols[RAW_STRING_CONTENT] ||
          valid_symbols[RAW_STRING_ESCAPE] || valid_symbols[RAW_STRING_END];
+}
+
+static bool can_scan_null(const bool *valid_symbols) {
+  return valid_symbols[NULL_BEFORE_COMMA] ||
+         valid_symbols[CELL_TRAILING_NULL] ||
+         valid_symbols[CONTAINER_TRAILING_NULL];
+}
+
+// Emit a zero-width null only when the next token proves that the comma
+// operand is absent. Parser state determines whether source-cell or container
+// newline rules apply.
+static bool scan_null(TSLexer *lexer, const bool *valid_symbols) {
+  lexer->mark_end(lexer);
+
+  if (lexer->eof(lexer))
+    return valid_symbols[CELL_TRAILING_NULL] &&
+           emit(lexer, CELL_TRAILING_NULL);
+
+  int32_t c = lexer->lookahead;
+
+  if (c == ',' && valid_symbols[NULL_BEFORE_COMMA])
+    return emit(lexer, NULL_BEFORE_COMMA);
+
+  if (valid_symbols[CONTAINER_TRAILING_NULL]) {
+    if (c == ';')
+      return emit(lexer, CONTAINER_TRAILING_NULL);
+
+    if (c == ')' || c == ']' || c == '}')
+      return emit(lexer, CONTAINER_TRAILING_NULL);
+
+    if (c == '|') {
+      advance(lexer);
+      if (lexer->lookahead == '>')
+        return emit(lexer, CONTAINER_TRAILING_NULL);
+    }
+  }
+
+  if (valid_symbols[CELL_TRAILING_NULL] &&
+      (c == ';' || c == '\n' || c == '\r'))
+    return emit(lexer, CELL_TRAILING_NULL);
+
+  return false;
 }
 
 // Handle all dot-led non-float forms first. This is where we decide whether a
@@ -492,6 +543,12 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
     skip_number_whitespace(lexer);
   else
     skip_whitespace(lexer);
+
+  // Unlike other external tokens, CELL_TRAILING_NULL must be available at EOF.
+  // Check nulls before the generic EOF return and before numeric/adjacency
+  // scanning so an omitted operand cannot be reinterpreted as an operator.
+  if (can_scan_null(valid_symbols) && scan_null(lexer, valid_symbols))
+    return true;
 
   if (lexer->eof(lexer))
     return false;

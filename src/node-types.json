@@ -120,6 +120,14 @@
         {
           "type": "expression",
           "named": true
+        },
+        {
+          "type": "muted",
+          "named": true
+        },
+        {
+          "type": "null",
+          "named": true
         }
       ]
     }
@@ -134,6 +142,14 @@
       "types": [
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "muted",
+          "named": true
+        },
+        {
+          "type": "null",
           "named": true
         }
       ]
@@ -602,11 +618,19 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": false,
+      "multiple": false,
+      "required": true,
       "types": [
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "muted",
+          "named": true
+        },
+        {
+          "type": "naked_sequence",
           "named": true
         }
       ]
@@ -907,6 +931,14 @@
         {
           "type": "expression",
           "named": true
+        },
+        {
+          "type": "muted",
+          "named": true
+        },
+        {
+          "type": "null",
+          "named": true
         }
       ]
     }
@@ -921,6 +953,48 @@
       "types": [
         {
           "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "muted",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "naked_sequence",
+          "named": true
+        },
+        {
+          "type": "null",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "naked_sequence",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "null",
           "named": true
         }
       ]
@@ -977,10 +1051,14 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "muted",
           "named": true
         }
       ]
@@ -1197,6 +1275,14 @@
       "types": [
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "muted",
+          "named": true
+        },
+        {
+          "type": "null",
           "named": true
         }
       ]
@@ -1879,6 +1965,10 @@
   {
     "type": "not",
     "named": false
+  },
+  {
+    "type": "null",
+    "named": true
   },
   {
     "type": "of",

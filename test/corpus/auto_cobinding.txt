@@ -723,5 +723,6 @@ symbol;;
 
 (source_file
   (cell
-    (quote_expression
-      symbol: (keyword))))
+    (muted
+      (quote_expression
+        symbol: (keyword)))))

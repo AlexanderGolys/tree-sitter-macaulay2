@@ -9,3 +9,10 @@ test("can load grammar", () => {
     parser.setLanguage(language);
   });
 });
+
+test("exports the injection query", async () => {
+  const { default: language } = await import("./index.js");
+
+  assert.equal(typeof language.INJECTIONS_QUERY, "string");
+  assert.match(language.INJECTIONS_QUERY, /@injection\.content/);
+});

@@ -7,17 +7,18 @@
       "path": ".",
       "file-types": ["m2", "M2", "macaulay2"],
       "highlights": "queries/macaulay2/highlights.scm",
+      "injections": "queries/macaulay2/injections.scm",
       "tags": "queries/macaulay2/tags.scm",
       "indent": "queries/macaulay2/indents.scm",
       "folds": "queries/macaulay2/folds.scm",
       "description": "Tree-sitter grammar for the Macaulay2 language",
       "repository": "https://github.com/AlexanderGolys/tree-sitter-macaulay2",
-      "version": "3.0.2"
+      "version": "4.0.0"
     }
   ],
 
   "metadata": {
-    "version": "3.0.2",
+    "version": "4.0.0",
     "license": "MIT",
     "description": "Macaulay2 grammar for tree-sitter",
     "links": {

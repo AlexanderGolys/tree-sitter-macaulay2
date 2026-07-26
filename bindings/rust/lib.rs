@@ -36,17 +36,69 @@ pub const NODE_TYPES: &'static str = include_str!("../../src/node-types.json");
 // Uncomment these to include any queries that this grammar contains
 
 // pub const HIGHLIGHTS_QUERY: &'static str = include_str!("../../queries/highlights.scm");
-// pub const INJECTIONS_QUERY: &'static str = include_str!("../../queries/injections.scm");
+// pub const INJECTIONS_QUERY: &'static str = include_str!("../../queries/macaulay2/injections.scm");
 // pub const LOCALS_QUERY: &'static str = include_str!("../../queries/locals.scm");
 // pub const TAGS_QUERY: &'static str = include_str!("../../queries/tags.scm");
 
 #[cfg(test)]
 mod tests {
+    use tree_sitter::{InputEdit, Parser, Point};
+
     #[test]
     fn test_can_load_grammar() {
-        let mut parser = tree_sitter::Parser::new();
+        let mut parser = Parser::new();
         parser
             .set_language(&super::language())
             .expect("Error loading Macaulay2 language");
+    }
+
+    #[test]
+    fn incremental_edit_removes_zero_width_nulls() {
+        fn null_ranges(tree: &tree_sitter::Tree) -> Vec<std::ops::Range<usize>> {
+            let mut cursor = tree.walk();
+            let mut ranges = Vec::new();
+
+            loop {
+                let node = cursor.node();
+                if node.kind() == "null" {
+                    ranges.push(node.byte_range());
+                }
+
+                if cursor.goto_first_child() {
+                    continue;
+                }
+                while !cursor.goto_next_sibling() {
+                    if !cursor.goto_parent() {
+                        return ranges;
+                    }
+                }
+            }
+        }
+
+        let mut parser = Parser::new();
+        parser
+            .set_language(&super::language())
+            .expect("Error loading Macaulay2 language");
+
+        let mut tree = parser.parse("2,,\n", None).expect("initial parse failed");
+        assert!(!tree.root_node().has_error());
+        let ranges = null_ranges(&tree);
+        assert_eq!(ranges.len(), 2);
+        assert!(ranges.iter().all(|range| range.is_empty()));
+
+        tree.edit(&InputEdit {
+            start_byte: 2,
+            old_end_byte: 3,
+            new_end_byte: 3,
+            start_position: Point::new(0, 2),
+            old_end_position: Point::new(0, 3),
+            new_end_position: Point::new(0, 3),
+        });
+
+        let tree = parser
+            .parse("2,3\n", Some(&tree))
+            .expect("incremental parse failed");
+        assert!(!tree.root_node().has_error());
+        assert!(null_ranges(&tree).is_empty());
     }
 }

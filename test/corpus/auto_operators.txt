@@ -78,7 +78,8 @@ f("a", {b}, (c))
 (source_file
   (cell
     (list
-      (symbol))))
+      (symbol)
+      (null))))
 
 
 ==================
@@ -100,7 +101,9 @@ f("a", {b}, (c))
 
 (source_file
   (cell
-    (sequence)))
+    (sequence
+      (null)
+      (null))))
 
 
 ==================
@@ -113,6 +116,7 @@ f("a", {b}, (c))
   (cell
     (sequence
       (symbol)
+      (null)
       (symbol))))
 
 

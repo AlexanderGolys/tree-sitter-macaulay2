@@ -15,7 +15,7 @@ try {
 
 const queries = [
   ["HIGHLIGHTS_QUERY", `${root}/queries/macaulay2/highlights.scm`],
-  ["INJECTIONS_QUERY", `${root}/queries/injections.scm`],
+  ["INJECTIONS_QUERY", `${root}/queries/macaulay2/injections.scm`],
   ["LOCALS_QUERY", `${root}/queries/locals.scm`],
   ["TAGS_QUERY", `${root}/queries/macaulay2/tags.scm`],
 ];

@@ -2,6 +2,8 @@
 // $$$ignore()
 
 const PREC = {
+    MUTED: 7,
+    NAKED_SEQUENCE: 10,
     CONTROL: 12,
     ASSIGNMENT: 13,
     LOOP_CLAUSE: 16,
@@ -186,6 +188,9 @@ export default grammar({
         $._raw_string_content, // Raw string text chunks
         $.raw_string_escape, // Doubled-slash raw string escapes
         $._raw_string_end, // Raw string terminator ///
+        $._null_before_comma, // Missing leading/interior comma operand
+        $._cell_trailing_null, // Missing final operand at source-cell scope
+        $._container_trailing_null, // Missing final operand in delimiters
     ],
 
     rules: {
@@ -193,18 +198,50 @@ export default grammar({
             optional(
                 seq(
                     repeat(choice(
-                        seq(alias($._silenced_expression, $.cell), optional('\n')),
-                        seq(alias($._possibly_comma_expression, $.cell), '\n'),
+                        seq(alias($._muted_cell, $.cell), optional('\n')),
+                        seq(alias($._ordinary_cell, $.cell), '\n'),
                     )),
-                    optional(alias($._possibly_comma_expression, $.cell)),
+                    optional(alias($._ordinary_cell, $.cell)),
                 ),
             ),
 
+        // Keep `cell` as the source-file wrapper while retaining the semantic
+        // node beneath it. In particular, `2;` is `cell(muted(2))`, not a cell
+        // whose anonymous `;` is indistinguishable from an ordinary `2`.
+        _muted_cell: $ => alias($._cell_muted, $.muted),
 
-        // A semicolon terminates exactly one non-empty expression.  It is a
-        // separator between statements, not a repeatable postfix operator:
-        // `x;x;` is two silenced expressions, while `x;;` is invalid.
-        _silenced_expression: $ => seq($._possibly_comma_expression, ';'),
+        _ordinary_cell: $ =>
+            choice(
+                alias($._cell_naked_sequence, $.naked_sequence),
+                $.expression,
+            ),
+
+        // Semicolon has the lowest operator binding strength in Macaulay2.
+        // Each occurrence mutes exactly one preceding expression; repeated
+        // semicolons therefore produce sibling `muted` nodes in a container.
+        _cell_muted: $ =>
+            prec.right(
+                PREC.MUTED,
+                seq(
+                    choice(
+                        alias($._cell_naked_sequence, $.naked_sequence),
+                        $.expression,
+                    ),
+                    ';',
+                ),
+            ),
+
+        _container_muted: $ =>
+            prec.right(
+                PREC.MUTED,
+                seq(
+                    choice(
+                        $._container_sequence,
+                        $.expression,
+                    ),
+                    ';',
+                ),
+            ),
 
         symbol: _ => /[a-zA-Z][a-zA-Z0-9'\$]*/,
 
@@ -260,15 +297,23 @@ export default grammar({
 
         parenthesized_expression: $ =>
             prec.left(PREC.BRACKET_HIGH, seq('(', choice(
-                seq(repeat($._silenced_expression), $.expression),
-                repeat1($._silenced_expression),
+                seq(
+                    repeat(alias($._container_muted, $.muted)),
+                    $.expression,
+                ),
+                repeat1(alias($._container_muted, $.muted)),
             ), ')')),
         
 
         sequence: $ =>
             prec.left(PREC.BRACKET_HIGH, choice(
                 seq('(', ')'),                                                
-                seq('(', repeat($._silenced_expression), $._comma_expression, ')'), 
+                seq(
+                    '(',
+                    repeat(alias($._container_muted, $.muted)),
+                    $._container_sequence,
+                    ')',
+                ),
             )),
 
         list: $ => prec.left(PREC.BRACKET_HIGH, seq('{', optional($._multi_expression), '}')),
@@ -459,23 +504,48 @@ export default grammar({
             )
         ),
 
-        _comma_expression: $ => 
-            seq(
-                repeat1(seq(
-                    optional($.expression), 
-                    ','
-                )), 
-            optional($.expression)
+        // Comma has lower precedence than every ordinary expression operator.
+        // At source scope it needs a public wrapper because there is no
+        // enclosing bracket node to identify the resulting sequence.
+        _cell_naked_sequence: $ =>
+            prec.left(
+                PREC.NAKED_SEQUENCE,
+                seq(
+                    repeat1(seq(
+                        choice(alias($._null_before_comma, $.null), $.expression),
+                        ',',
+                    )),
+                    choice(alias($._cell_trailing_null, $.null), $.expression),
+                ),
             ),
 
-        _possibly_comma_expression: $ => choice($._comma_expression, $.expression),
+        // Within brackets, the outer sequence/list/array node already provides
+        // that identity. Keep this rule hidden so its operands (including
+        // zero-width nulls) become direct children of the semantic container.
+        _container_sequence: $ =>
+            prec.left(
+                PREC.NAKED_SEQUENCE,
+                seq(
+                    repeat1(seq(
+                        choice(alias($._null_before_comma, $.null), $.expression),
+                        ',',
+                    )),
+                    choice(alias($._container_trailing_null, $.null), $.expression),
+                ),
+            ),
+
+        _container_expression: $ =>
+            choice(
+                $._container_sequence,
+                $.expression,
+            ),
 
         _multi_expression: $ =>
             choice(
-                $._possibly_comma_expression,
+                $._container_expression,
                 seq(
-                    repeat1($._silenced_expression),
-                    optional($._possibly_comma_expression),
+                    repeat1(alias($._container_muted, $.muted)),
+                    optional($._container_expression),
                 ),
             ),
 

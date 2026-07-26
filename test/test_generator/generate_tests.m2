@@ -160,7 +160,11 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
     else if name == "Unary" then (
         op := tsTokenValue expr#1;
         children := if tsIsDummy expr#2 then {} else {tsChild("operand", tsConvertExpr expr#2)};
-        if member(op, debugUnary) then (
+        if op == "," then tsNode(
+            "naked_sequence",
+            apply(tsFlattenComma expr, item ->
+                tsAnon (if tsIsDummy item then tsLeaf "null" else tsConvertExpr item)))
+        else if member(op, debugUnary) then (
             if debugNamedUnary#?op
             then tsNode(debugNamedUnary#op, apply(children, c -> tsAnon c#1))
             else tsNode("debug_clause", apply(children, c -> tsAnon c#1))
@@ -216,13 +220,12 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
 )
 
 tsFlattenComma = expr -> (
-    if tsIsDummy expr then {}
+    if tsIsDummy expr then {expr}
     else if instance(expr, List) and
             #expr == 3 and
             tsTag expr == "Unary" and
-            tsTokenValue expr#1 == "," and
-            tsIsDummy expr#2
-        then {}
+            tsTokenValue expr#1 == ","
+        then join({{"dummy"}}, tsFlattenComma expr#2)
     else if instance(expr, List) and
             tsTag expr == "Binary" and
             tsTokenValue expr#2 == "," then
@@ -232,7 +235,10 @@ tsFlattenComma = expr -> (
 
 tsConvertBinary(List) := expr -> (
     op := tsTokenValue expr#2;
-    if op == "," then tsNode("sequence", apply(tsFlattenComma expr, item -> tsAnon tsConvertExpr item))
+    if op == "," then tsNode(
+        "naked_sequence",
+        apply(tsFlattenComma expr, item ->
+            tsAnon (if tsIsDummy item then tsLeaf "null" else tsConvertExpr item)))
     else tsNode("binary_expression", {
         tsChild("left", tsConvertExpr(expr#1, tsStartsWith("..", op))),
         tsChild("right", tsConvertExpr expr#3)
@@ -286,21 +292,21 @@ tsConvertTry(List) := expr -> (
     tsNode("try_statement", children)
 )
 
--- A trailing ';' silences an expression: it is evaluated but its value is
--- discarded.  parse models this (in bracket context) as a right-associative
+-- A trailing ';' mutes an expression: it is evaluated but its value is
+-- discarded. parse models this (in bracket context) as a right-associative
 -- Binary with operator ';'; a trailing ';' leaves a dummy right operand.
--- tsFlattenSemicolon splits such a chain into {silenced, content} items.
-tsFlattenSemicolon = expr -> (
+-- tsFlattenMuted splits such a chain into {muted, content} items.
+tsFlattenMuted = expr -> (
     if tsIsDummy expr then {}
     else if instance(expr, List) and tsTag expr == "Binary" and tsTokenValue expr#2 == ";"
-        then join({{true, expr#1}}, tsFlattenSemicolon expr#3)
+        then join({{true, expr#1}}, tsFlattenMuted expr#3)
     else {{false, expr}}
 )
 
--- A statement is a comma-list (=> Sequence) when its top node is a comma
+-- A statement is a sequence when its top node is a comma
 -- operator: Binary `a , b` (incl. trailing-comma `a ,` with a dummy operand)
 -- or Unary `, x` / `,` (leading/empty comma, e.g. `(,)`).
-tsIsCommaList = expr -> (
+tsIsDelimitation = expr -> (
     instance(expr, List) and #expr >= 2 and (
         (tsTag expr == "Binary" and #expr >= 3 and tsTokenValue expr#2 == ",")
         or (tsTag expr == "Unary" and tsTokenValue expr#1 == ",")
@@ -311,25 +317,31 @@ tsIsCommaList = expr -> (
 -- is a comma-list; otherwise it is grouping/block => `parenthesized_expression`.
 -- (`()` never reaches here; it is EmptyParentheses.)
 tsRoundParenKind = inner -> (
-    items := tsFlattenSemicolon inner;
+    items := tsFlattenMuted inner;
     if #items == 0 then "sequence"
     else (
         last := items#(#items - 1);
-        if (not last#0) and tsIsCommaList last#1 then "sequence"
+        if (not last#0) and tsIsDelimitation last#1 then "sequence"
         else "parenthesized_expression"
     )
 )
 
-tsCommaChildren = content -> apply(tsFlattenComma content, item -> tsAnon tsConvertExpr item)
+-- Within brackets, the outer semantic container supplies sequence identity.
+-- Flatten comma operands directly into it, retaining dummies as `null`; a
+-- semicolon groups all operands of its sequence under one `muted` wrapper.
+tsCommaChildren = content -> apply(tsFlattenComma content, item ->
+    tsAnon (if tsIsDummy item then tsLeaf "null" else tsConvertExpr item))
 
--- _silenced_expression is internal; the literal `;` remains a syntax token
--- for consumers that inspect all children, while corpus trees stay uncluttered.
-tsConvertMultiChildren = inner -> flatten apply(tsFlattenSemicolon inner, item ->
-    tsCommaChildren item#1)
+tsConvertMultiChildren = inner -> flatten apply(tsFlattenMuted inner, item ->
+    if item#0
+        then {tsAnon tsNode("muted", tsCommaChildren item#1)}
+        else tsCommaChildren item#1)
 
--- M2's raw top-level CST omits a final semicolon.  Recover only that visible
--- top-level fact from the original source; do not change the parse context by
--- wrapping it.
+-- M2's raw top-level CST omits cell terminators. In a generated single-line
+-- input, every parsed expression before the last was terminated by `;`; the
+-- final expression is muted only when the original source has a real trailing
+-- semicolon. Preserve the quote exception: `symbol;` quotes punctuation, while
+-- `symbol;;` is that quote followed by a terminator.
 tsConvertTop = (source, parsed) -> (
     cells := {};
     trailingSemicolons := tsTrailingSemicolonCount source;
@@ -337,19 +349,23 @@ tsConvertTop = (source, parsed) -> (
         (not tsIsSemicolonQuote parsed or trailingSemicolons > 1);
     for index from 0 to #parsed - 1 do (
         expression := parsed#index;
-        cell := if hasTrailingSemicolon and index == #parsed - 1
-            -- source_file aliases _silenced_expression directly to cell, so
-            -- its contents remain but the intermediate helper is hidden.
-            then tsNode("cell", tsCommaChildren expression)
-            else tsNode("cell", tsCommaChildren expression);
+        content := tsConvertExpr expression;
+        isMuted := index < #parsed - 1 or
+            (hasTrailingSemicolon and index == #parsed - 1);
+        cell := tsNode("cell", {
+            tsAnon (if isMuted
+                then tsNode("muted", {tsAnon content})
+                else content)
+        });
         cells = append(cells, tsAnon cell);
     );
     tsNode("source_file", cells)
 )
 
--- Every fuzz word is emitted as 'word;', i.e. a top-level cell.  As above,
--- the source_file alias hides the _silenced_expression helper.
-tsConvertFuzzCell = word -> tsNode("cell", tsCommaChildren (parse word)#0)
+-- Every fuzz word is emitted as `word;`, i.e. a muted top-level cell.
+tsConvertFuzzCell = word -> tsNode("cell", {
+    tsAnon tsNode("muted", {tsAnon tsConvertExpr (parse word)#0})
+})
 
 tsConvertFuzzTop = words ->
     tsNode("source_file", apply(words, word -> tsAnon tsConvertFuzzCell word))

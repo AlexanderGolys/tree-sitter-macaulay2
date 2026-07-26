@@ -1,4 +1,4 @@
-.1p.1
+ .1p.1
 1p.1e.1
 1p..1e.1
 1p
@@ -18,3 +18,7 @@ symbol //////
 {;}
 {,;;}
 {;,}
+if 1,2 then 3
+if 1;2 then 3
+if 12 then 3;3 else 4
+if 12 then 3,3 else 4

@@ -1,0 +1,35 @@
+==================
+(1) "ordinary" [auto strings]
+==================
+"ordinary"
+---
+
+(source_file
+  (cell
+    (string_literal)))
+
+
+==================
+(2) ///raw/// [auto strings]
+==================
+///raw///
+---
+
+(source_file
+  (cell
+    (raw_string_literal)))
+
+
+==================
+(3) ("escaped\n", ///hello/////) [auto strings]
+==================
+("escaped\n", ///hello/////)
+---
+
+(source_file
+  (cell
+    (sequence
+      (string_literal
+        (escape_sequence))
+      (raw_string_literal
+        (escape_sequence)))))

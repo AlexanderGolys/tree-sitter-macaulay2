@@ -13,12 +13,12 @@
       "folds": "queries/macaulay2/folds.scm",
       "description": "Tree-sitter grammar for the Macaulay2 language",
       "repository": "https://github.com/AlexanderGolys/tree-sitter-macaulay2",
-      "version": "4.0.1"
+      "version": "5.0.0"
     }
   ],
 
   "metadata": {
-    "version": "4.0.1",
+    "version": "5.0.0",
     "license": "MIT",
     "description": "Macaulay2 grammar for tree-sitter",
     "links": {

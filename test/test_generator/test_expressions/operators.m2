@@ -51,4 +51,22 @@ x."a"
 "a"."a"
 "a".?2
 "a".2
-
+#f x
+#f(x)
+#f x!
+#f[x]
+#f * x
+#f @@ x
+#f x y
+#f 2
+#f {x}
+#f "x"
+# f SPACE x
+##f x
+#f x^*
+#f x (*)
+#f <|x|>
+#f @ x
+#f # x
+#f ^ x
+a.#f x

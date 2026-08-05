@@ -76,6 +76,10 @@
         "named": true
       },
       {
+        "type": "raw_string_literal",
+        "named": true
+      },
+      {
         "type": "return_statement",
         "named": true
       },
@@ -118,15 +122,15 @@
       "required": false,
       "types": [
         {
+          "type": "empty_component",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         },
         {
           "type": "muted",
-          "named": true
-        },
-        {
-          "type": "null",
           "named": true
         }
       ]
@@ -141,15 +145,15 @@
       "required": false,
       "types": [
         {
+          "type": "empty_component",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         },
         {
           "type": "muted",
-          "named": true
-        },
-        {
-          "type": "null",
           "named": true
         }
       ]
@@ -865,6 +869,11 @@
     }
   },
   {
+    "type": "keyword",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "lambda_expression",
     "named": true,
     "fields": {
@@ -929,15 +938,15 @@
       "required": false,
       "types": [
         {
+          "type": "empty_component",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         },
         {
           "type": "muted",
-          "named": true
-        },
-        {
-          "type": "null",
           "named": true
         }
       ]
@@ -967,15 +976,15 @@
       "required": true,
       "types": [
         {
+          "type": "empty_component",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         },
         {
           "type": "naked_sequence",
-          "named": true
-        },
-        {
-          "type": "null",
           "named": true
         }
       ]
@@ -990,11 +999,11 @@
       "required": true,
       "types": [
         {
-          "type": "expression",
+          "type": "empty_component",
           "named": true
         },
         {
-          "type": "null",
+          "type": "expression",
           "named": true
         }
       ]
@@ -1251,6 +1260,21 @@
     }
   },
   {
+    "type": "raw_string_literal",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "return_statement",
     "named": true,
     "fields": {},
@@ -1274,15 +1298,15 @@
       "required": false,
       "types": [
         {
+          "type": "empty_component",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         },
         {
           "type": "muted",
-          "named": true
-        },
-        {
-          "type": "null",
           "named": true
         }
       ]
@@ -1314,10 +1338,6 @@
       "types": [
         {
           "type": "escape_sequence",
-          "named": true
-        },
-        {
-          "type": "raw_string_escape",
           "named": true
         }
       ]
@@ -1902,6 +1922,10 @@
     "named": false
   },
   {
+    "type": "empty_component",
+    "named": true
+  },
+  {
     "type": "escape_sequence",
     "named": true
   },
@@ -1942,10 +1966,6 @@
     "named": true
   },
   {
-    "type": "keyword",
-    "named": true
-  },
-  {
     "type": "line_comment",
     "named": true,
     "extra": true
@@ -1967,10 +1987,6 @@
     "named": false
   },
   {
-    "type": "null",
-    "named": true
-  },
-  {
     "type": "of",
     "named": false
   },
@@ -1981,10 +1997,6 @@
   {
     "type": "profile",
     "named": false
-  },
-  {
-    "type": "raw_string_escape",
-    "named": true
   },
   {
     "type": "return",

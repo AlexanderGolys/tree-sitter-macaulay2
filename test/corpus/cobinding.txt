@@ -360,7 +360,7 @@ symbol symbol //////
     (binary_expression
       left: (quote_expression
         symbol: (keyword))
-      right: (string_literal))))
+      right: (raw_string_literal))))
 
 ==================
 (26) multiline if-then completes; stray else starts a new cell and errors

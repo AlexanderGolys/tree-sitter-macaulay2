@@ -7,8 +7,8 @@
 (source_file
   (cell
     (sequence
-      (null)
-      (null))))
+      (empty_component)
+      (empty_component))))
 
 
 ==================
@@ -32,9 +32,9 @@
   (cell
     (muted
       (sequence
-        (null)
-        (null)
-        (null)))))
+        (empty_component)
+        (empty_component)
+        (empty_component)))))
 
 
 ==================
@@ -48,10 +48,10 @@
     (muted
       (sequence
         (muted
-          (null)
-          (null))
-        (null)
-        (null)))))
+          (empty_component)
+          (empty_component))
+        (empty_component)
+        (empty_component)))))
 
 
 ==================
@@ -64,12 +64,12 @@
   (cell
     (list
       (muted
-        (null)
-        (null)
-        (null))
+        (empty_component)
+        (empty_component)
+        (empty_component))
       (muted
-        (null)
-        (null)))))
+        (empty_component)
+        (empty_component)))))
 
 
 ==================
@@ -114,13 +114,13 @@
   (cell
     (muted
       (naked_sequence
-        (null)
-        (null))))
+        (empty_component)
+        (empty_component))))
   (cell
     (muted
       (naked_sequence
-        (null)
-        (null)
+        (empty_component)
+        (empty_component)
         (list
           (binary_expression
             left: (parenthesized_expression
@@ -134,17 +134,17 @@
             right: (angle_bar_list
               (binary_expression
                 left: (list
-                  (null)
-                  (null)
+                  (empty_component)
+                  (empty_component)
                   (sequence))
                 right: (sequence
                   (binary_expression
                     left: (list)
                     right: (angle_bar_list
                       (muted
-                        (null)
-                        (null))))
-                  (null))))))
+                        (empty_component)
+                        (empty_component))))
+                  (empty_component))))))
         (list))))
   (cell
     (muted
@@ -152,8 +152,8 @@
   (cell
     (muted
       (naked_sequence
-        (null)
-        (null)))))
+        (empty_component)
+        (empty_component)))))
 
 
 ==================
@@ -253,11 +253,11 @@ n/n//n///n/n//n///n/n////n//n///n//n
           right: (binary_expression
             left: (symbol)
             right: (binary_expression
-              left: (string_literal)
+              left: (raw_string_literal)
               right: (symbol))))
         right: (binary_expression
           left: (symbol)
           right: (binary_expression
-            left: (string_literal)
+            left: (raw_string_literal)
             right: (symbol))))
       right: (symbol))))

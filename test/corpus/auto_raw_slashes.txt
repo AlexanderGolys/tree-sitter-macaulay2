@@ -6,8 +6,8 @@ auto_raw_0: n=5 esc=1 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_1: n=17 esc=7 end [strings]
@@ -17,14 +17,14 @@ auto_raw_1: n=17 esc=7 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_2: n=14 esc=6 middle [strings]
@@ -34,13 +34,13 @@ auto_raw_2: n=14 esc=6 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_3: n=2 esc=0 middle [strings]
@@ -50,7 +50,7 @@ auto_raw_3: n=2 esc=0 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_4: n=17 esc=7 end [strings]
@@ -60,14 +60,14 @@ auto_raw_4: n=17 esc=7 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_5: n=5 esc=1 end [strings]
@@ -77,8 +77,8 @@ auto_raw_5: n=5 esc=1 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_6: n=3 esc=0 end [strings]
@@ -88,7 +88,7 @@ auto_raw_6: n=3 esc=0 end [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_7: n=15 esc=6 end [strings]
@@ -98,13 +98,13 @@ auto_raw_7: n=15 esc=6 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_8: n=2 esc=0 middle [strings]
@@ -114,7 +114,7 @@ auto_raw_8: n=2 esc=0 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_9: n=16 esc=7 middle [strings]
@@ -124,14 +124,14 @@ auto_raw_9: n=16 esc=7 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_10: n=8 esc=3 middle [strings]
@@ -141,10 +141,10 @@ auto_raw_10: n=8 esc=3 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_11: n=2 esc=0 middle [strings]
@@ -154,7 +154,7 @@ auto_raw_11: n=2 esc=0 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_12: n=11 esc=4 end [strings]
@@ -164,11 +164,11 @@ auto_raw_12: n=11 esc=4 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_13: n=18 esc=8 middle [strings]
@@ -178,15 +178,15 @@ auto_raw_13: n=18 esc=8 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_14: n=10 esc=4 middle [strings]
@@ -196,11 +196,11 @@ auto_raw_14: n=10 esc=4 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_15: n=2 esc=0 middle [strings]
@@ -210,7 +210,7 @@ auto_raw_15: n=2 esc=0 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_16: n=14 esc=6 middle [strings]
@@ -221,13 +221,13 @@ a///
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_17: n=4 esc=1 middle [strings]
@@ -237,8 +237,8 @@ auto_raw_17: n=4 esc=1 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_18: n=19 esc=8 end [strings]
@@ -248,15 +248,15 @@ auto_raw_18: n=19 esc=8 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_19: n=16 esc=7 middle [strings]
@@ -266,14 +266,14 @@ auto_raw_19: n=16 esc=7 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_20: n=11 esc=4 end [strings]
@@ -283,11 +283,11 @@ auto_raw_20: n=11 esc=4 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_21: n=6 esc=2 middle [strings]
@@ -297,7 +297,7 @@ auto_raw_21: n=6 esc=2 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_22: n=9 esc=3 end [strings]
@@ -307,9 +307,9 @@ auto_raw_22: n=9 esc=3 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_23: n=15 esc=6 end [strings]
@@ -319,13 +319,13 @@ auto_raw_23: n=15 esc=6 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_24: n=12 esc=5 middle [strings]
@@ -335,11 +335,11 @@ auto_raw_24: n=12 esc=5 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_25: n=15 esc=6 end [strings]
@@ -349,13 +349,13 @@ auto_raw_25: n=15 esc=6 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_26: n=19 esc=8 end [strings]
@@ -365,13 +365,13 @@ auto_raw_26: n=19 esc=8 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_27: n=15 esc=6 end [strings]
@@ -381,13 +381,13 @@ auto_raw_27: n=15 esc=6 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_28: n=12 esc=5 middle [strings]
@@ -397,12 +397,12 @@ auto_raw_28: n=12 esc=5 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_29: n=16 esc=7 middle [strings]
@@ -412,14 +412,14 @@ auto_raw_29: n=16 esc=7 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_30: n=2 esc=0 middle [strings]
@@ -429,7 +429,7 @@ auto_raw_30: n=2 esc=0 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_31: n=2 esc=0 middle [strings]
@@ -439,7 +439,7 @@ auto_raw_31: n=2 esc=0 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_32: n=5 esc=1 end [strings]
@@ -449,8 +449,8 @@ auto_raw_32: n=5 esc=1 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_33: n=2 esc=0 middle [strings]
@@ -460,7 +460,7 @@ auto_raw_33: n=2 esc=0 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_34: n=17 esc=7 end [strings]
@@ -470,14 +470,14 @@ auto_raw_34: n=17 esc=7 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_35: n=8 esc=3 middle [strings]
@@ -487,10 +487,10 @@ auto_raw_35: n=8 esc=3 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_36: n=13 esc=5 end [strings]
@@ -500,12 +500,12 @@ auto_raw_36: n=13 esc=5 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_37: n=7 esc=2 end [strings]
@@ -515,9 +515,9 @@ auto_raw_37: n=7 esc=2 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_38: n=18 esc=8 middle [strings]
@@ -527,15 +527,15 @@ auto_raw_38: n=18 esc=8 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_39: n=16 esc=7 middle [strings]
@@ -545,14 +545,14 @@ auto_raw_39: n=16 esc=7 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_40: n=4 esc=1 middle [strings]
@@ -562,8 +562,8 @@ auto_raw_40: n=4 esc=1 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_41: n=12 esc=5 middle [strings]
@@ -573,12 +573,12 @@ auto_raw_41: n=12 esc=5 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_42: n=4 esc=1 middle [strings]
@@ -588,8 +588,8 @@ auto_raw_42: n=4 esc=1 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_43: n=2 esc=0 middle [strings]
@@ -599,7 +599,7 @@ auto_raw_43: n=2 esc=0 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_44: n=6 esc=2 middle [strings]
@@ -609,9 +609,9 @@ auto_raw_44: n=6 esc=2 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_45: n=18 esc=8 middle [strings]
@@ -621,15 +621,15 @@ auto_raw_45: n=18 esc=8 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_46: n=8 esc=3 middle [strings]
@@ -639,10 +639,10 @@ auto_raw_46: n=8 esc=3 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_47: n=12 esc=5 middle [strings]
@@ -652,12 +652,12 @@ auto_raw_47: n=12 esc=5 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_48: n=6 esc=2 middle [strings]
@@ -667,9 +667,9 @@ auto_raw_48: n=6 esc=2 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_49: n=4 esc=1 middle [strings]
@@ -679,8 +679,8 @@ auto_raw_49: n=4 esc=1 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_50: n=6 esc=2 middle [strings]
@@ -690,9 +690,9 @@ auto_raw_50: n=6 esc=2 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_51: n=3 esc=0 end [strings]
@@ -702,7 +702,7 @@ auto_raw_51: n=3 esc=0 end [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_52: n=9 esc=3 end [strings]
@@ -712,10 +712,10 @@ auto_raw_52: n=9 esc=3 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_53: n=6 esc=2 middle [strings]
@@ -725,9 +725,9 @@ auto_raw_53: n=6 esc=2 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_54: n=8 esc=3 middle [strings]
@@ -737,10 +737,10 @@ auto_raw_54: n=8 esc=3 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_55: n=15 esc=6 end [strings]
@@ -750,13 +750,13 @@ auto_raw_55: n=15 esc=6 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_56: n=17 esc=7 end [strings]
@@ -766,14 +766,14 @@ auto_raw_56: n=17 esc=7 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_57: n=10 esc=4 middle [strings]
@@ -783,11 +783,11 @@ auto_raw_57: n=10 esc=4 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_58: n=13 esc=5 end [strings]
@@ -797,12 +797,12 @@ auto_raw_58: n=13 esc=5 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_59: n=10 esc=4 middle [strings]
@@ -812,11 +812,11 @@ auto_raw_59: n=10 esc=4 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_60: n=13 esc=5 end [strings]
@@ -826,12 +826,12 @@ auto_raw_60: n=13 esc=5 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_61: n=13 esc=5 end [strings]
@@ -841,12 +841,12 @@ auto_raw_61: n=13 esc=5 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_62: n=11 esc=4 end [strings]
@@ -856,11 +856,11 @@ auto_raw_62: n=11 esc=4 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_63: n=18 esc=8 middle [strings]
@@ -870,15 +870,15 @@ auto_raw_63: n=18 esc=8 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_64: n=5 esc=1 end [strings]
@@ -888,8 +888,8 @@ auto_raw_64: n=5 esc=1 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_65: n=7 esc=2 end [strings]
@@ -899,9 +899,9 @@ auto_raw_65: n=7 esc=2 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_66: n=19 esc=8 end [strings]
@@ -911,15 +911,15 @@ auto_raw_66: n=19 esc=8 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_67: n=12 esc=5 middle [strings]
@@ -929,12 +929,12 @@ auto_raw_67: n=12 esc=5 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_68: n=12 esc=5 middle [strings]
@@ -944,12 +944,12 @@ auto_raw_68: n=12 esc=5 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_69: n=8 esc=3 middle [strings]
@@ -959,10 +959,10 @@ auto_raw_69: n=8 esc=3 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_70: n=19 esc=8 end [strings]
@@ -972,15 +972,15 @@ auto_raw_70: n=19 esc=8 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_71: n=2 esc=0 middle [strings]
@@ -990,7 +990,7 @@ auto_raw_71: n=2 esc=0 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_72: n=6 esc=2 middle [strings]
@@ -1000,9 +1000,9 @@ auto_raw_72: n=6 esc=2 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_73: n=15 esc=6 end [strings]
@@ -1012,13 +1012,13 @@ auto_raw_73: n=15 esc=6 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_74: n=5 esc=1 end [strings]
@@ -1028,8 +1028,8 @@ auto_raw_74: n=5 esc=1 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_75: n=10 esc=4 middle [strings]
@@ -1039,11 +1039,11 @@ auto_raw_75: n=10 esc=4 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_76: n=10 esc=4 middle [strings]
@@ -1053,11 +1053,11 @@ auto_raw_76: n=10 esc=4 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_77: n=2 esc=0 middle [strings]
@@ -1067,7 +1067,7 @@ auto_raw_77: n=2 esc=0 middle [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_78: n=15 esc=6 end [strings]
@@ -1077,13 +1077,13 @@ auto_raw_78: n=15 esc=6 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_79: n=9 esc=3 end [strings]
@@ -1093,10 +1093,10 @@ auto_raw_79: n=9 esc=3 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_80: n=6 esc=2 middle [strings]
@@ -1106,9 +1106,9 @@ auto_raw_80: n=6 esc=2 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_81: n=9 esc=3 end [strings]
@@ -1118,10 +1118,10 @@ auto_raw_81: n=9 esc=3 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_82: n=15 esc=6 end [strings]
@@ -1131,13 +1131,13 @@ auto_raw_82: n=15 esc=6 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_83: n=18 esc=8 middle [strings]
@@ -1147,15 +1147,15 @@ auto_raw_83: n=18 esc=8 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_84: n=4 esc=1 middle [strings]
@@ -1165,8 +1165,8 @@ auto_raw_84: n=4 esc=1 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_85: n=3 esc=0 end [strings]
@@ -1176,7 +1176,7 @@ auto_raw_85: n=3 esc=0 end [strings]
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 auto_raw_86: n=12 esc=5 middle [strings]
@@ -1186,12 +1186,12 @@ auto_raw_86: n=12 esc=5 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_87: n=14 esc=6 middle [strings]
@@ -1201,13 +1201,13 @@ auto_raw_87: n=14 esc=6 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_88: n=16 esc=7 middle [strings]
@@ -1217,14 +1217,14 @@ auto_raw_88: n=16 esc=7 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_89: n=19 esc=8 end [strings]
@@ -1234,15 +1234,15 @@ auto_raw_89: n=19 esc=8 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_90: n=10 esc=4 middle [strings]
@@ -1252,11 +1252,11 @@ auto_raw_90: n=10 esc=4 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_91: n=8 esc=3 middle [strings]
@@ -1266,10 +1266,10 @@ auto_raw_91: n=8 esc=3 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_92: n=11 esc=4 end [strings]
@@ -1279,11 +1279,11 @@ auto_raw_92: n=11 esc=4 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_93: n=4 esc=1 middle [strings]
@@ -1293,8 +1293,8 @@ auto_raw_93: n=4 esc=1 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence))))
 
 ==================
 auto_raw_94: n=15 esc=6 end [strings]
@@ -1304,13 +1304,13 @@ auto_raw_94: n=15 esc=6 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_95: n=13 esc=5 end [strings]
@@ -1320,12 +1320,12 @@ auto_raw_95: n=13 esc=5 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_96: n=10 esc=4 middle [strings]
@@ -1335,11 +1335,11 @@ auto_raw_96: n=10 esc=4 middle [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_97: n=19 esc=8 end [strings]
@@ -1349,15 +1349,15 @@ auto_raw_97: n=19 esc=8 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_98: n=9 esc=3 end [strings]
@@ -1367,10 +1367,10 @@ auto_raw_98: n=9 esc=3 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 auto_raw_99: n=9 esc=3 end [strings]
@@ -1380,7 +1380,7 @@ auto_raw_99: n=9 esc=3 end [strings]
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))

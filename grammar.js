@@ -2,76 +2,25 @@
 // $$$ignore()
 
 const PREC = {
-    MUTED: 7,
-    NAKED_SEQUENCE: 10,
     CONTROL: 12,
-    ASSIGNMENT: 13,
     LOOP_CLAUSE: 16,
     BRACKET_LOW: 56,
     BRACKET_HIGH: 62,
-    QUOTE: 74,
-};
-
-const augmentedAssignmentOperators = [
-    '%=', '&=', '**=', '*=', '++=', '+=',
-    '-=', '//=', '/=', '<<=', '<==>=', '===>=',
-    '==>=', '>>=', '??=', '@=', '@@=', '@@?=',
-    '\\=', '\\\\=', '^**=', '^=', '^^=', '_=',
-    '|-=', '|=', '|_=', '||=', '·=', '⊠=', '⧢=',
-];
-
-const assignmentOperators = [
-    {
-        precedence: PREC.ASSIGNMENT,
-        assoc: prec.right,
-        symbols: ['=', ':=', '<-', '>>', '=>', ...augmentedAssignmentOperators],
-    },
-];
-
-const rangeAssignmentOperators = {
-    precedence: PREC.ASSIGNMENT,
-    assoc: prec.right,
-    symbols: [
-        { token: '_range_eq', value: '..=' },
-        { token: '_range_lt_eq', value: '..<=' },
-    ],
-};
-
-const rangeOperators = {
-    precedence: 48,
-    assoc: prec.left,
-    symbols: [
-        { token: '_range', value: '..' },
-        { token: '_range_lt', value: '..<' },
-    ],
-};
-
-const lambdaOperator = {
-    precedence: PREC.ASSIGNMENT,
-    assoc: prec.right,
-    symbol: '->',
-};
-
-const adjacencyOperators = {
-    precedence: 61,
-    assoc: prec.right,
-    symbols: [{ token: '_space', value: 'SPACE', explicit: 'SPACE' }],
-};
-
-const adjacencyIndexingOperators = {
-    precedence: 56,
-    assoc: prec.right,
-    symbols: [{ token: '_space_indexing', value: 'SPACE' }],
-};
-
-const memberAccessOperators = {
-    precedence: 70,
-    assoc: prec.left,
-    symbols: ['.', '.?'],
 };
 
 const binaryOperators = [
-    ...assignmentOperators,
+    {
+        precedence: 13,
+        assoc: prec.right,
+        symbols: [
+            '=', ':=', '<-', '>>', '=>',
+            '%=', '&=', '**=', '*=', '++=', '+=',
+            '-=', '//=', '/=', '<<=', '<==>=', '===>=',
+            '==>=', '>>=', '??=', '@=', '@@=', '@@?=',
+            '\\=', '\\\\=', '^**=', '^=', '^^=', '_=',
+            '|-=', '|=', '|_=', '||=', '·=', '⊠=', '⧢=',
+        ],
+    },
     { precedence: 18, assoc: prec.left, symbols: ['<<'] },
     { precedence: 19, assoc: prec.right, symbols: ['|-'] },
     { precedence: 21, assoc: prec.right, symbols: ['<===', '===>'] },
@@ -94,6 +43,32 @@ const binaryOperators = [
     { precedence: 59, assoc: prec.right, symbols: ['@'] },
     { precedence: 66, assoc: prec.right, symbols: ['@@', '@@?'] },
     { precedence: 70, assoc: prec.left, symbols: ['|_', '^', '^**', '^<', '^<=', '^>', '^>=', '_<', '_<=', '_>', '_>=', '_', '#', '#?'] },
+    {
+        precedence: 13,
+        assoc: prec.right,
+        symbols: [
+            { token: '_range_eq', value: '..=' },
+            { token: '_range_lt_eq', value: '..<=' },
+        ],
+    },
+    {
+        precedence: 48,
+        assoc: prec.left,
+        symbols: [
+            { token: '_range', value: '..' },
+            { token: '_range_lt', value: '..<' },
+        ],
+    },
+    {
+        precedence: 61,
+        assoc: prec.right,
+        symbols: [{ token: '_space', value: 'SPACE', explicit: 'SPACE' }],
+    },
+    {
+        precedence: PREC.BRACKET_LOW,
+        assoc: prec.right,
+        symbols: [{ token: '_space_indexing', value: 'SPACE' }],
+    },
 ];
 
 const prefixOperators = [
@@ -106,7 +81,7 @@ const prefixOperators = [
     { precedence: 36, symbols: ['<', '<=', '>', '>=', '?', '~'] },
     { precedence: 50, symbols: ['+', '-'] },
     { precedence: 58, symbols: ['*'] },
-    { precedence: 61, symbols: ['#'] },
+    { precedence: 60, symbols: ['#'] },
 ];
 
 const postfixOperators = [
@@ -115,20 +90,14 @@ const postfixOperators = [
     { precedence: 72, symbols: ['!', '^!', '_!'] },
 ];
 
-const operatorsSymbols = [
+const operatorSymbols = [
     ...new Set(
-        [...binaryOperators, ...prefixOperators, ...postfixOperators, ...assignmentOperators]
+        [...binaryOperators, ...prefixOperators, ...postfixOperators]
             .flatMap(op => op.symbols)
+            .filter(symbol => typeof symbol === 'string')
             .concat(['SPACE']),
     ),
 ];
-
-const punctuationSymbols = ['(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';'];
-
-const externalRangeOperatorSymbols = [
-    ...rangeAssignmentOperators.symbols,
-    ...rangeOperators.symbols,
-].map(({ value }) => value);
 
 const keywords = [
     'and', 'break', 'breakpoint', 'catch', 'continue',
@@ -140,27 +109,24 @@ const keywords = [
     'try', 'when', 'while', 'xor',
 ];
 
-// Operator tokens nameable after a cobinding keyword (e.g. `symbol +`, `symbol ..`, `symbol and`).
-// This includes the word-shaped operators (and/or/xor/not/SPACE), which live in `operatorsSymbols`.
-const cobindingOperatorTokens = [
+// Operator tokens nameable after a quote specifier (e.g. `symbol +`,
+// `symbol ..`, `symbol and`). This includes word-shaped operators such as
+// and/or/xor/not/SPACE, which live in `operatorSymbols`.
+const quotedTokens = [
     ...new Set([
-        ...operatorsSymbols,
-        ...externalRangeOperatorSymbols,
-        ...memberAccessOperators.symbols,
+        ...operatorSymbols,
+        ...aliasedOperatorValues(binaryOperators),
+        '.', '.?',
     ]),
+    // Reserved keywords that are not operators (e.g. `symbol if`, `symbol for`).
+    ...keywords.filter(keyword => !operatorSymbols.includes(keyword)),
+    '(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';',
 ];
-
-// Reserved keywords that are not operators (e.g. `symbol if`, `symbol for`).
-const cobindingKeywordTokens = keywords.filter(keyword => !operatorsSymbols.includes(keyword));
 
 export default grammar({
     name: 'macaulay2',
 
     supertypes: $ => [$.expression],
-
-    conflicts: _ => [],
-
-    precedences: _ => [],
 
     extras: $ => [
         /[\s\n]/, // whitespace
@@ -174,8 +140,6 @@ export default grammar({
         keywords: _ => keywords,
     },
 
-    inline: _ => [],
-
     externals: $ => [
         $._space, // Adjacency operator for function calls
         $._space_indexing, // Adjacency before [ or <|
@@ -186,11 +150,11 @@ export default grammar({
         $.integer_literal, // Integer literal, including precision suffixes
         $.float_literal, // Floating point literal
         $._raw_string_content, // Raw string text chunks
-        $.raw_string_escape, // Doubled-slash raw string escapes
+        $._raw_string_escape, // Doubled-slash raw string escapes
         $._raw_string_end, // Raw string terminator ///
-        $._null_before_comma, // Missing leading/interior comma operand
-        $._cell_trailing_null, // Missing final operand at source-cell scope
-        $._container_trailing_null, // Missing final operand in delimiters
+        $._empty_before_comma, // Empty leading/interior comma component
+        $._cell_trailing_empty, // Empty final component at source-cell scope
+        $._container_trailing_empty, // Empty final component in delimiters
     ],
 
     rules: {
@@ -212,7 +176,7 @@ export default grammar({
 
         _ordinary_cell: $ =>
             choice(
-                alias($._cell_naked_sequence, $.naked_sequence),
+                $.naked_sequence,
                 $.expression,
             ),
 
@@ -220,30 +184,24 @@ export default grammar({
         // Each occurrence mutes exactly one preceding expression; repeated
         // semicolons therefore produce sibling `muted` nodes in a container.
         _cell_muted: $ =>
-            prec.right(
-                PREC.MUTED,
-                seq(
-                    choice(
-                        alias($._cell_naked_sequence, $.naked_sequence),
-                        $.expression,
-                    ),
-                    ';',
+            mutedExpression(
+                choice(
+                    $.naked_sequence,
+                    $.expression,
                 ),
             ),
 
-        _container_muted: $ =>
-            prec.right(
-                PREC.MUTED,
-                seq(
-                    choice(
-                        $._container_sequence,
-                        $.expression,
-                    ),
-                    ';',
+        muted: $ =>
+            mutedExpression(
+                choice(
+                    $._container_sequence,
+                    $.expression,
                 ),
             ),
 
         symbol: _ => /[a-zA-Z][a-zA-Z0-9'\$]*/,
+
+        keyword: _ => choice(...quotedTokens),
 
         line_comment: _ => /--[^\n]*/,
 
@@ -265,65 +223,58 @@ export default grammar({
 
         _string_content: _ => token.immediate(prec(1, /[^\"\\]+/)),
 
-        _std_string: $ =>
+        string_literal: $ =>
             seq(
                 '"',
                 repeat(choice(
-                    $.escape_sequence, 
-                    $._string_content, 
-                    token.immediate('\n')
+                    $.escape_sequence,
+                    $._string_content,
+                    token.immediate('\n'),
                 )),
                 token.immediate('"'),
             ),
 
-        _raw_string: $ =>
+        raw_string_literal: $ =>
             seq(
                 '///',
                 repeat(choice(
-                    $._raw_string_content, 
-                    $.raw_string_escape)),
+                    $._raw_string_content,
+                    alias($._raw_string_escape, $.escape_sequence),
+                )),
                 alias($._raw_string_end, '///'),
             ),
 
-        string_literal: $ => choice($._std_string, $._raw_string),
-
-        array: $ => prec.left(PREC.BRACKET_LOW, 
-            seq(
-                '[', 
-                optional($._multi_expression), 
-                ']'
-            )
-        ),
+        array: $ => delimitedMultiExpression($, '[', ']', PREC.BRACKET_LOW),
 
         parenthesized_expression: $ =>
             prec.left(PREC.BRACKET_HIGH, seq('(', choice(
                 seq(
-                    repeat(alias($._container_muted, $.muted)),
+                    repeat($.muted),
                     $.expression,
                 ),
-                repeat1(alias($._container_muted, $.muted)),
+                repeat1($.muted),
             ), ')')),
-        
+
 
         sequence: $ =>
             prec.left(PREC.BRACKET_HIGH, choice(
-                seq('(', ')'),                                                
+                seq('(', ')'),
                 seq(
                     '(',
-                    repeat(alias($._container_muted, $.muted)),
+                    repeat($.muted),
                     $._container_sequence,
                     ')',
                 ),
             )),
 
-        list: $ => prec.left(PREC.BRACKET_HIGH, seq('{', optional($._multi_expression), '}')),
+        list: $ => delimitedMultiExpression($, '{', '}', PREC.BRACKET_HIGH),
 
         angle_bar_list: $ =>
-            prec.left(PREC.BRACKET_LOW, seq('<|', optional($._multi_expression), '|>')),
+            delimitedMultiExpression($, '<|', '|>', PREC.BRACKET_LOW),
 
         lambda_expression: $ =>
-            lambdaOperator.assoc(
-                lambdaOperator.precedence,
+            prec.right(
+                13,
                 seq(
                     field('parameters', choice(
                         $.symbol,
@@ -332,63 +283,60 @@ export default grammar({
                         $.list,
                         $.array,
                         $.angle_bar_list)),
-                    fieldOperator(lambdaOperator.symbol),
+                    fieldOperator('->'),
                     fieldExpr($, 'body'),
                 ),
             ),
         binary_expression: $ =>
             choice(
-                ...OperatorTable($, binaryOperators),
-                ExternalOperatorExpression($, rangeAssignmentOperators),
-                ExternalOperatorExpression($, rangeOperators),
-                AdjacencyOperatorExpression($, adjacencyOperators),
-                AdjacencyOperatorExpression($, adjacencyIndexingOperators),
-                memberAccessOperators.assoc(
-                    memberAccessOperators.precedence,
+                ...operatorTable($, binaryOperators),
+                prec.left(
+                    70,
                     seq(
                         fieldExpr($, 'left'),
-                        fieldOperator(...memberAccessOperators.symbols),
+                        fieldOperator('.', '.?'),
                         field('right', $._member_access_rhs),
                     ),
                 ),
             ),
 
         prefix_expression: $ =>
-            choice(...prefixOperators.map(op => PrefixOperatorExpression($, op))),
+            choice(...prefixOperators.map(op => prefixOperatorExpression($.expression, op))),
 
-        member_prefix_expression: $ =>
-            choice(...prefixOperators.map(op => MemberPrefixExpression($, op))),
+        _member_prefix_expression: $ =>
+            choice(...prefixOperators.map(op => prefixOperatorExpression($._member_access_rhs, op))),
 
         postfix_expression: $ =>
-            choice(...postfixOperators.map(op => PostfixOperatorExpression($, op))),
+            choice(...postfixOperators.map(op => postfixOperatorExpression($, op))),
 
         _member_access_rhs: $ =>
             choice(
                 $.integer_literal,
                 $.float_literal,
                 $.string_literal,
+                $.raw_string_literal,
                 $.symbol,
                 $.sequence,
                 $.parenthesized_expression,
                 $.array,
                 $.angle_bar_list,
                 $.list,
-                alias($.member_prefix_expression, $.prefix_expression),
+                alias($._member_prefix_expression, $.prefix_expression),
             ),
 
-        from_clause: $ => prec(PREC.LOOP_CLAUSE, seq('from', $.expression)),
+        from_clause: $ => expressionClause($, 'from', PREC.LOOP_CLAUSE),
 
-        of_clause: $ => prec(PREC.LOOP_CLAUSE, seq('of', $.expression)),
+        of_clause: $ => expressionClause($, 'of', PREC.LOOP_CLAUSE),
 
-        to_clause: $ => prec(PREC.LOOP_CLAUSE, seq('to', $.expression)),
+        to_clause: $ => expressionClause($, 'to', PREC.LOOP_CLAUSE),
 
-        when_clause: $ => prec(PREC.LOOP_CLAUSE, seq('when', $.expression)),
+        when_clause: $ => expressionClause($, 'when', PREC.LOOP_CLAUSE),
 
-        list_clause: $ => prec(PREC.CONTROL, seq('list', $.expression)),
+        list_clause: $ => expressionClause($, 'list', PREC.CONTROL),
 
-        do_clause: $ => prec(PREC.CONTROL, seq('do', $.expression)),
+        do_clause: $ => expressionClause($, 'do', PREC.CONTROL),
 
-        in_clause: $ => prec(PREC.LOOP_CLAUSE, seq('in', $.expression)),
+        in_clause: $ => expressionClause($, 'in', PREC.LOOP_CLAUSE),
 
         then_clause: $ => prec.left(PREC.CONTROL, seq('then', $.expression)),
 
@@ -409,7 +357,7 @@ export default grammar({
             ),
 
         for_statement: $ =>
-            prec.right(16,
+            prec.right(PREC.LOOP_CLAUSE,
                 seq(
                     'for',
                     field('variable', $.symbol),
@@ -419,11 +367,17 @@ export default grammar({
                 ),
             ),
 
-        while_statement: $ =>
-            prec.right(PREC.CONTROL, seq('while', $.expression, optional($.when_clause), $._loop_body)),
+        while_statement: $ => prec.right(PREC.CONTROL,
+                seq(
+                    'while',
+                    $.expression,
+                    optional($.when_clause),
+                    $._loop_body
+                )
+        ),
 
         new_statement: $ =>
-            prec.right(16,
+            prec.right(PREC.LOOP_CLAUSE,
                 seq('new',
                     field('type', $.expression),
                     optional($.of_clause),
@@ -445,22 +399,22 @@ export default grammar({
                         field(
                             'keyword',
                             choice('shield', 'TEST', 'time', 'timing',
-                                   'elapsedTime', 'elapsedTiming', 'profile'),
+                                'elapsedTime', 'elapsedTiming', 'profile'),
                         ),
                         $.expression,
                     )
                 )
             ),
 
-        break_statement: $ => prec.left(PREC.CONTROL, seq('break', optional($.expression))),
+        break_statement: $ => leftControlExpression($, 'break', optional($.expression)),
 
-        continue_statement: $ => prec.left(PREC.CONTROL, seq('continue', optional($.expression))),
+        continue_statement: $ => leftControlExpression($, 'continue', optional($.expression)),
 
-        return_statement: $ => prec.left(PREC.CONTROL, seq('return', optional($.expression))),
+        return_statement: $ => leftControlExpression($, 'return', optional($.expression)),
 
-        catch_statement: $ => prec.left(PREC.CONTROL, seq('catch', $.expression)),
+        catch_statement: $ => leftControlExpression($, 'catch', $.expression),
 
-        throw_statement: $ => prec.left(PREC.CONTROL, seq('throw', $.expression)),
+        throw_statement: $ => leftControlExpression($, 'throw', $.expression),
 
         trap_statement: $ => prec(PREC.CONTROL, seq('trap', $.expression)),
 
@@ -481,24 +435,19 @@ export default grammar({
         ),
 
         quote_expression: $ => prec(
-            PREC.QUOTE,
+            74,
             seq(
-                field('specifier', 
+                field('specifier',
                     choice(
-                        'symbol', 
-                        'local', 
-                        'global', 
-                        'threadVariable', 
+                        'symbol',
+                        'local',
+                        'global',
+                        'threadVariable',
                         'threadLocal')
                 ),
-                field('symbol', 
+                field('symbol',
                     choice(
-                        alias(
-                            choice(
-                                ...cobindingOperatorTokens,
-                                ...cobindingKeywordTokens,
-                                ...punctuationSymbols), 
-                            $.keyword),
+                        $.keyword,
                         $.symbol),
                 )
             )
@@ -507,53 +456,30 @@ export default grammar({
         // Comma has lower precedence than every ordinary expression operator.
         // At source scope it needs a public wrapper because there is no
         // enclosing bracket node to identify the resulting sequence.
-        _cell_naked_sequence: $ =>
-            prec.left(
-                PREC.NAKED_SEQUENCE,
-                seq(
-                    repeat1(seq(
-                        choice(alias($._null_before_comma, $.null), $.expression),
-                        ',',
-                    )),
-                    choice(alias($._cell_trailing_null, $.null), $.expression),
-                ),
-            ),
+        naked_sequence: $ =>
+            commaSequence($, $._cell_trailing_empty),
 
         // Within brackets, the outer sequence/list/array node already provides
         // that identity. Keep this rule hidden so its operands (including
-        // zero-width nulls) become direct children of the semantic container.
+        // zero-width empty components) become direct children of the semantic
+        // container.
         _container_sequence: $ =>
-            prec.left(
-                PREC.NAKED_SEQUENCE,
-                seq(
-                    repeat1(seq(
-                        choice(alias($._null_before_comma, $.null), $.expression),
-                        ',',
-                    )),
-                    choice(alias($._container_trailing_null, $.null), $.expression),
-                ),
-            ),
+            commaSequence($, $._container_trailing_empty),
 
-        _container_expression: $ =>
-            choice(
-                $._container_sequence,
-                $.expression,
-            ),
-
-        _multi_expression: $ =>
-            choice(
-                $._container_expression,
-                seq(
-                    repeat1(alias($._container_muted, $.muted)),
-                    optional($._container_expression),
-                ),
-            ),
+        _multi_expression: $ => {
+            const expression = choice($._container_sequence, $.expression);
+            return choice(
+                expression,
+                seq(repeat1($.muted), optional(expression)),
+            );
+        },
 
         expression: $ =>
             choice(
                 $.integer_literal,
                 $.float_literal,
                 $.string_literal,
+                $.raw_string_literal,
 
                 $.symbol,
                 $.sequence,
@@ -589,70 +515,79 @@ function fieldExpr($, name) {
     return field(name, $.expression);
 }
 
+function delimitedMultiExpression($, open, close, precedence) {
+    return prec.left(precedence, seq(open, optional($._multi_expression), close));
+}
+
+function expressionClause($, keyword, precedence) {
+    return prec(precedence, seq(keyword, $.expression));
+}
+
+function leftControlExpression($, keyword, operand) {
+    return prec.left(PREC.CONTROL, seq(keyword, operand));
+}
+
+function mutedExpression(content) {
+    return prec.right(7, seq(content, ';'));
+}
+
+function commaSequence($, trailingEmpty) {
+    return prec.left(
+        10,
+        seq(
+            repeat1(seq(
+                choice(alias($._empty_before_comma, $.empty_component), $.expression),
+                ',',
+            )),
+            choice(alias(trailingEmpty, $.empty_component), $.expression),
+        ),
+    );
+}
+
 function fieldOperator(...names) {
-    return field('operator', Choice(...names));
+    return field('operator', names.length === 1 ? names[0] : choice(...names));
 }
 
-function Choice(...items) {
-    return items.length === 1 ? items[0] : choice(...items);
-}
-
-function OperatorExpression($, ops) {
+function operatorExpression($, ops) {
     return seq(
         fieldExpr($, 'left'),
-        fieldOperator(...ops),
+        fieldOperator(...ops.map(op => operatorSymbol($, op))),
         fieldExpr($, 'right'),
     );
 }
 
-function OperatorTable($, table) {
+function operatorSymbol($, op) {
+    if (typeof op === 'string') return op;
+    const token = op.explicit ? choice($[op.token], op.explicit) : $[op.token];
+    return alias(token, op.value);
+}
+
+function aliasedOperatorValues(table) {
+    return table
+        .flatMap(op => op.symbols)
+        .filter(op => typeof op !== 'string')
+        .map(op => op.value);
+}
+
+function operatorTable($, table) {
     return table.map(
         op => op.assoc(
-            op.precedence, 
-            OperatorExpression($, op.symbols)));
+            op.precedence,
+            operatorExpression($, op.symbols)));
 }
 
-function ExternalOperatorExpression($, op) {
-    return op.assoc(
-        op.precedence,
-        OperatorExpression($,
-            op.symbols.map(({ token, value }) => 
-                alias($[token], value)),
-        ),
-    );
-}
-
-function AdjacencyOperatorExpression($, op) {
-    return op.assoc(
-        op.precedence,
-        OperatorExpression($,
-            op.symbols.map(({ token, value, explicit }) =>
-                alias(explicit ? choice($[token], explicit) : $[token], value),
-            ),
-        ),
-    );
-}
-
-function PrefixOperatorExpression($, { precedence, symbols }) {
-    return prec.left(
-        precedence,
-        seq(fieldOperator(...symbols), 
-            fieldExpr($, 'operand')),
-    );
-}
-
-function PostfixOperatorExpression($, { precedence, symbols }) {
-    return prec.left(
-        precedence,
-        seq(fieldExpr($, 'operand'), 
-            fieldOperator(...symbols)),
-    );
-}
-
-function MemberPrefixExpression($, { precedence, symbols }) {
+function prefixOperatorExpression(operand, { precedence, symbols }) {
     return prec.left(
         precedence,
         seq(fieldOperator(...symbols),
-            field('operand', $._member_access_rhs)),
+            field('operand', operand)),
+    );
+}
+
+function postfixOperatorExpression($, { precedence, symbols }) {
+    return prec.left(
+        precedence,
+        seq(fieldExpr($, 'operand'),
+            fieldOperator(...symbols)),
     );
 }

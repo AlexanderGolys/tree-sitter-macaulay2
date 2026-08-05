@@ -9,11 +9,12 @@
 
 (float_literal) @number.float
 
-(string_literal) @string
+[
+  (string_literal)
+  (raw_string_literal)
+] @string
 
 (escape_sequence) @character.special
-
-(raw_string_escape) @character.special
 
 (symbol) @variable
 
@@ -139,6 +140,10 @@
       (symbol) @variable.parameter)
     (list
       (symbol) @variable.parameter)
+    (array
+      (symbol) @variable.parameter)
+    (angle_bar_list
+      (symbol) @variable.parameter)
   ])
 
 ; Function definitions
@@ -147,20 +152,13 @@
   operator: [":=" "="]
   right: (lambda_expression))
 
-(binary_expression
-  left: (symbol) @function
-  operator: [":=" "="]
-  right: (binary_expression
-    right: (lambda_expression)))
 
 ; Members, options, and properties
 (binary_expression
   operator: ["." ".?" "#" "#?" "_"]
   right: [(symbol) (integer_literal)] @property)
 
-(binary_expression
-  operator: "_" @property
-  right: (integer_literal) @property)
+
 
 ; Types
 (new_statement
@@ -175,55 +173,72 @@
                left: (symbol) @function.call
                operator: "SPACE")
 
+(new_statement
+  type: _ @type)
+
 ; Method installations
+; Named methods with a single, unparenthesized domain type.
 ((binary_expression
   left: (binary_expression
-    left: (symbol) @type
-    operator: _ @function
-    right: (symbol) @type)
-  operator: [
-    "="
-    ":="
-  ] @keyword.operator)
-  (#not-any-of? @function "." ".?" "#" "_"))
-
-((binary_expression
-  left: (binary_expression
-    left: (symbol) @function
+    left: (symbol) @label
     operator: "SPACE"
-    right: (symbol) @type)
+    right: (symbol) @type.parameter)
   operator: [
     "="
     ":="
   ] @keyword.operator)
-  (#match? @function "[a-z].*"))
+  (#match? @label "^[a-z].*"))
 
-; A _ B := (x, y) -> x*y
+; An unnamed adjacency method has no visible sign to label.
+((binary_expression
+  left: (binary_expression
+    left: (symbol) @type.parameter @_first-type
+    operator: "SPACE"
+    right: (symbol) @type.parameter)
+  operator: [
+    "="
+    ":="
+  ] @keyword.operator)
+  (#not-match? @_first-type "^[a-z].*"))
+
+; Infix operator methods.
+((binary_expression
+  left: (binary_expression
+    left: (_) @type.parameter
+    operator: _ @label
+    right: (_) @type.parameter)
+  operator: [
+    "="
+    ":="
+  ] @keyword.operator)
+  (#not-eq? @label "")
+  (#not-any-of? @label "SPACE" "." ".?" "#" "#?" "_"))
+
+; A _ B := (x, y) -> x*y. Requiring a function-shaped implementation
+; avoids treating an ordinary indexed assignment as an installation.
 (binary_expression
   left: (binary_expression
-    left: (_) @type
-    operator: "_" @function
-    right: (_) @type)
+    left: (_) @type.parameter
+    operator: "_" @label
+    right: (_) @type.parameter)
   operator: ["=" ":="] @keyword.operator
-  right: (lambda_expression))
+  right: [
+    (lambda_expression)
+    (binary_expression
+      operator: "=>")
+  ])
 
-; f ZZ := g
+; Named methods with parenthesized domain types. Delimiters deliberately keep
+; their ordinary punctuation captures.
 (binary_expression
   left: (binary_expression
-    left: (symbol) @function
+    left: (symbol) @label
     operator: "SPACE"
     right: [
       (sequence
-        "(" @type
-        [
-          (symbol) @type
-          "," @type
-        ]*
-        ")" @type)
+        (symbol) @type.parameter)
       (parenthesized_expression
-        "(" @type
-        (symbol) @type
-        ")" @type)])
+        (symbol) @type.parameter)])
   operator: [
     "="
     ":="
@@ -232,8 +247,8 @@
 ; - ZZ := x -> -x
 (binary_expression
   left: (prefix_expression
-    operator: _ @constructor
-    operand: (symbol) @type)
+    operator: _ @label
+    operand: (symbol) @type.parameter)
   operator: [
     "="
     ":="
@@ -242,42 +257,64 @@
 ; ZZ ! := n -> if n > 0 then n*(n-1)! else 1
 (binary_expression
   left: (postfix_expression
-    operand: (symbol) @type
-    operator: _ @constructor)
+    operand: (symbol) @type.parameter
+    operator: _ @label)
   operator: [
     "="
     ":="
   ] @keyword.operator)
 
+; A typical value is part of the installed signature. Highlight its arrow like
+; the installation operator and its value like the domain types.
+((binary_expression
+  left: (binary_expression
+    operator: _ @_installation-sign)
+  operator: ["=" ":="]
+  right: (binary_expression
+    left: (symbol) @type.parameter
+    operator: "=>" @keyword.operator))
+  (#not-any-of? @_installation-sign "." ".?" "#" "#?"))
+
+(binary_expression
+  left: [
+    (prefix_expression)
+    (postfix_expression)
+    (new_statement)
+  ]
+  operator: ["=" ":="]
+  right: (binary_expression
+    left: (symbol) @type.parameter
+    operator: "=>" @keyword.operator))
+
 ((binary_expression
   left: (symbol) @function.builtin
   operator: "SPACE"
   right: (sequence
-    (quote_expression)
+    (quote_expression
+      symbol: _ @label)
     .
-    (_) @type
+    (_) @type.parameter
     .
-    (_) @type))
+    (_) @type.parameter))
   (#eq? @function.builtin "installAssignmentMethod"))
 
 (binary_expression
   left: (new_statement
     "new" @keyword
+    type: (_) @type.parameter
     (of_clause
-      "of"? @keyword)?
+      "of"? @keyword
+      (_) @type.parameter)?
     (from_clause
       "from" @keyword
       [
-        (symbol) @type
+        (symbol) @type.parameter
         (parenthesized_expression
-          (symbol) @type)
+          (symbol) @type.parameter)
         (sequence
-          (symbol) @type)
+          (symbol) @type.parameter)
       ])?)
   operator: ":=" @keyword.operator)
-
-(new_statement
-  type: _ @type)
 
 ; Builtins
 ((symbol) @variable.builtin
@@ -323,71 +360,32 @@
   ])
   (#any-of? @function.builtin "splitWWW" "getWWW" "urlEncode"))
 
-((binary_expression
-  left: (symbol) @function.builtin
-  operator: "SPACE"
-  right: [
-    (string_literal) @string.regexp
-    (parenthesized_expression
-      .
-      (string_literal) @string.regexp)
-    (sequence
-      .
-      (string_literal) @string.regexp)
-  ])
-  (#any-of? @function.builtin "match" "regex" "select"))
-
-((binary_expression
-  left: (symbol) @function.builtin
-  operator: "SPACE"
-  right: (sequence
-    (string_literal) @string.regexp
-    (string_literal) @string.regexp
-    (_)))
-  (#eq? @function.builtin "replace"))
-
-((binary_expression
-  left: (symbol) @function.builtin
-  operator: "SPACE"
-  right: (sequence
-    (string_literal) @string.regexp
-    (_)+))
-  (#eq? @function.builtin "separate"))
-
 ; Packages
 ((binary_expression
-  left: (symbol) @function.builtin
+  left: (symbol) @function
   operator: "SPACE"
   right: [
-    (symbol) @module.builtin
-    (parenthesized_expression
-      .
-      (symbol) @module.builtin)
-    (sequence
-      .
-      (symbol) @module.builtin)
-    (string_literal) @string.special
-    (parenthesized_expression
-      .
-      (string_literal) @string.special)
-    (sequence
-      .
-      (string_literal) @string.special)
+    (symbol) @module
+    (parenthesized_expression . (symbol) @module)
+    (sequence . (symbol) @module)
+    (string_literal) @module
+    (parenthesized_expression . (string_literal) @module)
+    (sequence . (string_literal) @module)
   ])
-  (#any-of? @function.builtin
+  (#any-of? @function
     "loadPackage" "installPackage" "uninstallPackage" "needsPackage" "endPackage"
     "newPackage" ))
 
 ((binary_expression
-  left: (symbol) @function.builtin
+  left: (symbol) @function
   operator: "_"
-  right: (symbol) @module.builtin)
-  (#any-of? @function.builtin "importFrom" "exportFrom"))
+  right: (symbol) @module)
+  (#any-of? @function "importFrom" "exportFrom"))
 
 ((binary_expression
-  left: (symbol) @function.builtin
+  left: (symbol) @function
   operator: "SPACE"
   right: [(sequence
-              (string_literal) @string.special.path)
-          (string_literal) @string.special.path]
-  ) (#eq? @function.builtin "load"))
+              (string_literal) @namespace)
+          (string_literal) @namespace]
+  ) (#eq? @function "load"))

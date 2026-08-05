@@ -82,7 +82,7 @@ Trailing comma is a sequence
   (cell
     (sequence
       (symbol)
-      (null))))
+      (empty_component))))
 
 ==================
 Block with comma-list final statement is a sequence

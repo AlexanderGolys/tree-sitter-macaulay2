@@ -50,7 +50,7 @@
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 (6) Raw string with content [strings]
@@ -60,7 +60,7 @@
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 (7) Raw string with slashes [strings]
@@ -70,7 +70,7 @@
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 (8) Raw string with quotes [strings]
@@ -80,7 +80,7 @@
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 (9) Raw string with newlines [strings]
@@ -92,7 +92,7 @@ abc
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 (10) Raw string with escaped interior triple slashes [strings]
@@ -102,11 +102,11 @@ abc
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 (11) Raw string with escaped interior quadruple slashes [strings]
@@ -116,13 +116,13 @@ abc
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 (12) Raw string ending with four slashes [strings]
@@ -132,11 +132,11 @@ abc
 
 (source_file
   (cell
-    (string_literal
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape)
-      (raw_string_escape))))
+    (raw_string_literal
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence)
+      (escape_sequence))))
 
 ==================
 (10) String with comment [strings]
@@ -156,7 +156,7 @@ abc
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 (12) String with block comment [strings]
@@ -176,7 +176,7 @@ abc
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 (13) String with comment in expression [strings]
@@ -225,7 +225,7 @@ expressions = separate(///\n--///)
       right: (binary_expression
         left: (symbol)
         right: (parenthesized_expression
-          (string_literal))))))
+          (raw_string_literal))))))
 
 ==================
 (16) String with comment in expression + newline inside [strings]
@@ -255,7 +255,7 @@ expressions = separate("--\"\a
 
 (source_file
   (cell
-    (string_literal)))
+    (raw_string_literal)))
 
 ==================
 (17) Non escape [strings]
@@ -270,4 +270,4 @@ expressions = separate(///\n--///)
       right: (binary_expression
         left: (symbol)
         right: (parenthesized_expression
-          (string_literal))))))
+          (raw_string_literal))))))

@@ -53,14 +53,14 @@ mod tests {
     }
 
     #[test]
-    fn incremental_edit_removes_zero_width_nulls() {
-        fn null_ranges(tree: &tree_sitter::Tree) -> Vec<std::ops::Range<usize>> {
+    fn incremental_edit_removes_zero_width_empty_components() {
+        fn empty_component_ranges(tree: &tree_sitter::Tree) -> Vec<std::ops::Range<usize>> {
             let mut cursor = tree.walk();
             let mut ranges = Vec::new();
 
             loop {
                 let node = cursor.node();
-                if node.kind() == "null" {
+                if node.kind() == "empty_component" {
                     ranges.push(node.byte_range());
                 }
 
@@ -82,7 +82,7 @@ mod tests {
 
         let mut tree = parser.parse("2,,\n", None).expect("initial parse failed");
         assert!(!tree.root_node().has_error());
-        let ranges = null_ranges(&tree);
+        let ranges = empty_component_ranges(&tree);
         assert_eq!(ranges.len(), 2);
         assert!(ranges.iter().all(|range| range.is_empty()));
 
@@ -99,6 +99,6 @@ mod tests {
             .parse("2,3\n", Some(&tree))
             .expect("incremental parse failed");
         assert!(!tree.root_node().has_error());
-        assert!(null_ranges(&tree).is_empty());
+        assert!(empty_component_ranges(&tree).is_empty());
     }
 }

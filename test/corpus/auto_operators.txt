@@ -79,7 +79,7 @@ f("a", {b}, (c))
   (cell
     (list
       (symbol)
-      (null))))
+      (empty_component))))
 
 
 ==================
@@ -102,8 +102,8 @@ f("a", {b}, (c))
 (source_file
   (cell
     (sequence
-      (null)
-      (null))))
+      (empty_component)
+      (empty_component))))
 
 
 ==================
@@ -116,7 +116,7 @@ f("a", {b}, (c))
   (cell
     (sequence
       (symbol)
-      (null)
+      (empty_component)
       (symbol))))
 
 
@@ -847,3 +847,281 @@ x."a"
     (binary_expression
       left: (string_literal)
       right: (float_literal))))
+
+
+==================
+(54) #f x [auto operators]
+==================
+#f x
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+
+
+==================
+(55) #f(x) [auto operators]
+==================
+#f(x)
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (parenthesized_expression
+          (symbol))))))
+
+
+==================
+(56) #f x! [auto operators]
+==================
+#f x!
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (postfix_expression
+          operand: (symbol))))))
+
+
+==================
+(57) #f[x] [auto operators]
+==================
+#f[x]
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (prefix_expression
+        operand: (symbol))
+      right: (array
+        (symbol)))))
+
+
+==================
+(58) #f * x [auto operators]
+==================
+#f * x
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (prefix_expression
+        operand: (symbol))
+      right: (symbol))))
+
+
+==================
+(59) #f @@ x [auto operators]
+==================
+#f @@ x
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+
+
+==================
+(60) #f x y [auto operators]
+==================
+#f x y
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (binary_expression
+          left: (symbol)
+          right: (symbol))))))
+
+
+==================
+(61) #f 2 [auto operators]
+==================
+#f 2
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (integer_literal)))))
+
+
+==================
+(62) #f {x} [auto operators]
+==================
+#f {x}
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (list
+          (symbol))))))
+
+
+==================
+(63) #f "x" [auto operators]
+==================
+#f "x"
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (string_literal)))))
+
+
+==================
+(64) # f SPACE x [auto operators]
+==================
+# f SPACE x
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+
+
+==================
+(65) ##f x [auto operators]
+==================
+##f x
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (prefix_expression
+        operand: (binary_expression
+          left: (symbol)
+          right: (symbol))))))
+
+
+==================
+(66) #f x^* [auto operators]
+==================
+#f x^*
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (postfix_expression
+          operand: (symbol))))))
+
+
+==================
+(67) #f x (*) [auto operators]
+==================
+#f x (*)
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (postfix_expression
+          operand: (symbol))))))
+
+
+==================
+(68) #f <|x|> [auto operators]
+==================
+#f <|x|>
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (prefix_expression
+        operand: (symbol))
+      right: (angle_bar_list
+        (symbol)))))
+
+
+==================
+(69) #f @ x [auto operators]
+==================
+#f @ x
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (prefix_expression
+        operand: (symbol))
+      right: (symbol))))
+
+
+==================
+(70) #f # x [auto operators]
+==================
+#f # x
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+
+
+==================
+(71) #f ^ x [auto operators]
+==================
+#f ^ x
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+
+
+==================
+(72) a.#f x [auto operators]
+==================
+a.#f x
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (prefix_expression
+          operand: (symbol)))
+      right: (symbol))))

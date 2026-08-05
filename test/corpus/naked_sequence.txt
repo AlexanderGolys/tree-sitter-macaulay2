@@ -8,8 +8,8 @@ Top-level trailing nulls
   (cell
     (naked_sequence
       (integer_literal)
-      (null)
-      (null))))
+      (empty_component)
+      (empty_component))))
 
 ==================
 Top-level naked sequence is muted
@@ -22,7 +22,7 @@ Top-level naked sequence is muted
     (muted
       (naked_sequence
         (integer_literal)
-        (null)))))
+        (empty_component)))))
 
 ==================
 Top-level scalar is muted
@@ -54,8 +54,8 @@ Leading and trailing nulls
 (source_file
   (cell
     (sequence
-      (null)
-      (null))))
+      (empty_component)
+      (empty_component))))
 
 ==================
 Each semicolon has one muted node
@@ -83,7 +83,7 @@ Muted sequence before a scalar
     (parenthesized_expression
       (muted
         (integer_literal)
-        (null))
+        (empty_component))
       (integer_literal))))
 
 ==================
@@ -98,7 +98,7 @@ Muted scalar before a sequence
       (muted
         (integer_literal))
       (integer_literal)
-      (null))))
+      (empty_component))))
 
 ==================
 Nulls and muting in a list
@@ -110,10 +110,10 @@ Nulls and muting in a list
   (cell
     (list
       (muted
-        (null)
-        (null))
+        (empty_component)
+        (empty_component))
       (integer_literal)
-      (null))))
+      (empty_component))))
 
 ==================
 Nulls and muting in an array
@@ -125,10 +125,10 @@ Nulls and muting in an array
   (cell
     (array
       (muted
-        (null)
-        (null))
+        (empty_component)
+        (empty_component))
       (integer_literal)
-      (null))))
+      (empty_component))))
 
 ==================
 Nulls and muting in an angle-bar list
@@ -140,10 +140,10 @@ Nulls and muting in an angle-bar list
   (cell
     (angle_bar_list
       (muted
-        (null)
-        (null))
+        (empty_component)
+        (empty_component))
       (integer_literal)
-      (null))))
+      (empty_component))))
 
 ==================
 Top-level newline continues an incomplete naked sequence

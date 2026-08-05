@@ -99,76 +99,7 @@ while x < 10 do x = x + 1
 
 
 ==================
-(6) break [auto control]
-==================
-break
----
-
-(source_file
-  (cell
-    (break_statement)))
-
-
-==================
-(7) continue [auto control]
-==================
-continue
----
-
-(source_file
-  (cell
-    (continue_statement)))
-
-
-==================
-(8) continue x [auto control]
-==================
-continue x
----
-
-(source_file
-  (cell
-    (continue_statement
-      (symbol))))
-
-
-==================
-(9) return x [auto control]
-==================
-return x
----
-
-(source_file
-  (cell
-    (return_statement
-      (symbol))))
-
-
-==================
-(10) finish [auto control]
-==================
-finish
----
-
-(source_file
-  (cell
-    (debug_clause)))
-
-
-==================
-(11) finish x [auto control]
-==================
-finish x
----
-
-(source_file
-  (cell
-    (debug_clause
-      (symbol))))
-
-
-==================
-(12) try a then b else c [auto control]
+(6) try a then b else c [auto control]
 ==================
 try a then b else c
 ---
@@ -184,7 +115,7 @@ try a then b else c
 
 
 ==================
-(13) if a then if b then x else y [auto control]
+(7) if a then if b then x else y [auto control]
 ==================
 if a then if b then x else y
 ---
@@ -203,7 +134,7 @@ if a then if b then x else y
 
 
 ==================
-(14) if a then x else if b then y else z [auto control]
+(8) if a then x else if b then y else z [auto control]
 ==================
 if a then x else if b then y else z
 ---
@@ -224,7 +155,7 @@ if a then x else if b then y else z
 
 
 ==================
-(15) while a do if b then break [auto control]
+(9) while a do if b then break [auto control]
 ==================
 while a do if b then break
 ---
@@ -241,7 +172,7 @@ while a do if b then break
 
 
 ==================
-(16) for i in L do if i > 0 then return i else continue [auto control]
+(10) for i in L do if i > 0 then return i else continue [auto control]
 ==================
 for i in L do if i > 0 then return i else continue
 ---
@@ -265,7 +196,7 @@ for i in L do if i > 0 then return i else continue
 
 
 ==================
-(17) for i in a list for j in b do print x [auto control]
+(11) for i in a list for j in b do print x [auto control]
 ==================
 for i in a list for j in b do print x
 ---
@@ -288,7 +219,7 @@ for i in a list for j in b do print x
 
 
 ==================
-(18) if try x then y else z then 1 [auto control]
+(12) if try x then y else z then 1 [auto control]
 ==================
 if try x then y else z then 1
 ---
@@ -307,7 +238,7 @@ if try x then y else z then 1
 
 
 ==================
-(19) catch x [auto control]
+(13) catch x [auto control]
 ==================
 catch x
 ---
@@ -319,30 +250,7 @@ catch x
 
 
 ==================
-(20) step [auto control]
-==================
-step
----
-
-(source_file
-  (cell
-    (debug_clause)))
-
-
-==================
-(21) step x [auto control]
-==================
-step x
----
-
-(source_file
-  (cell
-    (debug_clause
-      (symbol))))
-
-
-==================
-(22) for i in L list for j in L list j do print 2 [auto control]
+(14) for i in L list for j in L list j do print 2 [auto control]
 ==================
 for i in L list for j in L list j do print 2
 ---
@@ -367,7 +275,7 @@ for i in L list for j in L list j do print 2
 
 
 ==================
-(23) if if 1 then 2 then 3 else 5 [auto control]
+(15) if if 1 then 2 then 3 else 5 [auto control]
 ==================
 if if 1 then 2 then 3 else 5
 ---
@@ -386,7 +294,7 @@ if if 1 then 2 then 3 else 5
 
 
 ==================
-(24) if 1 then if 2 then 3 else 4 [auto control]
+(16) if 1 then if 2 then 3 else 4 [auto control]
 ==================
 if 1 then if 2 then 3 else 4
 ---
@@ -405,7 +313,7 @@ if 1 then if 2 then 3 else 4
 
 
 ==================
-(25) while for i in L list 1 do 2 do 3 [auto control]
+(17) while for i in L list 1 do 2 do 3 [auto control]
 ==================
 while for i in L list 1 do 2 do 3
 ---
@@ -426,7 +334,7 @@ while for i in L list 1 do 2 do 3
 
 
 ==================
-(26) p = x -> toString if instance(x, Package) then x else if package x =!= null then package x else Core [auto control]
+(18) p = x -> toString if instance(x, Package) then x else if package x =!= null then package x else Core [auto control]
 ==================
 p = x -> toString if instance(x, Package) then x else if package x =!= null then package x else Core
 ---
@@ -463,7 +371,7 @@ p = x -> toString if instance(x, Package) then x else if package x =!= null then
 
 
 ==================
-(27) top-level global quote and following cell [auto control]
+(19) top-level global quote and following cell [auto control]
 ==================
 global x
 x
@@ -478,7 +386,7 @@ x
 
 
 ==================
-(28) multiline if-then-else [auto control]
+(20) multiline if-then-else [auto control]
 :error
 ==================
 if x then

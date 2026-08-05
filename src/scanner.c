@@ -53,14 +53,14 @@ enum TokenType {
   RAW_STRING_ESCAPE,
   RAW_STRING_END,
 
-  // Missing comma operands are real null values in Macaulay2. These external
+  // Empty comma components are valid syntax in Macaulay2. These external
   // tokens are zero-width, like SPACE, but remain context-specific because
   // source cells and bracketed containers have different possible closing
   // boundaries. A separate token for operands immediately before a comma
-  // prevents `()` from acquiring a spurious null.
-  NULL_BEFORE_COMMA,
-  CELL_TRAILING_NULL,
-  CONTAINER_TRAILING_NULL
+  // prevents `()` from acquiring a spurious empty component.
+  EMPTY_BEFORE_COMMA,
+  CELL_TRAILING_EMPTY,
+  CONTAINER_TRAILING_EMPTY
 };
 
 typedef enum { SCAN_NONE, SCAN_DONE, SCAN_FAIL } ScanResult;
@@ -187,44 +187,44 @@ static bool can_scan_raw_string(const bool *valid_symbols) {
          valid_symbols[RAW_STRING_ESCAPE] || valid_symbols[RAW_STRING_END];
 }
 
-static bool can_scan_null(const bool *valid_symbols) {
-  return valid_symbols[NULL_BEFORE_COMMA] ||
-         valid_symbols[CELL_TRAILING_NULL] ||
-         valid_symbols[CONTAINER_TRAILING_NULL];
+static bool can_scan_empty_component(const bool *valid_symbols) {
+  return valid_symbols[EMPTY_BEFORE_COMMA] ||
+         valid_symbols[CELL_TRAILING_EMPTY] ||
+         valid_symbols[CONTAINER_TRAILING_EMPTY];
 }
 
-// Emit a zero-width null only when the next token proves that the comma
-// operand is absent. Parser state determines whether source-cell or container
+// Emit a zero-width component only when the next token proves that the comma
+// operand is empty. Parser state determines whether source-cell or container
 // newline rules apply.
-static bool scan_null(TSLexer *lexer, const bool *valid_symbols) {
+static bool scan_empty_component(TSLexer *lexer, const bool *valid_symbols) {
   lexer->mark_end(lexer);
 
   if (lexer->eof(lexer))
-    return valid_symbols[CELL_TRAILING_NULL] &&
-           emit(lexer, CELL_TRAILING_NULL);
+    return valid_symbols[CELL_TRAILING_EMPTY] &&
+           emit(lexer, CELL_TRAILING_EMPTY);
 
   int32_t c = lexer->lookahead;
 
-  if (c == ',' && valid_symbols[NULL_BEFORE_COMMA])
-    return emit(lexer, NULL_BEFORE_COMMA);
+  if (c == ',' && valid_symbols[EMPTY_BEFORE_COMMA])
+    return emit(lexer, EMPTY_BEFORE_COMMA);
 
-  if (valid_symbols[CONTAINER_TRAILING_NULL]) {
+  if (valid_symbols[CONTAINER_TRAILING_EMPTY]) {
     if (c == ';')
-      return emit(lexer, CONTAINER_TRAILING_NULL);
+      return emit(lexer, CONTAINER_TRAILING_EMPTY);
 
     if (c == ')' || c == ']' || c == '}')
-      return emit(lexer, CONTAINER_TRAILING_NULL);
+      return emit(lexer, CONTAINER_TRAILING_EMPTY);
 
     if (c == '|') {
       advance(lexer);
       if (lexer->lookahead == '>')
-        return emit(lexer, CONTAINER_TRAILING_NULL);
+        return emit(lexer, CONTAINER_TRAILING_EMPTY);
     }
   }
 
-  if (valid_symbols[CELL_TRAILING_NULL] &&
+  if (valid_symbols[CELL_TRAILING_EMPTY] &&
       (c == ';' || c == '\n' || c == '\r'))
-    return emit(lexer, CELL_TRAILING_NULL);
+    return emit(lexer, CELL_TRAILING_EMPTY);
 
   return false;
 }
@@ -375,7 +375,7 @@ static bool scan_number(TSLexer *lexer, const bool *valid_symbols) {
 //   * 2 ordinary slashes before more content, or
 //   * the final closing `///`
 //
-// We therefore expose one `raw_string_escape` token per doubled `//` pair and
+// We therefore scan one raw-string escape token per doubled `//` pair and
 // leave the remaining 2-slash or 3-slash suffix to be scanned on the next call.
 
 static bool scan_raw_str_content_step(TSLexer *lexer, bool anything_found,
@@ -544,10 +544,11 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
   else
     skip_whitespace(lexer);
 
-  // Unlike other external tokens, CELL_TRAILING_NULL must be available at EOF.
-  // Check nulls before the generic EOF return and before numeric/adjacency
+  // Unlike other external tokens, CELL_TRAILING_EMPTY must be available at EOF.
+  // Check empty components before the generic EOF return and before numeric/adjacency
   // scanning so an omitted operand cannot be reinterpreted as an operator.
-  if (can_scan_null(valid_symbols) && scan_null(lexer, valid_symbols))
+  if (can_scan_empty_component(valid_symbols) &&
+      scan_empty_component(lexer, valid_symbols))
     return true;
 
   if (lexer->eof(lexer))

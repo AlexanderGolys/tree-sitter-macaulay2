@@ -125,17 +125,110 @@ tsConvertParentheses = method()
 tsConvertFor = method()
 tsConvertTry = method()
 
+-- M2 normalizes both `"..."` and `///...///` literals to quoted Token
+-- values, so its CST alone cannot preserve which spelling appeared in the
+-- source. Scan just the string delimiters up front and consume these specs in
+-- source order while converting the CST. A spec is {node kind, raw escapes}.
+tsPendingStringSpecs = {}
+tsPendingStringSpecIndex = 0
+
+tsSourceStringSpecs = source -> (
+    source = toString source;
+    specs := {};
+    index := 0;
+
+    while index < #source do (
+        if index + 1 < #source and source#index == "-" and source#(index + 1) == "-" then (
+            index = index + 2;
+            while index < #source and source#index != "\n" do index = index + 1;
+        )
+        else if index + 1 < #source and source#index == "-" and source#(index + 1) == "*" then (
+            index = index + 2;
+            commentClosed := false;
+            while index < #source and not commentClosed do (
+                if index + 1 < #source and source#index == "*" and source#(index + 1) == "-" then (
+                    index = index + 2;
+                    commentClosed = true;
+                ) else index = index + 1;
+            );
+        )
+        else if source#index == "\"" then (
+            specs = append(specs, {"string_literal", 0});
+            index = index + 1;
+            stringClosed := false;
+            while index < #source and not stringClosed do (
+                if source#index == "\\" then index = index + 2
+                else if source#index == "\"" then (
+                    index = index + 1;
+                    stringClosed = true;
+                ) else index = index + 1;
+            );
+        )
+        else if index + 2 < #source and
+                source#index == "/" and
+                source#(index + 1) == "/" and
+                source#(index + 2) == "/" then (
+            index = index + 3;
+            escapeCount := 0;
+            rawClosed := false;
+            while index < #source and not rawClosed do (
+                if source#index != "/" then index = index + 1
+                else (
+                    runStart := index;
+                    while index < #source and source#index == "/" do index = index + 1;
+                    remaining := index - runStart;
+                    while remaining >= 4 do (
+                        escapeCount = escapeCount + 1;
+                        remaining = remaining - 2;
+                    );
+                    if remaining == 3 then rawClosed = true;
+                );
+            );
+            specs = append(specs, {"raw_string_literal", escapeCount});
+        )
+        else index = index + 1;
+    );
+
+    specs
+)
+
+tsPrepareStringSpecs = source -> (
+    tsPendingStringSpecs = tsSourceStringSpecs source;
+    tsPendingStringSpecIndex = 0;
+)
+
+tsNextStringSpec = () -> (
+    if tsPendingStringSpecIndex >= #tsPendingStringSpecs then
+        error("M2 returned a string token with no matching source literal");
+    spec := tsPendingStringSpecs#tsPendingStringSpecIndex;
+    tsPendingStringSpecIndex = tsPendingStringSpecIndex + 1;
+    spec
+)
+
+tsCheckStringSpecs = () -> (
+    if tsPendingStringSpecIndex != #tsPendingStringSpecs then
+        error("source string literals were not consumed by the M2 CST conversion");
+)
+
 tsConvertToken (String, Boolean) := (value, trailingDotAsInt) -> (
     if tsStartsWith("\"", value) and tsEndsWith("\"", value) then (
-        children := {};
-        index := 1;
-        while index < #value - 1 do (
-            if value#index == "\\" then (
-                children = append(children, tsAnon tsLeaf "escape_sequence");
-                index = index + 2;
-            ) else index = index + 1;
-        );
-        tsNode("string_literal", children)
+        spec := tsNextStringSpec();
+        if spec#0 == "raw_string_literal" then (
+            rawChildren := {};
+            for index from 1 to spec#1 do
+                rawChildren = append(rawChildren, tsAnon tsLeaf "escape_sequence");
+            tsNode("raw_string_literal", rawChildren)
+        ) else (
+            stringChildren := {};
+            index := 1;
+            while index < #value - 1 do (
+                if value#index == "\\" then (
+                    stringChildren = append(stringChildren, tsAnon tsLeaf "escape_sequence");
+                    index = index + 2;
+                ) else index = index + 1;
+            );
+            tsNode("string_literal", stringChildren)
+        )
     )
     else if tsIsNumber value then (
         if trailingDotAsInt and tsEndsWith(".", value) then tsLeaf "integer_literal"
@@ -163,7 +256,7 @@ tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
         if op == "," then tsNode(
             "naked_sequence",
             apply(tsFlattenComma expr, item ->
-                tsAnon (if tsIsDummy item then tsLeaf "null" else tsConvertExpr item)))
+                tsAnon (if tsIsDummy item then tsLeaf "empty_component" else tsConvertExpr item)))
         else if member(op, debugUnary) then (
             if debugNamedUnary#?op
             then tsNode(debugNamedUnary#op, apply(children, c -> tsAnon c#1))
@@ -238,7 +331,7 @@ tsConvertBinary(List) := expr -> (
     if op == "," then tsNode(
         "naked_sequence",
         apply(tsFlattenComma expr, item ->
-            tsAnon (if tsIsDummy item then tsLeaf "null" else tsConvertExpr item)))
+            tsAnon (if tsIsDummy item then tsLeaf "empty_component" else tsConvertExpr item)))
     else tsNode("binary_expression", {
         tsChild("left", tsConvertExpr(expr#1, tsStartsWith("..", op))),
         tsChild("right", tsConvertExpr expr#3)
@@ -327,10 +420,11 @@ tsRoundParenKind = inner -> (
 )
 
 -- Within brackets, the outer semantic container supplies sequence identity.
--- Flatten comma operands directly into it, retaining dummies as `null`; a
--- semicolon groups all operands of its sequence under one `muted` wrapper.
+-- Flatten comma operands directly into it, retaining dummies as
+-- `empty_component`; a semicolon groups all operands of its sequence under one
+-- `muted` wrapper.
 tsCommaChildren = content -> apply(tsFlattenComma content, item ->
-    tsAnon (if tsIsDummy item then tsLeaf "null" else tsConvertExpr item))
+    tsAnon (if tsIsDummy item then tsLeaf "empty_component" else tsConvertExpr item))
 
 tsConvertMultiChildren = inner -> flatten apply(tsFlattenMuted inner, item ->
     if item#0
@@ -535,7 +629,9 @@ tsWriteCorpus = (name, expressions) -> (
             out << "==================" << endl;
             out << expression << endl;
             out << "---" << endl << endl;
+            tsPrepareStringSpecs expression;
             tree := if isMultiline then tsConvertMultilineTop result else tsConvertTop(expression, result);
+            tsCheckStringSpecs();
             for line in tsFormatTree tree do out << line << endl;
         );
     );

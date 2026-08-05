@@ -22,9 +22,9 @@ finish 1
 
 
 ==================
-(3) finish finish break finish break [auto keywords]
+(3) finish finish break finish breakbreak [auto keywords]
 ==================
-finish finish break finish break
+finish finish break finish breakbreak
 ---
 
 (source_file
@@ -33,4 +33,108 @@ finish finish break finish break
       (debug_clause
         (break_statement
           (debug_clause
-            (break_statement)))))))
+            (symbol)))))))
+
+
+==================
+(4) break x [auto keywords]
+==================
+break x
+---
+
+(source_file
+  (cell
+    (break_statement
+      (symbol))))
+
+
+==================
+(5) continue [auto keywords]
+==================
+continue
+---
+
+(source_file
+  (cell
+    (continue_statement)))
+
+
+==================
+(6) continue x [auto keywords]
+==================
+continue x
+---
+
+(source_file
+  (cell
+    (continue_statement
+      (symbol))))
+
+
+==================
+(7) return x [auto keywords]
+==================
+return x
+---
+
+(source_file
+  (cell
+    (return_statement
+      (symbol))))
+
+
+==================
+(8) return [auto keywords]
+==================
+return
+---
+
+(source_file
+  (cell
+    (return_statement)))
+
+
+==================
+(9) finish [auto keywords]
+==================
+finish
+---
+
+(source_file
+  (cell
+    (debug_clause)))
+
+
+==================
+(10) finish x [auto keywords]
+==================
+finish x
+---
+
+(source_file
+  (cell
+    (debug_clause
+      (symbol))))
+
+
+==================
+(11) step [auto keywords]
+==================
+step
+---
+
+(source_file
+  (cell
+    (debug_clause)))
+
+
+==================
+(12) step x [auto keywords]
+==================
+step x
+---
+
+(source_file
+  (cell
+    (debug_clause
+      (symbol))))

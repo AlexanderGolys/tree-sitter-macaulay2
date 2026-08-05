@@ -23,6 +23,19 @@ SKIP_TESTS=false
 SKIP_CARGO=false
 RUN_DRY_PUBLISH=false
 
+# Tree-sitter's test runner takes an exclusive lock in its cache directory.
+# Keep that disposable build cache out of the user's global cache, which may
+# legitimately be read-only in containers and other sandboxed environments.
+# Wasm generation intentionally keeps the normal cache so it can reuse an
+# already-installed WASI SDK.
+TS_TEST_CACHE_HOME="${TMPDIR:-/tmp}/tree-sitter-macaulay2-pipeline-${UID:-0}"
+NPM_CACHE_HOME="${TMPDIR:-/tmp}/tree-sitter-macaulay2-npm-${UID:-0}"
+mkdir -p "$TS_TEST_CACHE_HOME" "$NPM_CACHE_HOME"
+
+tree_sitter_test() {
+    XDG_CACHE_HOME="$TS_TEST_CACHE_HOME" npx tree-sitter test "$@"
+}
+
 usage() {
     cat <<EOF
 Usage: $0 [FLAGS]
@@ -166,14 +179,13 @@ parser_stat_from_line() {
 }
 
 # -------------------------------------------------------------------
-# Sync Cargo.lock with the (possibly just-bumped) Cargo.toml version. cargo
-# only rewrites the lockfile's version when it next runs, which otherwise
-# lands *after* a manual bump + 'git add .' and surfaces as a dirty file
-# during 'cargo publish'. Running it here keeps the lockfile staged-ready.
+# Sync Cargo.lock with a possibly just-bumped workspace version. Updating only
+# this package avoids the unrelated transitive dependency churn caused by
+# `cargo generate-lockfile`.
 # -------------------------------------------------------------------
 if ! $SKIP_CARGO; then
-    cargo generate-lockfile --offline >/dev/null 2>&1 \
-        || cargo generate-lockfile >/dev/null 2>&1 || true
+    cargo update --offline -p tree-sitter-macaulay2 >/dev/null 2>&1 \
+        || cargo update -p tree-sitter-macaulay2 >/dev/null 2>&1 || true
 fi
 
 # -------------------------------------------------------------------
@@ -241,7 +253,7 @@ if $SKIP_TESTS; then
     skip_step 4 "tree-sitter tests" "--skip-tests"
 else
     step 4 "Running tree-sitter tests"
-    TS_OUT=$(npx tree-sitter test 2>&1) || {
+    TS_OUT=$(tree_sitter_test 2>&1) || {
         echo
         echo "    $TS_OUT"
         fail_badge
@@ -251,7 +263,7 @@ else
     TS_SKIP=$(echo "$TS_OUT" | grep -c '⌀' || true)
     TS_TOTAL=$(( $(echo "$TS_OUT" | grep -cE '^[[:space:]]*[0-9]+\.' || true) ))
     badge "$TS_PASS" "$TS_TOTAL" "$TS_SKIP"
-    TS_AVG_SPEED=$(npx tree-sitter test --json-summary 2>/dev/null | node -e '
+    TS_AVG_SPEED=$(tree_sitter_test --json-summary 2>/dev/null | node -e '
 let input = "";
 process.stdin.on("data", chunk => input += chunk);
 process.stdin.on("end", () => {
@@ -344,7 +356,7 @@ if ! $RUN_DRY_PUBLISH; then
     skip_step 7 "npm publish dry-run" "--dry-publish not set"
 else
     step 7 "npm publish dry-run: "
-    NPM_OUT=$(npm publish --dry-run 2>&1) || {
+    NPM_OUT=$(NPM_CONFIG_CACHE="$NPM_CACHE_HOME" npm publish --dry-run 2>&1) || {
         echo
         echo "    $NPM_OUT"
         warn_badge

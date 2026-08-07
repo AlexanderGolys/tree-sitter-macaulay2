@@ -38,12 +38,31 @@ const routedElsewhere = new Set([
   ...RANGE_ASSIGN_SYMBOLS,
 ]);
 
-const associativity = group => (group.associativity === 'left' ? prec.left : prec.right);
-const groupContaining = symbol => operator_info.binary.find(group => group.symbols.includes(symbol));
+const associativity = group => {
+  if (group.associativity === 'left') return prec.left;
+  if (group.associativity === 'right') return prec.right;
+  throw new Error(
+    `operator-info.json: unknown associativity '${group.associativity}' ` +
+    `for ${group.symbols.join(' ')}.`);
+};
 
-const ASSIGNMENT_PREC = groupContaining('=').precedence;
+// A future Macaulay2 release could rename or drop any of the operators the
+// rules below single out. Fail generation with the missing symbol named rather
+// than a TypeError on `undefined.precedence`.
+const groupContaining = symbol => {
+  const group = operator_info.binary.find(g => g.symbols.includes(symbol));
+  if (!group) {
+    throw new Error(
+      `operator-info.json has no binary group containing '${symbol}'. ` +
+      'Regenerate it with `npm run update-operators`.');
+  }
+  return group;
+};
+
+const ASSIGNMENT_GROUP = groupContaining('=');
+const RANGE_GROUP = groupContaining('..');
+const ASSIGNMENT_PREC = ASSIGNMENT_GROUP.precedence;
 const MEMBER_ACCESS_PREC = groupContaining('.').precedence;
-const RANGE_PREC = groupContaining('..').precedence;
 
 // `getParsing` reports a unary operator's binding STRENGTH. Macaulay2's Pratt
 // parser absorbs a following binary operator when that operator's PRECEDENCE
@@ -70,22 +89,27 @@ const binaryOperators = [
       symbols: group.symbols.filter(symbol => !routedElsewhere.has(symbol)),
     }))
     .filter(group => group.symbols.length > 0),
+  // The range operators are lexed by the external scanner, so they are
+  // rebuilt here by hand -- but precedence and associativity still come from
+  // the same metadata group as the symbol they alias.
   {
-    precedence: ASSIGNMENT_PREC,
-    assoc: prec.right,
+    precedence: ASSIGNMENT_GROUP.precedence,
+    assoc: associativity(ASSIGNMENT_GROUP),
     symbols: [
       { token: '_range_eq', value: '..=' },
       { token: '_range_lt_eq', value: '..<=' },
     ],
   },
   {
-    precedence: RANGE_PREC,
-    assoc: prec.left,
+    precedence: RANGE_GROUP.precedence,
+    assoc: associativity(RANGE_GROUP),
     symbols: [
       { token: '_range', value: '..' },
       { token: '_range_lt', value: '..<' },
     ],
   },
+  // Adjacency has no symbol, so getParsing records only its strength;
+  // right-associativity is implied by `prec == binaryStrength + 1`.
   {
     precedence: operator_info.adjacent,
     assoc: prec.right,
@@ -98,10 +122,28 @@ const binaryOperators = [
   },
 ];
 
+// Control keywords that Macaulay2 reports as unary operators but that this
+// grammar handles with dedicated statement rules, so they are dropped from the
+// generic prefix table. Listed by name rather than filtered by precedence
+// alone: if a release adds a keyword to this group, generation should fail
+// here instead of silently dropping it from the grammar.
+const DEDICATED_CONTROL_SYMBOLS = new Set([
+  'break', 'breakpoint', 'catch', 'continue', 'elapsedTime', 'elapsedTiming',
+  'finish', 'profile', 'return', 'shield', 'step', 'TEST', 'throw', 'time',
+  'timing', 'trap',
+]);
+
 const prefixOperators = operator_info.unary
-  // `break`, `return`, `throw` and friends are unary in Macaulay2 but have
-  // dedicated statement rules here.
-  .filter(group => !(group.binary === false && group.precedence === PREC.CONTROL))
+  .filter(group => {
+    if (!(group.binary === false && group.precedence === PREC.CONTROL)) return true;
+    const unhandled = group.symbols.filter(s => !DEDICATED_CONTROL_SYMBOLS.has(s));
+    if (unhandled.length > 0) {
+      throw new Error(
+        `No dedicated rule for control keyword(s): ${unhandled.join(', ')}. ` +
+        'Add a grammar rule, then list them in DEDICATED_CONTROL_SYMBOLS.');
+    }
+    return false;
+  })
   .map(group => ({
     precedence: prefixPrecedence(group.precedence),
     symbols: group.symbols.filter(symbol => !routedElsewhere.has(symbol)),

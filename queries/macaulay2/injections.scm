@@ -2,7 +2,7 @@
 ; raw-string escape children, then remove the opening and closing delimiters.
 ((debug_clause
   keyword: "TEST"
-  (string_literal) @injection.content)
+  (raw_string_literal) @injection.content)
   (#set! injection.self)
   (#set! injection.include-children)
   (#offset! @injection.content 0 3 0 -3))

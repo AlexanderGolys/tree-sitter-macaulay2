@@ -1,44 +1,54 @@
 ; Function definitions
-(binary_expression
-  left: (symbol) @name
-  operator: [":=" "="]
-  right: (lambda_expression)) @definition.function
+[
+  (assignment
+    left: (symbol) @name
+    right: (lambda_expression))
+  (local_assignment
+    left: (symbol) @name
+    right: (lambda_expression))
+] @definition.function
 
-(binary_expression
-  left: (symbol) @name
-  operator: [":=" "="]
-  right: (binary_expression 
-           right: (lambda_expression))) @definition.function
+[
+  (assignment
+    left: (symbol) @name
+    right: (binary_expression
+      right: (lambda_expression)))
+  (local_assignment
+    left: (symbol) @name
+    right: (binary_expression
+      right: (lambda_expression)))
+] @definition.function
 
 ; Method installations
-((binary_expression
+((_
    left: (binary_expression
            left: (symbol) @name
            operator: "SPACE")
    operator: [":=" "="]) @definition.function
  (#match? @name "^[a-z].*"))
 
-((binary_expression
+((_
    left: (binary_expression
            operator: _ @name)
    operator: [":=" "="]) @definition.function
  (#match? @name "\\S"))
 
 [
-  (binary_expression
+  (_
     left: (prefix_expression
             operator: _ @name)
     operator: [":=" "="])
-  (binary_expression
+  (_
     left: (postfix_expression
             operator: _ @name)
     operator: [":=" "="])
 ] @definition.function
 
 ; Variable definitions
-(binary_expression
-  left: (symbol) @name
-  operator: [":=" "="]) @definition.variable
+[
+  (assignment left: (symbol) @name)
+  (local_assignment left: (symbol) @name)
+] @definition.variable
 
 ; References
 (binary_expression
@@ -52,6 +62,6 @@
   operator: "SPACE") @reference.call
 
 (binary_expression
-  left: (_
-          symbol: _ @name)
+  left: (quote_expression
+          token: _ @name)
   operator: "SPACE") @reference.call

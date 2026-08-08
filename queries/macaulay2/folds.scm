@@ -4,6 +4,7 @@
   (parenthesized_expression)
   (array)
   (angle_bar_list)
+  (binding_pack)
   (cell)
   (lambda_expression)
   (if_statement)

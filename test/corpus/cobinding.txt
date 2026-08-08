@@ -11,7 +11,7 @@ if x==4 then x=5
         left: (symbol)
         right: (integer_literal))
       (then_clause
-        (binary_expression
+        (assignment
           left: (symbol)
           right: (integer_literal))))))
 
@@ -115,7 +115,7 @@ while x < 10 when x > 1 do x = x + 1
           left: (symbol)
           right: (integer_literal)))
       (do_clause
-        (binary_expression
+        (assignment
           left: (symbol)
           right: (binary_expression
             left: (symbol)
@@ -279,7 +279,7 @@ extractName = x -> try toString symbol x else toString x
 
 (source_file
   (cell
-    (binary_expression
+    (assignment
       left: (symbol)
       right: (lambda_expression
         parameters: (symbol)
@@ -287,7 +287,7 @@ extractName = x -> try toString symbol x else toString x
           (binary_expression
             left: (symbol)
             right: (quote_expression
-              symbol: (symbol)))
+              token: (symbol)))
           (else_clause
             (binary_expression
               left: (symbol)
@@ -359,7 +359,7 @@ symbol symbol //////
   (cell
     (binary_expression
       left: (quote_expression
-        symbol: (keyword))
+        token: (keyword))
       right: (raw_string_literal))))
 
 ==================

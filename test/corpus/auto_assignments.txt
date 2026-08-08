@@ -6,7 +6,7 @@ s_2 = 44
 
 (source_file
   (cell
-    (binary_expression
+    (binary_assignment
       left: (binary_expression
         left: (symbol)
         right: (integer_literal))
@@ -21,7 +21,7 @@ x#3 = "foo"
 
 (source_file
   (cell
-    (binary_expression
+    (binary_assignment
       left: (binary_expression
         left: (symbol)
         right: (integer_literal))
@@ -36,7 +36,7 @@ x.y = z
 
 (source_file
   (cell
-    (binary_expression
+    (binary_assignment
       left: (binary_expression
         left: (symbol)
         right: (symbol))
@@ -52,10 +52,10 @@ String * String = peek
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
+      left: (symbol)
+      right: (assignment
         left: (symbol)
-        right: (symbol))
-      right: (symbol))))
+        right: (symbol)))))
 
 
 ==================
@@ -66,10 +66,10 @@ String * String = peek
 
 (source_file
   (cell
-    (binary_expression
-      left: (prefix_expression
-        operand: (symbol))
-      right: (symbol))))
+    (prefix_expression
+      operand: (assignment
+        left: (symbol)
+        right: (symbol)))))
 
 
 ==================
@@ -80,7 +80,7 @@ s_2 := 44
 
 (source_file
   (cell
-    (binary_expression
+    (binary_installation
       left: (binary_expression
         left: (symbol)
         right: (integer_literal))
@@ -95,7 +95,7 @@ f = opts >> o -> x
 
 (source_file
   (cell
-    (binary_expression
+    (assignment
       left: (symbol)
       right: (binary_expression
         left: (symbol)
@@ -113,9 +113,48 @@ ZZ ZZ := ZZ => f
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
+      left: (symbol)
+      right: (local_assignment
         left: (symbol)
-        right: (symbol))
-      right: (binary_expression
-        left: (symbol)
-        right: (symbol)))))
+        right: (option
+          left: (symbol)
+          right: (symbol))))))
+
+
+==================
+(9) ((x)) = y [auto assignments]
+==================
+((x)) = y
+---
+
+(source_file
+  (cell
+    (structured_binding
+      left: (binding_pack
+        (binding_pack
+          (symbol)))
+      right: (symbol))))
+
+
+==================
+(10) ((x + y)) = z [auto assignments]
+==================
+((x + y)) = z
+---
+
+(source_file
+  (cell
+    (structured_binding
+      left: (binding_pack
+        (binding_pack
+          (binary_expression
+            left: (symbol)
+            right: (symbol))))
+      right: (symbol))))
+
+
+==================
+(11) (x, (y, z)) = values [auto assignments]
+:error
+==================
+(x, (y, z)) = values

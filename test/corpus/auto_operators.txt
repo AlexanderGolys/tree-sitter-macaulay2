@@ -550,7 +550,7 @@ x := y
 
 (source_file
   (cell
-    (binary_expression
+    (local_assignment
       left: (symbol)
       right: (symbol))))
 
@@ -798,46 +798,20 @@ I/R(x, y)
 
 
 ==================
-(50) x."a" [auto operators]
+(50) x.?y [auto operators]
 ==================
-x."a"
+x.?y
 ---
 
 (source_file
   (cell
     (binary_expression
       left: (symbol)
-      right: (string_literal))))
+      right: (symbol))))
 
 
 ==================
-(51) "a"."a" [auto operators]
-==================
-"a"."a"
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (string_literal)
-      right: (string_literal))))
-
-
-==================
-(52) "a".?2 [auto operators]
-==================
-"a".?2
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (string_literal)
-      right: (integer_literal))))
-
-
-==================
-(53) "a".2 [auto operators]
+(51) "a".2 [auto operators]
 ==================
 "a".2
 ---
@@ -850,7 +824,7 @@ x."a"
 
 
 ==================
-(54) #f x [auto operators]
+(52) #f x [auto operators]
 ==================
 #f x
 ---
@@ -864,7 +838,7 @@ x."a"
 
 
 ==================
-(55) #f(x) [auto operators]
+(53) #f(x) [auto operators]
 ==================
 #f(x)
 ---
@@ -879,7 +853,7 @@ x."a"
 
 
 ==================
-(56) #f x! [auto operators]
+(54) #f x! [auto operators]
 ==================
 #f x!
 ---
@@ -894,7 +868,7 @@ x."a"
 
 
 ==================
-(57) #f[x] [auto operators]
+(55) #f[x] [auto operators]
 ==================
 #f[x]
 ---
@@ -909,7 +883,7 @@ x."a"
 
 
 ==================
-(58) #f * x [auto operators]
+(56) #f * x [auto operators]
 ==================
 #f * x
 ---
@@ -923,7 +897,7 @@ x."a"
 
 
 ==================
-(59) #f @@ x [auto operators]
+(57) #f @@ x [auto operators]
 ==================
 #f @@ x
 ---
@@ -937,7 +911,7 @@ x."a"
 
 
 ==================
-(60) #f x y [auto operators]
+(58) #f x y [auto operators]
 ==================
 #f x y
 ---
@@ -953,7 +927,7 @@ x."a"
 
 
 ==================
-(61) #f 2 [auto operators]
+(59) #f 2 [auto operators]
 ==================
 #f 2
 ---
@@ -967,7 +941,7 @@ x."a"
 
 
 ==================
-(62) #f {x} [auto operators]
+(60) #f {x} [auto operators]
 ==================
 #f {x}
 ---
@@ -982,9 +956,9 @@ x."a"
 
 
 ==================
-(63) #f "x" [auto operators]
+(61) #f "" [auto operators]
 ==================
-#f "x"
+#f ""
 ---
 
 (source_file
@@ -996,7 +970,7 @@ x."a"
 
 
 ==================
-(64) # f SPACE x [auto operators]
+(62) # f SPACE x [auto operators]
 ==================
 # f SPACE x
 ---
@@ -1010,7 +984,7 @@ x."a"
 
 
 ==================
-(65) ##f x [auto operators]
+(63) ##f x [auto operators]
 ==================
 ##f x
 ---
@@ -1025,7 +999,7 @@ x."a"
 
 
 ==================
-(66) #f x^* [auto operators]
+(64) #f x^* [auto operators]
 ==================
 #f x^*
 ---
@@ -1040,7 +1014,7 @@ x."a"
 
 
 ==================
-(67) #f x (*) [auto operators]
+(65) #f x (*) [auto operators]
 ==================
 #f x (*)
 ---
@@ -1055,7 +1029,7 @@ x."a"
 
 
 ==================
-(68) #f <|x|> [auto operators]
+(66) #f <|x|> [auto operators]
 ==================
 #f <|x|>
 ---
@@ -1070,7 +1044,7 @@ x."a"
 
 
 ==================
-(69) #f @ x [auto operators]
+(67) #f @ x [auto operators]
 ==================
 #f @ x
 ---
@@ -1084,7 +1058,7 @@ x."a"
 
 
 ==================
-(70) #f # x [auto operators]
+(68) #f # x [auto operators]
 ==================
 #f # x
 ---
@@ -1098,7 +1072,7 @@ x."a"
 
 
 ==================
-(71) #f ^ x [auto operators]
+(69) #f ^ x [auto operators]
 ==================
 #f ^ x
 ---
@@ -1112,9 +1086,164 @@ x."a"
 
 
 ==================
-(72) a.#f x [auto operators]
+(70) a.#f x [auto operators]
+:error
 ==================
 a.#f x
+
+==================
+(71) f0 = s -> replace(///\{dummy\}///, ///null///, s) [auto operators]
+==================
+f0 = s -> replace(///\{dummy\}///, ///null///, s)
+---
+
+(source_file
+  (cell
+    (assignment
+      left: (symbol)
+      right: (lambda_expression
+        parameters: (symbol)
+        body: (binary_expression
+          left: (symbol)
+          right: (sequence
+            (raw_string_literal)
+            (raw_string_literal)
+            (symbol)))))))
+
+
+==================
+(72) f1 = s -> replace(///\{Token, (.[^\}]*)\}///, ///'\1'///, s) [auto operators]
+==================
+f1 = s -> replace(///\{Token, (.[^\}]*)\}///, ///'\1'///, s)
+---
+
+(source_file
+  (cell
+    (assignment
+      left: (symbol)
+      right: (lambda_expression
+        parameters: (symbol)
+        body: (binary_expression
+          left: (symbol)
+          right: (sequence
+            (raw_string_literal)
+            (raw_string_literal)
+            (symbol)))))))
+
+
+==================
+(73) f2 = s -> replace(///\{Unary, ('[^']+'), ('[^']+'|\{.*\}|null)\}///, ///Pref(\1, \2)///, s) [auto operators]
+==================
+f2 = s -> replace(///\{Unary, ('[^']+'), ('[^']+'|\{.*\}|null)\}///, ///Pref(\1, \2)///, s)
+---
+
+(source_file
+  (cell
+    (assignment
+      left: (symbol)
+      right: (lambda_expression
+        parameters: (symbol)
+        body: (binary_expression
+          left: (symbol)
+          right: (sequence
+            (raw_string_literal)
+            (raw_string_literal)
+            (symbol)))))))
+
+
+==================
+(74) f3 = s -> replace(///\{Binary, ('[^']+'|\{.*\}|null|\w+\(.*\)), ('[^']+'), ('[^']+'|\{.*\}|null|\w+\(.+\))\}///, ///Bin\(\1, \2, \3\)///, s) [auto operators]
+==================
+f3 = s -> replace(///\{Binary, ('[^']+'|\{.*\}|null|\w+\(.*\)), ('[^']+'), ('[^']+'|\{.*\}|null|\w+\(.+\))\}///, ///Bin\(\1, \2, \3\)///, s)
+---
+
+(source_file
+  (cell
+    (assignment
+      left: (symbol)
+      right: (lambda_expression
+        parameters: (symbol)
+        body: (binary_expression
+          left: (symbol)
+          right: (sequence
+            (raw_string_literal)
+            (raw_string_literal)
+            (symbol)))))))
+
+
+==================
+(75) f4 = s -> replace(///\{Parentheses, '(..?)', ('[^']+'|\{.*\}|null|\w+\(.*\)), '(..?)'\}///, ///Paren\1\2\3///, s) [auto operators]
+==================
+f4 = s -> replace(///\{Parentheses, '(..?)', ('[^']+'|\{.*\}|null|\w+\(.*\)), '(..?)'\}///, ///Paren\1\2\3///, s)
+---
+
+(source_file
+  (cell
+    (assignment
+      left: (symbol)
+      right: (lambda_expression
+        parameters: (symbol)
+        body: (binary_expression
+          left: (symbol)
+          right: (sequence
+            (raw_string_literal)
+            (raw_string_literal)
+            (symbol)))))))
+
+
+==================
+(76) f = f4 @@ f3 @@ f2 @@ f1 @@ f0 [auto operators]
+==================
+f = f4 @@ f3 @@ f2 @@ f1 @@ f0
+---
+
+(source_file
+  (cell
+    (assignment
+      left: (symbol)
+      right: (binary_expression
+        left: (binary_expression
+          left: (binary_expression
+            left: (binary_expression
+              left: (symbol)
+              right: (symbol))
+            right: (symbol))
+          right: (symbol))
+        right: (symbol)))))
+
+
+==================
+(77) f = f @@ f [auto operators]
+==================
+f = f @@ f
+---
+
+(source_file
+  (cell
+    (assignment
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+
+
+==================
+(78) "a".a [auto operators]
+==================
+"a".a
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (string_literal)
+      right: (symbol))))
+
+
+==================
+(79) x#"a".a [auto operators]
+==================
+x#"a".a
 ---
 
 (source_file
@@ -1122,6 +1251,328 @@ a.#f x
     (binary_expression
       left: (binary_expression
         left: (symbol)
-        right: (prefix_expression
-          operand: (symbol)))
+        right: (string_literal))
+      right: (symbol))))
+
+
+==================
+(80) s#(s#1!#1!)!.a [auto operators]
+==================
+s#(s#1!#1!)!.a
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (postfix_expression
+          operand: (parenthesized_expression
+            (binary_expression
+              left: (binary_expression
+                left: (symbol)
+                right: (postfix_expression
+                  operand: (integer_literal)))
+              right: (postfix_expression
+                operand: (integer_literal))))))
+      right: (symbol))))
+
+
+==================
+(81) s!.?a [auto operators]
+==================
+s!.?a
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (postfix_expression
+        operand: (symbol))
+      right: (symbol))))
+
+
+==================
+(82) 2.?a [auto operators]
+==================
+2.?a
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (symbol))))
+
+
+==================
+(83) 2 .?a [auto operators]
+==================
+2 .?a
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (symbol))))
+
+
+==================
+(84) 2. .2 [auto operators]
+==================
+2. .2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (float_literal))))
+
+
+==================
+(85) 2...2 [auto operators]
+==================
+2...2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (float_literal))))
+
+
+==================
+(86) 2. ...2 [auto operators]
+==================
+2. ...2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (float_literal))))
+
+
+==================
+(87) .2 .. 2. [auto operators]
+==================
+.2 .. 2.
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (float_literal))))
+
+
+==================
+(88) 2. .. .2 [auto operators]
+==================
+2. .. .2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (float_literal))))
+
+
+==================
+(89) symbol.....2 [auto operators]
+==================
+symbol.....2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (quote_expression
+        token: (keyword))
+      right: (float_literal))))
+
+
+==================
+(90) symbol....2. [auto operators]
+==================
+symbol....2.
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (quote_expression
+        token: (keyword))
+      right: (float_literal))))
+
+
+==================
+(91) symbol. ..symbol. [auto operators]
+==================
+symbol. ..symbol.
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (quote_expression
+        token: (keyword))
+      right: (quote_expression
+        token: (keyword)))))
+
+
+==================
+(92) x.x(*) [auto operators]
+==================
+x.x(*)
+---
+
+(source_file
+  (cell
+    (postfix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+
+
+==================
+(93) x.x() [auto operators]
+==================
+x.x()
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (sequence))))
+
+
+==================
+(94) 2.?2 [auto operators]
+==================
+2.?2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (integer_literal))))
+
+
+==================
+(95) 2..?2 [auto operators]
+==================
+2..?2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (prefix_expression
+        operand: (integer_literal)))))
+
+
+==================
+(96) .2..?2 [auto operators]
+==================
+.2..?2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (prefix_expression
+        operand: (integer_literal)))))
+
+
+==================
+(97) 2.<2 [auto operators]
+==================
+2.<2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (integer_literal))))
+
+
+==================
+(98) 2..<2 [auto operators]
+==================
+2..<2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (integer_literal))))
+
+
+==================
+(99) 2..?<2 [auto operators]
+==================
+2..?<2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (prefix_expression
+        operand: (prefix_expression
+          operand: (integer_literal))))))
+
+
+==================
+(100) 2.?<2 [auto operators]
+==================
+2.?<2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (prefix_expression
+        operand: (integer_literal)))))
+
+
+==================
+(101) 2.???2 [auto operators]
+==================
+2.???2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (prefix_expression
+        operand: (integer_literal)))))
+
+
+==================
+(102) .2.?a [auto operators]
+==================
+.2.?a
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
       right: (symbol))))

@@ -20,7 +20,7 @@
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left: (float_literal)
       right: (integer_literal))))
 
 
@@ -33,7 +33,7 @@
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left: (float_literal)
       right: (float_literal))))
 
 
@@ -302,17 +302,9 @@ x..2
 
 ==================
 (23) x.(2) [auto literals]
+:error
 ==================
 x.(2)
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (symbol)
-      right: (parenthesized_expression
-        (integer_literal)))))
-
 
 ==================
 (24) 1e-2 [auto literals]
@@ -362,19 +354,9 @@ x.(2)
 
 ==================
 (28) x.-1x [auto literals]
+:error
 ==================
 x.-1x
----
-
-(source_file
-  (cell
-    (binary_expression
-      left: (binary_expression
-        left: (symbol)
-        right: (prefix_expression
-          operand: (integer_literal)))
-      right: (symbol))))
-
 
 ==================
 (29) 2x [auto literals]
@@ -487,15 +469,25 @@ e.1.1.1.e.1.p.1.e.1
 
 
 ==================
-(35) (2,2;2) [auto literals]
+(35) (2,2;2;,2) [auto literals]
 ==================
-(2,2;2)
+(2,2;2;,2)
 ---
 
 (source_file
   (cell
-    (parenthesized_expression
+    (sequence
       (muted
         (integer_literal)
         (integer_literal))
+      (muted
+        (integer_literal))
+      (empty_component)
       (integer_literal))))
+
+
+==================
+(36) 2. . .2 [auto literals]
+:error
+==================
+2. . .2

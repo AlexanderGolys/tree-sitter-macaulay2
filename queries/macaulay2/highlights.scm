@@ -19,7 +19,7 @@
 (symbol) @variable
 
 ; A name quoted after a quote specifier reads as a variable, whatever its lexical kind
-(_ symbol: _ @variable)
+(quote_expression token: _ @variable)
 
 ; Operators
 (binary_expression
@@ -33,6 +33,22 @@
 
 (lambda_expression
   operator: _ @operator)
+
+[
+  (assignment operator: _ @operator)
+  (local_assignment operator: _ @operator)
+  (binary_assignment operator: _ @operator)
+  (binary_installation operator: _ @operator)
+  (prefix_assignment operator: _ @operator)
+  (prefix_installation operator: _ @operator)
+  (postfix_assignment operator: _ @operator)
+  (postfix_installation operator: _ @operator)
+  (method_installation operator: _ @operator)
+  (structured_binding operator: _ @operator)
+  (local_structured_binding operator: _ @operator)
+  (evaluated_assignment operator: _ @operator)
+  (option operator: _ @operator)
+]
 
 ; Punctuation
 [
@@ -147,10 +163,14 @@
   ])
 
 ; Function definitions
-(binary_expression
-  left: (symbol) @function
-  operator: [":=" "="]
-  right: (lambda_expression))
+[
+  (assignment
+    left: (symbol) @function
+    right: (lambda_expression))
+  (local_assignment
+    left: (symbol) @function
+    right: (lambda_expression))
+]
 
 
 ; Members, options, and properties
@@ -169,16 +189,17 @@
 (new_statement
   (from_clause
     "from" @keyword))
-             (binary_expression
-               left: (symbol) @function.call
-               operator: "SPACE")
+
+(binary_expression
+  left: (symbol) @function.call
+  operator: "SPACE")
 
 (new_statement
   type: _ @type)
 
 ; Method installations
 ; Named methods with a single, unparenthesized domain type.
-((binary_expression
+((_
   left: (binary_expression
     left: (symbol) @label
     operator: "SPACE"
@@ -190,7 +211,7 @@
   (#match? @label "^[a-z].*"))
 
 ; An unnamed adjacency method has no visible sign to label.
-((binary_expression
+((_
   left: (binary_expression
     left: (symbol) @type.parameter @_first-type
     operator: "SPACE"
@@ -202,7 +223,7 @@
   (#not-match? @_first-type "^[a-z].*"))
 
 ; Infix operator methods.
-((binary_expression
+((_
   left: (binary_expression
     left: (_) @type.parameter
     operator: _ @label
@@ -216,7 +237,7 @@
 
 ; A _ B := (x, y) -> x*y. Requiring a function-shaped implementation
 ; avoids treating an ordinary indexed assignment as an installation.
-(binary_expression
+(_
   left: (binary_expression
     left: (_) @type.parameter
     operator: "_" @label
@@ -224,13 +245,13 @@
   operator: ["=" ":="] @keyword.operator
   right: [
     (lambda_expression)
-    (binary_expression
+    (option
       operator: "=>")
   ])
 
 ; Named methods with parenthesized domain types. Delimiters deliberately keep
 ; their ordinary punctuation captures.
-(binary_expression
+(_
   left: (binary_expression
     left: (symbol) @label
     operator: "SPACE"
@@ -245,7 +266,7 @@
   ] @keyword.operator)
 
 ; - ZZ := x -> -x
-(binary_expression
+(_
   left: (prefix_expression
     operator: _ @label
     operand: (symbol) @type.parameter)
@@ -255,7 +276,7 @@
   ] @keyword.operator)
 
 ; ZZ ! := n -> if n > 0 then n*(n-1)! else 1
-(binary_expression
+(_
   left: (postfix_expression
     operand: (symbol) @type.parameter
     operator: _ @label)
@@ -266,23 +287,23 @@
 
 ; A typical value is part of the installed signature. Highlight its arrow like
 ; the installation operator and its value like the domain types.
-((binary_expression
+((_
   left: (binary_expression
     operator: _ @_installation-sign)
   operator: ["=" ":="]
-  right: (binary_expression
+  right: (option
     left: (symbol) @type.parameter
     operator: "=>" @keyword.operator))
   (#not-any-of? @_installation-sign "." ".?" "#" "#?"))
 
-(binary_expression
+(_
   left: [
     (prefix_expression)
     (postfix_expression)
     (new_statement)
   ]
   operator: ["=" ":="]
-  right: (binary_expression
+  right: (option
     left: (symbol) @type.parameter
     operator: "=>" @keyword.operator))
 
@@ -291,30 +312,12 @@
   operator: "SPACE"
   right: (sequence
     (quote_expression
-      symbol: _ @label)
+      token: _ @label)
     .
     (_) @type.parameter
     .
     (_) @type.parameter))
   (#eq? @function.builtin "installAssignmentMethod"))
-
-(binary_expression
-  left: (new_statement
-    "new" @keyword
-    type: (_) @type.parameter
-    (of_clause
-      "of"? @keyword
-      (_) @type.parameter)?
-    (from_clause
-      "from" @keyword
-      [
-        (symbol) @type.parameter
-        (parenthesized_expression
-          (symbol) @type.parameter)
-        (sequence
-          (symbol) @type.parameter)
-      ])?)
-  operator: ":=" @keyword.operator)
 
 ; Builtins
 ((symbol) @variable.builtin

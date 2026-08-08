@@ -141,3 +141,172 @@ if 12 then 3;3 else 4
 :error
 ==================
 if 12 then 3,3 else 4
+
+==================
+(25) "a".?2 [auto errors]
+:error
+==================
+"a".?2
+
+==================
+(26) x. 2 [auto errors]
+:error
+==================
+x. 2
+
+==================
+(27) 2 . 2 [auto errors]
+:error
+==================
+2 . 2
+
+==================
+(28) x."1" [auto errors]
+:error
+==================
+x."1"
+
+==================
+(29) x.if [auto errors]
+:error
+==================
+x.if
+
+==================
+(30) x.symbol symbol [auto errors]
+:error
+==================
+x.symbol symbol
+
+==================
+(31) 2.?2 [auto errors]
+==================
+2.?2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (integer_literal))))
+
+
+==================
+(32) "a"."a" [auto errors]
+:error
+==================
+"a"."a"
+
+==================
+(33) 2. ?"a" [auto errors]
+==================
+2. ?"a"
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (string_literal))))
+
+
+==================
+(34) .2 ...2 [auto errors]
+==================
+.2 ...2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (float_literal)
+      right: (float_literal))))
+
+
+==================
+(35) 2....2 [auto errors]
+:error
+==================
+2....2
+
+==================
+(36) 2. . .2 [auto errors]
+:error
+==================
+2. . .2
+
+==================
+(37) symbol....2 [auto errors]
+==================
+symbol....2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (quote_expression
+        token: (keyword))
+      right: (integer_literal))))
+
+
+==================
+(38) x.x! [auto errors]
+:error
+==================
+x.x!
+
+==================
+(39) x.(x) [auto errors]
+:error
+==================
+x.(x)
+
+==================
+(40) .1.?2 [auto errors]
+:error
+==================
+.1.?2
+
+==================
+(41) 2..?2 [auto errors]
+==================
+2..?2
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (prefix_expression
+        operand: (integer_literal)))))
+
+
+==================
+(42) 2...<2 [auto errors]
+:error
+==================
+2...<2
+
+==================
+(43) a. <2 [auto errors]
+:error
+==================
+a. <2
+
+==================
+(44) 2. .?<2 [auto errors]
+:error
+==================
+2. .?<2
+
+==================
+(45) .2.??a [auto errors]
+:error
+==================
+.2.??a
+
+==================
+(46) 2 = x [auto errors]
+:error
+==================
+2 = x

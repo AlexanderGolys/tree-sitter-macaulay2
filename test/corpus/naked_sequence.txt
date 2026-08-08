@@ -208,7 +208,7 @@ a = b, c
 (source_file
   (cell
     (naked_sequence
-      (binary_expression
+      (assignment
         (symbol)
         (symbol))
       (symbol))))

@@ -7,16 +7,16 @@ ZZ ZZ := (x, y) -> x + y
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
+      left: (symbol)
+      right: (local_assignment
         left: (symbol)
-        right: (symbol))
-      right: (lambda_expression
-        parameters: (sequence
-          (symbol)
-          (symbol))
-        body: (binary_expression
-          left: (symbol)
-          right: (symbol))))))
+        right: (lambda_expression
+          parameters: (sequence
+            (symbol)
+            (symbol))
+          body: (binary_expression
+            left: (symbol)
+            right: (symbol)))))))
 
 
 ==================
@@ -28,14 +28,14 @@ f ZZ := x -> x^2
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
+      left: (symbol)
+      right: (local_assignment
         left: (symbol)
-        right: (symbol))
-      right: (lambda_expression
-        parameters: (symbol)
-        body: (binary_expression
-          left: (symbol)
-          right: (integer_literal))))))
+        right: (lambda_expression
+          parameters: (symbol)
+          body: (binary_expression
+            left: (symbol)
+            right: (integer_literal)))))))
 
 
 ==================
@@ -47,16 +47,16 @@ ZZ _ ZZ := (x, y) -> x + y
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
+      left: (symbol)
+      right: (local_assignment
         left: (symbol)
-        right: (symbol))
-      right: (lambda_expression
-        parameters: (sequence
-          (symbol)
-          (symbol))
-        body: (binary_expression
-          left: (symbol)
-          right: (symbol))))))
+        right: (lambda_expression
+          parameters: (sequence
+            (symbol)
+            (symbol))
+          body: (binary_expression
+            left: (symbol)
+            right: (symbol)))))))
 
 
 ==================
@@ -68,16 +68,16 @@ ZZ + ZZ := (x, y) -> x + y
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
+      left: (symbol)
+      right: (local_assignment
         left: (symbol)
-        right: (symbol))
-      right: (lambda_expression
-        parameters: (sequence
-          (symbol)
-          (symbol))
-        body: (binary_expression
-          left: (symbol)
-          right: (symbol))))))
+        right: (lambda_expression
+          parameters: (sequence
+            (symbol)
+            (symbol))
+          body: (binary_expression
+            left: (symbol)
+            right: (symbol)))))))
 
 
 ==================
@@ -88,14 +88,14 @@ ZZ + ZZ := (x, y) -> x + y
 
 (source_file
   (cell
-    (binary_expression
-      left: (prefix_expression
-        operand: (symbol))
-      right: (lambda_expression
-        parameters: (symbol)
-        body: (binary_expression
-          left: (symbol)
-          right: (integer_literal))))))
+    (prefix_expression
+      operand: (local_assignment
+        left: (symbol)
+        right: (lambda_expression
+          parameters: (symbol)
+          body: (binary_expression
+            left: (symbol)
+            right: (integer_literal)))))))
 
 
 ==================
@@ -106,7 +106,7 @@ ZZ ! := x -> x!
 
 (source_file
   (cell
-    (binary_expression
+    (postfix_installation
       left: (postfix_expression
         operand: (symbol))
       right: (lambda_expression
@@ -123,7 +123,7 @@ f(A, B, C, D) := f
 
 (source_file
   (cell
-    (binary_expression
+    (method_installation
       left: (binary_expression
         left: (symbol)
         right: (sequence
@@ -143,9 +143,67 @@ ZZ ZZ := ZZ => f
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
+      left: (symbol)
+      right: (local_assignment
         left: (symbol)
-        right: (symbol))
-      right: (binary_expression
-        left: (symbol)
-        right: (symbol)))))
+        right: (option
+          left: (symbol)
+          right: (symbol))))))
+
+
+==================
+(9) ((- ZZ)) := f [auto installation]
+==================
+((- ZZ)) := f
+---
+
+(source_file
+  (cell
+    (local_structured_binding
+      left: (binding_pack
+        (binding_pack
+          (prefix_expression
+            operand: (symbol))))
+      right: (symbol))))
+
+
+==================
+(10) ((ZZ !)) := f [auto installation]
+==================
+((ZZ !)) := f
+---
+
+(source_file
+  (cell
+    (local_structured_binding
+      left: (binding_pack
+        (binding_pack
+          (postfix_expression
+            operand: (symbol))))
+      right: (symbol))))
+
+
+==================
+(11) ((f(A, B))) := f [auto installation]
+==================
+((f(A, B))) := f
+---
+
+(source_file
+  (cell
+    (local_structured_binding
+      left: (binding_pack
+        (binding_pack
+          (binary_expression
+            left: (symbol)
+            right: (sequence
+              (symbol)
+              (symbol)))))
+      right: (symbol))))
+
+
+==================
+(12) (x, (y, z)) := values [auto installation]
+:error
+==================
+(x, (y, z)) := values

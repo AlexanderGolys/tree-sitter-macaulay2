@@ -153,11 +153,6 @@ static void skip_number_whitespace(TSLexer *lexer) {
     skip(lexer);
 }
 
-static void consume_inline_whitespace(TSLexer *lexer) {
-  while (is_inline_whitespace(lexer->lookahead))
-    advance(lexer);
-}
-
 static bool match_int(TSLexer *lexer) {
   if (!is_digit(lexer->lookahead))
     return false;
@@ -319,12 +314,6 @@ static bool scan_number(TSLexer *lexer, const bool *valid_symbols) {
       has_digit = true;
     } else {
       lexer->mark_end(lexer);
-      consume_inline_whitespace(lexer);
-      if (lexer->lookahead == '.') {
-        if (has_digit && valid_symbols[INTEGER])
-          return emit(lexer, INTEGER);
-        return false;
-      }
     }
   }
 

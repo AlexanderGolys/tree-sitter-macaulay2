@@ -63,6 +63,11 @@ tsIsDigit = c -> c >= "0" and c <= "9"
 
 tsIsLetter = c -> (c >= "a" and c <= "z") or (c >= "A" and c <= "Z")
 
+tsStartsWithLetter = value -> (
+    value = toString value;
+    #value > 0 and tsIsLetter value#0
+)
+
 tsIsNumber = value -> (
     value = toString value;
     #value > 0 and (
@@ -92,7 +97,7 @@ quoteSymbolKind = value -> (
     else "symbol"
 )
 
-quoteChild = expr -> tsChild("symbol", tsLeaf quoteSymbolKind tsTokenValue expr#1)
+quoteChild = expr -> tsChild("token", tsLeaf quoteSymbolKind tsTokenValue expr#1)
 
 tsTag = expr -> expr#0
 
@@ -210,7 +215,7 @@ tsCheckStringSpecs = () -> (
         error("source string literals were not consumed by the M2 CST conversion");
 )
 
-tsConvertToken (String, Boolean) := (value, trailingDotAsInt) -> (
+tsConvertToken String := value -> (
     if tsStartsWith("\"", value) and tsEndsWith("\"", value) then (
         spec := tsNextStringSpec();
         if spec#0 == "raw_string_literal" then (
@@ -231,20 +236,17 @@ tsConvertToken (String, Boolean) := (value, trailingDotAsInt) -> (
         )
     )
     else if tsIsNumber value then (
-        if trailingDotAsInt and tsEndsWith(".", value) then tsLeaf "integer_literal"
-        else if tsHasFloatMarker value then tsLeaf "float_literal"
+        if tsHasFloatMarker value then tsLeaf "float_literal"
         else tsLeaf "integer_literal"
     )
     else tsLeaf "symbol"
 )
 
-tsConvertExpr(List) := expr -> tsConvertExpr(expr, false)
-
-tsConvertExpr(List, Boolean) := (expr, trailingDotAsInt) -> (
+tsConvertExpr(List) := expr -> (
     if tsIsDummy expr then tsLeaf "sequence" else (
     name := tsTag expr;
 
-    if name == "Token" then tsConvertToken(tsTokenValue expr, trailingDotAsInt)
+    if name == "Token" then tsConvertToken(tsTokenValue expr)
     else if name == "Binary" then tsConvertBinary expr
     else if name == "Adjacent" then tsNode("binary_expression", {
         tsChild("left", tsConvertExpr expr#1),
@@ -326,14 +328,123 @@ tsFlattenComma = expr -> (
     else {expr}
 )
 
+tsIsSymbolToken = expr -> (
+    instance(expr, List) and
+    #expr == 2 and
+    tsTag expr === "Token" and
+    tsStartsWithLetter(tsTokenValue expr)
+)
+
+tsIsBindingPack = expr -> (
+    instance(expr, List) and
+    #expr == 4 and
+    tsTag expr === "Parentheses" and
+    not tsIsDelimitation expr#2 and (
+        tsIsSymbolToken expr#2 or
+        tsIsBindingPack expr#2 or
+        tsOperatorKind expr#2 != ""
+    )
+)
+
+tsConvertBindingPack = expr -> tsNode("binding_pack", {
+    tsAnon if tsIsBindingPack expr#2
+        then tsConvertBindingPack expr#2
+        else tsConvertExpr expr#2
+})
+
+tsCanReassociateAssignment = expr -> (
+    instance(expr, List) and #expr > 0 and (
+        (tsTag expr === "Adjacent" and tsIsSymbolToken expr#2) or
+        (tsTag expr === "Binary" and
+            not member(tsTokenValue expr#2, {".", ".?"}) and
+            tsIsSymbolToken expr#3) or
+        (tsTag expr === "Unary" and tsIsSymbolToken expr#2)
+    )
+)
+
+tsAssignmentNode = (left, right, kind) -> tsNode(kind, {
+    tsChild("left", tsConvertExpr left),
+    tsChild("right", tsConvertExpr right)
+})
+
+tsConvertReassociatedAssignment = (expr, right, kind) -> (
+    if tsTag expr === "Adjacent" then tsNode("binary_expression", {
+        tsChild("left", tsConvertExpr expr#1),
+        tsChild("right", tsAssignmentNode(expr#2, right, kind))
+    })
+    else if tsTag expr === "Binary" then tsNode("binary_expression", {
+        tsChild("left", tsConvertExpr expr#1),
+        tsChild("right", tsAssignmentNode(expr#3, right, kind))
+    })
+    else tsNode("prefix_expression", {
+        tsChild("operand", tsAssignmentNode(expr#2, right, kind))
+    })
+)
+
+tsOperatorKind = expr -> (
+    if not instance(expr, List) or #expr == 0 then ""
+    else if tsTag expr == "Adjacent" then "binary"
+    else if tsTag expr == "Binary" and
+            not member(tsTokenValue expr#2, {",", ";", "=", ":=", "<-", "=>"}) then "binary"
+    else if tsTag expr == "Unary" and tsTokenValue expr#1 != "," and
+            not member(tsTokenValue expr#1, debugUnary) then "prefix"
+    else if tsTag expr == "Postfix" then "postfix"
+    else if tsTag expr == "Parentheses" and #expr == 4 then
+        tsOperatorKind expr#2
+    else ""
+)
+
+tsIsMethodTower = expr -> (
+    instance(expr, List) and #expr > 0 and (
+        tsTag expr == "Adjacent" or
+        (tsTag expr == "Binary" and tsTokenValue expr#2 == "SPACE") or
+        (tsTag expr == "Parentheses" and #expr == 4 and tsIsMethodTower expr#2)
+    )
+)
+
+tsConvertAssignment = (expr, kind, leftKind) -> (
+    children := if leftKind == "binding"
+        then {tsChild("left", tsConvertBindingPack expr#1)}
+        else {tsChild("left", tsConvertExpr expr#1)};
+    tsNode(kind, append(children, tsChild("right", tsConvertExpr expr#3)))
+)
+
 tsConvertBinary(List) := expr -> (
     op := tsTokenValue expr#2;
     if op == "," then tsNode(
         "naked_sequence",
         apply(tsFlattenComma expr, item ->
             tsAnon (if tsIsDummy item then tsLeaf "empty_component" else tsConvertExpr item)))
+    else if op == "=" and tsIsSymbolToken expr#1 then
+        tsConvertAssignment(expr, "assignment", "symbol")
+    else if op == ":=" and tsIsSymbolToken expr#1 then
+        tsConvertAssignment(expr, "local_assignment", "symbol")
+    else if op == "=" and tsIsBindingPack expr#1 then
+        tsConvertAssignment(expr, "structured_binding", "binding")
+    else if op == ":=" and tsIsBindingPack expr#1 then
+        tsConvertAssignment(expr, "local_structured_binding", "binding")
+    else if member(op, {"=", ":="}) and tsCanReassociateAssignment expr#1 then
+        tsConvertReassociatedAssignment(
+            expr#1,
+            expr#3,
+            if op == "=" then "assignment" else "local_assignment")
+    else if member(op, {"=", ":="}) and tsOperatorKind expr#1 != "" then (
+        operatorKind := tsOperatorKind expr#1;
+        kind := if op == "=" then operatorKind | "_assignment"
+            else if tsIsMethodTower expr#1 then "method_installation"
+            else operatorKind | "_installation";
+        tsConvertAssignment(expr, kind, "operator")
+    )
+    else if op == "<-" then tsNode("evaluated_assignment", {
+        tsChild("left", tsConvertExpr expr#1),
+        tsChild("right", tsConvertExpr expr#3)
+    })
+    else if op == "=>" then tsNode("option", {
+        tsChild("left", tsConvertExpr expr#1),
+        tsChild("right", tsConvertExpr expr#3)
+    })
     else tsNode("binary_expression", {
-        tsChild("left", tsConvertExpr(expr#1, tsStartsWith("..", op))),
+        tsChild("left", tsConvertExpr expr#1),
         tsChild("right", tsConvertExpr expr#3)
     })
 )
@@ -547,11 +658,6 @@ tsReadExpressions = path -> (
     entries
 )
 
-tsIsSyntaxError = err -> (
-    text := toString err;
-    text == "--backtrace: parse error--" or tsContainsString("syntax error", text)
-)
-
 tsEofTokenLiteral = "-*end of file*-"
 
 -- A trailing cobinding makes parse swallow the wrapper ')' (or, unwrapped, the
@@ -562,6 +668,39 @@ tsContainsEOF = expr -> instance(expr, List) and #expr > 0 and (
     if tsTag expr === "Token"
         then tsTokenValue expr == tsEofTokenLiteral
     else any(expr, tsContainsEOF)
+)
+
+-- Core$parse accepts arbitrary expressions to the right of `.` and `.?`, but
+-- the compiler expands `a.b` to `a.(global b)` and rejects a parsed RHS unless
+-- it is a Token beginning with a letter.  Treat that delayed syntax check as
+-- part of the source grammar when generating the corpus.
+tsContainsInvalidMemberAccess = expr -> instance(expr, List) and #expr > 0 and (
+    if tsTag expr === "Binary" and
+            member(tsTokenValue expr#2, {".", ".?"}) then
+        not (
+            instance(expr#3, List) and
+            #expr#3 == 2 and
+            tsTag expr#3 === "Token" and
+            tsStartsWithLetter tsTokenValue expr#3
+        ) or tsContainsInvalidMemberAccess expr#1
+    else any(expr, tsContainsInvalidMemberAccess)
+)
+
+-- Core$parse also accepts arbitrary assignment left-hand sides. Match the
+-- grammar's current assignment boundary: a bare symbol, one delimited binding
+-- pack, or an operator expression. Comma-shaped parallel bindings are not yet
+-- part of the grammar.
+tsContainsInvalidAssignment = expr -> instance(expr, List) and #expr > 0 and (
+    if tsTag expr === "Binary" and
+            member(tsTokenValue expr#2, {"=", ":="}) then
+        not (
+            tsIsSymbolToken expr#1 or
+            tsIsBindingPack expr#1 or
+            tsOperatorKind expr#1 != ""
+        ) or
+        tsContainsInvalidAssignment expr#1 or
+        tsContainsInvalidAssignment expr#3
+    else any(expr, tsContainsInvalidAssignment)
 )
 
 -- The raw CST does not retain top-level separators.  Count the final ones
@@ -587,7 +726,8 @@ tsIsSemicolonQuote = result ->
 tsParse = expression -> (
     parseSource := "" | expression;
     result := try parse(parseSource) else "SYNTAX_ERROR";
-    if result === "SYNTAX_ERROR" or tsContainsEOF result
+    if result === "SYNTAX_ERROR" or tsContainsEOF result or
+            tsContainsInvalidMemberAccess result or tsContainsInvalidAssignment result
         then "SYNTAX_ERROR"
     else result
 )
@@ -598,7 +738,10 @@ tsParse = expression -> (
 tsParseMultiline = source -> (
     parseSource := "" | source;
     result := try parse(parseSource) else "SYNTAX_ERROR";
-    if result === "SYNTAX_ERROR" or tsContainsEOF result then "SYNTAX_ERROR" else result
+    if result === "SYNTAX_ERROR" or tsContainsEOF result or
+            tsContainsInvalidMemberAccess result or tsContainsInvalidAssignment result
+        then "SYNTAX_ERROR"
+    else result
 )
 
 tsConvertMultilineTop = parsed -> tsNode("source_file",

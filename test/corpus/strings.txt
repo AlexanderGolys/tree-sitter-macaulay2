@@ -186,7 +186,7 @@ expressions = separate("\n--")
 
 (source_file
   (cell
-    (binary_expression
+    (assignment
       left: (symbol)
       right: (binary_expression
         left: (symbol)
@@ -202,7 +202,7 @@ expressions = separate("\n--\a-*\" ///----*//")
 
 (source_file
   (cell
-    (binary_expression
+    (assignment
       left: (symbol)
       right: (binary_expression
         left: (symbol)
@@ -220,7 +220,7 @@ expressions = separate(///\n--///)
 
 (source_file
   (cell
-    (binary_expression
+    (assignment
       left: (symbol)
       right: (binary_expression
         left: (symbol)
@@ -236,7 +236,7 @@ expressions = separate("--\"\a
 
 (source_file
   (cell
-    (binary_expression
+    (assignment
       left: (symbol)
       right: (binary_expression
         left: (symbol)
@@ -265,7 +265,7 @@ expressions = separate(///\n--///)
 
 (source_file
   (cell
-    (binary_expression
+    (assignment
       left: (symbol)
       right: (binary_expression
         left: (symbol)

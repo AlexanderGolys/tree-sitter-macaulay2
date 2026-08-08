@@ -6,4 +6,7 @@ ZZ + ZZ := (x, y) -> x + y
 ZZ ! := x -> x!
 f(A, B, C, D) := f
 ZZ ZZ := ZZ => f
-
+((- ZZ)) := f
+((ZZ !)) := f
+((f(A, B))) := f
+(x, (y, z)) := values

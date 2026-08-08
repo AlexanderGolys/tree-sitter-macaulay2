@@ -6,7 +6,7 @@ a = b
 
 (source_file
   (cell
-    (binary_expression
+    (assignment
       left: (symbol)
       right: (symbol))))
 

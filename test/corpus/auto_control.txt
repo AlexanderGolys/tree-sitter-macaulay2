@@ -11,7 +11,7 @@ if x==4 then x=5
         left: (symbol)
         right: (integer_literal))
       (then_clause
-        (binary_expression
+        (assignment
           left: (symbol)
           right: (integer_literal))))))
 
@@ -91,7 +91,7 @@ while x < 10 do x = x + 1
         left: (symbol)
         right: (integer_literal))
       (do_clause
-        (binary_expression
+        (assignment
           left: (symbol)
           right: (binary_expression
             left: (symbol)
@@ -341,7 +341,7 @@ p = x -> toString if instance(x, Package) then x else if package x =!= null then
 
 (source_file
   (cell
-    (binary_expression
+    (assignment
       left: (symbol)
       right: (lambda_expression
         parameters: (symbol)
@@ -380,7 +380,7 @@ x
 (source_file
   (cell
     (quote_expression
-      symbol: (symbol)))
+      token: (symbol)))
   (cell
     (symbol)))
 

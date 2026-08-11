@@ -43,10 +43,19 @@ postfix = new MutableHashTable
 
 scan(keywords, k -> (
 	(prec, binstr, unstr) := toSequence getParsing k;
-	if prec == binstr + 1 then (
+	-- A binary keyword is filed by comparing prec against binstr, so one
+	-- whose prec is neither value would match no branch below and vanish
+	-- from every table without a diagnostic.  Reject the shape instead:
+	-- with this checked, the branches are exhaustive.  Guarding them on
+	-- binstr != -1 also keeps a non-binary keyword whose prec happened to
+	-- be 0 from being filed as right-associative at strength -1.
+	if binstr != -1 and prec != binstr and prec != binstr + 1 then error(
+	    "keyword with unclassifiable precedence: " | toString k | " " |
+	    toString getParsing k);
+	if binstr != -1 and prec == binstr + 1 then (
 	    binary#("right", binstr) ??= {};
 	    binary#("right", binstr) |= {k});
-	if prec == binstr then (
+	if binstr != -1 and prec == binstr then (
 	    binary#("left", binstr) ??= {};
 	    binary#("left", binstr) |= {k});
 	-- Key the unary table on 1/0 rather than true/false: Boolean has no ?

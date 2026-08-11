@@ -1,67 +1,202 @@
 // @ts-nocheck
 // $$$ignore()
 
-const PREC = {
-  CONTROL: 12,
-  ASSIGNMENT: 13,
-  LOOP_CLAUSE: 16,
-  BRACKET_LOW: 56,
-  BRACKET_HIGH: 62,
+import { readFileSync } from 'fs';
+
+// The operator tables and precedences below are not written by hand.
+// `get-operators.m2` walks every Keyword in Macaulay2's Core dictionary, asks
+// the interpreter itself for each one's precedence and arity via `getParsing`,
+// and writes the result to `operator-info.json`. Regenerate with
+// `npm run update-operators` (requires M2) whenever a Macaulay2 release adds or
+// re-prioritizes an operator.
+const operator_info = JSON.parse(
+  readFileSync(new URL('./operator-info.json', import.meta.url), 'utf8'));
+
+// Symbols that `getParsing` files under the generic binary table but that this
+// grammar routes to a dedicated rule, so they must not also appear in the
+// generated tables.
+const LAMBDA_SYMBOL = '->'; // lambda_expression
+const ASSIGNMENT_SYMBOLS = ['=', ':=', '<-', '=>']; // assignmentExpression rules
+const MEMBER_ACCESS_SYMBOLS = ['.', '.?']; // binary_expression, member-access branch
+const RANGE_SYMBOLS = ['..', '..<']; // external scanner tokens, below
+const RANGE_ASSIGN_SYMBOLS = ['..=', '..<=']; // external scanner tokens, below
+const SEQUENCE_SYMBOL = ','; // sequence / naked_sequence
+
+const routedElsewhere = new Set([
+  LAMBDA_SYMBOL,
+  SEQUENCE_SYMBOL,
+  ...ASSIGNMENT_SYMBOLS,
+  ...MEMBER_ACCESS_SYMBOLS,
+  ...RANGE_SYMBOLS,
+  ...RANGE_ASSIGN_SYMBOLS,
+]);
+
+const associativity = group => {
+  if (group.associativity === 'left') return prec.left;
+  if (group.associativity === 'right') return prec.right;
+  throw new Error(
+    `operator-info.json: unknown associativity '${group.associativity}' ` +
+    `for ${group.symbols.join(' ')}.`);
 };
 
+// A future Macaulay2 release could rename or drop any of the operators the
+// rules below single out. Fail generation with the missing symbol named rather
+// than a TypeError on `undefined.precedence`.
+const groupContaining = symbol => {
+  const group = operator_info.binary.find(g => g.symbols.includes(symbol));
+  if (!group) {
+    throw new Error(
+      `operator-info.json has no binary group containing '${symbol}'. ` +
+      'Regenerate it with `npm run update-operators`.');
+  }
+  return group;
+};
+
+const unaryGroupContaining = symbol => {
+  const group = operator_info.unary.find(g => g.symbols.includes(symbol));
+  if (!group) {
+    throw new Error(
+      `operator-info.json has no unary group containing '${symbol}'. ` +
+      'Regenerate it with `npm run update-operators`.');
+  }
+  return group;
+};
+
+// A keyword with a dedicated rule never reaches the operator tables, so
+// `get-operators.m2` reports its raw `getParsing` triple separately.
+const keywordParsing = name => {
+  const info = operator_info.keywords[name];
+  if (!info) {
+    throw new Error(
+      `operator-info.json has no keyword entry for '${name}'. ` +
+      'Regenerate it with `npm run update-operators`.');
+  }
+  return info;
+};
+
+// Guard the field, not just the lookup: a renamed field leaves `undefined`,
+// which survives every check below and reaches tree-sitter as a missing
+// precedence, naming nothing.
+const numeric = (what, value) => {
+  if (typeof value !== 'number') {
+    throw new Error(
+      `operator-info.json: expected a numeric ${what}, got ${value}. ` +
+      'Regenerate it with `npm run update-operators`.');
+  }
+  return value;
+};
+
+// Whole families of rules share a single precedence because Macaulay2 gives
+// every keyword they cover the same binding strength. Fail generation if that
+// ever stops holding rather than silently picking one of the values.
+const shared = (what, values) => {
+  const distinct = [...new Set(values.map(value => numeric(what, value)))];
+  if (distinct.length !== 1) {
+    throw new Error(
+      `operator-info.json: expected a single ${what}, got ${distinct.join(', ')}.`);
+  }
+  return distinct[0];
+};
+
+// Filtering a routed symbol out of the tables assumes it is there to filter.
+// If Macaulay2 renames one, the generic table silently gains the new name
+// while the dedicated rule keeps a stale precedence, so check up front.
+for (const symbol of routedElsewhere) {
+  const found = operator_info.binary.filter(g => g.symbols.includes(symbol)).length;
+  if (found !== 1) {
+    throw new Error(
+      `operator-info.json: expected '${symbol}' in exactly one binary group, ` +
+      `found ${found}. Regenerate it with \`npm run update-operators\`.`);
+  }
+}
+
+const ASSIGNMENT_GROUP = groupContaining('=');
+const RANGE_GROUP = groupContaining('..');
+const CONTROL_GROUP = unaryGroupContaining('return');
+
+const ASSIGNMENT_PREC = numeric('assignment precedence', ASSIGNMENT_GROUP.precedence);
+const MEMBER_ACCESS_PREC =
+  numeric('member-access precedence', groupContaining('.').precedence);
+const SEQUENCE_PREC =
+  numeric('sequence precedence', groupContaining(SEQUENCE_SYMBOL).precedence);
+const MUTED_PREC =
+  numeric("';' binary strength", keywordParsing(';').binaryStrength);
+
+// Precedences for the constructs this grammar spells out itself rather than
+// emitting from the operator tables. Every value is still Macaulay2's own: the
+// control and loop keywords report theirs as a unary binding strength, the
+// delimiters as a precedence.
+const PREC = {
+  // `break`, `return` and friends arrive as a unary operator group, while
+  // `if`, `then`, `while` and friends never reach the tables at all and come
+  // from their keyword entries. Macaulay2 gives them all one strength.
+  CONTROL: shared('control precedence', [
+    CONTROL_GROUP.precedence,
+    ...['if', 'then', 'else', 'while', 'do', 'try', 'except', 'list']
+      .map(name => keywordParsing(name).unaryStrength),
+  ]),
+  LOOP_CLAUSE: shared('loop-clause precedence',
+    ['for', 'from', 'to', 'when', 'in', 'of', 'new']
+      .map(name => keywordParsing(name).unaryStrength)),
+  BRACKET_LOW: shared('low bracket precedence',
+    ['[', '<|'].map(name => keywordParsing(name).precedence)),
+  BRACKET_HIGH: shared('high bracket precedence',
+    ['(', '{'].map(name => keywordParsing(name).precedence)),
+  // `threadVariable` is an alias of the very same Keyword object as
+  // `threadLocal`, so Macaulay2 reports it under that name only.
+  QUOTE: shared('quote-specifier precedence',
+    ['symbol', 'local', 'global', 'threadLocal']
+      .map(name => keywordParsing(name).unaryStrength)),
+};
+
+// `getParsing` reports a unary operator's binding STRENGTH. Macaulay2's Pratt
+// parser absorbs a following binary operator when that operator's PRECEDENCE
+// exceeds the strength, and a right-associative operator's precedence is its
+// strength plus one. Tree-sitter gets a single number per operator and we hand
+// it the strength, so a prefix operator that ties a right-associative binary
+// operator has to sit one level lower to group the same way. In current
+// Macaulay2 this affects only `#`, whose strength 61 ties adjacency: `#f x` is
+// `#(f x)`, whereas `-a - b` (a left-associative tie) is `(-a) - b`.
+const rightAssociativeStrengths = new Set([
+  ...operator_info.binary
+    .filter(group => group.associativity === 'right')
+    .map(group => group.precedence),
+  operator_info.adjacent,
+]);
+const prefixPrecedence = strength =>
+  (rightAssociativeStrengths.has(strength) ? strength - 1 : strength);
+
 const binaryOperators = [
+  ...operator_info.binary
+    .map(group => ({
+      precedence: group.precedence,
+      assoc: associativity(group),
+      symbols: group.symbols.filter(symbol => !routedElsewhere.has(symbol)),
+    }))
+    .filter(group => group.symbols.length > 0),
+  // The range operators are lexed by the external scanner, so they are
+  // rebuilt here by hand -- but precedence and associativity still come from
+  // the same metadata group as the symbol they alias.
   {
-    precedence: 13,
-    assoc: prec.right,
-    symbols: [
-      '>>',
-      '%=', '&=', '**=', '*=', '++=', '+=',
-      '-=', '//=', '/=', '<<=', '<==>=', '===>=',
-      '==>=', '>>=', '??=', '@=', '@@=', '@@?=',
-      '\\=', '\\\\=', '^**=', '^=', '^^=', '_=',
-      '|-=', '|=', '|_=', '||=', '·=', '⊠=', '⧢=',
-    ],
-  },
-  { precedence: 18, assoc: prec.left, symbols: ['<<'] },
-  { precedence: 19, assoc: prec.right, symbols: ['|-'] },
-  { precedence: 21, assoc: prec.right, symbols: ['<===', '===>'] },
-  { precedence: 23, assoc: prec.right, symbols: ['<==>'] },
-  { precedence: 25, assoc: prec.right, symbols: ['<==', '==>'] },
-  { precedence: 27, assoc: prec.right, symbols: ['or', '??'] },
-  { precedence: 29, assoc: prec.right, symbols: ['xor'] },
-  { precedence: 31, assoc: prec.right, symbols: ['and'] },
-  { precedence: 35, assoc: prec.right, symbols: ['==', '!=', '===', '=!=', '<', '>', '<=', '>=', '?', '~'] },
-  { precedence: 38, assoc: prec.left, symbols: ['||'] },
-  { precedence: 39, assoc: prec.right, symbols: [':'] },
-  { precedence: 42, assoc: prec.left, symbols: ['|'] },
-  { precedence: 44, assoc: prec.left, symbols: ['^^'] },
-  { precedence: 46, assoc: prec.left, symbols: ['&'] },
-  { precedence: 50, assoc: prec.left, symbols: ['++', '+', '-'] },
-  { precedence: 52, assoc: prec.left, symbols: ['·'] },
-  { precedence: 54, assoc: prec.left, symbols: ['**', '⊠', '⧢'] },
-  { precedence: 57, assoc: prec.right, symbols: ['\\', '\\\\'] },
-  { precedence: 58, assoc: prec.left, symbols: ['%', '//', '/', '*'] },
-  { precedence: 59, assoc: prec.right, symbols: ['@'] },
-  { precedence: 66, assoc: prec.left, symbols: ['@@', '@@?'] },
-  { precedence: 70, assoc: prec.left, symbols: ['|_', '^', '^**', '^<', '^<=', '^>', '^>=', '_<', '_<=', '_>', '_>=', '_', '#', '#?'] },
-  {
-    precedence: 13,
-    assoc: prec.right,
+    precedence: ASSIGNMENT_GROUP.precedence,
+    assoc: associativity(ASSIGNMENT_GROUP),
     symbols: [
       { token: '_range_eq', value: '..=' },
       { token: '_range_lt_eq', value: '..<=' },
     ],
   },
   {
-    precedence: 48,
-    assoc: prec.left,
+    precedence: RANGE_GROUP.precedence,
+    assoc: associativity(RANGE_GROUP),
     symbols: [
       { token: '_range', value: '..' },
       { token: '_range_lt', value: '..<' },
     ],
   },
+  // Adjacency has no symbol, so getParsing records only its strength;
+  // right-associativity is implied by `prec == binaryStrength + 1`.
   {
-    precedence: 61,
+    precedence: operator_info.adjacent,
     assoc: prec.right,
     symbols: [{ token: '_space', value: 'SPACE', explicit: 'SPACE' }],
   },
@@ -72,24 +207,46 @@ const binaryOperators = [
   },
 ];
 
-const prefixOperators = [
-  { precedence: 18, symbols: ['<<'] },
-  { precedence: 20, symbols: ['|-'] },
-  { precedence: 22, symbols: ['<==='] },
-  { precedence: 26, symbols: ['<=='] },
-  { precedence: 28, symbols: ['??'] },
-  { precedence: 34, symbols: ['not'] },
-  { precedence: 36, symbols: ['<', '<=', '>', '>=', '?', '~'] },
-  { precedence: 50, symbols: ['+', '-'] },
-  { precedence: 58, symbols: ['*'] },
-  { precedence: 60, symbols: ['#'] },
-];
+// Control keywords that Macaulay2 reports as unary operators but that this
+// grammar handles with dedicated statement rules, so they are dropped from the
+// generic prefix table. Listed by name rather than filtered by precedence
+// alone: if a release adds a keyword to this group, generation should fail
+// here instead of silently dropping it from the grammar.
+const DEDICATED_CONTROL_SYMBOLS = new Set([
+  'break', 'breakpoint', 'catch', 'continue', 'elapsedTime', 'elapsedTiming',
+  'finish', 'profile', 'return', 'shield', 'step', 'TEST', 'throw', 'time',
+  'timing', 'trap',
+]);
 
-const postfixOperators = [
-  { precedence: 64, symbols: ['(*)'] },
-  { precedence: 68, symbols: ['^*', '_*', '^~', '_~'] },
-  { precedence: 72, symbols: ['!', '^!', '_!'] },
-];
+// The filter below catches a keyword Macaulay2 adds to this group. Check the
+// other direction too: one it drops would leave a dedicated rule behind,
+// wired to a precedence nothing reports any more.
+const retiredControlSymbols = [...DEDICATED_CONTROL_SYMBOLS]
+  .filter(symbol => !CONTROL_GROUP.symbols.includes(symbol));
+if (retiredControlSymbols.length > 0) {
+  throw new Error(
+    `Macaulay2 no longer reports control keyword(s): ${retiredControlSymbols.join(', ')}. ` +
+    'Drop their grammar rules, then remove them from DEDICATED_CONTROL_SYMBOLS.');
+}
+
+const prefixOperators = operator_info.unary
+  .filter(group => {
+    if (group !== CONTROL_GROUP) return true;
+    const unhandled = group.symbols.filter(s => !DEDICATED_CONTROL_SYMBOLS.has(s));
+    if (unhandled.length > 0) {
+      throw new Error(
+        `No dedicated rule for control keyword(s): ${unhandled.join(', ')}. ` +
+        'Add a grammar rule, then list them in DEDICATED_CONTROL_SYMBOLS.');
+    }
+    return false;
+  })
+  .map(group => ({
+    precedence: prefixPrecedence(group.precedence),
+    symbols: group.symbols.filter(symbol => !routedElsewhere.has(symbol)),
+  }))
+  .filter(group => group.symbols.length > 0);
+
+const postfixOperators = operator_info.postfix;
 
 const spaceBinaryOperators = binaryOperators.filter(op => op.symbols.some(
   symbol => typeof symbol !== 'string' &&
@@ -126,7 +283,7 @@ const quotedTokens = [
       .flatMap(op => op.symbols)
       .filter(op => typeof op !== 'string')
       .map(op => op.value),
-    '.', '.?',
+    ...MEMBER_ACCESS_SYMBOLS,
     // Reserved keywords that are not operators (e.g. `symbol if`, `symbol for`).
     ...keywords,
     '(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';',
@@ -289,7 +446,7 @@ export default grammar({
 
     lambda_expression: $ =>
       prec.right(
-        PREC.ASSIGNMENT,
+        ASSIGNMENT_PREC,
         seq(
           field('parameters', choice(
             $.symbol,
@@ -298,7 +455,7 @@ export default grammar({
             $.list,
             $.array,
             $.angle_bar_list)),
-          fieldOperator('->'),
+          fieldOperator(LAMBDA_SYMBOL),
           fieldExpr($, 'body'),
         ),
       ),
@@ -369,9 +526,9 @@ export default grammar({
     binary_expression: $ =>
       choice(
         ...operatorTable($, binaryOperators),
-        LeftSeq(70,
+        LeftSeq(MEMBER_ACCESS_PREC,
             fieldExpr($, 'left'),
-            fieldOperator('.', '.?'),
+            fieldOperator(...MEMBER_ACCESS_SYMBOLS),
             field('right', $.symbol),
           ),
       ),
@@ -497,7 +654,7 @@ export default grammar({
     ),
 
     quote_expression: $ => prec(
-      74,
+      PREC.QUOTE,
       seq(
         field('specifier',
           Qualify(
@@ -603,7 +760,7 @@ function fieldExpr($, name) {
 
 function assignmentExpression($, left, operator, dynamicPrecedence = 1) {
   return prec.dynamic(dynamicPrecedence,
-    RightSeq(PREC.ASSIGNMENT,
+    RightSeq(ASSIGNMENT_PREC,
       field('left', left),
       fieldOperator(operator),
       fieldExpr($, 'right'),
@@ -633,11 +790,11 @@ function expressionClause($, keyword, precedence) {
 
 
 function mutedExpression(content) {
-  return RightSeq(7, content, ';');
+  return RightSeq(MUTED_PREC, content, ';');
 }
 
 function commaSequence($, trailingEmpty) {
-  return LeftSeq(10,
+  return LeftSeq(SEQUENCE_PREC,
       repeat1(seq(
         choice(alias($._empty_before_comma, $.empty_component), $.expression),
         ',',

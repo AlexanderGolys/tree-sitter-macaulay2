@@ -68,6 +68,11 @@ operatorInfo = hashTable {
 	    "precedence" => prec,
 	    "symbols" => sort binary#(assoc, prec)}),
     "keywords" => hashTable apply(specialKeywords, k -> (
+	    -- getParsing answers {62, -1, -1} for a symbol that is not a
+	    -- keyword at all, so a rename or typo above would quietly emit
+	    -- fabricated parsing data rather than fail.
+	    if not instance(k, Keyword) then error(
+		"not a Macaulay2 keyword: " | toString k);
 	    (kprec, kbin, kun) := toSequence getParsing k;
 	    toString k => hashTable {
 		"binaryStrength" => kbin,

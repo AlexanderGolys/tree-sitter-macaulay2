@@ -74,11 +74,23 @@ const keywordParsing = name => {
   return info;
 };
 
+// Guard the field, not just the lookup: a renamed field leaves `undefined`,
+// which survives every check below and reaches tree-sitter as a missing
+// precedence, naming nothing.
+const numeric = (what, value) => {
+  if (typeof value !== 'number') {
+    throw new Error(
+      `operator-info.json: expected a numeric ${what}, got ${value}. ` +
+      'Regenerate it with `npm run update-operators`.');
+  }
+  return value;
+};
+
 // Whole families of rules share a single precedence because Macaulay2 gives
 // every keyword they cover the same binding strength. Fail generation if that
 // ever stops holding rather than silently picking one of the values.
 const shared = (what, values) => {
-  const distinct = [...new Set(values)];
+  const distinct = [...new Set(values.map(value => numeric(what, value)))];
   if (distinct.length !== 1) {
     throw new Error(
       `operator-info.json: expected a single ${what}, got ${distinct.join(', ')}.`);
@@ -86,14 +98,29 @@ const shared = (what, values) => {
   return distinct[0];
 };
 
+// Filtering a routed symbol out of the tables assumes it is there to filter.
+// If Macaulay2 renames one, the generic table silently gains the new name
+// while the dedicated rule keeps a stale precedence, so check up front.
+for (const symbol of routedElsewhere) {
+  const found = operator_info.binary.filter(g => g.symbols.includes(symbol)).length;
+  if (found !== 1) {
+    throw new Error(
+      `operator-info.json: expected '${symbol}' in exactly one binary group, ` +
+      `found ${found}. Regenerate it with \`npm run update-operators\`.`);
+  }
+}
+
 const ASSIGNMENT_GROUP = groupContaining('=');
 const RANGE_GROUP = groupContaining('..');
 const CONTROL_GROUP = unaryGroupContaining('return');
 
-const ASSIGNMENT_PREC = ASSIGNMENT_GROUP.precedence;
-const MEMBER_ACCESS_PREC = groupContaining('.').precedence;
-const SEQUENCE_PREC = groupContaining(SEQUENCE_SYMBOL).precedence;
-const MUTED_PREC = keywordParsing(';').binaryStrength;
+const ASSIGNMENT_PREC = numeric('assignment precedence', ASSIGNMENT_GROUP.precedence);
+const MEMBER_ACCESS_PREC =
+  numeric('member-access precedence', groupContaining('.').precedence);
+const SEQUENCE_PREC =
+  numeric('sequence precedence', groupContaining(SEQUENCE_SYMBOL).precedence);
+const MUTED_PREC =
+  numeric("';' binary strength", keywordParsing(';').binaryStrength);
 
 // Precedences for the constructs this grammar spells out itself rather than
 // emitting from the operator tables. Every value is still Macaulay2's own: the
@@ -190,6 +217,17 @@ const DEDICATED_CONTROL_SYMBOLS = new Set([
   'finish', 'profile', 'return', 'shield', 'step', 'TEST', 'throw', 'time',
   'timing', 'trap',
 ]);
+
+// The filter below catches a keyword Macaulay2 adds to this group. Check the
+// other direction too: one it drops would leave a dedicated rule behind,
+// wired to a precedence nothing reports any more.
+const retiredControlSymbols = [...DEDICATED_CONTROL_SYMBOLS]
+  .filter(symbol => !CONTROL_GROUP.symbols.includes(symbol));
+if (retiredControlSymbols.length > 0) {
+  throw new Error(
+    `Macaulay2 no longer reports control keyword(s): ${retiredControlSymbols.join(', ')}. ` +
+    'Drop their grammar rules, then remove them from DEDICATED_CONTROL_SYMBOLS.');
+}
 
 const prefixOperators = operator_info.unary
   .filter(group => {

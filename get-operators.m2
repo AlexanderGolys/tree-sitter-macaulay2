@@ -2,35 +2,40 @@ needsPackage "JSON"
 
 importFrom(Core, "getParsing")
 
+-- Keywords that the grammar handles with dedicated rules rather than the
+-- generic operator tables.  They are kept out of the tables below, but their
+-- parsing data is still reported, under "keywords": those rules need the
+-- precedences Macaulay2 assigns them just as much as the operators do.
+specialKeywords = {
+    symbol ;,
+    symbol do,
+    symbol else,
+    symbol except,
+    symbol for,
+    symbol from,
+    symbol global,
+    symbol if,
+    symbol in,
+    symbol list,
+    symbol local,
+    symbol new,
+    symbol of,
+    symbol SPACE,
+    symbol symbol,
+    symbol then,
+    symbol threadLocal,
+    symbol to,
+    symbol try,
+    symbol when,
+    symbol while,
+    symbol (, symbol ),
+    symbol [, symbol ],
+    symbol {, symbol },
+    symbol <|, symbol |>
+}
+
 keywords = unique select(values Core.Dictionary,
-    x -> instance(x, Keyword) and not isMember(x, {
-	    -- special keywords
-	    symbol ;,
-	    symbol do,
-	    symbol else,
-	    symbol except,
-	    symbol for,
-	    symbol from,
-	    symbol global,
-	    symbol if,
-	    symbol in,
-	    symbol list,
-	    symbol local,
-	    symbol new,
-	    symbol of,
-	    symbol SPACE,
-	    symbol symbol,
-	    symbol then,
-	    symbol threadLocal,
-	    symbol to,
-	    symbol try,
-	    symbol when,
-	    symbol while,
-	    symbol (, symbol ),
-	    symbol [, symbol ],
-	    symbol {, symbol },
-	    symbol <|, symbol |>
-	}))
+    x -> instance(x, Keyword) and not isMember(x, specialKeywords))
 
 binary = new MutableHashTable
 unary = new MutableHashTable
@@ -62,6 +67,12 @@ operatorInfo = hashTable {
 	    "associativity" => assoc,
 	    "precedence" => prec,
 	    "symbols" => sort binary#(assoc, prec)}),
+    "keywords" => hashTable apply(specialKeywords, k -> (
+	    (kprec, kbin, kun) := toSequence getParsing k;
+	    toString k => hashTable {
+		"binaryStrength" => kbin,
+		"precedence" => kprec,
+		"unaryStrength" => kun})),
     "unary" => apply(sort keys unary, (bin, prec) -> hashTable {
 	    "binary" => bin == 1,
 	    "precedence" => prec,

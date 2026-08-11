@@ -3,21 +3,14 @@
 
 import { readFileSync } from 'fs';
 
-// The operator tables below are not written by hand. `get-operators.m2` walks
-// every Keyword in Macaulay2's Core dictionary, asks the interpreter itself for
-// each one's precedence and arity via `getParsing`, and writes the result to
-// `operator-info.json`. Regenerate with `npm run update-operators` (requires M2)
-// whenever a Macaulay2 release adds or re-prioritizes an operator.
+// The operator tables and precedences below are not written by hand.
+// `get-operators.m2` walks every Keyword in Macaulay2's Core dictionary, asks
+// the interpreter itself for each one's precedence and arity via `getParsing`,
+// and writes the result to `operator-info.json`. Regenerate with
+// `npm run update-operators` (requires M2) whenever a Macaulay2 release adds or
+// re-prioritizes an operator.
 const operator_info = JSON.parse(
   readFileSync(new URL('./operator-info.json', import.meta.url), 'utf8'));
-
-// Precedences with no counterpart in `getParsing`; these are ours alone.
-const PREC = {
-  CONTROL: 12,
-  LOOP_CLAUSE: 16,
-  BRACKET_LOW: 56,
-  BRACKET_HIGH: 62,
-};
 
 // Symbols that `getParsing` files under the generic binary table but that this
 // grammar routes to a dedicated rule, so they must not also appear in the
@@ -59,10 +52,75 @@ const groupContaining = symbol => {
   return group;
 };
 
+const unaryGroupContaining = symbol => {
+  const group = operator_info.unary.find(g => g.symbols.includes(symbol));
+  if (!group) {
+    throw new Error(
+      `operator-info.json has no unary group containing '${symbol}'. ` +
+      'Regenerate it with `npm run update-operators`.');
+  }
+  return group;
+};
+
+// A keyword with a dedicated rule never reaches the operator tables, so
+// `get-operators.m2` reports its raw `getParsing` triple separately.
+const keywordParsing = name => {
+  const info = operator_info.keywords[name];
+  if (!info) {
+    throw new Error(
+      `operator-info.json has no keyword entry for '${name}'. ` +
+      'Regenerate it with `npm run update-operators`.');
+  }
+  return info;
+};
+
+// Whole families of rules share a single precedence because Macaulay2 gives
+// every keyword they cover the same binding strength. Fail generation if that
+// ever stops holding rather than silently picking one of the values.
+const shared = (what, values) => {
+  const distinct = [...new Set(values)];
+  if (distinct.length !== 1) {
+    throw new Error(
+      `operator-info.json: expected a single ${what}, got ${distinct.join(', ')}.`);
+  }
+  return distinct[0];
+};
+
 const ASSIGNMENT_GROUP = groupContaining('=');
 const RANGE_GROUP = groupContaining('..');
+const CONTROL_GROUP = unaryGroupContaining('return');
+
 const ASSIGNMENT_PREC = ASSIGNMENT_GROUP.precedence;
 const MEMBER_ACCESS_PREC = groupContaining('.').precedence;
+const SEQUENCE_PREC = groupContaining(SEQUENCE_SYMBOL).precedence;
+const MUTED_PREC = keywordParsing(';').binaryStrength;
+
+// Precedences for the constructs this grammar spells out itself rather than
+// emitting from the operator tables. Every value is still Macaulay2's own: the
+// control and loop keywords report theirs as a unary binding strength, the
+// delimiters as a precedence.
+const PREC = {
+  // `break`, `return` and friends arrive as a unary operator group, while
+  // `if`, `then`, `while` and friends never reach the tables at all and come
+  // from their keyword entries. Macaulay2 gives them all one strength.
+  CONTROL: shared('control precedence', [
+    CONTROL_GROUP.precedence,
+    ...['if', 'then', 'else', 'while', 'do', 'try', 'except', 'list']
+      .map(name => keywordParsing(name).unaryStrength),
+  ]),
+  LOOP_CLAUSE: shared('loop-clause precedence',
+    ['for', 'from', 'to', 'when', 'in', 'of', 'new']
+      .map(name => keywordParsing(name).unaryStrength)),
+  BRACKET_LOW: shared('low bracket precedence',
+    ['[', '<|'].map(name => keywordParsing(name).precedence)),
+  BRACKET_HIGH: shared('high bracket precedence',
+    ['(', '{'].map(name => keywordParsing(name).precedence)),
+  // `threadVariable` is an alias of the very same Keyword object as
+  // `threadLocal`, so Macaulay2 reports it under that name only.
+  QUOTE: shared('quote-specifier precedence',
+    ['symbol', 'local', 'global', 'threadLocal']
+      .map(name => keywordParsing(name).unaryStrength)),
+};
 
 // `getParsing` reports a unary operator's binding STRENGTH. Macaulay2's Pratt
 // parser absorbs a following binary operator when that operator's PRECEDENCE
@@ -135,7 +193,7 @@ const DEDICATED_CONTROL_SYMBOLS = new Set([
 
 const prefixOperators = operator_info.unary
   .filter(group => {
-    if (!(group.binary === false && group.precedence === PREC.CONTROL)) return true;
+    if (group !== CONTROL_GROUP) return true;
     const unhandled = group.symbols.filter(s => !DEDICATED_CONTROL_SYMBOLS.has(s));
     if (unhandled.length > 0) {
       throw new Error(
@@ -558,7 +616,7 @@ export default grammar({
     ),
 
     quote_expression: $ => prec(
-      74,
+      PREC.QUOTE,
       seq(
         field('specifier',
           Qualify(
@@ -694,11 +752,11 @@ function expressionClause($, keyword, precedence) {
 
 
 function mutedExpression(content) {
-  return RightSeq(7, content, ';');
+  return RightSeq(MUTED_PREC, content, ';');
 }
 
 function commaSequence($, trailingEmpty) {
-  return LeftSeq(10,
+  return LeftSeq(SEQUENCE_PREC,
       repeat1(seq(
         choice(alias($._empty_before_comma, $.empty_component), $.expression),
         ',',

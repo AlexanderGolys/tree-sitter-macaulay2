@@ -253,6 +253,153 @@
       ]
     }
   ],
+  "keywords": {
+    "(": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 6
+    },
+    ")": {
+      "binaryStrength": -1,
+      "precedence": 6,
+      "unaryStrength": -1
+    },
+    ";": {
+      "binaryStrength": 7,
+      "precedence": 8,
+      "unaryStrength": -1
+    },
+    "<|": {
+      "binaryStrength": -1,
+      "precedence": 56,
+      "unaryStrength": 6
+    },
+    "[": {
+      "binaryStrength": -1,
+      "precedence": 56,
+      "unaryStrength": 6
+    },
+    "]": {
+      "binaryStrength": -1,
+      "precedence": 6,
+      "unaryStrength": -1
+    },
+    "{": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 6
+    },
+    "|>": {
+      "binaryStrength": -1,
+      "precedence": 6,
+      "unaryStrength": -1
+    },
+    "}": {
+      "binaryStrength": -1,
+      "precedence": 6,
+      "unaryStrength": -1
+    },
+    "do": {
+      "binaryStrength": -1,
+      "precedence": 12,
+      "unaryStrength": 12
+    },
+    "else": {
+      "binaryStrength": -1,
+      "precedence": 12,
+      "unaryStrength": 12
+    },
+    "except": {
+      "binaryStrength": -1,
+      "precedence": 12,
+      "unaryStrength": 12
+    },
+    "for": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 16
+    },
+    "from": {
+      "binaryStrength": -1,
+      "precedence": 16,
+      "unaryStrength": 16
+    },
+    "global": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 74
+    },
+    "if": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 12
+    },
+    "in": {
+      "binaryStrength": -1,
+      "precedence": 16,
+      "unaryStrength": 16
+    },
+    "list": {
+      "binaryStrength": -1,
+      "precedence": 12,
+      "unaryStrength": 12
+    },
+    "local": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 74
+    },
+    "new": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 16
+    },
+    "of": {
+      "binaryStrength": -1,
+      "precedence": 16,
+      "unaryStrength": 16
+    },
+    "SPACE": {
+      "binaryStrength": 61,
+      "precedence": 62,
+      "unaryStrength": -1
+    },
+    "symbol": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 74
+    },
+    "then": {
+      "binaryStrength": -1,
+      "precedence": 12,
+      "unaryStrength": 12
+    },
+    "threadLocal": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 74
+    },
+    "to": {
+      "binaryStrength": -1,
+      "precedence": 16,
+      "unaryStrength": 16
+    },
+    "try": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 12
+    },
+    "when": {
+      "binaryStrength": -1,
+      "precedence": 16,
+      "unaryStrength": 16
+    },
+    "while": {
+      "binaryStrength": -1,
+      "precedence": 62,
+      "unaryStrength": 12
+    }
+  },
   "postfix": [
     {
       "precedence": 64,

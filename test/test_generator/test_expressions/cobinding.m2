@@ -52,4 +52,4 @@ symbol. .2
 symbol . . 2
 symbol;
 symbol;;
-
+symbol Core$not

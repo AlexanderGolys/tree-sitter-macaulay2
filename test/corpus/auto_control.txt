@@ -42,14 +42,13 @@ for i from 0 to 4 do doSomething i
 
 (source_file
   (cell
-    (for_statement
+    (for_loop
       variable: (symbol)
-      (from_clause
-        (integer_literal))
-      (to_clause
-        (integer_literal))
-      (do_clause
-        (binary_expression
+      (iteration_range
+        range_start: (integer_literal)
+        range_end: (integer_literal))
+      (loop_body
+        ignored_value: (binary_expression
           left: (symbol)
           right: (symbol))))))
 
@@ -62,18 +61,17 @@ for i in 1..5 when i>2 do print i
 
 (source_file
   (cell
-    (for_statement
+    (for_loop
       variable: (symbol)
-      (in_clause
-        (binary_expression
+      (iteration_range
+        iterated_collection: (binary_expression
           left: (integer_literal)
           right: (integer_literal)))
-      (when_clause
-        (binary_expression
-          left: (symbol)
-          right: (integer_literal)))
-      (do_clause
-        (binary_expression
+      filter: (binary_expression
+        left: (symbol)
+        right: (integer_literal))
+      (loop_body
+        ignored_value: (binary_expression
           left: (symbol)
           right: (symbol))))))
 
@@ -86,12 +84,12 @@ while x < 10 do x = x + 1
 
 (source_file
   (cell
-    (while_statement
-      (binary_expression
+    (while_loop
+      condition: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      (do_clause
-        (assignment
+      (loop_body
+        ignored_value: (assignment
           left: (symbol)
           right: (binary_expression
             left: (symbol)
@@ -110,7 +108,7 @@ try a then b else c
       (symbol)
       (then_clause
         (symbol))
-      (else_clause
+      fallback: (else_clause
         (symbol)))))
 
 
@@ -162,10 +160,10 @@ while a do if b then break
 
 (source_file
   (cell
-    (while_statement
-      (symbol)
-      (do_clause
-        (if_statement
+    (while_loop
+      condition: (symbol)
+      (loop_body
+        ignored_value: (if_statement
           condition: (symbol)
           (then_clause
             (break_statement)))))))
@@ -179,12 +177,12 @@ for i in L do if i > 0 then return i else continue
 
 (source_file
   (cell
-    (for_statement
+    (for_loop
       variable: (symbol)
-      (in_clause
-        (symbol))
-      (do_clause
-        (if_statement
+      (iteration_range
+        iterated_collection: (symbol))
+      (loop_body
+        ignored_value: (if_statement
           condition: (binary_expression
             left: (symbol)
             right: (integer_literal))
@@ -203,17 +201,17 @@ for i in a list for j in b do print x
 
 (source_file
   (cell
-    (for_statement
+    (for_loop
       variable: (symbol)
-      (in_clause
-        (symbol))
-      (list_clause
-        (for_statement
+      (iteration_range
+        iterated_collection: (symbol))
+      (loop_body
+        listed_value: (for_loop
           variable: (symbol)
-          (in_clause
-            (symbol))
-          (do_clause
-            (binary_expression
+          (iteration_range
+            iterated_collection: (symbol))
+          (loop_body
+            ignored_value: (binary_expression
               left: (symbol)
               right: (symbol))))))))
 
@@ -231,7 +229,7 @@ if try x then y else z then 1
         (symbol)
         (then_clause
           (symbol))
-        (else_clause
+        fallback: (else_clause
           (symbol)))
       (then_clause
         (integer_literal)))))
@@ -257,19 +255,18 @@ for i in L list for j in L list j do print 2
 
 (source_file
   (cell
-    (for_statement
+    (for_loop
       variable: (symbol)
-      (in_clause
-        (symbol))
-      (list_clause
-        (for_statement
+      (iteration_range
+        iterated_collection: (symbol))
+      (loop_body
+        listed_value: (for_loop
           variable: (symbol)
-          (in_clause
-            (symbol))
-          (list_clause
-            (symbol))
-          (do_clause
-            (binary_expression
+          (iteration_range
+            iterated_collection: (symbol))
+          (loop_body
+            listed_value: (symbol)
+            ignored_value: (binary_expression
               left: (symbol)
               right: (integer_literal))))))))
 
@@ -320,17 +317,16 @@ while for i in L list 1 do 2 do 3
 
 (source_file
   (cell
-    (while_statement
-      (for_statement
+    (while_loop
+      condition: (for_loop
         variable: (symbol)
-        (in_clause
-          (symbol))
-        (list_clause
-          (integer_literal))
-        (do_clause
-          (integer_literal)))
-      (do_clause
-        (integer_literal)))))
+        (iteration_range
+          iterated_collection: (symbol))
+        (loop_body
+          listed_value: (integer_literal)
+          ignored_value: (integer_literal)))
+      (loop_body
+        ignored_value: (integer_literal)))))
 
 
 ==================

@@ -64,18 +64,17 @@ for i in 1..5 when i>2 do print i
 
 (source_file
   (cell
-    (for_statement
+    (for_loop
       variable: (symbol)
-      (in_clause
-        (binary_expression
+      (iteration_range
+        iterated_collection: (binary_expression
           left: (integer_literal)
           right: (integer_literal)))
-      (when_clause
-        (binary_expression
-          left: (symbol)
-          right: (integer_literal)))
-      (do_clause
-        (binary_expression
+      filter: (binary_expression
+        left: (symbol)
+        right: (integer_literal))
+      (loop_body
+        ignored_value: (binary_expression
           left: (symbol)
           right: (symbol))))))
 
@@ -87,39 +86,21 @@ for j from 0 to 4 do doSomething j
 
 (source_file
   (cell
-    (for_statement
+    (for_loop
       variable: (symbol)
-      (from_clause
-        (integer_literal))
-      (to_clause
-        (integer_literal))
-      (do_clause
-        (binary_expression
+      (iteration_range
+        range_start: (integer_literal)
+        range_end: (integer_literal))
+      (loop_body
+        ignored_value: (binary_expression
           left: (symbol)
           right: (symbol))))))
 
 ==================
 (6) while with when
+:error
 ==================
 while x < 10 when x > 1 do x = x + 1
----
-
-(source_file
-  (cell
-    (while_statement
-      (binary_expression
-        left: (symbol)
-        right: (integer_literal))
-      (when_clause
-        (binary_expression
-          left: (symbol)
-          right: (integer_literal)))
-      (do_clause
-        (assignment
-          left: (symbol)
-          right: (binary_expression
-            left: (symbol)
-            right: (integer_literal)))))))
 
 ==================
 (7) break
@@ -242,7 +223,7 @@ try x then y else z
       (symbol)
       (then_clause
         (symbol))
-      (else_clause
+      fallback: (else_clause
         (symbol)))))
 
 ==================
@@ -268,7 +249,7 @@ try x else y
   (cell
     (try_statement
       (symbol)
-      (else_clause
+      fallback: (else_clause
         (symbol)))))
 
 ==================
@@ -288,7 +269,7 @@ extractName = x -> try toString symbol x else toString x
             left: (symbol)
             right: (quote_expression
               token: (symbol)))
-          (else_clause
+          fallback: (else_clause
             (binary_expression
               left: (symbol)
               right: (symbol))))))))
@@ -316,9 +297,8 @@ try x then y except err do err
       (symbol)
       (then_clause
         (symbol))
-      (except_clause
-        (symbol))
-      (do_clause
+      fallback: (except_clause
+        exception: (symbol)
         (symbol)))))
 
 ==================
@@ -331,9 +311,8 @@ try x except err do err
   (cell
     (try_statement
       (symbol)
-      (except_clause
-        (symbol))
-      (do_clause
+      fallback: (except_clause
+        exception: (symbol)
         (symbol)))))
 
 ==================
@@ -359,7 +338,7 @@ symbol symbol //////
   (cell
     (binary_expression
       left: (quote_expression
-        token: (keyword))
+        token: (symbol))
       right: (raw_string_literal))))
 
 ==================
@@ -376,7 +355,8 @@ else z
       condition: (symbol)
       (then_clause
         (symbol))))
-  (ERROR))
+  (ERROR
+    (raw_string_content)))
 
 ==================
 (27) parenthesized newlines are whitespace: one 3-part if

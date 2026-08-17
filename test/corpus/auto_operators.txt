@@ -6,7 +6,8 @@
 
 (source_file
   (cell
-    (string_literal)))
+    (string_literal
+      (string_content))))
 
 
 ==================
@@ -62,7 +63,8 @@ f("a", {b}, (c))
     (binary_expression
       left: (symbol)
       right: (sequence
-        (string_literal)
+        (string_literal
+          (string_content))
         (list
           (symbol))
         (parenthesized_expression
@@ -819,7 +821,8 @@ x.?y
 (source_file
   (cell
     (binary_expression
-      left: (string_literal)
+      left: (string_literal
+        (string_content))
       right: (float_literal))))
 
 
@@ -1106,8 +1109,10 @@ f0 = s -> replace(///\{dummy\}///, ///null///, s)
         body: (binary_expression
           left: (symbol)
           right: (sequence
-            (raw_string_literal)
-            (raw_string_literal)
+            (raw_string_literal
+              (raw_string_content))
+            (raw_string_literal
+              (raw_string_content))
             (symbol)))))))
 
 
@@ -1126,8 +1131,10 @@ f1 = s -> replace(///\{Token, (.[^\}]*)\}///, ///'\1'///, s)
         body: (binary_expression
           left: (symbol)
           right: (sequence
-            (raw_string_literal)
-            (raw_string_literal)
+            (raw_string_literal
+              (raw_string_content))
+            (raw_string_literal
+              (raw_string_content))
             (symbol)))))))
 
 
@@ -1146,8 +1153,10 @@ f2 = s -> replace(///\{Unary, ('[^']+'), ('[^']+'|\{.*\}|null)\}///, ///Pref(\1,
         body: (binary_expression
           left: (symbol)
           right: (sequence
-            (raw_string_literal)
-            (raw_string_literal)
+            (raw_string_literal
+              (raw_string_content))
+            (raw_string_literal
+              (raw_string_content))
             (symbol)))))))
 
 
@@ -1166,8 +1175,10 @@ f3 = s -> replace(///\{Binary, ('[^']+'|\{.*\}|null|\w+\(.*\)), ('[^']+'), ('[^'
         body: (binary_expression
           left: (symbol)
           right: (sequence
-            (raw_string_literal)
-            (raw_string_literal)
+            (raw_string_literal
+              (raw_string_content))
+            (raw_string_literal
+              (raw_string_content))
             (symbol)))))))
 
 
@@ -1186,8 +1197,10 @@ f4 = s -> replace(///\{Parentheses, '(..?)', ('[^']+'|\{.*\}|null|\w+\(.*\)), '(
         body: (binary_expression
           left: (symbol)
           right: (sequence
-            (raw_string_literal)
-            (raw_string_literal)
+            (raw_string_literal
+              (raw_string_content))
+            (raw_string_literal
+              (raw_string_content))
             (symbol)))))))
 
 
@@ -1236,7 +1249,8 @@ f = f @@ f
 (source_file
   (cell
     (binary_expression
-      left: (string_literal)
+      left: (string_literal
+        (string_content))
       right: (symbol))))
 
 
@@ -1251,7 +1265,8 @@ x#"a".a
     (binary_expression
       left: (binary_expression
         left: (symbol)
-        right: (string_literal))
+        right: (string_literal
+          (string_content)))
       right: (symbol))))
 
 

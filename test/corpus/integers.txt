@@ -1,0 +1,99 @@
+==================
+1. Binary integer literals [integers]
+==================
+0b1010
+0B1010
+---
+(source_file
+  (cell
+    (integer_literal))
+  (cell
+    (integer_literal)))
+
+==================
+2. Octal integer literals [integers]
+==================
+0o755
+0O755
+---
+(source_file
+  (cell
+    (integer_literal))
+  (cell
+    (integer_literal)))
+
+==================
+3. Hexadecimal integer literals [integers]
+==================
+0xdead
+0xDEAD
+0Xdead
+0XDEAD
+---
+(source_file
+  (cell
+    (integer_literal))
+  (cell
+    (integer_literal))
+  (cell
+    (integer_literal))
+  (cell
+    (integer_literal)))
+
+==================
+4. Radix prefix requires a digit [integers]
+==================
+0b
+0O
+0x
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (symbol)))
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (symbol)))
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (symbol))))
+
+==================
+5. Radix literal stops before an invalid digit [integers]
+==================
+0b1012
+0o7558
+0xDEADg
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (integer_literal)))
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (integer_literal)))
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (symbol))))
+
+==================
+6. Uppercase E does not extend a radix integer [integers]
+==================
+0b1E2
+0O7E2
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (symbol)))
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (symbol))))

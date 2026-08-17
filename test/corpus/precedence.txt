@@ -275,11 +275,11 @@ x_y = z
 
 (source_file
   (cell
-    (binary_expression
-      left: (symbol)
-      right: (assignment
+    (binary_assignment
+      left: (binary_expression
         left: (symbol)
-        right: (symbol)))))
+        right: (symbol))
+      right: (symbol))))
 
 ==================
 (24) indexed variable assignment [precedence]
@@ -289,12 +289,159 @@ ZZ _ ZZ := (x, y) -> x
 
 (source_file
   (cell
+    (binary_installation
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (lambda_expression
+        parameters: (sequence
+          (symbol)
+          (symbol))
+        body: (symbol)))))
+
+==================
+25. Root prefixes admit the postfix above unary sharp [precedence]
+==================
+##1(*)
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (prefix_expression
+        operand: (postfix_expression
+          operand: (integer_literal))))))
+
+==================
+26. Binary sharp floor passes through a nested prefix [precedence]
+==================
+1##1(*)
+---
+
+(source_file
+  (cell
+    (postfix_expression
+      operand: (binary_expression
+        left: (integer_literal)
+        right: (prefix_expression
+          operand: (integer_literal))))))
+
+==================
+27. Root unary minus admits exponentiation [precedence]
+==================
+-b ** c
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (binary_expression
+        left: (symbol)
+        right: (symbol)))))
+
+==================
+28. Multiplication floor passes through unary minus [precedence]
+==================
+a * -b ** c
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (prefix_expression
+          operand: (symbol)))
+      right: (symbol))))
+
+==================
+29. Enclosing floor passes through a word prefix [precedence]
+==================
+a || not b == c
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (prefix_expression
+          operand: (symbol)))
+      right: (symbol))))
+
+==================
+30. Low bracket adjacency stops before multiplication [precedence]
+==================
+f[x] * y
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (array
+          (symbol)))
+      right: (symbol))))
+
+==================
+31. Low bracket adjacency admits operators above SPACE [precedence]
+==================
+f[x] @@ y
+---
+
+(source_file
+  (cell
     (binary_expression
       left: (symbol)
-      right: (local_assignment
+      right: (binary_expression
+        left: (array
+          (symbol))
+        right: (symbol)))))
+
+==================
+32. Repeated low brackets associate to the left [precedence]
+==================
+f[x][y]
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
         left: (symbol)
-        right: (lambda_expression
-          parameters: (sequence
-            (symbol)
-            (symbol))
-          body: (symbol))))))
+        right: (array
+          (symbol)))
+      right: (array
+        (symbol)))))
+
+==================
+33. Low brackets stop outside ordinary SPACE [precedence]
+==================
+f x[y]
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (binary_expression
+        left: (symbol)
+        right: (symbol))
+      right: (array
+        (symbol)))))
+
+==================
+34. High parentheses remain inside ordinary SPACE [precedence]
+==================
+f x([y])
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (binary_expression
+        left: (symbol)
+        right: (parenthesized_expression
+          (array
+            (symbol)))))))

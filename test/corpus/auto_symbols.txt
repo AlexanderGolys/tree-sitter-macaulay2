@@ -75,3 +75,71 @@ x$.2
     (binary_expression
       left: (symbol)
       right: (float_literal))))
+
+
+==================
+(8) α [auto symbols]
+==================
+α
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(9) 变量9 [auto symbols]
+==================
+变量9
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(10) λ9'$β [auto symbols]
+==================
+λ9'$β
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(11) é [auto symbols]
+==================
+é
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(12) 😀 [auto symbols]
+==================
+😀
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(13) α⊠β [auto symbols]
+==================
+α⊠β
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (symbol))))

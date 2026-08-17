@@ -29,12 +29,11 @@
 ---
 
 (source_file
-  (cell
-    (muted
-      (sequence
-        (empty_component)
-        (empty_component)
-        (empty_component)))))
+  (muted
+    (sequence
+      (empty_component)
+      (empty_component)
+      (empty_component))))
 
 
 ==================
@@ -44,14 +43,13 @@
 ---
 
 (source_file
-  (cell
-    (muted
-      (sequence
-        (muted
-          (empty_component)
-          (empty_component))
+  (muted
+    (sequence
+      (muted
         (empty_component)
-        (empty_component)))))
+        (empty_component))
+      (empty_component)
+      (empty_component))))
 
 
 ==================
@@ -106,55 +104,9 @@
 
 ==================
 (8) ,;,,{({{}{}{{}}})<|{,,()}({}<|,;|>,)|>},{};{};,; [auto sequences]
+:error
 ==================
 ,;,,{({{}{}{{}}})<|{,,()}({}<|,;|>,)|>},{};{};,;
----
-
-(source_file
-  (cell
-    (muted
-      (naked_sequence
-        (empty_component)
-        (empty_component))))
-  (cell
-    (muted
-      (naked_sequence
-        (empty_component)
-        (empty_component)
-        (list
-          (binary_expression
-            left: (parenthesized_expression
-              (list
-                (binary_expression
-                  left: (list)
-                  right: (binary_expression
-                    left: (list)
-                    right: (list
-                      (list))))))
-            right: (angle_bar_list
-              (binary_expression
-                left: (list
-                  (empty_component)
-                  (empty_component)
-                  (sequence))
-                right: (sequence
-                  (binary_expression
-                    left: (list)
-                    right: (angle_bar_list
-                      (muted
-                        (empty_component)
-                        (empty_component))))
-                  (empty_component))))))
-        (list))))
-  (cell
-    (muted
-      (list)))
-  (cell
-    (muted
-      (naked_sequence
-        (empty_component)
-        (empty_component)))))
-
 
 ==================
 (9) (   ) [auto sequences]
@@ -194,7 +146,8 @@
         (binary_expression
           left: (string_literal
             (escape_sequence)
-            (escape_sequence))
+            (escape_sequence)
+            (string_content))
           right: (sequence))))))
 
 
@@ -253,11 +206,26 @@ n/n//n///n/n//n///n/n////n//n///n//n
           right: (binary_expression
             left: (symbol)
             right: (binary_expression
-              left: (raw_string_literal)
+              left: (raw_string_literal
+                (raw_string_content))
               right: (symbol))))
         right: (binary_expression
           left: (symbol)
           right: (binary_expression
-            left: (raw_string_literal)
+            left: (raw_string_literal
+              (raw_string_content))
             right: (symbol))))
       right: (symbol))))
+
+
+==================
+(14) (f [auto sequences]
+:error
+==================
+(f
+
+==================
+(15) 3) [auto sequences]
+:error
+==================
+3)

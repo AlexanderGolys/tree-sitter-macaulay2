@@ -1,0 +1,87 @@
+==================
+Exactly one Core qualifier retains control-keyword behavior
+==================
+Core$return i
+Core$break
+---
+
+(source_file
+  (cell
+    (return_statement
+      (symbol)))
+  (cell
+    (break_statement)))
+
+==================
+Other qualifiers leave control words as ordinary symbols
+==================
+Foo$return i
+Core$Core$return i
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (symbol)))
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (symbol))))
+
+==================
+Throw has the compiler's nullable operand
+==================
+throw
+throw err
+---
+
+(source_file
+  (cell
+    (throw_statement))
+  (cell
+    (throw_statement
+      (symbol))))
+
+==================
+Block comments do not terminate a nullable control operand
+==================
+return -* comment
+continues *- i
+---
+
+(source_file
+  (cell
+    (return_statement
+      (block_comment)
+      (symbol))))
+
+==================
+Line comments leave the terminating newline significant
+==================
+return -- comment
+i
+---
+
+(source_file
+  (cell
+    (return_statement))
+  (line_comment)
+  (cell
+    (symbol)))
+
+==================
+Fixed control precedence survives ignored block comments
+==================
+f return -* comment *- i + j
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (return_statement
+        (block_comment)
+        (binary_expression
+          left: (symbol)
+          right: (symbol))))))

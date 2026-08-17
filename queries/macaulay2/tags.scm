@@ -63,5 +63,5 @@
 
 (binary_expression
   left: (quote_expression
-          token: _ @name)
+          (_) @name)
   operator: "SPACE") @reference.call

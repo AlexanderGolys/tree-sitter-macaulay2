@@ -61,7 +61,8 @@ tsContainsChar = (s, c) -> (
 
 tsIsDigit = c -> c >= "0" and c <= "9"
 
-tsIsLetter = c -> (c >= "a" and c <= "z") or (c >= "A" and c <= "Z")
+tsIsLetter = c -> (c >= "a" and c <= "z") or
+    (c >= "A" and c <= "Z") or (ascii c)#0 >= 128
 
 tsStartsWithLetter = value -> (
     value = toString value;
@@ -76,8 +77,36 @@ tsIsNumber = value -> (
     )
 )
 
+tsIsBinaryDigit = c -> c == "0" or c == "1"
+tsIsOctalDigit = c -> c >= "0" and c <= "7"
+tsIsHexDigit = c -> tsIsDigit c or
+    (c >= "a" and c <= "f") or (c >= "A" and c <= "F")
+
+tsIsRadixDigit = (c, prefix) -> (
+    if prefix == "b" or prefix == "B" then tsIsBinaryDigit c
+    else if prefix == "o" or prefix == "O" then tsIsOctalDigit c
+    else tsIsHexDigit c
+)
+
+tsIsRadixInteger = value -> (
+    value = toString value;
+    if #value < 3 or value#0 != "0" or
+            not member(value#1, {"b", "B", "o", "O", "x", "X"}) then
+        false
+    else (
+        valid := true;
+        for index from 2 to #value - 1 do
+            if not tsIsRadixDigit(value#index, value#1) then valid = false;
+        valid
+    )
+)
+
 tsHasFloatMarker = value -> (
-    tsContainsChar(value, ".") or tsContainsChar(value, "e") or tsContainsChar(value, "E")
+    not tsIsRadixInteger value and (
+        tsContainsChar(value, ".") or
+        tsContainsChar(value, "e") or
+        tsContainsChar(value, "E")
+    )
 )
 
 tsNode = (kind, children) -> {kind, children}
@@ -85,14 +114,16 @@ tsLeaf = kind -> tsNode(kind, {})
 tsChild = (field, tree) -> {field, tree}
 tsAnon = tree -> tsChild("", tree)
 
--- Quoted operators, reserved words, and punctuation are all aliased to the
--- grammar's `keyword` node; ordinary quoted identifiers remain symbols.
+-- Quoted punctuation operators use the grammar's `keyword` node. Word-shaped
+-- tokens use the locally unreserved `symbol` rule after a quote specifier, so
+-- reserved words and ordinary identifiers have one uniform public shape.
 quoteOperatorTokens = set {"=", ":=", "<-", ">>", "=>", "%=", "&=", "**=", "*=", "++=", "+=", "-=", "//=", "/=", "<<=", "<==>=", "===>=", "==>=", ">>=", "??=", "@=", "@@=", "@@?=", "\\=", "\\\\=", "^**=", "^=", "^^=", "_=", "|-=", "|=", "|_=", "||=", "·=", "⊠=", "⧢=", "<<", "|-", "<===", "===>", "<==>", "<==", "==>", "or", "??", "xor", "and", "==", "!=", "===", "=!=", "<", ">", "<=", ">=", "?", "~", "||", ":", "|", "^^", "&", "++", "+", "-", "·", "**", "⊠", "⧢", "\\", "\\\\", "%", "//", "/", "*", "@", "@@", "@@?", "|_", "^", "^**", "^<", "^<=", "^>", "^>=", "_<", "_<=", "_>", "_>=", "_", "#", "#?", "not", "(*)", "^*", "_*", "^~", "_~", "!", "^!", "_!", "SPACE", "..=", "..<=", "..", "..<", ".", ".?"}
-quoteKeywordTokens = set {"break", "breakpoint", "catch", "continue", "do", "elapsedTime", "elapsedTiming", "else", "except", "finish", "for", "from", "global", "if", "in", "list", "local", "new", "of", "profile", "return", "shield", "step", "symbol", "TEST", "then", "threadLocal", "threadVariable", "throw", "time", "timing", "to", "trap", "try", "when", "while"}
+quoteWordTokens = set {"and", "break", "breakpoint", "catch", "continue", "do", "elapsedTime", "elapsedTiming", "else", "except", "finish", "for", "from", "global", "if", "in", "list", "local", "new", "not", "of", "or", "profile", "return", "shield", "SPACE", "step", "symbol", "TEST", "then", "threadLocal", "threadVariable", "throw", "time", "timing", "to", "trap", "try", "when", "while", "xor"}
 quotePunctuationTokens = set {"(", ")", "{", "}", "[", "]", "<|", "|>", ",", ";"}
 
 quoteSymbolKind = value -> (
-    if quoteOperatorTokens#?value or quoteKeywordTokens#?value or quotePunctuationTokens#?value
+    if (quoteOperatorTokens#?value and not quoteWordTokens#?value) or
+            quotePunctuationTokens#?value
         then "keyword"
     else "symbol"
 )
@@ -132,10 +163,27 @@ tsConvertTry = method()
 
 -- M2 normalizes both `"..."` and `///...///` literals to quoted Token
 -- values, so its CST alone cannot preserve which spelling appeared in the
--- source. Scan just the string delimiters up front and consume these specs in
--- source order while converting the CST. A spec is {node kind, raw escapes}.
+-- source. Scan the string bodies up front and retain their named Tree-sitter
+-- children in source order. A spec is {node kind, child kinds}.
 tsPendingStringSpecs = {}
 tsPendingStringSpecIndex = 0
+
+tsRawContentEnd = (source, start) -> (
+    index := start;
+    done := false;
+    while index < #source and not done do (
+        if source#index != "/" then index = index + 1
+        else (
+            runStart := index;
+            while index < #source and source#index == "/" do index = index + 1;
+            if index - runStart >= 3 then (
+                index = runStart;
+                done = true;
+            );
+        );
+    );
+    index
+)
 
 tsSourceStringSpecs = source -> (
     source = toString source;
@@ -158,38 +206,58 @@ tsSourceStringSpecs = source -> (
             );
         )
         else if source#index == "\"" then (
-            specs = append(specs, {"string_literal", 0});
             index = index + 1;
+            stringChildren := {};
             stringClosed := false;
             while index < #source and not stringClosed do (
-                if source#index == "\\" then index = index + 2
+                if source#index == "\\" then (
+                    stringChildren = append(stringChildren, "escape_sequence");
+                    index = index + 2;
+                )
                 else if source#index == "\"" then (
                     index = index + 1;
                     stringClosed = true;
-                ) else index = index + 1;
+                ) else (
+                    while index < #source and source#index != "\\" and source#index != "\""
+                        do index = index + 1;
+                    stringChildren = append(stringChildren, "string_content");
+                );
             );
+            specs = append(specs, {"string_literal", stringChildren});
         )
         else if index + 2 < #source and
                 source#index == "/" and
                 source#(index + 1) == "/" and
                 source#(index + 2) == "/" then (
             index = index + 3;
-            escapeCount := 0;
+            rawChildren := {};
             rawClosed := false;
             while index < #source and not rawClosed do (
-                if source#index != "/" then index = index + 1
+                if source#index != "/" then (
+                    rawChildren = append(rawChildren, "raw_string_content");
+                    index = tsRawContentEnd(source, index);
+                )
                 else (
                     runStart := index;
                     while index < #source and source#index == "/" do index = index + 1;
-                    remaining := index - runStart;
-                    while remaining >= 4 do (
-                        escapeCount = escapeCount + 1;
-                        remaining = remaining - 2;
+                    runLength := index - runStart;
+                    index = runStart;
+                    if runLength == 1 then (
+                        rawChildren = append(rawChildren, "raw_string_content");
+                        index = tsRawContentEnd(source, index);
+                    ) else if runLength == 2 then (
+                        rawChildren = append(rawChildren, "raw_string_content");
+                        index = index + 2;
+                    ) else if runLength == 3 then (
+                        index = index + 3;
+                        rawClosed = true;
+                    ) else (
+                        rawChildren = append(rawChildren, "escape_sequence");
+                        index = index + 2;
                     );
-                    if remaining == 3 then rawClosed = true;
                 );
             );
-            specs = append(specs, {"raw_string_literal", escapeCount});
+            specs = append(specs, {"raw_string_literal", rawChildren});
         )
         else index = index + 1;
     );
@@ -218,22 +286,7 @@ tsCheckStringSpecs = () -> (
 tsConvertToken String := value -> (
     if tsStartsWith("\"", value) and tsEndsWith("\"", value) then (
         spec := tsNextStringSpec();
-        if spec#0 == "raw_string_literal" then (
-            rawChildren := {};
-            for index from 1 to spec#1 do
-                rawChildren = append(rawChildren, tsAnon tsLeaf "escape_sequence");
-            tsNode("raw_string_literal", rawChildren)
-        ) else (
-            stringChildren := {};
-            index := 1;
-            while index < #value - 1 do (
-                if value#index == "\\" then (
-                    stringChildren = append(stringChildren, tsAnon tsLeaf "escape_sequence");
-                    index = index + 2;
-                ) else index = index + 1;
-            );
-            tsNode("string_literal", stringChildren)
-        )
+        tsNode(spec#0, apply(spec#1, kind -> tsAnon tsLeaf kind))
     )
     else if tsIsNumber value then (
         if tsHasFloatMarker value then tsLeaf "float_literal"
@@ -248,10 +301,7 @@ tsConvertExpr(List) := expr -> (
 
     if name == "Token" then tsConvertToken(tsTokenValue expr)
     else if name == "Binary" then tsConvertBinary expr
-    else if name == "Adjacent" then tsNode("binary_expression", {
-        tsChild("left", tsConvertExpr expr#1),
-        tsChild("right", tsConvertExpr expr#2)
-    })
+    else if name == "Adjacent" then tsConvertAdjacent expr
     else if name == "Unary" then (
         op := tsTokenValue expr#1;
         children := if tsIsDummy expr#2 then {} else {tsChild("operand", tsConvertExpr expr#2)};
@@ -295,19 +345,19 @@ tsConvertExpr(List) := expr -> (
             ifChildren = append(ifChildren, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#3}));
         tsNode("if_statement", ifChildren)
     )
-    else if name == "WhileDo" then tsNode("while_statement", {
-        tsAnon tsConvertExpr expr#1,
-        tsAnon tsNode("do_clause", {tsAnon tsConvertExpr expr#2})
+    else if name == "WhileDo" then tsNode("while_loop", {
+        tsChild("condition", tsConvertExpr expr#1),
+        tsAnon tsNode("loop_body", {tsChild("ignored_value", tsConvertExpr expr#2)})
     })
     else if name == "For" then tsConvertFor expr
     else if name == "TryThen" or name == "TryElse" or name == "TryThenElse" then tsConvertTry expr
     else if name == "Catch" then tsNode("catch_statement", {tsAnon tsConvertExpr expr#1})
     else if name == "New" then (
-        newChildren := {tsChild("type", tsConvertExpr expr#1)};
+        newChildren := {tsChild("class", tsConvertExpr expr#1)};
         if not tsIsDummy expr#2 then
-            newChildren = append(newChildren, tsAnon tsNode("of_clause", {tsAnon tsConvertExpr expr#2}));
+            newChildren = append(newChildren, tsChild("parent", tsConvertExpr expr#2));
         if not tsIsDummy expr#3 then
-            newChildren = append(newChildren, tsAnon tsNode("from_clause", {tsAnon tsConvertExpr expr#3}));
+            newChildren = append(newChildren, tsChild("instance", tsConvertExpr expr#3));
         tsNode("new_statement", newChildren)
     ) else
         error("unsupported M2 CST tsNode " | toString name | ": " | toString expr)
@@ -335,52 +385,6 @@ tsIsSymbolToken = expr -> (
     tsStartsWithLetter(tsTokenValue expr)
 )
 
-tsIsBindingPack = expr -> (
-    instance(expr, List) and
-    #expr == 4 and
-    tsTag expr === "Parentheses" and
-    not tsIsDelimitation expr#2 and (
-        tsIsSymbolToken expr#2 or
-        tsIsBindingPack expr#2 or
-        tsOperatorKind expr#2 != ""
-    )
-)
-
-tsConvertBindingPack = expr -> tsNode("binding_pack", {
-    tsAnon if tsIsBindingPack expr#2
-        then tsConvertBindingPack expr#2
-        else tsConvertExpr expr#2
-})
-
-tsCanReassociateAssignment = expr -> (
-    instance(expr, List) and #expr > 0 and (
-        (tsTag expr === "Adjacent" and tsIsSymbolToken expr#2) or
-        (tsTag expr === "Binary" and
-            not member(tsTokenValue expr#2, {".", ".?"}) and
-            tsIsSymbolToken expr#3) or
-        (tsTag expr === "Unary" and tsIsSymbolToken expr#2)
-    )
-)
-
-tsAssignmentNode = (left, right, kind) -> tsNode(kind, {
-    tsChild("left", tsConvertExpr left),
-    tsChild("right", tsConvertExpr right)
-})
-
-tsConvertReassociatedAssignment = (expr, right, kind) -> (
-    if tsTag expr === "Adjacent" then tsNode("binary_expression", {
-        tsChild("left", tsConvertExpr expr#1),
-        tsChild("right", tsAssignmentNode(expr#2, right, kind))
-    })
-    else if tsTag expr === "Binary" then tsNode("binary_expression", {
-        tsChild("left", tsConvertExpr expr#1),
-        tsChild("right", tsAssignmentNode(expr#3, right, kind))
-    })
-    else tsNode("prefix_expression", {
-        tsChild("operand", tsAssignmentNode(expr#2, right, kind))
-    })
-)
-
 tsOperatorKind = expr -> (
     if not instance(expr, List) or #expr == 0 then ""
     else if tsTag expr == "Adjacent" then "binary"
@@ -389,25 +393,17 @@ tsOperatorKind = expr -> (
     else if tsTag expr == "Unary" and tsTokenValue expr#1 != "," and
             not member(tsTokenValue expr#1, debugUnary) then "prefix"
     else if tsTag expr == "Postfix" then "postfix"
-    else if tsTag expr == "Parentheses" and #expr == 4 then
-        tsOperatorKind expr#2
     else ""
 )
 
-tsIsMethodTower = expr -> (
-    instance(expr, List) and #expr > 0 and (
-        tsTag expr == "Adjacent" or
-        (tsTag expr == "Binary" and tsTokenValue expr#2 == "SPACE") or
-        (tsTag expr == "Parentheses" and #expr == 4 and tsIsMethodTower expr#2)
-    )
-)
+tsIsStructuredBindingTarget = expr ->
+    instance(expr, List) and #expr > 0 and
+    member(tsTag expr, {"Parentheses", "EmptyParentheses"})
 
-tsConvertAssignment = (expr, kind, leftKind) -> (
-    children := if leftKind == "binding"
-        then {tsChild("left", tsConvertBindingPack expr#1)}
-        else {tsChild("left", tsConvertExpr expr#1)};
-    tsNode(kind, append(children, tsChild("right", tsConvertExpr expr#3)))
-)
+tsConvertAssignment = (expr, kind, leftField) -> tsNode(kind, {
+    tsChild(leftField, tsConvertExpr expr#1),
+    tsChild("right", tsConvertExpr expr#3)
+})
 
 tsConvertBinary(List) := expr -> (
     op := tsTokenValue expr#2;
@@ -415,25 +411,21 @@ tsConvertBinary(List) := expr -> (
         "naked_sequence",
         apply(tsFlattenComma expr, item ->
             tsAnon (if tsIsDummy item then tsLeaf "empty_component" else tsConvertExpr item)))
-    else if op == "=" and tsIsSymbolToken expr#1 then
-        tsConvertAssignment(expr, "assignment", "symbol")
-    else if op == ":=" and tsIsSymbolToken expr#1 then
-        tsConvertAssignment(expr, "local_assignment", "symbol")
-    else if op == "=" and tsIsBindingPack expr#1 then
-        tsConvertAssignment(expr, "structured_binding", "binding")
-    else if op == ":=" and tsIsBindingPack expr#1 then
-        tsConvertAssignment(expr, "local_structured_binding", "binding")
-    else if member(op, {"=", ":="}) and tsCanReassociateAssignment expr#1 then
-        tsConvertReassociatedAssignment(
-            expr#1,
-            expr#3,
-            if op == "=" then "assignment" else "local_assignment")
+    else if member(op, {"=", ":="}) and tsIsSymbolToken expr#1 then
+        tsConvertAssignment(
+            expr,
+            if op == "=" then "assignment" else "local_assignment",
+            "left")
+    else if member(op, {"=", ":="}) and tsIsStructuredBindingTarget expr#1 then
+        tsConvertAssignment(
+            expr,
+            if op == "=" then "structured_binding" else "local_structured_binding",
+            "binding_pack")
     else if member(op, {"=", ":="}) and tsOperatorKind expr#1 != "" then (
         operatorKind := tsOperatorKind expr#1;
         kind := if op == "=" then operatorKind | "_assignment"
-            else if tsIsMethodTower expr#1 then "method_installation"
             else operatorKind | "_installation";
-        tsConvertAssignment(expr, kind, "operator")
+        tsConvertAssignment(expr, kind, "left")
     )
     else if op == "<-" then tsNode("evaluated_assignment", {
         tsChild("left", tsConvertExpr expr#1),
@@ -466,21 +458,33 @@ tsConvertParentheses(List) := expr -> (
 
 tsConvertFor(List) := expr -> (
     children := {tsChild("variable", tsConvertExpr expr#1)};
-    clauseSpecs := {
-        {2, "in_clause"},
-        {3, "from_clause"},
-        {4, "to_clause"},
-        {5, "when_clause"},
-        {6, "list_clause"},
-        {7, "do_clause"}};
-    for spec in clauseSpecs do (
-        index := spec#0;
-        clause := spec#1;
-        if index < #expr and not tsIsDummy expr#index then
-            children = append(children, tsAnon tsNode(clause, {tsAnon tsConvertExpr expr#index}));
-    );
-    tsNode("for_statement", children)
+    rangeChildren := {};
+    if not tsIsDummy expr#2 then
+        rangeChildren = append(rangeChildren, tsChild("iterated_collection", tsConvertExpr expr#2));
+    if not tsIsDummy expr#3 then
+        rangeChildren = append(rangeChildren, tsChild("range_start", tsConvertExpr expr#3));
+    if not tsIsDummy expr#4 then
+        rangeChildren = append(rangeChildren, tsChild("range_end", tsConvertExpr expr#4));
+    if #rangeChildren > 0 then
+        children = append(children, tsAnon tsNode("iteration_range", rangeChildren));
+    if not tsIsDummy expr#5 then
+        children = append(children, tsChild("filter", tsConvertExpr expr#5));
+
+    bodyChildren := {};
+    if not tsIsDummy expr#6 then
+        bodyChildren = append(bodyChildren, tsChild("listed_value", tsConvertExpr expr#6));
+    if not tsIsDummy expr#7 then
+        bodyChildren = append(bodyChildren, tsChild("ignored_value", tsConvertExpr expr#7));
+    if #bodyChildren > 0 then
+        children = append(children, tsAnon tsNode("loop_body", bodyChildren));
+
+    tsNode("for_loop", children)
 )
+
+tsConvertAdjacent = expr -> tsNode("binary_expression", {
+    tsChild("left", tsConvertExpr expr#1),
+    tsChild("right", tsConvertExpr expr#2)
+})
 
 tsConvertTry(List) := expr -> (
     name := tsTag expr;
@@ -488,10 +492,10 @@ tsConvertTry(List) := expr -> (
     if name == "TryThen" then
         children = append(children, tsAnon tsNode("then_clause", {tsAnon tsConvertExpr expr#2}))
     else if name == "TryElse" then
-        children = append(children, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#2}))
+        children = append(children, tsChild("fallback", tsNode("else_clause", {tsAnon tsConvertExpr expr#2})))
     else if name == "TryThenElse" then (
         children = append(children, tsAnon tsNode("then_clause", {tsAnon tsConvertExpr expr#2}));
-        children = append(children, tsAnon tsNode("else_clause", {tsAnon tsConvertExpr expr#3}));
+        children = append(children, tsChild("fallback", tsNode("else_clause", {tsAnon tsConvertExpr expr#3})));
     );
     tsNode("try_statement", children)
 )
@@ -548,7 +552,7 @@ tsConvertMultiChildren = inner -> flatten apply(tsFlattenMuted inner, item ->
 -- semicolon. Preserve the quote exception: `symbol;` quotes punctuation, while
 -- `symbol;;` is that quote followed by a terminator.
 tsConvertTop = (source, parsed) -> (
-    cells := {};
+    items := {};
     trailingSemicolons := tsTrailingSemicolonCount source;
     hasTrailingSemicolon := trailingSemicolons > 0 and
         (not tsIsSemicolonQuote parsed or trailingSemicolons > 1);
@@ -557,23 +561,20 @@ tsConvertTop = (source, parsed) -> (
         content := tsConvertExpr expression;
         isMuted := index < #parsed - 1 or
             (hasTrailingSemicolon and index == #parsed - 1);
-        cell := tsNode("cell", {
-            tsAnon (if isMuted
-                then tsNode("muted", {tsAnon content})
-                else content)
-        });
-        cells = append(cells, tsAnon cell);
+        item := if isMuted
+            then tsNode("muted", {tsAnon content})
+            else tsNode("cell", {tsAnon content});
+        items = append(items, tsAnon item);
     );
-    tsNode("source_file", cells)
+    tsNode("source_file", items)
 )
 
--- Every fuzz word is emitted as `word;`, i.e. a muted top-level cell.
-tsConvertFuzzCell = word -> tsNode("cell", {
-    tsAnon tsNode("muted", {tsAnon tsConvertExpr (parse word)#0})
-})
+-- Every fuzz word is emitted as `word;`, i.e. a top-level `muted` item.
+tsConvertFuzzItem = word ->
+    tsNode("muted", {tsAnon tsConvertExpr (parse word)#0})
 
 tsConvertFuzzTop = words ->
-    tsNode("source_file", apply(words, word -> tsAnon tsConvertFuzzCell word))
+    tsNode("source_file", apply(words, word -> tsAnon tsConvertFuzzItem word))
 
 tsSpaces = n -> (
     result := "";
@@ -607,9 +608,11 @@ tsFileStem = name -> substring(0, #name - 3, name)
 
 tsTestBlockHeader = "--- TEST "
 tsTestBlockFooter = "--- "
+tsRejectedExpressionHeader = "--- REJECT "
 
 tsStartsTestBlock = line -> tsStartsWith(tsTestBlockHeader, line)
 tsEndsTestBlock = line -> line == "---" or tsStartsWith(tsTestBlockFooter, line)
+tsStartsRejectedExpression = line -> tsStartsWith(tsRejectedExpressionHeader, line)
 
 tsJoinLines = lines -> (
     if #lines == 0 then ""
@@ -625,8 +628,10 @@ tsJoinLines = lines -> (
 -- excluded.  The next header also closes the current block before starting the
 -- next one, which makes adjacent blocks convenient to write.
 --
--- Each entry is {source, isMultiline, title}.  Multiline sources retain their
--- newlines because cells and scope are sensitive to them.
+-- Each entry is {source, isMultiline, title, reject}.  Multiline sources
+-- retain their newlines because cells and scope are sensitive to them.
+-- `--- REJECT source` records a source accepted by M2's permissive parser but
+-- intentionally outside this grammar.
 tsReadExpressions = path -> (
     entries := {};
     inBlock := false;
@@ -636,25 +641,32 @@ tsReadExpressions = path -> (
     for line in lines get path do (
         if tsStartsTestBlock line then (
             if inBlock then
-                entries = append(entries, {tsJoinLines blockLines, true, blockTitle});
+                entries = append(entries, {tsJoinLines blockLines, true, blockTitle, false});
             inBlock = true;
             blockLines = {};
             blockTitle = tsTrim substring(#tsTestBlockHeader, #line - #tsTestBlockHeader, line);
         ) else if inBlock and tsEndsTestBlock line then (
-            entries = append(entries, {tsJoinLines blockLines, true, blockTitle});
+            entries = append(entries, {tsJoinLines blockLines, true, blockTitle, false});
             inBlock = false;
             blockLines = {};
             blockTitle = "";
         ) else if inBlock then
             blockLines = append(blockLines, line)
-        else (
+        else if tsStartsRejectedExpression line then (
+            rejectedSource := tsTrim substring(
+                #tsRejectedExpressionHeader,
+                #line - #tsRejectedExpressionHeader,
+                line);
+            if rejectedSource != "" then
+                entries = append(entries, {rejectedSource, false, rejectedSource, true});
+        ) else (
             expression := tsTrim line;
-            if expression != "" then entries = append(entries, {expression, false, expression});
+            if expression != "" then entries = append(entries, {expression, false, expression, false});
         );
     );
 
     if inBlock then
-        entries = append(entries, {tsJoinLines blockLines, true, blockTitle});
+        entries = append(entries, {tsJoinLines blockLines, true, blockTitle, false});
     entries
 )
 
@@ -686,20 +698,20 @@ tsContainsInvalidMemberAccess = expr -> instance(expr, List) and #expr > 0 and (
     else any(expr, tsContainsInvalidMemberAccess)
 )
 
--- Core$parse also accepts arbitrary assignment left-hand sides. Match the
--- grammar's current assignment boundary: a bare symbol, one delimited binding
--- pack, or an operator expression. Comma-shaped parallel bindings are not yet
--- part of the grammar.
+-- Core$parse deliberately stops before the compiler's assignment-target
+-- validation. Keep the generated corpus aligned with the language grammar:
+-- a direct binding needs a symbol, an operator assignment needs an operator
+-- expression, and a delimited value is the recursively checked structured
+-- binding category represented by this Tree-sitter grammar.
 tsContainsInvalidAssignment = expr -> instance(expr, List) and #expr > 0 and (
     if tsTag expr === "Binary" and
             member(tsTokenValue expr#2, {"=", ":="}) then
         not (
             tsIsSymbolToken expr#1 or
-            tsIsBindingPack expr#1 or
+            tsIsStructuredBindingTarget expr#1 or
             tsOperatorKind expr#1 != ""
-        ) or
-        tsContainsInvalidAssignment expr#1 or
-        tsContainsInvalidAssignment expr#3
+        ) or tsContainsInvalidAssignment expr#1 or
+            tsContainsInvalidAssignment expr#3
     else any(expr, tsContainsInvalidAssignment)
 )
 
@@ -727,7 +739,8 @@ tsParse = expression -> (
     parseSource := "" | expression;
     result := try parse(parseSource) else "SYNTAX_ERROR";
     if result === "SYNTAX_ERROR" or tsContainsEOF result or
-            tsContainsInvalidMemberAccess result or tsContainsInvalidAssignment result
+            tsContainsInvalidMemberAccess result or
+            tsContainsInvalidAssignment result
         then "SYNTAX_ERROR"
     else result
 )
@@ -739,7 +752,7 @@ tsParseMultiline = source -> (
     parseSource := "" | source;
     result := try parse(parseSource) else "SYNTAX_ERROR";
     if result === "SYNTAX_ERROR" or tsContainsEOF result or
-            tsContainsInvalidMemberAccess result or tsContainsInvalidAssignment result
+            tsContainsInvalidMemberAccess result
         then "SYNTAX_ERROR"
     else result
 )
@@ -758,7 +771,10 @@ tsWriteCorpus = (name, expressions) -> (
         expression := test#0;
         isMultiline := test#1;
         title := test#2;
-        result := if isMultiline then tsParseMultiline(expression) else tsParse(expression);
+        reject := test#3;
+        result := if reject then "SYNTAX_ERROR"
+            else if isMultiline then tsParseMultiline(expression)
+            else tsParse(expression);
         emitted = emitted + 1;
         if not first then out << endl << endl;
         first = false;

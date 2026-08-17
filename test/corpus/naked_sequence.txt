@@ -18,11 +18,9 @@ Top-level naked sequence is muted
 ---
 
 (source_file
-  (cell
-    (muted
-      (naked_sequence
-        (integer_literal)
-        (empty_component)))))
+  (muted
+    (integer_literal)
+    (empty_component)))
 
 ==================
 Top-level scalar is muted
@@ -31,9 +29,53 @@ Top-level scalar is muted
 ---
 
 (source_file
+  (muted
+    (integer_literal)))
+
+==================
+Muted cells can share a line
+==================
+2;2;2
+---
+
+(source_file
+  (muted
+    (integer_literal))
+  (muted
+    (integer_literal))
   (cell
-    (muted
-      (integer_literal))))
+    (integer_literal)))
+
+==================
+Ordinary cells require separate lines
+==================
+2
+2
+2
+---
+
+(source_file
+  (cell
+    (integer_literal))
+  (cell
+    (integer_literal))
+  (cell
+    (integer_literal)))
+
+==================
+Newline ends an ordinary cell before muted cells
+==================
+2
+2;2
+---
+
+(source_file
+  (cell
+    (integer_literal))
+  (muted
+    (integer_literal))
+  (cell
+    (integer_literal)))
 
 ==================
 Top-level scalar is ordinary
@@ -146,7 +188,7 @@ Nulls and muting in an angle-bar list
       (empty_component))))
 
 ==================
-Top-level newline continues an incomplete naked sequence
+Top-level newline ends a valid naked sequence
 ==================
 2,
 3
@@ -156,7 +198,25 @@ Top-level newline continues an incomplete naked sequence
   (cell
     (naked_sequence
       (integer_literal)
-      (integer_literal))))
+      (empty_component)))
+  (cell
+    (integer_literal)))
+
+==================
+Top-level newline ends a valid leading-empty sequence
+==================
+,,
+1
+---
+
+(source_file
+  (cell
+    (naked_sequence
+      (empty_component)
+      (empty_component)
+      (empty_component)))
+  (cell
+    (integer_literal)))
 
 ==================
 Container newline continues the sequence
@@ -172,7 +232,7 @@ Container newline continues the sequence
       (integer_literal))))
 
 ==================
-Top-level comment keeps an incomplete naked sequence open
+Top-level comment does not hide the cell-ending newline
 ==================
 2, -- comment
 3
@@ -183,7 +243,9 @@ Top-level comment keeps an incomplete naked sequence open
     (naked_sequence
       (integer_literal)
       (line_comment)
-      (integer_literal))))
+      (empty_component)))
+  (cell
+    (integer_literal)))
 
 ==================
 Container comment continues the sequence
@@ -209,8 +271,8 @@ a = b, c
   (cell
     (naked_sequence
       (assignment
-        (symbol)
-        (symbol))
+        left: (symbol)
+        right: (symbol))
       (symbol))))
 
 ==================
@@ -223,7 +285,7 @@ if a then b, c
   (cell
     (naked_sequence
       (if_statement
-        (symbol)
+        condition: (symbol)
         (then_clause
           (symbol)))
       (symbol))))

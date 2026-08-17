@@ -99,6 +99,20 @@ Block with comma-list final statement is a sequence
       (symbol))))
 
 ==================
+Muted block with empty comma form is a sequence
+==================
+(1;,)
+---
+
+(source_file
+  (cell
+    (sequence
+      (muted
+        (integer_literal))
+      (empty_component)
+      (empty_component))))
+
+==================
 Single parameter lambda
 ==================
 (x) -> x

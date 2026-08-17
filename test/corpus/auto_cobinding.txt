@@ -67,7 +67,7 @@ symbol not
 (source_file
   (cell
     (quote_expression
-      token: (keyword))))
+      token: (symbol))))
 
 
 ==================
@@ -79,7 +79,7 @@ symbol symbol
 (source_file
   (cell
     (quote_expression
-      token: (keyword))))
+      token: (symbol))))
 
 
 ==================
@@ -262,9 +262,9 @@ symbol symbol symbol symbol
   (cell
     (binary_expression
       left: (quote_expression
-        token: (keyword))
+        token: (symbol))
       right: (quote_expression
-        token: (keyword)))))
+        token: (symbol)))))
 
 
 ==================
@@ -337,7 +337,7 @@ symbol symbol x
   (cell
     (binary_expression
       left: (quote_expression
-        token: (keyword))
+        token: (symbol))
       right: (symbol))))
 
 
@@ -714,7 +714,18 @@ symbol;;
 ---
 
 (source_file
+  (muted
+    (quote_expression
+      token: (keyword))))
+
+
+==================
+(55) symbol Core$not [auto cobinding]
+==================
+symbol Core$not
+---
+
+(source_file
   (cell
-    (muted
-      (quote_expression
-        token: (keyword)))))
+    (quote_expression
+      token: (symbol))))

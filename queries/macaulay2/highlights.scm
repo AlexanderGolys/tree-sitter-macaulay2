@@ -18,37 +18,14 @@
 
 (symbol) @variable
 
-; A name quoted after a quote specifier reads as a variable, whatever its lexical kind
-(quote_expression token: _ @variable)
+; The quoted name is the expression's sole named child. Avoid its field name here
+; so highlighting remains compatible across the symbol -> token field rename.
+(quote_expression (_) @variable)
 
 ; Operators
-(binary_expression
-  operator: _ @operator)
-
-(prefix_expression
-  operator: _ @operator)
-
-(postfix_expression
-  operator: _ @operator)
-
-(lambda_expression
-  operator: _ @operator)
-
-[
-  (assignment operator: _ @operator)
-  (local_assignment operator: _ @operator)
-  (binary_assignment operator: _ @operator)
-  (binary_installation operator: _ @operator)
-  (prefix_assignment operator: _ @operator)
-  (prefix_installation operator: _ @operator)
-  (postfix_assignment operator: _ @operator)
-  (postfix_installation operator: _ @operator)
-  (method_installation operator: _ @operator)
-  (structured_binding operator: _ @operator)
-  (local_structured_binding operator: _ @operator)
-  (evaluated_assignment operator: _ @operator)
-  (option operator: _ @operator)
-]
+; Operator-bearing nodes keep this field across the assignment/structured-
+; binding CST split, so avoid coupling the base capture to every node name.
+(_ operator: _ @operator)
 
 ; Punctuation
 [
@@ -182,20 +159,19 @@
 
 ; Types
 (new_statement
-  type: (_) @type
-  (of_clause
-    (_) @type))
+  class: (_) @type
+  "of" @keyword
+  parent: (_) @type)
 
 (new_statement
-  (from_clause
-    "from" @keyword))
+  "from" @keyword)
 
 (binary_expression
   left: (symbol) @function.call
   operator: "SPACE")
 
 (new_statement
-  type: _ @type)
+  class: _ @type)
 
 ; Method installations
 ; Named methods with a single, unparenthesized domain type.
@@ -312,7 +288,7 @@
   operator: "SPACE"
   right: (sequence
     (quote_expression
-      token: _ @label)
+      (_) @label)
     .
     (_) @type.parameter
     .

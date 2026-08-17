@@ -90,3 +90,35 @@ timetime
     (symbol))
   (cell
     (symbol)))
+
+==================
+9. UTF-8 identifiers [identifiers]
+==================
+α
+变量9
+λ9'$β
+é
+😀
+---
+(source_file
+  (cell
+    (symbol))
+  (cell
+    (symbol))
+  (cell
+    (symbol))
+  (cell
+    (symbol))
+  (cell
+    (symbol)))
+
+==================
+10. Mathematical operator splits UTF-8 identifiers [identifiers]
+==================
+α⊠β
+---
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (symbol))))

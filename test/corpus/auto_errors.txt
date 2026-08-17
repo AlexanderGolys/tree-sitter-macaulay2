@@ -207,7 +207,8 @@ x.symbol symbol
   (cell
     (binary_expression
       left: (float_literal)
-      right: (string_literal))))
+      right: (string_literal
+        (string_content)))))
 
 
 ==================

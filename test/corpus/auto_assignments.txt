@@ -25,7 +25,8 @@ x#3 = "foo"
       left: (binary_expression
         left: (symbol)
         right: (integer_literal))
-      right: (string_literal))))
+      right: (string_literal
+        (string_content)))))
 
 
 ==================
@@ -51,11 +52,11 @@ String * String = peek
 
 (source_file
   (cell
-    (binary_expression
-      left: (symbol)
-      right: (assignment
+    (binary_assignment
+      left: (binary_expression
         left: (symbol)
-        right: (symbol)))))
+        right: (symbol))
+      right: (symbol))))
 
 
 ==================
@@ -66,10 +67,10 @@ String * String = peek
 
 (source_file
   (cell
-    (prefix_expression
-      operand: (assignment
-        left: (symbol)
-        right: (symbol)))))
+    (prefix_assignment
+      left: (prefix_expression
+        operand: (symbol))
+      right: (symbol))))
 
 
 ==================
@@ -112,13 +113,13 @@ ZZ ZZ := ZZ => f
 
 (source_file
   (cell
-    (binary_expression
-      left: (symbol)
-      right: (local_assignment
+    (binary_installation
+      left: (binary_expression
         left: (symbol)
-        right: (option
-          left: (symbol)
-          right: (symbol))))))
+        right: (symbol))
+      right: (option
+        left: (symbol)
+        right: (symbol)))))
 
 
 ==================
@@ -130,8 +131,8 @@ ZZ ZZ := ZZ => f
 (source_file
   (cell
     (structured_binding
-      left: (binding_pack
-        (binding_pack
+      binding_pack: (parenthesized_expression
+        (parenthesized_expression
           (symbol)))
       right: (symbol))))
 
@@ -145,8 +146,8 @@ ZZ ZZ := ZZ => f
 (source_file
   (cell
     (structured_binding
-      left: (binding_pack
-        (binding_pack
+      binding_pack: (parenthesized_expression
+        (parenthesized_expression
           (binary_expression
             left: (symbol)
             right: (symbol))))
@@ -155,6 +156,16 @@ ZZ ZZ := ZZ => f
 
 ==================
 (11) (x, (y, z)) = values [auto assignments]
-:error
 ==================
 (x, (y, z)) = values
+---
+
+(source_file
+  (cell
+    (structured_binding
+      binding_pack: (sequence
+        (symbol)
+        (sequence
+          (symbol)
+          (symbol)))
+      right: (symbol))))

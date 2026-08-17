@@ -1,0 +1,170 @@
+==================
+Punctuation greed crosses a possible comment prefix
+==================
+1|--1|-*1
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (binary_expression
+        left: (prefix_expression
+          operand: (integer_literal))
+        right: (prefix_expression
+          operand: (integer_literal))))))
+
+==================
+Punctuation greed remains stable through a longer closure
+==================
+1|--1|-*-1*-1
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (integer_literal)
+      right: (binary_expression
+        left: (prefix_expression
+          operand: (integer_literal))
+        right: (binary_expression
+          left: (prefix_expression
+            operand: (prefix_expression
+              operand: (integer_literal)))
+          right: (prefix_expression
+            operand: (integer_literal)))))))
+
+==================
+Angle and bar punctuation contains no delimiters
+==================
+<<|-1||>1
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (prefix_expression
+        operand: (binary_expression
+          left: (integer_literal)
+          right: (prefix_expression
+            operand: (integer_literal)))))))
+
+==================
+Raw closure preserves dense punctuation as content
+==================
+parse///1##2##3a2##3
+1##2***##3a2##
+##2##3a2##3***
+* *##2##3!^#a#2
+3       ///
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left: (symbol)
+      right: (raw_string_literal
+        (raw_string_content)))))
+
+==================
+Comment marker at a token boundary remains a comment
+==================
+1--1
+---
+
+(source_file
+  (cell
+    (integer_literal))
+  (line_comment))
+
+==================
+Binary double star cannot split into two prefixes
+==================
+**1
+---
+
+(source_file
+  (ERROR
+    (raw_string_content)))
+
+==================
+Binary double plus cannot split into two prefixes
+==================
+++1
+---
+
+(source_file
+  (ERROR
+    (raw_string_content)))
+
+==================
+Binary sharp question cannot split into two prefixes
+==================
+#?1
+---
+
+(source_file
+  (ERROR
+    (raw_string_content)))
+
+==================
+Lambda arrow cannot split into two prefixes
+==================
+->1
+---
+
+(source_file
+  (ERROR
+    (raw_string_content)))
+
+==================
+Evaluated assignment cannot split into two prefixes
+==================
+<-1
+---
+
+(source_file
+  (ERROR
+    (raw_string_content)))
+
+==================
+Binary equivalence cannot split into two prefixes
+==================
+<==>1
+---
+
+(source_file
+  (ERROR
+    (raw_string_content)))
+
+==================
+Compound assignment cannot split into two greater prefixes
+==================
+>>1
+---
+
+(source_file
+  (ERROR
+    (raw_string_content)))
+
+==================
+Postfix star word cannot split into a parenthesized prefix
+==================
+(*)
+---
+
+(source_file
+  (ERROR
+    (raw_string_content)))
+
+==================
+Unterminated block comment remains an error
+==================
+1-*1
+---
+
+(source_file
+  (cell
+    (integer_literal))
+  (ERROR
+    (raw_string_content)))

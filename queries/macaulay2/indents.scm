@@ -4,11 +4,10 @@
   (list)
   (array)
   (angle_bar_list)
-  (binding_pack)
   (lambda_expression)
   (if_statement)
-  (for_statement)
-  (while_statement)
+  (for_loop)
+  (while_loop)
   (try_statement)
   (new_statement)
 ] @indent.begin
@@ -18,7 +17,6 @@
 (list "}" @indent.end)
 (array "]" @indent.end)
 (angle_bar_list "|>" @indent.end)
-(binding_pack [")" "]" "}" "|>"] @indent.end)
 
 [
   ")"

@@ -247,16 +247,33 @@ x...2
 
 
 ==================
-(19) 2..x [auto literals]
+(19) 2..x...2symbol.....2.2e1...2e-2x.x.0 [auto literals]
 ==================
-2..x
+2..x...2symbol.....2.2e1...2e-2x.x.0
 ---
 
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
-      right: (symbol))))
+      left: (binary_expression
+        left: (binary_expression
+          left: (binary_expression
+            left: (integer_literal)
+            right: (symbol))
+          right: (binary_expression
+            left: (float_literal)
+            right: (quote_expression
+              token: (keyword))))
+        right: (binary_expression
+          left: (float_literal)
+          right: (float_literal)))
+      right: (binary_expression
+        left: (float_literal)
+        right: (binary_expression
+          left: (binary_expression
+            left: (symbol)
+            right: (symbol))
+          right: (float_literal))))))
 
 
 ==================
@@ -301,13 +318,7 @@ x..2
 
 
 ==================
-(23) x.(2) [auto literals]
-:error
-==================
-x.(2)
-
-==================
-(24) 1e-2 [auto literals]
+(23) 1e-2 [auto literals]
 ==================
 1e-2
 ---
@@ -318,7 +329,7 @@ x.(2)
 
 
 ==================
-(25) 1e1p1 [auto literals]
+(24) 1e1p1 [auto literals]
 ==================
 1e1p1
 ---
@@ -331,7 +342,7 @@ x.(2)
 
 
 ==================
-(26) 1p1e1 [auto literals]
+(25) 1p1e1 [auto literals]
 ==================
 1p1e1
 ---
@@ -342,7 +353,7 @@ x.(2)
 
 
 ==================
-(27) 1.e1 [auto literals]
+(26) 1.e1 [auto literals]
 ==================
 1.e1
 ---
@@ -353,13 +364,13 @@ x.(2)
 
 
 ==================
-(28) x.-1x [auto literals]
+(27) x.-1x [auto literals]
 :error
 ==================
 x.-1x
 
 ==================
-(29) 2x [auto literals]
+(28) 2x [auto literals]
 ==================
 2x
 ---
@@ -372,7 +383,7 @@ x.-1x
 
 
 ==================
-(30) 1e1p [auto literals]
+(29) 1e1p [auto literals]
 ==================
 1e1p
 ---
@@ -385,7 +396,7 @@ x.-1x
 
 
 ==================
-(31) 1p1e1p1-1.e-1..1 [auto literals]
+(30) 1p1e1p1-1.e-1..1 [auto literals]
 ==================
 1p1e1p1-1.e-1..1
 ---
@@ -402,7 +413,7 @@ x.-1x
 
 
 ==================
-(32) e.1.1.1.e.1.p.1.e.1 [auto literals]
+(31) e.1.1.1.e.1.p.1.e.1 [auto literals]
 ==================
 e.1.1.1.e.1.p.1.e.1
 ---
@@ -431,7 +442,7 @@ e.1.1.1.e.1.p.1.e.1
 
 
 ==================
-(33) 1.e-1.e-1.1..e1.1.e-1 [auto literals]
+(32) 1.e-1.e-1.1..e1.1.e-1 [auto literals]
 ==================
 1.e-1.e-1.1..e1.1.e-1
 ---
@@ -454,7 +465,7 @@ e.1.1.1.e.1.p.1.e.1
 
 
 ==================
-(34) 1e1.1.2e1 [auto literals]
+(33) 1e1.1.2e1 [auto literals]
 ==================
 1e1.1.2e1
 ---
@@ -469,7 +480,7 @@ e.1.1.1.e.1.p.1.e.1
 
 
 ==================
-(35) (2,2;2;,2) [auto literals]
+(34) (2,2;2;,2) [auto literals]
 ==================
 (2,2;2;,2)
 ---
@@ -487,7 +498,94 @@ e.1.1.1.e.1.p.1.e.1
 
 
 ==================
-(36) 2. . .2 [auto literals]
+(35) 2. . .2 [auto literals]
 :error
 ==================
 2. . .2
+
+==================
+(36) 0b1010 [auto literals]
+==================
+0b1010
+---
+
+(source_file
+  (cell
+    (integer_literal)))
+
+
+==================
+(37) 0B1010 [auto literals]
+==================
+0B1010
+---
+
+(source_file
+  (cell
+    (integer_literal)))
+
+
+==================
+(38) 0o755 [auto literals]
+==================
+0o755
+---
+
+(source_file
+  (cell
+    (integer_literal)))
+
+
+==================
+(39) 0O755 [auto literals]
+==================
+0O755
+---
+
+(source_file
+  (cell
+    (integer_literal)))
+
+
+==================
+(40) 0xdead [auto literals]
+==================
+0xdead
+---
+
+(source_file
+  (cell
+    (integer_literal)))
+
+
+==================
+(41) 0xDEAD [auto literals]
+==================
+0xDEAD
+---
+
+(source_file
+  (cell
+    (integer_literal)))
+
+
+==================
+(42) 0Xdead [auto literals]
+==================
+0Xdead
+---
+
+(source_file
+  (cell
+    (integer_literal)))
+
+
+==================
+(43) 0XDEAD [auto literals]
+==================
+0XDEAD
+---
+
+(source_file
+  (cell
+    (integer_literal)))

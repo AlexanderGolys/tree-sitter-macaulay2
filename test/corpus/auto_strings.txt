@@ -6,7 +6,8 @@
 
 (source_file
   (cell
-    (string_literal)))
+    (string_literal
+      (string_content))))
 
 
 ==================
@@ -17,7 +18,8 @@
 
 (source_file
   (cell
-    (raw_string_literal)))
+    (raw_string_literal
+      (raw_string_content))))
 
 
 ==================
@@ -30,6 +32,8 @@
   (cell
     (sequence
       (string_literal
+        (string_content)
         (escape_sequence))
       (raw_string_literal
+        (raw_string_content)
         (escape_sequence)))))

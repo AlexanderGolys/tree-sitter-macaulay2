@@ -31,14 +31,22 @@ pub fn language() -> Language {
 /// The content of the [`node-types.json`][] file for this grammar.
 ///
 /// [`node-types.json`]: https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types
-pub const NODE_TYPES: &'static str = include_str!("../../src/node-types.json");
+pub const NODE_TYPES: &str = include_str!("../../src/node-types.json");
 
-// Uncomment these to include any queries that this grammar contains
+/// The syntax-highlighting query for this language.
+pub const HIGHLIGHTS_QUERY: &str = include_str!("../../queries/highlights.scm");
 
-// pub const HIGHLIGHTS_QUERY: &'static str = include_str!("../../queries/highlights.scm");
-// pub const INJECTIONS_QUERY: &'static str = include_str!("../../queries/macaulay2/injections.scm");
-// pub const LOCALS_QUERY: &'static str = include_str!("../../queries/locals.scm");
-// pub const TAGS_QUERY: &'static str = include_str!("../../queries/tags.scm");
+/// The language-injection query for this language.
+pub const INJECTIONS_QUERY: &str = include_str!("../../queries/injections.scm");
+
+/// The symbol-tagging query for this language.
+pub const TAGS_QUERY: &str = include_str!("../../queries/tags.scm");
+
+/// The indentation query for this language.
+pub const INDENTS_QUERY: &str = include_str!("../../queries/indents.scm");
+
+/// The folding query for this language.
+pub const FOLDS_QUERY: &str = include_str!("../../queries/folds.scm");
 
 #[cfg(test)]
 mod tests {
@@ -50,6 +58,19 @@ mod tests {
         parser
             .set_language(&super::language())
             .expect("Error loading Macaulay2 language");
+    }
+
+    #[test]
+    fn exports_every_configured_query() {
+        for query in [
+            super::HIGHLIGHTS_QUERY,
+            super::INJECTIONS_QUERY,
+            super::TAGS_QUERY,
+            super::INDENTS_QUERY,
+            super::FOLDS_QUERY,
+        ] {
+            assert!(!query.is_empty());
+        }
     }
 
     #[test]

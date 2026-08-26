@@ -50,11 +50,14 @@ declare const binding: {
   /** The language injection query for this grammar. */
   INJECTIONS_QUERY?: string;
 
-  /** The local variable query for this grammar. */
-  LOCALS_QUERY?: string;
-
   /** The symbol tagging query for this grammar. */
   TAGS_QUERY?: string;
+
+  /** The indentation query for this grammar. */
+  INDENTS_QUERY?: string;
+
+  /** The folding query for this grammar. */
+  FOLDS_QUERY?: string;
 };
 
 export default binding;

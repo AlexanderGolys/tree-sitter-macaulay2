@@ -14,10 +14,11 @@ try {
 } catch { }
 
 const queries = [
-  ["HIGHLIGHTS_QUERY", `${root}/queries/macaulay2/highlights.scm`],
-  ["INJECTIONS_QUERY", `${root}/queries/macaulay2/injections.scm`],
-  ["LOCALS_QUERY", `${root}/queries/locals.scm`],
-  ["TAGS_QUERY", `${root}/queries/macaulay2/tags.scm`],
+  ["HIGHLIGHTS_QUERY", `${root}/queries/highlights.scm`],
+  ["INJECTIONS_QUERY", `${root}/queries/injections.scm`],
+  ["TAGS_QUERY", `${root}/queries/tags.scm`],
+  ["INDENTS_QUERY", `${root}/queries/indents.scm`],
+  ["FOLDS_QUERY", `${root}/queries/folds.scm`],
 ];
 
 for (const [prop, path] of queries) {

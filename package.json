@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-macaulay2",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "Macaulay2 grammar for tree-sitter",
   "main": "bindings/node",
   "types": "bindings/node",
@@ -63,11 +63,11 @@
         "macaulay2"
       ],
       "injection-regex": "^m2$|^macaulay2$",
-      "highlights": "queries/macaulay2/highlights.scm",
-      "injections": "queries/macaulay2/injections.scm",
-      "indent": "queries/macaulay2/indents.scm",
-      "tags": "queries/macaulay2/tags.scm",
-      "folds": "queries/macaulay2/folds.scm"
+      "highlights": "queries/highlights.scm",
+      "injections": "queries/injections.scm",
+      "indent": "queries/indents.scm",
+      "tags": "queries/tags.scm",
+      "folds": "queries/folds.scm"
     }
   ],
   "install_info": {

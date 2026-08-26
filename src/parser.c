@@ -124117,7 +124117,7 @@ TS_PUBLIC const TSLanguage *tree_sitter_macaulay2(void) {
     .metadata = {
       .major_version = 6,
       .minor_version = 1,
-      .patch_version = 0,
+      .patch_version = 1,
     },
   };
   return &language;

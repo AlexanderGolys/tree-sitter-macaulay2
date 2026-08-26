@@ -27,7 +27,7 @@
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       (block_comment)
       right: (integer_literal))))
 
@@ -52,7 +52,7 @@
   (block_comment)
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (prefix_expression
         operand: (integer_literal)))))
 

@@ -8,7 +8,7 @@ s_2 = 44
   (cell
     (binary_assignment
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       right: (integer_literal))))
 
@@ -23,7 +23,7 @@ x#3 = "foo"
   (cell
     (binary_assignment
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       right: (string_literal
         (string_content)))))
@@ -54,7 +54,7 @@ String * String = peek
   (cell
     (binary_assignment
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol))
       right: (symbol))))
 
@@ -83,7 +83,7 @@ s_2 := 44
   (cell
     (binary_installation
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       right: (integer_literal))))
 
@@ -99,7 +99,7 @@ f = opts >> o -> x
     (assignment
       left: (symbol)
       right: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (lambda_expression
           parameters: (symbol)
           body: (symbol))))))
@@ -115,7 +115,7 @@ ZZ ZZ := ZZ => f
   (cell
     (binary_installation
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol))
       right: (option
         left: (symbol)
@@ -149,7 +149,7 @@ ZZ ZZ := ZZ => f
       binding_pack: (parenthesized_expression
         (parenthesized_expression
           (binary_expression
-            left: (symbol)
+            left_operand: (symbol)
             right: (symbol))))
       right: (symbol))))
 

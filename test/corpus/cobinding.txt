@@ -8,7 +8,7 @@ if x==4 then x=5
   (cell
     (if_statement
       condition: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       (then_clause
         (assignment
@@ -25,7 +25,7 @@ if a > 0 then b else c
   (cell
     (if_statement
       condition: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       (then_clause
         (symbol))
@@ -42,12 +42,12 @@ if x < 3 then if y < 2 then a else b else c
   (cell
     (if_statement
       condition: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       (then_clause
         (if_statement
           condition: (binary_expression
-            left: (symbol)
+            left_operand: (symbol)
             right: (integer_literal))
           (then_clause
             (symbol))
@@ -68,14 +68,14 @@ for i in 1..5 when i>2 do print i
       variable: (symbol)
       (iteration_range
         iterated_collection: (binary_expression
-          left: (integer_literal)
+          left_operand: (integer_literal)
           right: (integer_literal)))
       filter: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       (loop_body
         ignored_value: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (symbol))))))
 
 ==================
@@ -93,7 +93,7 @@ for j from 0 to 4 do doSomething j
         range_end: (integer_literal))
       (loop_body
         ignored_value: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (symbol))))))
 
 ==================
@@ -176,7 +176,7 @@ TEST a + b
   (cell
     (debug_clause
       (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol)))))
 
 ==================
@@ -266,12 +266,12 @@ extractName = x -> try toString symbol x else toString x
         parameters: (symbol)
         body: (try_statement
           (binary_expression
-            left: (symbol)
+            left_operand: (symbol)
             right: (quote_expression
               token: (symbol)))
           fallback: (else_clause
             (binary_expression
-              left: (symbol)
+              left_operand: (symbol)
               right: (symbol))))))))
 
 ==================
@@ -325,7 +325,7 @@ trap 1/0
   (cell
     (trap_statement
       (binary_expression
-        left: (integer_literal)
+        left_operand: (integer_literal)
         right: (integer_literal)))))
 
 ==================
@@ -337,7 +337,7 @@ symbol symbol //////
 (source_file
   (cell
     (binary_expression
-      left: (quote_expression
+      left_operand: (quote_expression
         token: (symbol))
       right: (raw_string_literal))))
 

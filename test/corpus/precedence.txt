@@ -7,9 +7,9 @@
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (binary_expression
-        left: (integer_literal)
+        left_operand: (integer_literal)
         right: (integer_literal)))))
 
 ==================
@@ -21,8 +21,8 @@
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (integer_literal)
+      left_operand: (binary_expression
+        left_operand: (integer_literal)
         right: (integer_literal))
       right: (integer_literal))))
 
@@ -35,9 +35,9 @@
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (binary_expression
-        left: (integer_literal)
+        left_operand: (integer_literal)
         right: (integer_literal)))))
 
 ==================
@@ -49,8 +49,8 @@ f 1 + 2
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (symbol)
+      left_operand: (binary_expression
+        left_operand: (symbol)
         right: (integer_literal))
       right: (integer_literal))))
 
@@ -63,8 +63,8 @@ f 1 * 2
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (symbol)
+      left_operand: (binary_expression
+        left_operand: (symbol)
         right: (integer_literal))
       right: (integer_literal))))
 
@@ -77,8 +77,8 @@ f 1 * 2
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (integer_literal)
+      left_operand: (binary_expression
+        left_operand: (integer_literal)
         right: (integer_literal))
       right: (integer_literal))))
 
@@ -119,11 +119,11 @@ a = b = c
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (binary_expression
-        left: (integer_literal)
+        left_operand: (integer_literal)
         right: (binary_expression
-          left: (integer_literal)
+          left_operand: (integer_literal)
           right: (integer_literal))))))
 
 ==================
@@ -135,7 +135,7 @@ a = b = c
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (prefix_expression
         operand: (integer_literal)))))
 
@@ -150,7 +150,7 @@ not (1 + 2)
     (prefix_expression
       operand: (parenthesized_expression
         (binary_expression
-          left: (integer_literal)
+          left_operand: (integer_literal)
           right: (integer_literal))))))
 
 ==================
@@ -211,7 +211,7 @@ not+6
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (prefix_expression
         operand: (integer_literal)))))
 
@@ -224,7 +224,7 @@ not+6
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (prefix_expression
         operand: (integer_literal)))))
 
@@ -237,7 +237,7 @@ not+6
 (source_file
   (cell
     (binary_expression
-      left: (prefix_expression
+      left_operand: (prefix_expression
         operand: (integer_literal))
       right: (integer_literal))))
 
@@ -250,7 +250,7 @@ not+6
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (prefix_expression
         operand: (integer_literal)))))
 
@@ -264,7 +264,7 @@ not 1 + 2
   (cell
     (prefix_expression
       operand: (binary_expression
-        left: (integer_literal)
+        left_operand: (integer_literal)
         right: (integer_literal)))))
 
 ==================
@@ -277,7 +277,7 @@ x_y = z
   (cell
     (binary_assignment
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol))
       right: (symbol))))
 
@@ -291,7 +291,7 @@ ZZ _ ZZ := (x, y) -> x
   (cell
     (binary_installation
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol))
       right: (lambda_expression
         parameters: (sequence
@@ -322,7 +322,7 @@ ZZ _ ZZ := (x, y) -> x
   (cell
     (postfix_expression
       operand: (binary_expression
-        left: (integer_literal)
+        left_operand: (integer_literal)
         right: (prefix_expression
           operand: (integer_literal))))))
 
@@ -336,7 +336,7 @@ ZZ _ ZZ := (x, y) -> x
   (cell
     (prefix_expression
       operand: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol)))))
 
 ==================
@@ -348,8 +348,8 @@ a * -b ** c
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (symbol)
+      left_operand: (binary_expression
+        left_operand: (symbol)
         right: (prefix_expression
           operand: (symbol)))
       right: (symbol))))
@@ -363,8 +363,8 @@ a || not b == c
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (symbol)
+      left_operand: (binary_expression
+        left_operand: (symbol)
         right: (prefix_expression
           operand: (symbol)))
       right: (symbol))))
@@ -378,8 +378,8 @@ f[x] * y
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (symbol)
+      left_operand: (binary_expression
+        left_operand: (symbol)
         right: (array
           (symbol)))
       right: (symbol))))
@@ -393,9 +393,9 @@ f[x] @@ y
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (binary_expression
-        left: (array
+        left_operand: (array
           (symbol))
         right: (symbol)))))
 
@@ -408,8 +408,8 @@ f[x][y]
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (symbol)
+      left_operand: (binary_expression
+        left_operand: (symbol)
         right: (array
           (symbol)))
       right: (array
@@ -424,8 +424,8 @@ f x[y]
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (symbol)
+      left_operand: (binary_expression
+        left_operand: (symbol)
         right: (symbol))
       right: (array
         (symbol)))))
@@ -439,9 +439,9 @@ f x([y])
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (parenthesized_expression
           (array
             (symbol)))))))

@@ -129,7 +129,7 @@
   (cell
     (parenthesized_expression
       (binary_expression
-        left: (list)
+        left_operand: (list)
         right: (symbol)))))
 
 
@@ -144,7 +144,7 @@
     (parenthesized_expression
       (muted
         (binary_expression
-          left: (string_literal
+          left_operand: (string_literal
             (escape_sequence)
             (escape_sequence)
             (string_content))
@@ -160,32 +160,32 @@
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (parenthesized_expression
+      left_operand: (binary_expression
+        left_operand: (parenthesized_expression
           (binary_expression
-            left: (parenthesized_expression
+            left_operand: (parenthesized_expression
               (sequence))
             right: (parenthesized_expression
               (parenthesized_expression
                 (sequence)))))
         right: (binary_expression
-          left: (sequence)
+          left_operand: (sequence)
           right: (binary_expression
-            left: (sequence)
+            left_operand: (sequence)
             right: (sequence))))
       right: (binary_expression
-        left: (binary_expression
-          left: (symbol)
+        left_operand: (binary_expression
+          left_operand: (symbol)
           right: (sequence))
         right: (binary_expression
-          left: (binary_expression
-            left: (symbol)
+          left_operand: (binary_expression
+            left_operand: (symbol)
             right: (string_literal
               (escape_sequence)))
           right: (binary_expression
-            left: (symbol)
+            left_operand: (symbol)
             right: (binary_expression
-              left: (symbol)
+              left_operand: (symbol)
               right: (symbol))))))))
 
 
@@ -198,21 +198,21 @@ n/n//n///n/n//n///n/n////n//n///n//n
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (binary_expression
-          left: (binary_expression
-            left: (symbol)
+      left_operand: (binary_expression
+        left_operand: (binary_expression
+          left_operand: (binary_expression
+            left_operand: (symbol)
             right: (symbol))
           right: (binary_expression
-            left: (symbol)
+            left_operand: (symbol)
             right: (binary_expression
-              left: (raw_string_literal
+              left_operand: (raw_string_literal
                 (raw_string_content))
               right: (symbol))))
         right: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (binary_expression
-            left: (raw_string_literal
+            left_operand: (raw_string_literal
               (raw_string_content))
             right: (symbol))))
       right: (symbol))))

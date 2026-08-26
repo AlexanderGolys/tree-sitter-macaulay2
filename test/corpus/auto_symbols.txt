@@ -73,7 +73,7 @@ x$.2
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (float_literal))))
 
 
@@ -141,5 +141,5 @@ é
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (symbol))))

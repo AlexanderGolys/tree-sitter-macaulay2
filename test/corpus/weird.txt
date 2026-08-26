@@ -7,9 +7,9 @@ f(3)^2
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (binary_expression
-        left: (parenthesized_expression
+        left_operand: (parenthesized_expression
           (integer_literal))
         right: (integer_literal)))))
 
@@ -22,7 +22,7 @@ x + + not + x
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (prefix_expression
         operand: (prefix_expression
           operand: (prefix_expression
@@ -37,7 +37,7 @@ x not + + x
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (prefix_expression
         operand: (prefix_expression
           operand: (prefix_expression
@@ -52,7 +52,7 @@ x not + + x
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (integer_literal))))
 
 ==================
@@ -64,7 +64,7 @@ x not + + x
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (float_literal))))
 
 ==================
@@ -76,7 +76,7 @@ x_2.e2
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (float_literal))))
 
 ==================
@@ -88,7 +88,7 @@ x_2!
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (postfix_expression
         operand: (integer_literal)))))
 
@@ -101,7 +101,7 @@ x_2.d
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (symbol)
+      left_operand: (binary_expression
+        left_operand: (symbol)
         right: (float_literal))
       right: (symbol))))

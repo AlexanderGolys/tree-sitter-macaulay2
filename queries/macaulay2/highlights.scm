@@ -115,7 +115,7 @@
 ] @keyword
 
 ((binary_expression
-  left: [
+  left_operand: [
     (integer_literal)
     (float_literal)
   ]
@@ -166,7 +166,7 @@
   "from" @keyword)
 
 (binary_expression
-  left: (symbol) @function.call
+  left_operand: (symbol) @function.call
   operator: "SPACE")
 
 (new_statement
@@ -185,7 +185,7 @@
 ; A lowercase left operand names an adjacency method.
 ((binary_installation
   left: (binary_expression
-    left: (symbol) @label
+    left_operand: (symbol) @label
     operator: "SPACE"))
   (#match? @label "^[a-z].*"))
 
@@ -193,7 +193,7 @@
 ; domain type.
 ((binary_installation
   left: (binary_expression
-    left: (symbol) @type.parameter @_first-type
+    left_operand: (symbol) @type.parameter @_first-type
     operator: "SPACE"))
   (#not-match? @_first-type "^[a-z].*"))
 
@@ -209,7 +209,7 @@
 ; Infix, prefix, and postfix installations expose their method sign directly.
 ((binary_installation
   left: (binary_expression
-    left: (_) @type.parameter
+    left_operand: (_) @type.parameter
     operator: _ @label
     right: (_) @type.parameter))
   (#not-eq? @label "")
@@ -242,7 +242,7 @@
 ]
 
 ((binary_expression
-  left: (symbol) @function.builtin
+  left_operand: (symbol) @function.builtin
   operator: "SPACE"
   right: (sequence
     (quote_expression
@@ -284,7 +284,7 @@
   (#match? @string.special.url "^www\\..*"))
 
 ((binary_expression
-  left: (symbol) @function.builtin
+  left_operand: (symbol) @function.builtin
   operator: "SPACE"
   right: [
     (string_literal) @string.special.url
@@ -299,7 +299,7 @@
 
 ; Packages
 ((binary_expression
-  left: (symbol) @function
+  left_operand: (symbol) @function
   operator: "SPACE"
   right: [
     (symbol) @module
@@ -314,13 +314,13 @@
     "newPackage" ))
 
 ((binary_expression
-  left: (symbol) @function
+  left_operand: (symbol) @function
   operator: "_"
   right: (symbol) @module)
   (#any-of? @function "importFrom" "exportFrom"))
 
 ((binary_expression
-  left: (symbol) @function
+  left_operand: (symbol) @function
   operator: "SPACE"
   right: [(sequence
               (string_literal) @namespace)

@@ -4,6 +4,7 @@
 0b1010
 0B1010
 ---
+
 (source_file
   (cell
     (integer_literal))
@@ -16,6 +17,7 @@
 0o755
 0O755
 ---
+
 (source_file
   (cell
     (integer_literal))
@@ -30,6 +32,7 @@
 0Xdead
 0XDEAD
 ---
+
 (source_file
   (cell
     (integer_literal))
@@ -47,18 +50,19 @@
 0O
 0x
 ---
+
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (symbol)))
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (symbol)))
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (symbol))))
 
 ==================
@@ -68,18 +72,19 @@
 0o7558
 0xDEADg
 ---
+
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (integer_literal)))
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (integer_literal)))
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (symbol))))
 
 ==================
@@ -88,12 +93,13 @@
 0b1E2
 0O7E2
 ---
+
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (symbol)))
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (symbol))))

@@ -285,7 +285,17 @@
     "fields": {
       "left": {
         "multiple": false,
-        "required": true,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "left_operand": {
+        "multiple": false,
+        "required": false,
         "types": [
           {
             "type": "expression",

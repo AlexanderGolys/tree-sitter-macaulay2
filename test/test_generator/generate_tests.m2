@@ -435,8 +435,12 @@ tsConvertBinary(List) := expr -> (
         tsChild("left", tsConvertExpr expr#1),
         tsChild("right", tsConvertExpr expr#3)
     })
-    else tsNode("binary_expression", {
+    else if member(op, {".", ".?"}) then tsNode("binary_expression", {
         tsChild("left", tsConvertExpr expr#1),
+        tsChild("right", tsConvertExpr expr#3)
+    })
+    else tsNode("binary_expression", {
+        tsChild("left_operand", tsConvertExpr expr#1),
         tsChild("right", tsConvertExpr expr#3)
     })
 )
@@ -482,7 +486,7 @@ tsConvertFor(List) := expr -> (
 )
 
 tsConvertAdjacent = expr -> tsNode("binary_expression", {
-    tsChild("left", tsConvertExpr expr#1),
+    tsChild("left_operand", tsConvertExpr expr#1),
     tsChild("right", tsConvertExpr expr#2)
 })
 

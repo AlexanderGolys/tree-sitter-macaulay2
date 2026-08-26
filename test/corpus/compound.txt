@@ -7,15 +7,15 @@ f(g(1, 2), h(3, 4))
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (sequence
         (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (sequence
             (integer_literal)
             (integer_literal)))
         (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (sequence
             (integer_literal)
             (integer_literal)))))))
@@ -29,13 +29,13 @@ f(g(1, 2), h(3, 4))
 (source_file
   (cell
     (binary_expression
-      left: (parenthesized_expression
+      left_operand: (parenthesized_expression
         (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (integer_literal)))
       right: (parenthesized_expression
         (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (integer_literal))))))
 
 ==================
@@ -48,10 +48,10 @@ not f(1 + 2)
   (cell
     (prefix_expression
       operand: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (parenthesized_expression
           (binary_expression
-            left: (integer_literal)
+            left_operand: (integer_literal)
             right: (integer_literal)))))))
 
 ==================
@@ -64,13 +64,13 @@ not f(1 + 2)
   (cell
     (parenthesized_expression
       (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (parenthesized_expression
           (binary_expression
-            left: (symbol)
+            left_operand: (symbol)
             right: (parenthesized_expression
               (binary_expression
-                left: (symbol)
+                left_operand: (symbol)
                 right: (integer_literal)))))))))
 
 ==================
@@ -123,11 +123,11 @@ isFunctionValue(value) or isFunctorValue(value)
 (source_file
   (cell
     (binary_expression
-      left: (binary_expression
-        left: (symbol)
+      left_operand: (binary_expression
+        left_operand: (symbol)
         right: (parenthesized_expression
           (symbol)))
       right: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (parenthesized_expression
           (symbol))))))

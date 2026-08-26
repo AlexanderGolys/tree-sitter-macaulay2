@@ -3,49 +3,61 @@
 ==================
 abc
 ---
+
 (source_file
   (cell
     (symbol)))
+
 ==================
 2. Identifier with digits [identifiers]
 ==================
 a123
 ---
+
 (source_file
   (cell
     (symbol)))
+
 ==================
 3. Identifier with apostrophe [identifiers]
 ==================
 a'
 ---
+
 (source_file
   (cell
     (symbol)))
+
 ==================
 4. Identifier with multiple apostrophes [identifiers]
 ==================
 a''
 ---
+
 (source_file
   (cell
     (symbol)))
+
 ==================
 5. Identifier starting with capital [identifiers]
 ==================
 Abc
 ---
+
 (source_file
   (cell
     (symbol)))
+
 ==================
 6. Identifier with mixed case [identifiers]
 ==================
 aBc
 ---
+
 (source_file
   (cell
     (symbol)))
+
 ==================
 7. Protected object names parse as symbols [identifiers]
 ==================
@@ -55,6 +67,7 @@ ii
 pi
 null
 ---
+
 (source_file
   (cell
     (symbol))
@@ -77,6 +90,7 @@ continuecontinue
 traptrap
 timetime
 ---
+
 (source_file
   (cell
     (symbol))
@@ -100,6 +114,7 @@ timetime
 é
 😀
 ---
+
 (source_file
   (cell
     (symbol))
@@ -117,8 +132,9 @@ é
 ==================
 α⊠β
 ---
+
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (symbol))))

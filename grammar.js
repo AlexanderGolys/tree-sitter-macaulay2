@@ -23,13 +23,13 @@ const ASSIGNMENT_GATE_BY_OPERATOR = {
     '=>': '_option_gate',
 };
 
-
-///@@@AlwaysAliasesOfOperators
 // Macaulay2's lexer treats every non-ASCII UTF-8 character as alphabetic,
 // except for the ranges reserved for one-character mathematical operators.
 // Keep those ranges separate so `α⊠β` cannot be consumed as one identifier.
-const unicodeIdentifierCharacter = /[\u0080-\u009f\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u218f\u2400-\u27bf\u2800-\u28ff\u2c00-\u{10ffff}]/u;
-const mathematicalOperatorCharacter = /[\u00a0-\u00bf\u00d7\u00f7\u2190-\u23ff\u27c0-\u27ff\u2900-\u2bff]/u;
+const unicodeIdentifierCharacter =
+    /[\u0080-\u009f\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u218f\u2400-\u27bf\u2800-\u28ff\u2c00-\u{10ffff}]/u;
+const mathematicalOperatorCharacter =
+    /[\u00a0-\u00bf\u00d7\u00f7\u2190-\u23ff\u27c0-\u27ff\u2900-\u2bff]/u;
 
 const binaryOperators = [
     {
@@ -37,11 +37,38 @@ const binaryOperators = [
         assoc: prec.right,
         symbols: [
             '>>',
-            '%=', '&=', '**=', '*=', '++=', '+=',
-            '-=', '//=', '/=', '<<=', '<==>=', '===>=',
-            '==>=', '>>=', '??=', '@=', '@@=', '@@?=',
-            '\\=', '\\\\=', '^**=', '^=', '^^=', '_=',
-            '|-=', '|=', '|_=', '||=', '~=', '·=', '⊠=', '⧢=',
+            '%=',
+            '&=',
+            '**=',
+            '*=',
+            '++=',
+            '+=',
+            '-=',
+            '//=',
+            '/=',
+            '<<=',
+            '<==>=',
+            '===>=',
+            '==>=',
+            '>>=',
+            '??=',
+            '@=',
+            '@@=',
+            '@@?=',
+            '\\=',
+            '\\\\=',
+            '^**=',
+            '^=',
+            '^^=',
+            '_=',
+            '|-=',
+            '|=',
+            '|_=',
+            '||=',
+            '~=',
+            '·=',
+            '⊠=',
+            '⧢=',
         ],
     },
     { precedence: 18, assoc: prec.left, symbols: ['<<'] },
@@ -52,7 +79,11 @@ const binaryOperators = [
     { precedence: 27, assoc: prec.right, symbols: ['or', '??'] },
     { precedence: 29, assoc: prec.right, symbols: ['xor'] },
     { precedence: 31, assoc: prec.right, symbols: ['and'] },
-    { precedence: 35, assoc: prec.right, symbols: ['==', '!=', '===', '=!=', '<', '>', '<=', '>=', '?', '~'] },
+    {
+        precedence: 35,
+        assoc: prec.right,
+        symbols: ['==', '!=', '===', '=!=', '<', '>', '<=', '>=', '?', '~'],
+    },
     { precedence: 38, assoc: prec.left, symbols: ['||'] },
     { precedence: 39, assoc: prec.right, symbols: [':'] },
     { precedence: 42, assoc: prec.left, symbols: ['|'] },
@@ -65,7 +96,26 @@ const binaryOperators = [
     { precedence: 58, assoc: prec.left, symbols: ['%', '//', '/', '*'] },
     { precedence: 59, assoc: prec.right, symbols: ['@'] },
     { precedence: 66, assoc: prec.left, symbols: ['@@', '@@?'] },
-    { precedence: 70, assoc: prec.left, symbols: ['|_', '^', '^**', '^<', '^<=', '^>', '^>=', '_<', '_<=', '_>', '_>=', '_', '#', '#?'] },
+    {
+        precedence: 70,
+        assoc: prec.left,
+        symbols: [
+            '|_',
+            '^',
+            '^**',
+            '^<',
+            '^<=',
+            '^>',
+            '^>=',
+            '_<',
+            '_<=',
+            '_>',
+            '_>=',
+            '_',
+            '#',
+            '#?',
+        ],
+    },
     {
         precedence: 13,
         assoc: prec.right,
@@ -99,8 +149,13 @@ const binaryOperators = [
 
 const rightBindingStrengths = new Set(
     binaryOperators
-        .filter(operator => operator.assoc === prec.right && operator.precedence !== undefined)
-        .map(operator => operator.precedence));
+        .filter(
+            (operator) =>
+                operator.assoc === prec.right &&
+                operator.precedence !== undefined,
+        )
+        .map((operator) => operator.precedence),
+);
 
 const prefixOperators = [
     { precedence: 18, symbols: ['<<'] },
@@ -128,35 +183,45 @@ const postfixOperators = [
 const expressionFloors = [
     ...new Set([
         ...binaryOperators.map(binaryStrength),
-        ...prefixOperators.map(operator => operator.unaryStrength ?? operator.precedence),
+        ...prefixOperators.map(
+            (operator) => operator.unaryStrength ?? operator.precedence,
+        ),
         PREC.CONTROL,
         PREC.LOOP_CLAUSE,
     ]),
 ].sort((left, right) => left - right);
 
-const contextualExpressionFields = [
-    'operand',
-    'right',
-];
+const contextualExpressionFields = ['operand', 'right'];
 
 const widePrefixKeywords = [
-    'shield', 'TEST', 'time', 'timing', 'breakpoint',
-    'elapsedTime', 'elapsedTiming', 'profile',
+    'shield',
+    'TEST',
+    'time',
+    'timing',
+    'breakpoint',
+    'elapsedTime',
+    'elapsedTiming',
+    'profile',
 ];
 
 const nullableControlKeywords = [
-    'break', 'continue', 'finish', 'return', 'step', 'throw',
+    'break',
+    'continue',
+    'finish',
+    'return',
+    'step',
+    'throw',
 ];
 
 const operatorParsingPrecedences = [
-    14, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44,
-    46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72,
+    14, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52,
+    54, 56, 58, 60, 62, 64, 66, 68, 70, 72,
 ];
 
 const operatorSymbols = [
     ...new Set(
         [...binaryOperators, ...prefixOperators, ...postfixOperators]
-            .flatMap(op => op.symbols)
+            .flatMap((op) => op.symbols)
             .map(operatorSpelling)
             .concat(['SPACE', '<-', '=>', '=', ':=', '->']),
     ),
@@ -169,21 +234,52 @@ const operatorSymbols = [
 // because `(*)` is one postfix word. The scanner can then reject the longer
 // word without exposing its shorter prefix to the built-in lexer.
 //
-const guardedPunctuationSpellings = [
-    '#', '(', '*', '+', '-', '<', '<==', '>',
-];
+const guardedPunctuationSpellings = ['#', '(', '*', '+', '-', '<', '<==', '>'];
 const guardedPunctuationSpellingSet = new Set(guardedPunctuationSpellings);
 
 const keywords = [
-    'and', 'break', 'breakpoint', 'catch', 'continue',
-    'do', 'elapsedTime', 'elapsedTiming', 'else', 'except', 'finish',
-    'for', 'from', 'global', 'if', 'in', 'list', 'local',
-    'new', 'not', 'of', 'or', 'profile', 'return', 'shield',
-    'SPACE', 'step', 'symbol', 'TEST', 'then', 'threadLocal',
-    'threadVariable', 'throw', 'time', 'timing', 'to', 'trap',
-    'try', 'when', 'while', 'xor',
-]
-
+    'and',
+    'break',
+    'breakpoint',
+    'catch',
+    'continue',
+    'do',
+    'elapsedTime',
+    'elapsedTiming',
+    'else',
+    'except',
+    'finish',
+    'for',
+    'from',
+    'global',
+    'if',
+    'in',
+    'list',
+    'local',
+    'new',
+    'not',
+    'of',
+    'or',
+    'profile',
+    'return',
+    'shield',
+    'SPACE',
+    'step',
+    'symbol',
+    'TEST',
+    'then',
+    'threadLocal',
+    'threadVariable',
+    'throw',
+    'time',
+    'timing',
+    'to',
+    'trap',
+    'try',
+    'when',
+    'while',
+    'xor',
+];
 
 // Operator tokens nameable after a quote specifier (e.g. `symbol +`,
 // `symbol ..`, `symbol and`). This includes word-shaped operators such as
@@ -192,33 +288,47 @@ const quotedTokens = [
     ...new Set([
         ...operatorSymbols,
         ...keywords,
-        '(', ')', '{', '}', '[', ']', '<|', '|>', ',', ';',
-        '.', '.?',
-    ])];
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '<|',
+        '|>',
+        ',',
+        ';',
+        '.',
+        '.?',
+    ]),
+];
 
 const quotedPunctuationTokens = quotedTokens.filter(
-    spelling => !keywords.includes(spelling));
+    (spelling) => !keywords.includes(spelling),
+);
 
 export default grammar({
     name: 'macaulay2',
 
-    supertypes: $ => [$.expression],
+    supertypes: ($) => [$.expression],
 
-    extras: $ => [
+    extras: ($) => [
         /[\s\n]/, // whitespace
         $.block_comment,
         $.line_comment,
     ],
 
-    word: $ => $.symbol,
+    word: ($) => $.symbol,
 
     reserved: {
-        keywords: _ => keywords.filter(
-            keyword => !nullableControlKeywords.includes(keyword)),
-        unreserved: _ => [],
+        keywords: (_) =>
+            keywords.filter(
+                (keyword) => !nullableControlKeywords.includes(keyword),
+            ),
+        unreserved: (_) => [],
     },
 
-    externals: $ => [
+    externals: ($) => [
         $._space, // Adjacency operator for function calls
         $._space_indexing, // Adjacency before [ or <|
         $._range, // .. (greedy pair of dots)
@@ -234,61 +344,69 @@ export default grammar({
         $._cell_trailing_empty, // Empty final component at source-cell scope
         $._container_trailing_empty, // Empty final component in delimiters
         $._cell_end, // Significant top-level newline
-        ...guardedPunctuationSpellings.map(spelling => $[punctuationTokenName(spelling)]),
+        ...guardedPunctuationSpellings.map(
+            (spelling) => $[punctuationTokenName(spelling)],
+        ),
         $._start_expression_context,
         $._end_expression_context,
-        ...nullableControlKeywords.flatMap(keyword => [
+        ...nullableControlKeywords.flatMap((keyword) => [
             $[nullableControlTokenName(keyword, false)],
             $[nullableControlTokenName(keyword, true)],
         ]),
-        ...operatorParsingPrecedences.map(precedence => $[operatorGateTokenName(precedence)]),
+        ...operatorParsingPrecedences.map(
+            (precedence) => $[operatorGateTokenName(precedence)],
+        ),
         $._assignment_gate,
         $._local_assignment_gate,
         $._evaluated_assignment_gate,
         $._option_gate,
         $._lambda_gate,
-        ...expressionFloors.map(floor => $[expressionFloorTokenName(floor)]),
+        ...expressionFloors.map((floor) => $[expressionFloorTokenName(floor)]),
     ],
 
     rules: {
-        source_file: $ => optional(seq(
-            repeat(choice(
-                $.muted,
-                seq($.cell, $._cell_end),
-            )),
-            optional($.cell),
-        )),
+        source_file: ($) =>
+            optional(
+                seq(
+                    repeat(choice($.muted, seq($.cell, $._cell_end))),
+                    optional($.cell),
+                ),
+            ),
 
         // A non-muted source cell ends only at a newline or EOF. A semicolon
         // instead produces a distinct `muted` node, so one line can contain
         // any number of muted cells before its optional ordinary cell.
-        cell: $ => choice(
-            $.naked_sequence,
-            $.expression,
-        ),
+        cell: ($) => choice($.naked_sequence, $.expression),
 
         // Semicolon has the lowest operator binding strength in Macaulay2.
         // Each occurrence mutes exactly one preceding expression; repeated
         // semicolons therefore produce sibling `muted` nodes.
 
-
-        symbol: _ => token(choice(
-            seq(
-                choice(/[a-zA-Z]/, unicodeIdentifierCharacter),
-                repeat(choice(/[a-zA-Z0-9'$]/, unicodeIdentifierCharacter)),
+        symbol: (_) =>
+            token(
+                choice(
+                    seq(
+                        choice(/[a-zA-Z]/, unicodeIdentifierCharacter),
+                        repeat(
+                            choice(/[a-zA-Z0-9'$]/, unicodeIdentifierCharacter),
+                        ),
+                    ),
+                    seq(mathematicalOperatorCharacter, optional('=')),
+                ),
             ),
-            seq(mathematicalOperatorCharacter, optional('=')),
-        )),
 
+        keyword: ($) =>
+            choice(
+                ...quotedPunctuationTokens.map((token) =>
+                    grammarToken($, token),
+                ),
+            ),
 
-        keyword: $ => choice(
-            ...quotedPunctuationTokens.map(token => grammarToken($, token))),
+        line_comment: (_) => /--[^\n]*/,
 
-        line_comment: _ => /--[^\n]*/,
+        block_comment: (_) => /-\*([^*]|\*+[^-])*\*+-/,
 
-        block_comment: _ => /-\*([^*]|\*+[^-])*\*+-/,
-
-        escape_sequence: _ =>
+        escape_sequence: (_) =>
             token.immediate(
                 seq(
                     '\\',
@@ -302,304 +420,379 @@ export default grammar({
                 ),
             ),
 
-        string_content: _ => token.immediate(prec(1, /[^\"\\]+/)),
+        string_content: (_) => token.immediate(prec(1, /[^\"\\]+/)),
 
-        string_literal: $ =>
+        string_literal: ($) =>
             seq(
                 '"',
-                repeat(choice(
-                    $.escape_sequence,
-                    $.string_content,
-                    token.immediate('\n'),
-                )),
+                repeat(
+                    choice(
+                        $.escape_sequence,
+                        $.string_content,
+                        token.immediate('\n'),
+                    ),
+                ),
                 token.immediate('"'),
             ),
 
-        raw_string_literal: $ =>
+        raw_string_literal: ($) =>
             seq(
                 '///',
-                repeat(choice(
-                    $.raw_string_content,
-                    alias($._raw_string_escape, $.escape_sequence),
-                )),
+                repeat(
+                    choice(
+                        $.raw_string_content,
+                        alias($._raw_string_escape, $.escape_sequence),
+                    ),
+                ),
                 alias($._raw_string_end, '///'),
             ),
 
-        array: $ => Delimited($, '[]', packedContent($)),
+        array: ($) => Delimited($, '[]', packedContent($)),
 
-        parenthesized_expression: $ =>
-            Delimited($, '()',
-                Any(
-                    $._muted_pack,
-                    $.expression)
+        parenthesized_expression: ($) =>
+            Delimited($, '()', Any($._muted_pack, $.expression)),
+
+        sequence: ($) =>
+            Delimited(
+                $,
+                '()',
+                optional(seq(optional($._muted_pack), $._comma_pack)),
             ),
 
+        list: ($) => Delimited($, '{}', packedContent($)),
 
+        angle_bar_list: ($) => Delimited($, '<||>', packedContent($)),
 
-
-        sequence: $ =>
-            Delimited($, '()',
-                optional(
-                    seq(
-                        optional($._muted_pack),
-                        $._comma_pack)
-                )
-            ),
-
-
-        list: $ => Delimited($, '{}', packedContent($)),
-
-        angle_bar_list: $ => Delimited($, '<||>', packedContent($)),
-
-        lambda_expression: $ =>
-            RightSeq($, PREC.ASSIGNMENT,
-                field('parameters', choice(
-                    $.symbol,
-                    $._delim,
-                )),
+        lambda_expression: ($) =>
+            RightSeq(
+                $,
+                PREC.ASSIGNMENT,
+                field('parameters', choice($.symbol, $._delim)),
                 namedOperatorGate($, '_lambda_gate', 14),
                 fieldOperator(operatorRule($, '->')),
                 expressionAtFloor($, PREC.ASSIGNMENT, 'body'),
             ),
 
-        _delim: $ => choice(
-            $.parenthesized_expression,
-            $.sequence,
-            $.list,
-            $.array,
-            $.angle_bar_list,
-        ),
+        _delim: ($) =>
+            choice(
+                $.parenthesized_expression,
+                $.sequence,
+                $.list,
+                $.array,
+                $.angle_bar_list,
+            ),
 
         // These expressions are complete values before any following operator
         // is accumulated. Operator-assignment rules reference only the raw
         // binary/prefix/postfix productions, so none of these bases can leak
         // into an operator-assignment left side.
-        _expression_base: $ => choice(
-            $.integer_literal,
-            $.float_literal,
-            $.string_literal,
-            $.raw_string_literal,
+        _expression_base: ($) =>
+            choice(
+                $.integer_literal,
+                $.float_literal,
+                $.string_literal,
+                $.raw_string_literal,
 
-            $.symbol,
-            $._delim,
+                $.symbol,
+                $._delim,
 
-            $.if_statement,
-            $.for_loop,
-            $.while_loop,
-            $.try_statement,
-            $.quote_expression,
-            $.new_statement,
-            $.break_statement,
-            $.continue_statement,
-            $.return_statement,
-            $.catch_statement,
-            $.throw_statement,
-        ),
+                $.if_statement,
+                $.for_loop,
+                $.while_loop,
+                $.try_statement,
+                $.quote_expression,
+                $.new_statement,
+                $.break_statement,
+                $.continue_statement,
+                $.return_statement,
+                $.catch_statement,
+                $.throw_statement,
+            ),
 
         // These public nodes are also the three legal operator-assignment
         // target categories. Their precedence is the ordinary static
         // Tree-sitter ladder; only a binary RHS beginning with a weaker prefix
         // needs the inherited-floor rules below.
-        binary_expression: $ => choice(
-            ...binaryOperators.map(operator => binaryExpression($, operator)),
-            memberExpression($),
-        ),
+        binary_expression: ($) =>
+            choice(
+                ...binaryOperators.map((operator) =>
+                    binaryExpression($, operator),
+                ),
+                memberExpression($),
+            ),
 
-        prefix_expression: $ => choice(
-            ...prefixOperators.map(operator => prefixExpression($, operator))),
+        prefix_expression: ($) =>
+            choice(
+                ...prefixOperators.map((operator) =>
+                    prefixExpression($, operator),
+                ),
+            ),
 
-        postfix_expression: $ => choice(
-            ...postfixOperators.map(operator => postfixExpression($, operator))),
+        postfix_expression: ($) =>
+            choice(
+                ...postfixOperators.map((operator) =>
+                    postfixExpression($, operator),
+                ),
+            ),
 
-        assignment: $ =>
-            assignmentExpression($, $.symbol, '=', 0),
+        assignment: ($) => assignmentExpression($, $.symbol, '=', 0),
 
-        local_assignment: $ =>
-            assignmentExpression($, $.symbol, ':=', 0),
+        local_assignment: ($) => assignmentExpression($, $.symbol, ':=', 0),
 
-        binary_assignment: $ =>
+        binary_assignment: ($) =>
             assignmentExpression($, $.binary_expression, '='),
 
-        binary_installation: $ =>
+        binary_installation: ($) =>
             assignmentExpression($, $.binary_expression, ':='),
 
-        prefix_assignment: $ =>
+        prefix_assignment: ($) =>
             assignmentExpression($, $.prefix_expression, '='),
 
-        prefix_installation: $ =>
+        prefix_installation: ($) =>
             assignmentExpression($, $.prefix_expression, ':='),
 
-        postfix_assignment: $ =>
+        postfix_assignment: ($) =>
             assignmentExpression($, $.postfix_expression, '='),
 
-        postfix_installation: $ =>
+        postfix_installation: ($) =>
             assignmentExpression($, $.postfix_expression, ':='),
 
-        structured_binding: $ =>
+        structured_binding: ($) =>
             assignmentExpression($, $._delim, '=', 1, 'binding_pack'),
 
-        local_structured_binding: $ =>
+        local_structured_binding: ($) =>
             assignmentExpression($, $._delim, ':=', 1, 'binding_pack'),
 
-        evaluated_assignment: $ =>
+        evaluated_assignment: ($) =>
             assignmentExpression($, $.expression, '<-'),
 
-        option: $ =>
-            assignmentExpression($, $.expression, '=>'),
+        option: ($) => assignmentExpression($, $.expression, '=>'),
 
-        _contextual_expression: $ => contextualExpression($),
+        _contextual_expression: ($) => contextualExpression($),
 
-        ...Object.fromEntries(contextualExpressionFields.map(name => [
-            contextualExpressionRuleName(name),
-            $ => contextualExpression($, name),
-        ])),
-
-        then_clause: $ => LeftSeq($, PREC.CONTROL, 'then', $.expression),
-
-        else_clause: $ => LeftSeq($, PREC.CONTROL, 'else', $.expression),
-
-        _list_block: $ => RightSeq($, PREC.CONTROL, 'list', field("listed_value", $.expression)),
-
-        _do_block: $ => RightSeq($, PREC.CONTROL, 'do', field("ignored_value", $.expression)),
-
-        loop_body: $ => Any($._list_block, $._do_block),
-
-
-        if_statement: $ => RightSeq($, PREC.CONTROL,
-            'if',
-            field('condition', $.expression),
-            $.then_clause,
-            optional($.else_clause),
+        ...Object.fromEntries(
+            contextualExpressionFields.map((name) => [
+                contextualExpressionRuleName(name),
+                ($) => contextualExpression($, name),
+            ]),
         ),
 
-        iteration_range: $ => choice(
-            Any(
-                seq(Qualify('from'), expressionAtFloor($, PREC.LOOP_CLAUSE, 'range_start')),
-                seq(Qualify('to'), expressionAtFloor($, PREC.LOOP_CLAUSE, 'range_end')),
+        then_clause: ($) => LeftSeq($, PREC.CONTROL, 'then', $.expression),
+
+        else_clause: ($) => LeftSeq($, PREC.CONTROL, 'else', $.expression),
+
+        _list_block: ($) =>
+            RightSeq(
+                $,
+                PREC.CONTROL,
+                'list',
+                field('listed_value', $.expression),
             ),
-            seq(Qualify('in'), expressionAtFloor($, PREC.LOOP_CLAUSE, 'iterated_collection'))
-        ),
 
-        for_loop: $ => LeftSeq($, PREC.LOOP_CLAUSE,
-            'for',
-            field('variable', $.symbol),
-            optional($.iteration_range),
-            optional(seq(Qualify('when'), expressionAtFloor($, PREC.LOOP_CLAUSE, 'filter'))),
-            $.loop_body,
-        ),
+        _do_block: ($) =>
+            RightSeq(
+                $,
+                PREC.CONTROL,
+                'do',
+                field('ignored_value', $.expression),
+            ),
 
-        while_loop: $ => LeftSeq($, PREC.CONTROL,
-            'while',
-            field('condition', $.expression),
-            $.loop_body
-        ),
+        loop_body: ($) => Any($._list_block, $._do_block),
 
-        new_statement: $ =>
-            RightSeq($, PREC.LOOP_CLAUSE,
+        if_statement: ($) =>
+            RightSeq(
+                $,
+                PREC.CONTROL,
+                'if',
+                field('condition', $.expression),
+                $.then_clause,
+                optional($.else_clause),
+            ),
+
+        iteration_range: ($) =>
+            choice(
+                Any(
+                    seq(
+                        Qualify('from'),
+                        expressionAtFloor($, PREC.LOOP_CLAUSE, 'range_start'),
+                    ),
+                    seq(
+                        Qualify('to'),
+                        expressionAtFloor($, PREC.LOOP_CLAUSE, 'range_end'),
+                    ),
+                ),
+                seq(
+                    Qualify('in'),
+                    expressionAtFloor(
+                        $,
+                        PREC.LOOP_CLAUSE,
+                        'iterated_collection',
+                    ),
+                ),
+            ),
+
+        for_loop: ($) =>
+            LeftSeq(
+                $,
+                PREC.LOOP_CLAUSE,
+                'for',
+                field('variable', $.symbol),
+                optional($.iteration_range),
+                optional(
+                    seq(
+                        Qualify('when'),
+                        expressionAtFloor($, PREC.LOOP_CLAUSE, 'filter'),
+                    ),
+                ),
+                $.loop_body,
+            ),
+
+        while_loop: ($) =>
+            LeftSeq(
+                $,
+                PREC.CONTROL,
+                'while',
+                field('condition', $.expression),
+                $.loop_body,
+            ),
+
+        new_statement: ($) =>
+            RightSeq(
+                $,
+                PREC.LOOP_CLAUSE,
                 'new',
                 expressionAtFloor($, PREC.LOOP_CLAUSE, 'class'),
-                optional(seq(Qualify('of'), expressionAtFloor($, PREC.LOOP_CLAUSE, 'parent'))),
-                optional(seq(Qualify('from'), expressionAtFloor($, PREC.LOOP_CLAUSE, 'instance'))),
+                optional(
+                    seq(
+                        Qualify('of'),
+                        expressionAtFloor($, PREC.LOOP_CLAUSE, 'parent'),
+                    ),
+                ),
+                optional(
+                    seq(
+                        Qualify('from'),
+                        expressionAtFloor($, PREC.LOOP_CLAUSE, 'instance'),
+                    ),
+                ),
             ),
 
-        debug_clause: $ => choice(
-            nullableKeywordExpression($, ['step', 'finish'], { field: 'keyword' }),
-            wideDebugExpression($),
-        ),
+        debug_clause: ($) =>
+            choice(
+                nullableKeywordExpression($, ['step', 'finish'], {
+                    field: 'keyword',
+                }),
+                prec.left(
+                    PREC.CONTROL,
+                    seq(
+                        field('keyword', Qualify(...widePrefixKeywords)),
+                        expressionAtFloor($, PREC.CONTROL),
+                    ),
+                ),
+            ),
 
-        break_statement: $ => optionalControlExpression($, 'break'),
+        break_statement: ($) => optionalControlExpression($, 'break'),
 
-        continue_statement: $ => optionalControlExpression($, 'continue'),
+        continue_statement: ($) => optionalControlExpression($, 'continue'),
 
-        return_statement: $ => optionalControlExpression($, 'return'),
+        return_statement: ($) => optionalControlExpression($, 'return'),
 
-        catch_statement: $ => RightSeq($, PREC.CONTROL, 'catch', $.expression),
+        catch_statement: ($) =>
+            RightSeq($, PREC.CONTROL, 'catch', $.expression),
 
-        throw_statement: $ => optionalControlExpression($, 'throw'),
+        throw_statement: ($) => optionalControlExpression($, 'throw'),
 
-        trap_statement: $ => trapExpression($),
+        trap_statement: ($) => trapExpression($),
 
-        except_clause: $ => RightSeq($, PREC.CONTROL, 'except', field('exception', $.symbol), 'do', $.expression),
+        except_clause: ($) =>
+            RightSeq(
+                $,
+                PREC.CONTROL,
+                'except',
+                field('exception', $.symbol),
+                'do',
+                $.expression,
+            ),
 
-        try_statement: $ => RightSeq($, PREC.CONTROL,
-            'try',
-            $.expression,
-            optional($.then_clause),
-            optional(field('fallback',
-                choice(
-                    $.except_clause,
-                    $.else_clause,
-                )))
-        ),
+        try_statement: ($) =>
+            RightSeq(
+                $,
+                PREC.CONTROL,
+                'try',
+                $.expression,
+                optional($.then_clause),
+                optional(
+                    field('fallback', choice($.except_clause, $.else_clause)),
+                ),
+            ),
 
-        quote_expression: $ => LeftSeq($, 74,
-            Qualify(
-                'symbol',
-                'local',
-                'global',
-                'threadVariable',
-                'threadLocal'),
-            field('token',
-                choice(
-                    $.keyword,
-                    reserved('unreserved', $.symbol)),
-            )
-        ),
+        quote_expression: ($) =>
+            LeftSeq(
+                $,
+                74,
+                Qualify(
+                    'symbol',
+                    'local',
+                    'global',
+                    'threadVariable',
+                    'threadLocal',
+                ),
+                field(
+                    'token',
+                    choice($.keyword, reserved('unreserved', $.symbol)),
+                ),
+            ),
 
+        _expr_pack: ($) => choice($.expression, $._comma_pack),
 
+        _comma_pack: ($) =>
+            Punctuated($, $.expression, { allowOne: false, allowNulls: true }),
 
+        naked_sequence: ($) =>
+            Punctuated($, $.expression, {
+                allowOne: false,
+                allowNulls: true,
+                trailingEmpty: $._cell_trailing_empty,
+            }),
 
-        _expr_pack: $ => choice($.expression, $._comma_pack),
+        muted: ($) => seq($._expr_pack, grammarToken($, ';')),
 
-        _comma_pack: $ => Punctuated($, $.expression, { allowOne: false, allowNulls: true }),
+        _muted_pack: ($) => repeat1($.muted),
 
-        naked_sequence: $ => Punctuated($, $.expression, {
-            allowOne: false,
-            allowNulls: true,
-            trailingEmpty: $._cell_trailing_empty,
-        }),
-
-        muted: $ => seq($._expr_pack, grammarToken($, ';')),
-
-        _muted_pack: $ => repeat1($.muted),
-
-        expression: $ => choice(
-            $._expression_base,
-            $.binary_expression,
-            $.prefix_expression,
-            $.postfix_expression,
-            $.debug_clause,
-            $.trap_statement,
-            $.lambda_expression,
-            $.evaluated_assignment,
-            $.option,
-            $.assignment,
-            $.local_assignment,
-            $.binary_assignment,
-            $.binary_installation,
-            $.prefix_assignment,
-            $.prefix_installation,
-            $.postfix_assignment,
-            $.postfix_installation,
-            $.structured_binding,
-            $.local_structured_binding,
-        ),
+        expression: ($) =>
+            choice(
+                $._expression_base,
+                $.binary_expression,
+                $.prefix_expression,
+                $.postfix_expression,
+                $.debug_clause,
+                $.trap_statement,
+                $.lambda_expression,
+                $.evaluated_assignment,
+                $.option,
+                $.assignment,
+                $.local_assignment,
+                $.binary_assignment,
+                $.binary_installation,
+                $.prefix_assignment,
+                $.prefix_installation,
+                $.postfix_assignment,
+                $.postfix_installation,
+                $.structured_binding,
+                $.local_structured_binding,
+            ),
     }, // End of rules
 });
 
 function Any(x, y) {
-    return prec.right(choice(
-        seq(
-            optional(x),
-            y),
-        x));
+    return prec.right(choice(seq(optional(x), y), x));
 }
 
 function Qualify(...names) {
     const qualified = [
         ...names,
-        ...names.filter(s => typeof s == "string" && keywords.includes(s))
-            .map(name => alias(`Core$${name}`, name)),
+        ...names
+            .filter((s) => typeof s == 'string' && keywords.includes(s))
+            .map((name) => alias(`Core$${name}`, name)),
     ];
     return qualified.length === 1 ? qualified[0] : choice(...qualified);
 }
@@ -617,9 +810,12 @@ function nullableControlToken($, keyword, hasOperand) {
 }
 
 function nullableKeywordExpression($, keywords, { field: fieldName } = {}) {
-    const wrap = token => fieldName === undefined ? token : field(fieldName, token);
-    const keywordToken = hasOperand => {
-        const tokens = keywords.map(keyword => nullableControlToken($, keyword, hasOperand));
+    const wrap = (token) =>
+        fieldName === undefined ? token : field(fieldName, token);
+    const keywordToken = (hasOperand) => {
+        const tokens = keywords.map((keyword) =>
+            nullableControlToken($, keyword, hasOperand),
+        );
         return tokens.length === 1 ? tokens[0] : choice(...tokens);
     };
     return choice(
@@ -632,10 +828,19 @@ function optionalControlExpression($, keyword) {
     return nullableKeywordExpression($, [keyword]);
 }
 
-function assignmentExpression($, left, operator, dynamicPrecedence = 1, leftField = 'left') {
+function assignmentExpression(
+    $,
+    left,
+    operator,
+    dynamicPrecedence = 1,
+    leftField = 'left',
+) {
     const gate = ASSIGNMENT_GATE_BY_OPERATOR[operator];
-    return prec.dynamic(dynamicPrecedence,
-        RightSeq($, PREC.ASSIGNMENT,
+    return prec.dynamic(
+        dynamicPrecedence,
+        RightSeq(
+            $,
+            PREC.ASSIGNMENT,
             field(leftField, left),
             namedOperatorGate($, gate, 14),
             fieldOperator(operatorRule($, operator)),
@@ -644,14 +849,12 @@ function assignmentExpression($, left, operator, dynamicPrecedence = 1, leftFiel
     );
 }
 
-
-
 function Repeat1(...x) {
-    return repeat1(seq(...x));
+    return repeat1(x.length === 1 ? x[0] : seq(...x));
 }
 
 function Repeat(...x) {
-    return repeat(seq(...x));
+    return repeat(x.length === 1 ? x[0] : seq(...x));
 }
 
 function grammarToken($, item) {
@@ -666,11 +869,11 @@ function grammarToken($, item) {
 }
 
 function RightSeq($, p, ...x) {
-    return prec.right(p, seq(...x.map(item => grammarToken($, item))));
+    return prec.right(p, seq(...x.map((item) => grammarToken($, item))));
 }
 
 function LeftSeq($, p, ...x) {
-    return prec.left(p, seq(...x.map(item => grammarToken($, item))));
+    return prec.left(p, seq(...x.map((item) => grammarToken($, item))));
 }
 
 function Delimited($, delimiters, content) {
@@ -682,12 +885,16 @@ function packedContent($) {
     return seq(optional($._muted_pack), optional($._expr_pack));
 }
 
-function Punctuated($, component, {
-    sep = ',',
-    allowOne = true,
-    allowNulls = false,
-    trailingEmpty = $._container_trailing_empty,
-} = {}) {
+function Punctuated(
+    $,
+    component,
+    {
+        sep = ',',
+        allowOne = true,
+        allowNulls = false,
+        trailingEmpty = $._container_trailing_empty,
+    } = {},
+) {
     const p = sep == ',' ? 10 : 7;
     const separator = grammarToken($, sep);
     const item = allowNulls
@@ -697,17 +904,13 @@ function Punctuated($, component, {
         ? choice(component, alias(trailingEmpty, $.empty_component))
         : component;
 
-    if (!allowOne)
-        return LeftSeq($, p, Repeat1(item, separator), tail);
+    if (!allowOne) return LeftSeq($, p, Repeat1(item, separator), tail);
 
     if (allowNulls)
-        return choice(
-            LeftSeq($, p, Repeat1(item, separator), tail),
-            component);
+        return choice(LeftSeq($, p, Repeat1(item, separator), tail), component);
 
     return LeftSeq($, p, Repeat(component, separator), component);
 }
-
 
 function fieldOperator(...names) {
     return field('operator', names.length === 1 ? names[0] : choice(...names));
@@ -723,7 +926,7 @@ function operatorSpelling(operator) {
 
 function punctuationTokenName(spelling) {
     return `_punct_${[...spelling]
-        .map(character => character.codePointAt(0).toString(16))
+        .map((character) => character.codePointAt(0).toString(16))
         .join('_')}`;
 }
 
@@ -776,76 +979,95 @@ function contextualExpressionRuleName(fieldName) {
 }
 
 function contextualExpression($, fieldName) {
-    const expression = fieldName === undefined
-        ? $.expression
-        : field(fieldName, $.expression);
-    return seq($._start_expression_context, expression, $._end_expression_context);
+    const expression =
+        fieldName === undefined ? $.expression : field(fieldName, $.expression);
+    return seq(
+        $._start_expression_context,
+        expression,
+        $._end_expression_context,
+    );
 }
 
 function expressionAtFloor($, floor, fieldName) {
-    const expression = fieldName === undefined
-        ? $.expression
-        : field(fieldName, $.expression);
+    const expression =
+        fieldName === undefined ? $.expression : field(fieldName, $.expression);
     if (floor <= PREC.LOOP_CLAUSE || !expressionFloors.includes(floor))
         return expression;
-    const contextual = fieldName === undefined
-        ? $._contextual_expression
-        : $[contextualExpressionRuleName(fieldName)];
+    const contextual =
+        fieldName === undefined
+            ? $._contextual_expression
+            : $[contextualExpressionRuleName(fieldName)];
     return seq($[expressionFloorTokenName(floor)], contextual);
 }
 
 function binaryExpression($, operator) {
     const strength = binaryStrength(operator);
-    const treeSitterPrecedence = operator.treeSitterPrecedence ?? operator.precedence;
-    const parsingPrecedences = operator.parsingPrecedences ?? [operatorParsingPrecedence(operator)];
-    return operator.assoc(treeSitterPrecedence, seq(
-        fieldExpr($, 'left'),
-        choice(...parsingPrecedences.map(precedence => operatorGate($, precedence))),
-        fieldOperator(...operator.symbols.map(symbol => operatorRule($, symbol))),
-        expressionAtFloor($, strength, 'right'),
-    ));
+    const treeSitterPrecedence =
+        operator.treeSitterPrecedence ?? operator.precedence;
+    const parsingPrecedences = operator.parsingPrecedences ?? [
+        operatorParsingPrecedence(operator),
+    ];
+    return operator.assoc(
+        treeSitterPrecedence,
+        seq(
+            field('left_operand', $.expression),
+            choice(
+                ...parsingPrecedences.map((precedence) =>
+                    operatorGate($, precedence),
+                ),
+            ),
+            fieldOperator(
+                ...operator.symbols.map((symbol) => operatorRule($, symbol)),
+            ),
+            expressionAtFloor($, strength, 'right'),
+        ),
+    );
 }
 
 function memberExpression($) {
-    return prec.left(70, seq(
-        fieldExpr($, 'left'),
-        operatorGate($, 70),
-        fieldOperator(operatorRule($, '.'), operatorRule($, '.?')),
-        // Core$parse treats member access as an ordinary B=70 operator. The
-        // compiler later restricts the RHS to a symbol; keeping it broad here
-        // makes precedence experiments independent of that preprocessing rule.
-        expressionAtFloor($, 70, 'right'),
-    ));
+    return prec.left(
+        70,
+        seq(
+            fieldExpr($, 'left'),
+            operatorGate($, 70),
+            fieldOperator(operatorRule($, '.'), operatorRule($, '.?')),
+            // Core$parse treats member access as an ordinary B=70 operator. The
+            // compiler later restricts the RHS to a symbol; keeping it broad here
+            // makes precedence experiments independent of that preprocessing rule.
+            expressionAtFloor($, 70, 'right'),
+        ),
+    );
 }
 
 function postfixExpression($, operator) {
-    return prec.left(operator.precedence, seq(
-        fieldExpr($, 'operand'),
-        operatorGate($, operator.precedence),
-        fieldOperator(...operator.symbols.map(symbol => operatorRule($, symbol))),
-    ));
+    return prec.left(
+        operator.precedence,
+        seq(
+            fieldExpr($, 'operand'),
+            operatorGate($, operator.precedence),
+            fieldOperator(
+                ...operator.symbols.map((symbol) => operatorRule($, symbol)),
+            ),
+        ),
+    );
 }
 
 function prefixExpression($, operator) {
     const unaryStrength = operator.unaryStrength ?? operator.precedence;
-    return prec.left(unaryStrength, seq(
-        fieldOperator(...operator.symbols.map(symbol => operatorRule($, symbol))),
-        expressionAtFloor($, unaryStrength, 'operand'),
-    ));
-}
-
-function wideDebugExpression($) {
-    return prec.left(PREC.CONTROL, seq(
-        field('keyword', Qualify(
-            ...widePrefixKeywords,
-        )),
-        expressionAtFloor($, PREC.CONTROL),
-    ));
+    return prec.left(
+        unaryStrength,
+        seq(
+            fieldOperator(
+                ...operator.symbols.map((symbol) => operatorRule($, symbol)),
+            ),
+            expressionAtFloor($, unaryStrength, 'operand'),
+        ),
+    );
 }
 
 function trapExpression($) {
-    return prec.left(PREC.CONTROL, seq(
-        Qualify('trap'),
-        expressionAtFloor($, PREC.CONTROL),
-    ));
+    return prec.left(
+        PREC.CONTROL,
+        seq(Qualify('trap'), expressionAtFloor($, PREC.CONTROL)),
+    );
 }

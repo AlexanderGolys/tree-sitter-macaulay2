@@ -22,7 +22,7 @@
 ; Method installations
 ((binary_installation
    left: (binary_expression
-           left: (symbol) @name
+           left_operand: (symbol) @name
            operator: "SPACE")) @definition.function
  (#match? @name "^[a-z].*"))
 
@@ -49,16 +49,16 @@
 
 ; References
 (binary_expression
-  left: (symbol) @name
+  left_operand: (symbol) @name
   operator: "SPACE") @reference.call
 
 (binary_expression
-  left: (binary_expression
-          left: (symbol) @name
+  left_operand: (binary_expression
+          left_operand: (symbol) @name
           operator: "_")
   operator: "SPACE") @reference.call
 
 (binary_expression
-  left: (quote_expression
+  left_operand: (quote_expression
           (_) @name)
   operator: "SPACE") @reference.call

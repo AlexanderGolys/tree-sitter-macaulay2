@@ -187,7 +187,7 @@ x.symbol symbol
 (source_file
   (cell
     (binary_expression
-      left: (float_literal)
+      left_operand: (float_literal)
       right: (integer_literal))))
 
 
@@ -206,7 +206,7 @@ x.symbol symbol
 (source_file
   (cell
     (binary_expression
-      left: (float_literal)
+      left_operand: (float_literal)
       right: (string_literal
         (string_content)))))
 
@@ -220,7 +220,7 @@ x.symbol symbol
 (source_file
   (cell
     (binary_expression
-      left: (float_literal)
+      left_operand: (float_literal)
       right: (float_literal))))
 
 
@@ -245,7 +245,7 @@ symbol....2
 (source_file
   (cell
     (binary_expression
-      left: (quote_expression
+      left_operand: (quote_expression
         token: (keyword))
       right: (integer_literal))))
 
@@ -277,7 +277,7 @@ x.(x)
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (prefix_expression
         operand: (integer_literal)))))
 

@@ -8,14 +8,14 @@ ZZ ZZ := (x, y) -> x + y
   (cell
     (binary_installation
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol))
       right: (lambda_expression
         parameters: (sequence
           (symbol)
           (symbol))
         body: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (symbol))))))
 
 
@@ -29,12 +29,12 @@ f ZZ := x -> x^2
   (cell
     (binary_installation
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol))
       right: (lambda_expression
         parameters: (symbol)
         body: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (integer_literal))))))
 
 
@@ -48,14 +48,14 @@ ZZ _ ZZ := (x, y) -> x + y
   (cell
     (binary_installation
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol))
       right: (lambda_expression
         parameters: (sequence
           (symbol)
           (symbol))
         body: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (symbol))))))
 
 
@@ -69,14 +69,14 @@ ZZ + ZZ := (x, y) -> x + y
   (cell
     (binary_installation
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol))
       right: (lambda_expression
         parameters: (sequence
           (symbol)
           (symbol))
         body: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (symbol))))))
 
 
@@ -94,7 +94,7 @@ ZZ + ZZ := (x, y) -> x + y
       right: (lambda_expression
         parameters: (symbol)
         body: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (integer_literal))))))
 
 
@@ -142,7 +142,7 @@ f(A, B, C, D) := f;
   (muted
     (binary_installation
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (sequence
           (symbol)
           (symbol)
@@ -161,7 +161,7 @@ ZZ ZZ := ZZ => f
   (cell
     (binary_installation
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol))
       right: (option
         left: (symbol)
@@ -212,7 +212,7 @@ ZZ ZZ := ZZ => f
       binding_pack: (parenthesized_expression
         (parenthesized_expression
           (binary_expression
-            left: (symbol)
+            left_operand: (symbol)
             right: (sequence
               (symbol)
               (symbol)))))
@@ -246,11 +246,11 @@ ZZ + ZZ := ZZ QQ := ZZ => f
   (cell
     (binary_installation
       left: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (symbol))
       right: (binary_installation
         left: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (symbol))
         right: (option
           left: (symbol)
@@ -266,7 +266,7 @@ a_*^*!^!!^*_***=*##<*<<<<b=a!
 (source_file
   (cell
     (binary_expression
-      left: (postfix_expression
+      left_operand: (postfix_expression
         operand: (postfix_expression
           operand: (postfix_expression
             operand: (postfix_expression
@@ -302,7 +302,7 @@ a_*^*!^!!^*!!!**##<*<<<(b) []
 (source_file
   (cell
     (binary_expression
-      left: (postfix_expression
+      left_operand: (postfix_expression
         operand: (postfix_expression
           operand: (postfix_expression
             operand: (postfix_expression
@@ -313,7 +313,7 @@ a_*^*!^!!^*!!!**##<*<<<(b) []
                       operand: (postfix_expression
                         operand: (symbol))))))))))
       right: (binary_expression
-        left: (prefix_expression
+        left_operand: (prefix_expression
           operand: (prefix_expression
             operand: (prefix_expression
               operand: (prefix_expression
@@ -333,7 +333,7 @@ a_*^*!^!!^*_***##<*<<<(b) ()
 (source_file
   (cell
     (binary_expression
-      left: (postfix_expression
+      left_operand: (postfix_expression
         operand: (postfix_expression
           operand: (postfix_expression
             operand: (postfix_expression
@@ -348,7 +348,7 @@ a_*^*!^!!^*_***##<*<<<(b) ()
               operand: (prefix_expression
                 operand: (prefix_expression
                   operand: (binary_expression
-                    left: (parenthesized_expression
+                    left_operand: (parenthesized_expression
                       (symbol))
                     right: (sequence)))))))))))
 

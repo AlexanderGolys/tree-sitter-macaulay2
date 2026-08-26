@@ -7,9 +7,9 @@ Punctuation greed crosses a possible comment prefix
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (binary_expression
-        left: (prefix_expression
+        left_operand: (prefix_expression
           operand: (integer_literal))
         right: (prefix_expression
           operand: (integer_literal))))))
@@ -23,12 +23,12 @@ Punctuation greed remains stable through a longer closure
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (binary_expression
-        left: (prefix_expression
+        left_operand: (prefix_expression
           operand: (integer_literal))
         right: (binary_expression
-          left: (prefix_expression
+          left_operand: (prefix_expression
             operand: (prefix_expression
               operand: (integer_literal)))
           right: (prefix_expression
@@ -45,7 +45,7 @@ Angle and bar punctuation contains no delimiters
     (prefix_expression
       operand: (prefix_expression
         operand: (binary_expression
-          left: (integer_literal)
+          left_operand: (integer_literal)
           right: (prefix_expression
             operand: (integer_literal)))))))
 
@@ -62,7 +62,7 @@ parse///1##2##3a2##3
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (raw_string_literal
         (raw_string_content)))))
 

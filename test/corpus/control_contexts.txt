@@ -22,11 +22,11 @@ Core$Core$return i
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (symbol)))
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (symbol))))
 
 ==================
@@ -79,9 +79,9 @@ f return -* comment *- i + j
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (return_statement
         (block_comment)
         (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (symbol))))))

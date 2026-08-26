@@ -8,7 +8,7 @@ if x==4 then x=5
   (cell
     (if_statement
       condition: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       (then_clause
         (assignment
@@ -26,7 +26,7 @@ if a > 0 then b else c
   (cell
     (if_statement
       condition: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       (then_clause
         (symbol))
@@ -49,7 +49,7 @@ for i from 0 to 4 do doSomething i
         range_end: (integer_literal))
       (loop_body
         ignored_value: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (symbol))))))
 
 
@@ -65,14 +65,14 @@ for i in 1..5 when i>2 do print i
       variable: (symbol)
       (iteration_range
         iterated_collection: (binary_expression
-          left: (integer_literal)
+          left_operand: (integer_literal)
           right: (integer_literal)))
       filter: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       (loop_body
         ignored_value: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (symbol))))))
 
 
@@ -86,13 +86,13 @@ while x < 10 do x = x + 1
   (cell
     (while_loop
       condition: (binary_expression
-        left: (symbol)
+        left_operand: (symbol)
         right: (integer_literal))
       (loop_body
         ignored_value: (assignment
           left: (symbol)
           right: (binary_expression
-            left: (symbol)
+            left_operand: (symbol)
             right: (integer_literal)))))))
 
 
@@ -184,7 +184,7 @@ for i in L do if i > 0 then return i else continue
       (loop_body
         ignored_value: (if_statement
           condition: (binary_expression
-            left: (symbol)
+            left_operand: (symbol)
             right: (integer_literal))
           (then_clause
             (return_statement
@@ -212,7 +212,7 @@ for i in a list for j in b do print x
             iterated_collection: (symbol))
           (loop_body
             ignored_value: (binary_expression
-              left: (symbol)
+              left_operand: (symbol)
               right: (symbol))))))))
 
 
@@ -267,7 +267,7 @@ for i in L list for j in L list j do print 2
           (loop_body
             listed_value: (symbol)
             ignored_value: (binary_expression
-              left: (symbol)
+              left_operand: (symbol)
               right: (integer_literal))))))))
 
 
@@ -342,10 +342,10 @@ p = x -> toString if instance(x, Package) then x else if package x =!= null then
       right: (lambda_expression
         parameters: (symbol)
         body: (binary_expression
-          left: (symbol)
+          left_operand: (symbol)
           right: (if_statement
             condition: (binary_expression
-              left: (symbol)
+              left_operand: (symbol)
               right: (sequence
                 (symbol)
                 (symbol)))
@@ -354,13 +354,13 @@ p = x -> toString if instance(x, Package) then x else if package x =!= null then
             (else_clause
               (if_statement
                 condition: (binary_expression
-                  left: (binary_expression
-                    left: (symbol)
+                  left_operand: (binary_expression
+                    left_operand: (symbol)
                     right: (symbol))
                   right: (symbol))
                 (then_clause
                   (binary_expression
-                    left: (symbol)
+                    left_operand: (symbol)
                     right: (symbol)))
                 (else_clause
                   (symbol))))))))))

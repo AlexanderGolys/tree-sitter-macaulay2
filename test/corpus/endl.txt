@@ -21,7 +21,7 @@
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       right: (integer_literal))))
 
 ==================
@@ -49,7 +49,7 @@
 (source_file
   (cell
     (binary_expression
-      left: (integer_literal)
+      left_operand: (integer_literal)
       (line_comment)
       right: (integer_literal))))
 
@@ -76,7 +76,7 @@ f (
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (parenthesized_expression
         (symbol)))))
 
@@ -92,10 +92,10 @@ f(
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (parenthesized_expression
         (binary_expression
-          left: (integer_literal)
+          left_operand: (integer_literal)
           right: (integer_literal))))))
 
 ==================
@@ -124,7 +124,7 @@ f(
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (parenthesized_expression
         (postfix_expression
           operand: (integer_literal))))))
@@ -144,7 +144,7 @@ f(x -> (
 (source_file
   (cell
     (binary_expression
-      left: (symbol)
+      left_operand: (symbol)
       right: (parenthesized_expression
         (lambda_expression
           parameters: (symbol)

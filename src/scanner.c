@@ -542,6 +542,7 @@ typedef struct {
   int8_t unary_strength;
   enum { COMMENT_NONE, COMMENT_LINE, COMMENT_BLOCK } comment;
   uint8_t reset_floor;
+  bool explicit_space;
 } NextTokenInfo;
 
 static NextTokenInfo parsing_word_info(const char *word) {
@@ -582,17 +583,18 @@ static NextTokenInfo parsing_word_info(const char *word) {
   for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
     if (strcmp(word, words[i].word) == 0)
       return (NextTokenInfo){words[i].precedence, words[i].unary_strength,
-                             COMMENT_NONE, reset_floor};
-  return (NextTokenInfo){62, -1, COMMENT_NONE, reset_floor};
+                             COMMENT_NONE, reset_floor,
+                             strcmp(word, "SPACE") == 0};
+  return (NextTokenInfo){62, -1, COMMENT_NONE, reset_floor, false};
 }
 
 static NextTokenInfo classify_next_token(TSLexer *lexer) {
   if (lexer->eof(lexer))
-    return (NextTokenInfo){2, -1, COMMENT_NONE, 0};
+    return (NextTokenInfo){2, -1, COMMENT_NONE, 0, false};
 
   int32_t c = lexer->lookahead;
   if (c == '\n' || c == '\r')
-    return (NextTokenInfo){4, -1, COMMENT_NONE, 0};
+    return (NextTokenInfo){4, -1, COMMENT_NONE, 0, false};
 
   if (is_alpha(c)) {
     char word[64];
@@ -606,28 +608,28 @@ static NextTokenInfo classify_next_token(TSLexer *lexer) {
       advance(lexer);
     }
     if (overflow)
-      return (NextTokenInfo){62, -1, COMMENT_NONE, 0};
+      return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false};
     word[length] = '\0';
     return parsing_word_info(word);
   }
 
   if (is_digit(c) || c == '"')
-    return (NextTokenInfo){62, -1, COMMENT_NONE, 0};
+    return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false};
 
   if (c == 0x00b7) {
     advance(lexer);
     return lexer->lookahead == '='
-               ? (NextTokenInfo){14, -1, COMMENT_NONE, 0}
-               : (NextTokenInfo){52, -1, COMMENT_NONE, 0};
+               ? (NextTokenInfo){14, -1, COMMENT_NONE, 0, false}
+               : (NextTokenInfo){52, -1, COMMENT_NONE, 0, false};
   }
   if (c == 0x22a0 || c == 0x29e2) {
     advance(lexer);
     return lexer->lookahead == '='
-               ? (NextTokenInfo){14, -1, COMMENT_NONE, 0}
-               : (NextTokenInfo){54, -1, COMMENT_NONE, 0};
+               ? (NextTokenInfo){14, -1, COMMENT_NONE, 0, false}
+               : (NextTokenInfo){54, -1, COMMENT_NONE, 0, false};
   }
   if (is_mathematical_operator(c))
-    return (NextTokenInfo){62, -1, COMMENT_NONE, 0};
+    return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false};
 
   const size_t count = sizeof(parsing_punctuation_words) /
                        sizeof(parsing_punctuation_words[0]);
@@ -680,9 +682,10 @@ static NextTokenInfo classify_next_token(TSLexer *lexer) {
       comment = COMMENT_LINE;
     else if (strcmp(accepted->word, "-*") == 0)
       comment = COMMENT_BLOCK;
-    return (NextTokenInfo){precedence, accepted->unary_strength, comment, 0};
+    return (NextTokenInfo){precedence, accepted->unary_strength, comment, 0,
+                           false};
   }
-  return (NextTokenInfo){0, -1, COMMENT_NONE, 0};
+  return (NextTokenInfo){0, -1, COMMENT_NONE, 0, false};
 }
 
 // Macaulay2 treats block comments as ordinary inline whitespace, even when
@@ -699,7 +702,7 @@ static NextTokenInfo classify_after_control_trivia(TSLexer *lexer) {
     if (next.comment == COMMENT_NONE)
       return next;
     if (next.comment == COMMENT_LINE)
-      return (NextTokenInfo){4, -1, COMMENT_NONE, 0};
+      return (NextTokenInfo){4, -1, COMMENT_NONE, 0, false};
 
     int32_t previous = 0;
     bool closed = false;
@@ -713,7 +716,7 @@ static NextTokenInfo classify_after_control_trivia(TSLexer *lexer) {
       previous = current;
     }
     if (!closed)
-      return (NextTokenInfo){0, -1, COMMENT_NONE, 0};
+      return (NextTokenInfo){0, -1, COMMENT_NONE, 0, false};
   }
 }
 
@@ -777,7 +780,8 @@ static uint8_t active_floor(const Scanner *scanner) {
 }
 
 static bool scan_expression_context(Scanner *scanner, TSLexer *lexer,
-                                    const bool *valid_symbols) {
+                                    const bool *valid_symbols,
+                                    bool crossed_newline) {
   lexer->mark_end(lexer);
 
   // A floor-setting marker occurs immediately after a binary/prefix operator.
@@ -833,6 +837,11 @@ static bool scan_expression_context(Scanner *scanner, TSLexer *lexer,
 
   uint8_t parsing_precedence =
       next.precedence < 0 ? 14 : (uint8_t)next.precedence;
+  // Newlines terminate implicit adjacency even inside delimiters. An explicit
+  // SPACE token remains a real binary operator and may continue on either
+  // side of a newline.
+  if (crossed_newline && parsing_precedence == 62 && !next.explicit_space)
+    return false;
   uint8_t context = scanner->active_floor_count == 0
                         ? 0
                         : scanner->active_floors[
@@ -1353,6 +1362,7 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
   // incomplete, no cell-ending token will be valid and the newline can then
   // fall through to ordinary whitespace handling below.
   skip_whitespace(lexer);
+  bool crossed_newline = false;
 
   if (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
     // A surrounding precedence context may need to close before the source
@@ -1362,7 +1372,7 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
     // after it has skipped an extra.
     if (scanner->active_floor_count != 0 &&
         can_scan_expression_context(valid_symbols) &&
-        scan_expression_context(scanner, lexer, valid_symbols))
+        scan_expression_context(scanner, lexer, valid_symbols, false))
       return true;
     if (can_scan_empty_component(valid_symbols) &&
         scan_empty_component(lexer, valid_symbols))
@@ -1370,6 +1380,7 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
     if (valid_symbols[CELL_END] && scanner->active_floor_count == 0)
       return scan_cell_end(lexer);
     skip_number_whitespace(lexer);
+    crossed_newline = true;
   }
 
   if (can_scan_nullable_control(valid_symbols) &&
@@ -1377,7 +1388,8 @@ bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
     return scan_nullable_control(lexer, valid_symbols);
 
   if (can_scan_expression_context(valid_symbols))
-    return scan_expression_context(scanner, lexer, valid_symbols);
+    return scan_expression_context(scanner, lexer, valid_symbols,
+                                   crossed_newline);
 
   // Unlike other external tokens, CELL_TRAILING_EMPTY must be available at
   // newline and EOF. Check empty components before newline-skipping and before

@@ -1658,8 +1658,22 @@
                   "type": "CHOICE",
                   "members": [
                     {
-                      "type": "STRING",
-                      "value": "or"
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": "or"
+                        },
+                        {
+                          "type": "ALIAS",
+                          "content": {
+                            "type": "STRING",
+                            "value": "Core$or"
+                          },
+                          "named": false,
+                          "value": "or"
+                        }
+                      ]
                     },
                     {
                       "type": "STRING",
@@ -1715,8 +1729,22 @@
                 "type": "FIELD",
                 "name": "operator",
                 "content": {
-                  "type": "STRING",
-                  "value": "xor"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "xor"
+                    },
+                    {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "STRING",
+                        "value": "Core$xor"
+                      },
+                      "named": false,
+                      "value": "xor"
+                    }
+                  ]
                 }
               },
               {
@@ -1766,8 +1794,22 @@
                 "type": "FIELD",
                 "name": "operator",
                 "content": {
-                  "type": "STRING",
-                  "value": "and"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "and"
+                    },
+                    {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "STRING",
+                        "value": "Core$and"
+                      },
+                      "named": false,
+                      "value": "and"
+                    }
+                  ]
                 }
               },
               {
@@ -2863,22 +2905,36 @@
                 "type": "FIELD",
                 "name": "operator",
                 "content": {
-                  "type": "ALIAS",
-                  "content": {
-                    "type": "CHOICE",
-                    "members": [
-                      {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "ALIAS",
+                      "content": {
                         "type": "SYMBOL",
                         "name": "_space"
                       },
-                      {
-                        "type": "STRING",
-                        "value": "SPACE"
-                      }
-                    ]
-                  },
-                  "named": false,
-                  "value": "SPACE"
+                      "named": false,
+                      "value": "SPACE"
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": "SPACE"
+                        },
+                        {
+                          "type": "ALIAS",
+                          "content": {
+                            "type": "STRING",
+                            "value": "Core$SPACE"
+                          },
+                          "named": false,
+                          "value": "SPACE"
+                        }
+                      ]
+                    }
+                  ]
                 }
               },
               {
@@ -3178,8 +3234,22 @@
                 "type": "FIELD",
                 "name": "operator",
                 "content": {
-                  "type": "STRING",
-                  "value": "not"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "not"
+                    },
+                    {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "STRING",
+                        "value": "Core$not"
+                      },
+                      "named": false,
+                      "value": "not"
+                    }
+                  ]
                 }
               },
               {

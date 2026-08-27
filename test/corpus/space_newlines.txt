@@ -1,0 +1,62 @@
+==================
+Implicit adjacency cannot cross a newline inside parentheses
+:error
+==================
+(x
+y)
+
+==================
+Explicit SPACE before a newline continues the expression
+==================
+(x SPACE
+y)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (binary_expression
+        left_operand: (symbol)
+        right: (symbol)))))
+
+==================
+Explicit SPACE after a newline continues the expression
+==================
+(x
+SPACE y)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (binary_expression
+        left_operand: (symbol)
+        right: (symbol)))))
+
+==================
+Qualified SPACE before a newline continues the expression
+==================
+(x Core$SPACE
+y)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (binary_expression
+        left_operand: (symbol)
+        right: (symbol)))))
+
+==================
+Qualified SPACE after a newline continues the expression
+==================
+(x
+Core$SPACE y)
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (binary_expression
+        left_operand: (symbol)
+        right: (symbol)))))

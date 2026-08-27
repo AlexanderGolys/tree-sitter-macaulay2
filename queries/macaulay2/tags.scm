@@ -24,13 +24,13 @@
    left: (binary_expression
            left_operand: (symbol) @name
            operator: "SPACE")) @definition.function
- (#match? @name "^[a-z].*"))
+ (#match? @name "^(Core\\$)?[a-z][^$]*$"))
 
 ((binary_installation
    left: (binary_expression
            operator: _ @name)) @definition.function
  (#not-eq? @name "")
- (#not-any-of? @name "SPACE" "." ".?" "#" "#?"))
+ (#not-any-of? @name "SPACE" "Core$SPACE" "." ".?" "#" "#?"))
 
 [
   (prefix_installation

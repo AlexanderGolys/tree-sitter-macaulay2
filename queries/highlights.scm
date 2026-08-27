@@ -43,50 +43,55 @@
   ","
   ";"
 ] @punctuation.delimiter
-
-
-
-[
+; Core-qualified keywords are aliased to the same CST token as their bare
+; spelling. Keep the source-text alternatives explicit so both forms remain
+; part of the query contract.
+(([
   "if"
   "else"
   "then"
   "when"
   "list"
   "do"
-] @keyword.conditional
+] @keyword.conditional)
+  (#match? @keyword.conditional "^(Core\\$)?(if|else|then|when|list|do)$"))
 
-[
+(([
   "for"
   "while"
   "in"
   "from"
   "to"
-] @keyword.repeat
+] @keyword.repeat)
+  (#match? @keyword.repeat "^(Core\\$)?(for|while|in|from|to)$"))
 
-[
+(([
   "return"
   "break"
   "continue"
-] @keyword.return
+] @keyword.return)
+  (#match? @keyword.return "^(Core\\$)?(return|break|continue)$"))
 
-[
+(([
   "try"
   "catch"
   "throw"
   "trap"
   "except"
   "shield"
-] @keyword.exception
+] @keyword.exception)
+  (#match? @keyword.exception "^(Core\\$)?(try|catch|throw|trap|except|shield)$"))
 
-[
+(([
   "global"
   "local"
   "symbol"
   "threadVariable"
   "threadLocal"
-] @keyword.modifier
+] @keyword.modifier)
+  (#match? @keyword.modifier "^(Core\\$)?(global|local|symbol|threadVariable|threadLocal)$"))
 
-[
+(([
   "time"
   "timing"
   "elapsedTime"
@@ -96,23 +101,26 @@
   "breakpoint"
   "finish"
   "step"
-] @keyword.debug
+] @keyword.debug)
+  (#match? @keyword.debug "^(Core\\$)?(time|timing|elapsedTime|elapsedTiming|profile|TEST|breakpoint|finish|step)$"))
 
 (debug_clause
   keyword: _ @keyword.debug)
 
-[
+(([
   "and"
   "or"
   "xor"
   "not"
   "SPACE"
-] @keyword.operator
+] @keyword.operator)
+  (#match? @keyword.operator "^(Core\\$)?(and|or|xor|not|SPACE)$"))
 
-[
+(([
   "new"
   "of"
-] @keyword
+] @keyword)
+  (#match? @keyword "^(Core\\$)?(new|of)$"))
 
 ((binary_expression
   left_operand: [
@@ -187,7 +195,7 @@
   left: (binary_expression
     left_operand: (symbol) @label
     operator: "SPACE"))
-  (#match? @label "^[a-z].*"))
+  (#match? @label "^(Core\\$)?[a-z][^$]*$"))
 
 ; Otherwise the left operand, and every adjacency operand on the right, is a
 ; domain type.
@@ -195,7 +203,7 @@
   left: (binary_expression
     left_operand: (symbol) @type.parameter @_first-type
     operator: "SPACE"))
-  (#not-match? @_first-type "^[a-z].*"))
+  (#not-match? @_first-type "^(Core\\$)?[a-z][^$]*$"))
 
 (binary_installation
   left: (binary_expression
@@ -213,7 +221,7 @@
     operator: _ @label
     right: (_) @type.parameter))
   (#not-eq? @label "")
-  (#not-any-of? @label "SPACE" "." ".?" "#" "#?"))
+  (#not-any-of? @label "SPACE" "Core$SPACE" "." ".?" "#" "#?"))
 
 (prefix_installation
   left: (prefix_expression
@@ -251,30 +259,26 @@
     (_) @type.parameter
     .
     (_) @type.parameter))
-  (#eq? @function.builtin "installAssignmentMethod"))
+  (#match? @function.builtin "^(Core\\$)?installAssignmentMethod$"))
 
 ; Builtins
 ((symbol) @variable.builtin
-  (#match? @variable.builtin "^((o[1-9][0-9]*)|oo|ooo|oooo)$"))
+  (#match? @variable.builtin "^(Core\\$)?((o[1-9][0-9]*)|oo|ooo|oooo)$"))
 
 ((symbol) @constant.builtin
-  (#any-of? @constant.builtin "CatalanConstant" "EulerConstant" "ii" "pi" "null" "infinity"))
+  (#match? @constant.builtin "^(Core\\$)?(CatalanConstant|EulerConstant|ii|pi|null|infinity)$"))
 
 ((symbol) @boolean
-  (#any-of? @boolean "true" "false"))
+  (#match? @boolean "^(Core\\$)?(true|false)$"))
 
 ((symbol) @error
-  (#any-of? @error "error" "stderr")
+  (#match? @error "^(Core\\$)?(error|stderr)$")
   (#set! priority 160))
 
 
 
 ((symbol) @variable.builtin
-  (#any-of? @variable.builtin
-    "allowableThreads" "debugLevel" "defaultPrecision" "engineDebugLevel" "errorDepth" "gbTrace"
-    "interpreterDepth" "lineNumber" "loadDepth" "maxAllowableThreads" "maxExponent" "minExponent"
-    "numTBBThreads" "printingAccuracy" "printingLeadLimit" "printingPrecision" "printingTimeLimit"
-    "printingTrailLimit" "version" "printWidth" "recursionLimit" ))
+  (#match? @variable.builtin "^(Core\\$)?(allowableThreads|debugLevel|defaultPrecision|engineDebugLevel|errorDepth|gbTrace|interpreterDepth|lineNumber|loadDepth|maxAllowableThreads|maxExponent|minExponent|numTBBThreads|printingAccuracy|printingLeadLimit|printingPrecision|printingTimeLimit|printingTrailLimit|version|printWidth|recursionLimit)$"))
 
 ; Special strings
 ((string_literal) @string.special.url
@@ -295,7 +299,7 @@
       .
       (string_literal) @string.special.url)
   ])
-  (#any-of? @function.builtin "splitWWW" "getWWW" "urlEncode"))
+  (#match? @function.builtin "^(Core\\$)?(splitWWW|getWWW|urlEncode)$"))
 
 ; Packages
 ((binary_expression
@@ -309,15 +313,13 @@
     (parenthesized_expression . (string_literal) @module)
     (sequence . (string_literal) @module)
   ])
-  (#any-of? @function
-    "loadPackage" "installPackage" "uninstallPackage" "needsPackage" "endPackage"
-    "newPackage" ))
+  (#match? @function "^(Core\\$)?(loadPackage|installPackage|uninstallPackage|needsPackage|endPackage|newPackage)$"))
 
 ((binary_expression
   left_operand: (symbol) @function
   operator: "_"
   right: (symbol) @module)
-  (#any-of? @function "importFrom" "exportFrom"))
+  (#match? @function "^(Core\\$)?(importFrom|exportFrom)$"))
 
 ((binary_expression
   left_operand: (symbol) @function
@@ -325,4 +327,4 @@
   right: [(sequence
               (string_literal) @namespace)
           (string_literal) @namespace]
-  ) (#eq? @function "load"))
+  ) (#match? @function "^(Core\\$)?load$"))

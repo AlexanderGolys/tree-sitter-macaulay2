@@ -8,6 +8,11 @@ f("a", {b}, (c))
 (,)
 (a,,b)
 (g not x) + y
+x Core$and y
+x Core$or y
+x Core$xor y
+Core$not x
+x Core$SPACE y
 x_2.e-2
 R / I [x]
 f g [x]

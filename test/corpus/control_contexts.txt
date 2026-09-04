@@ -85,3 +85,165 @@ f return -* comment *- i + j
         (binary_expression
           left_operand: (symbol)
           right: (symbol))))))
+
+==================
+Multiline if remains an implicit application operand in a lambda
+==================
+lin -> (
+  concatenate if p
+  then x
+  else y)
+---
+
+(source_file
+  (cell
+    (lambda_expression
+      (symbol)
+      (parenthesized_expression
+        (binary_expression
+          (symbol)
+          (if_statement
+            (symbol)
+            (then_clause
+              (symbol))
+            (else_clause
+              (symbol))))))))
+
+==================
+For-loop bodies retain a complete conditional at a high floor
+==================
+sum for i list if p then x else continue
+---
+
+(source_file
+  (cell
+    (binary_expression
+      (symbol)
+      (for_loop
+        (symbol)
+        (loop_body
+          (if_statement
+            (symbol)
+            (then_clause
+              (symbol))
+            (else_clause
+              (continue_statement))))))))
+
+==================
+Multiline if remains the right operand of a binary chain
+==================
+("lib" | name |
+if p then ".dylib"
+else ".so")
+---
+
+(source_file
+  (cell
+    (parenthesized_expression
+      (binary_expression
+        (binary_expression
+          (string_literal
+            (string_content))
+          (symbol))
+        (if_statement
+          (symbol)
+          (then_clause
+            (string_literal
+              (string_content)))
+          (else_clause
+            (string_literal
+              (string_content))))))))
+
+==================
+An enclosing else still bounds an implicitly applied loop
+==================
+if p then sum for i list x else y
+---
+
+(source_file
+  (cell
+    (if_statement
+      (symbol)
+      (then_clause
+        (binary_expression
+          (symbol)
+          (for_loop
+            (symbol)
+            (loop_body
+              (symbol)))))
+      (else_clause
+        (symbol)))))
+
+==================
+For-loop do clauses survive implicit application
+==================
+sum for i list x do y
+---
+
+(source_file
+  (cell
+    (binary_expression
+      (symbol)
+      (for_loop
+        (symbol)
+        (loop_body
+          (symbol)
+          (symbol))))))
+
+==================
+Nested implicit applications retain a complete conditional
+==================
+trim sum for i list if p then x else continue
+---
+
+(source_file
+  (cell
+    (binary_expression
+      (symbol)
+      (binary_expression
+        (symbol)
+        (for_loop
+          (symbol)
+          (loop_body
+            (if_statement
+              (symbol)
+              (then_clause
+                (symbol))
+              (else_clause
+                (continue_statement)))))))))
+
+==================
+Top-level newline still terminates implicit application
+:error
+==================
+f if p then x
+else y
+
+==================
+Delimited lambda bodies preserve nested control applications
+==================
+stack apply(y, lin -> (
+  concatenate if p
+  then x
+  else y))
+---
+
+(source_file
+  (cell
+    (binary_expression
+      (symbol)
+      (binary_expression
+        (symbol)
+        (sequence
+          (symbol)
+          (lambda_expression
+            (symbol)
+            (parenthesized_expression
+              (binary_expression
+                (symbol)
+                (if_statement
+                  (symbol)
+                  (then_clause
+                    (symbol))
+                  (else_clause
+                    (symbol)))))))))))

@@ -160,7 +160,9 @@ enum TokenType {
   SET_EXPRESSION_FLOOR_59,
   SET_EXPRESSION_FLOOR_61,
   SET_EXPRESSION_FLOOR_66,
-  SET_EXPRESSION_FLOOR_70
+  SET_EXPRESSION_FLOOR_70,
+
+  BYPASS_EXPRESSION_CONTEXT,
 };
 
 typedef enum { SCAN_NONE, SCAN_DONE, SCAN_FAIL } ScanResult;
@@ -425,7 +427,8 @@ static bool can_scan_guarded_punctuation(const bool *valid_symbols) {
 
 static bool can_scan_expression_context(const bool *valid_symbols) {
   if (valid_symbols[START_EXPRESSION_CONTEXT] ||
-      valid_symbols[END_EXPRESSION_CONTEXT])
+      valid_symbols[END_EXPRESSION_CONTEXT] ||
+      valid_symbols[BYPASS_EXPRESSION_CONTEXT])
     return true;
 
   for (size_t i = 0;
@@ -543,6 +546,7 @@ typedef struct {
   enum { COMMENT_NONE, COMMENT_LINE, COMMENT_BLOCK } comment;
   uint8_t reset_floor;
   bool explicit_space;
+  bool bypass_floor;
 } NextTokenInfo;
 
 static NextTokenInfo parsing_word_info(const char *word) {
@@ -584,17 +588,19 @@ static NextTokenInfo parsing_word_info(const char *word) {
     if (strcmp(word, words[i].word) == 0)
       return (NextTokenInfo){words[i].precedence, words[i].unary_strength,
                              COMMENT_NONE, reset_floor,
-                             strcmp(word, "SPACE") == 0};
-  return (NextTokenInfo){62, -1, COMMENT_NONE, reset_floor, false};
+                             strcmp(word, "SPACE") == 0, false};
+  bool bypass_floor = strcmp(word, "if") == 0 || strcmp(word, "for") == 0;
+  return (NextTokenInfo){62, -1, COMMENT_NONE, reset_floor, false,
+                         bypass_floor};
 }
 
 static NextTokenInfo classify_next_token(TSLexer *lexer) {
   if (lexer->eof(lexer))
-    return (NextTokenInfo){2, -1, COMMENT_NONE, 0, false};
+    return (NextTokenInfo){2, -1, COMMENT_NONE, 0, false, false};
 
   int32_t c = lexer->lookahead;
   if (c == '\n' || c == '\r')
-    return (NextTokenInfo){4, -1, COMMENT_NONE, 0, false};
+    return (NextTokenInfo){4, -1, COMMENT_NONE, 0, false, false};
 
   if (is_alpha(c)) {
     char word[64];
@@ -608,28 +614,28 @@ static NextTokenInfo classify_next_token(TSLexer *lexer) {
       advance(lexer);
     }
     if (overflow)
-      return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false};
+      return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false, false};
     word[length] = '\0';
     return parsing_word_info(word);
   }
 
   if (is_digit(c) || c == '"')
-    return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false};
+    return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false, false};
 
   if (c == 0x00b7) {
     advance(lexer);
     return lexer->lookahead == '='
-               ? (NextTokenInfo){14, -1, COMMENT_NONE, 0, false}
-               : (NextTokenInfo){52, -1, COMMENT_NONE, 0, false};
+               ? (NextTokenInfo){14, -1, COMMENT_NONE, 0, false, false}
+               : (NextTokenInfo){52, -1, COMMENT_NONE, 0, false, false};
   }
   if (c == 0x22a0 || c == 0x29e2) {
     advance(lexer);
     return lexer->lookahead == '='
-               ? (NextTokenInfo){14, -1, COMMENT_NONE, 0, false}
-               : (NextTokenInfo){54, -1, COMMENT_NONE, 0, false};
+               ? (NextTokenInfo){14, -1, COMMENT_NONE, 0, false, false}
+               : (NextTokenInfo){54, -1, COMMENT_NONE, 0, false, false};
   }
   if (is_mathematical_operator(c))
-    return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false};
+    return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false, false};
 
   const size_t count = sizeof(parsing_punctuation_words) /
                        sizeof(parsing_punctuation_words[0]);
@@ -683,9 +689,32 @@ static NextTokenInfo classify_next_token(TSLexer *lexer) {
     else if (strcmp(accepted->word, "-*") == 0)
       comment = COMMENT_BLOCK;
     return (NextTokenInfo){precedence, accepted->unary_strength, comment, 0,
-                           false};
+                           false, false};
   }
-  return (NextTokenInfo){0, -1, COMMENT_NONE, 0, false};
+  return (NextTokenInfo){0, -1, COMMENT_NONE, 0, false, false};
+}
+
+// A right-associative implicit-application chain such as `trim sum for ...`
+// must discard the caller's floor at every application level. At a hidden
+// context marker, look through only the unambiguous symbol-and-space prefix;
+// the grammar still parses and validates the complete expression itself.
+static bool has_floor_reset_application_tail(TSLexer *lexer) {
+  while (true) {
+    bool crossed_space = false;
+    while (is_inline_whitespace(lexer->lookahead)) {
+      crossed_space = true;
+      advance(lexer);
+    }
+    if (!crossed_space || !is_alpha(lexer->lookahead))
+      return false;
+
+    NextTokenInfo next = classify_next_token(lexer);
+    if (next.bypass_floor)
+      return true;
+    if (next.reset_floor != 0 || next.precedence != 62 ||
+        next.unary_strength >= 0)
+      return false;
+  }
 }
 
 // Macaulay2 treats block comments as ordinary inline whitespace, even when
@@ -702,7 +731,7 @@ static NextTokenInfo classify_after_control_trivia(TSLexer *lexer) {
     if (next.comment == COMMENT_NONE)
       return next;
     if (next.comment == COMMENT_LINE)
-      return (NextTokenInfo){4, -1, COMMENT_NONE, 0, false};
+      return (NextTokenInfo){4, -1, COMMENT_NONE, 0, false, false};
 
     int32_t previous = 0;
     bool closed = false;
@@ -716,7 +745,7 @@ static NextTokenInfo classify_after_control_trivia(TSLexer *lexer) {
       previous = current;
     }
     if (!closed)
-      return (NextTokenInfo){0, -1, COMMENT_NONE, 0, false};
+      return (NextTokenInfo){0, -1, COMMENT_NONE, 0, false, false};
   }
 }
 
@@ -799,10 +828,22 @@ static bool scan_expression_context(Scanner *scanner, TSLexer *lexer,
     }
   }
 
-  if (valid_symbols[START_EXPRESSION_CONTEXT]) {
+  if (valid_symbols[START_EXPRESSION_CONTEXT] ||
+      valid_symbols[BYPASS_EXPRESSION_CONTEXT]) {
+    bool first_is_symbol = is_alpha(lexer->lookahead);
     NextTokenInfo first = classify_next_token(lexer);
     if (first.comment)
       return false;
+
+    bool bypass_floor = first.bypass_floor;
+    if (!bypass_floor && first_is_symbol && first.reset_floor == 0 &&
+        first.precedence == 62 && first.unary_strength < 0)
+      bypass_floor = has_floor_reset_application_tail(lexer);
+
+    if (bypass_floor && valid_symbols[BYPASS_EXPRESSION_CONTEXT]) {
+      scanner->pending_floor = 0;
+      return emit(lexer, BYPASS_EXPRESSION_CONTEXT);
+    }
 
     if (first.reset_floor != 0) {
       uint8_t context = RESET_CONTEXT_FLAG | first.reset_floor;

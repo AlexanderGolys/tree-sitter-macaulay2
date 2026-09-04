@@ -359,6 +359,7 @@ export default grammar({
     $._option_gate,
     $._lambda_gate,
     ...expressionFloors.map((floor) => $[expressionFloorTokenName(floor)]),
+    $._bypass_expression_context,
   ],
 
   rules: {
@@ -492,6 +493,18 @@ export default grammar({
         $.throw_statement,
       ),
 
+    // Control expressions replace an inherited operator floor with their own
+    // parsing routine. The scanner selects this direct branch for a leading
+    // `if`/`for` or for an implicit-application chain ending in one.
+    _floor_reset_expression: ($) =>
+      choice(
+        $.if_statement,
+        $.for_loop,
+        alias($._floor_reset_application, $.binary_expression),
+      ),
+
+    _floor_reset_application: ($) => floorResetApplication($),
+
     // These public nodes are also the three legal operator-assignment
     // target categories. Their precedence is the ordinary static
     // Tree-sitter ladder; only a binary RHS beginning with a weaker prefix
@@ -543,6 +556,8 @@ export default grammar({
     option: ($) => assignmentExpression($, $.expression, "=>"),
 
     _contextual_expression: ($) => contextualExpression($),
+
+    _floor_aware_expression: ($) => floorAwareExpression($),
 
     ...Object.fromEntries(
       contextualExpressionFields.map((name) => [
@@ -935,16 +950,23 @@ function contextualExpression($, fieldName) {
   );
 }
 
+function floorAwareExpression($) {
+  return choice(
+    seq($._bypass_expression_context, $._floor_reset_expression),
+    $._contextual_expression,
+  );
+}
+
 function expressionAtFloor($, floor, fieldName) {
   const expression =
     fieldName === undefined ? $.expression : field(fieldName, $.expression);
   if (floor <= PREC.LOOP_CLAUSE || !expressionFloors.includes(floor))
     return expression;
-  const contextual =
+  const floorAware =
     fieldName === undefined
-      ? $._contextual_expression
-      : $[contextualExpressionRuleName(fieldName)];
-  return seq($[expressionFloorTokenName(floor)], contextual);
+      ? $._floor_aware_expression
+      : field(fieldName, $._floor_aware_expression);
+  return seq($[expressionFloorTokenName(floor)], floorAware);
 }
 
 function binaryExpression($, operator) {
@@ -965,6 +987,23 @@ function binaryExpression($, operator) {
         ...operator.symbols.map((symbol) => operatorRule($, symbol)),
       ),
       expressionAtFloor($, strength, "right"),
+    ),
+  );
+}
+
+function floorResetApplication($) {
+  return prec.right(
+    61,
+    seq(
+      field("left_operand", $.symbol),
+      choice(operatorGate($, 34), operatorGate($, 62)),
+      fieldOperator(
+        operatorRule(
+          $,
+          externalOperator("_space", "SPACE", { alsoLiteral: true }),
+        ),
+      ),
+      field("right", $._floor_reset_expression),
     ),
   );
 }

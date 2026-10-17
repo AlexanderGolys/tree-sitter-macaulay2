@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 6.3.0 - 2026-10-18
 
 - Group keywords by the construct that introduces them: `when`, `list`, and
   loop `do` are `@keyword.repeat`; `then`, `else`, and `do` of a `try` are

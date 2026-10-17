@@ -1,11 +1,13 @@
 # Changelog
 
-## Unreleased
+## 6.3.1 - 2026-10-18
 
 - Add Python bindings exporting the parser and all queries.
 - Correct the package name in the Node type declarations example.
 - Remove unused scaffolding for bindings this grammar does not ship.
 - Rewrite the README with usage for every binding and Neovim setup.
+- Extend the generated installation corpus with explicit and implicit
+  adjacency installations.
 
 ## 6.3.0 - 2026-10-18
 

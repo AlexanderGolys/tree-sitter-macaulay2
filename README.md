@@ -4,6 +4,7 @@
 [![crates][crates]](https://crates.io/crates/tree-sitter-macaulay2)
 [![docs.rs][docs.rs]](https://docs.rs/tree-sitter-macaulay2)
 [![npm][npm]](https://www.npmjs.com/package/tree-sitter-macaulay2)
+[![pypi][pypi]](https://pypi.org/project/tree-sitter-macaulay2)
 [![license][license]](LICENCE)
 
 [Macaulay2](https://macaulay2.com/) grammar for [tree-sitter](https://github.com/tree-sitter/tree-sitter).
@@ -59,8 +60,7 @@ const tree = parser.parse("R = QQ[x, y]");
 ### Python
 
 ```sh
-pip install tree-sitter
-pip install git+https://github.com/AlexanderGolys/tree-sitter-macaulay2
+pip install tree-sitter tree-sitter-macaulay2
 ```
 
 ```python
@@ -120,4 +120,5 @@ Part of the corpus is generated from Macaulay2's own parser; see
 [crates]: https://img.shields.io/crates/v/tree-sitter-macaulay2?logo=rust
 [docs.rs]: https://img.shields.io/docsrs/tree-sitter-macaulay2?logo=docs.rs
 [npm]: https://img.shields.io/npm/v/tree-sitter-macaulay2?logo=npm
+[pypi]: https://img.shields.io/pypi/v/tree-sitter-macaulay2?logo=pypi
 [license]: https://img.shields.io/github/license/AlexanderGolys/tree-sitter-macaulay2

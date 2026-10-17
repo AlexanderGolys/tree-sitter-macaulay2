@@ -1,76 +1,123 @@
 # tree-sitter-macaulay2
 
-[Macaulay2](https://www.macaulay2.com/) grammar for [tree-sitter](https://github.com/tree-sitter/tree-sitter).
+[![release][release]](https://github.com/AlexanderGolys/tree-sitter-macaulay2/releases/latest)
+[![crates][crates]](https://crates.io/crates/tree-sitter-macaulay2)
+[![docs.rs][docs.rs]](https://docs.rs/tree-sitter-macaulay2)
+[![npm][npm]](https://www.npmjs.com/package/tree-sitter-macaulay2)
+[![license][license]](LICENCE)
 
+[Macaulay2](https://macaulay2.com/) grammar for [tree-sitter](https://github.com/tree-sitter/tree-sitter).
 
-<img width="3840" height="2160" alt="screenshot-2026-06-18_07-40-19" src="https://github.com/user-attachments/assets/06c3daba-1785-48fc-93b4-c9171081db05" />
+<img width="3840" height="2160" alt="Macaulay2 code highlighted with this grammar" src="https://github.com/user-attachments/assets/06c3daba-1785-48fc-93b4-c9171081db05" />
 
-> Showcase of the tree-sitter parser used in mdbook with mdbook-tsitter preprocessor for m2 code + comparison between tree-sitter and highlightjs parser on a Rust example. (I'll make this app accessible soon and paste the link below)
-> 
-## Features
+The parse tree follows the precedence and newline rules of Macaulay2's own
+parser; [docs/macaulay2-parsing-precedence.md](docs/macaulay2-parsing-precedence.md)
+describes how they are modelled.
 
-- [x] Highlighting (`highlights.scm`, see [docs/highlight-queries.md](docs/highlight-queries.md))
-- [x] Indentation (`indents.scm`)
-- [x] Symbol Tags (`tags.scm`)
-- [x] Folds (`folds.scm`)
-- [x] Node and Rust bindings
-- [x] WebAssembly parser (`tree-sitter-macaulay2.wasm`)
+## Queries
 
-## Supported Bindings
+| File                                              | Purpose                                                       |
+| ------------------------------------------------- | ------------------------------------------------------------- |
+| [`highlights.scm`](queries/highlights.scm)        | Syntax highlighting, see [docs/highlight-queries.md](docs/highlight-queries.md) |
+| [`indents.scm`](queries/indents.scm)              | Indentation                                                   |
+| [`folds.scm`](queries/folds.scm)                  | Code folding                                                  |
+| [`tags.scm`](queries/tags.scm)                    | Symbol tags for definitions and method installations          |
+| [`injections.scm`](queries/injections.scm)        | Language injections                                           |
 
-This release supports Node and Rust bindings. C/C++, Go, Python, and Swift
-bindings are not shipped yet.
+`queries/macaulay2/` holds deprecated copies of the same files and will be
+removed in 7.x.
 
-The WebAssembly parser is committed as `tree-sitter-macaulay2.wasm` for tools
-that load Tree-sitter languages in Wasm form.
+## Usage
 
-## Package
+### Rust
 
-The npm package is published as `tree-sitter-macaulay2`.
-
-```bash
-npm install tree-sitter-macaulay2
+```sh
+cargo add tree-sitter tree-sitter-macaulay2
 ```
+
+```rust
+let mut parser = tree_sitter::Parser::new();
+parser.set_language(&tree_sitter_macaulay2::language())?;
+let tree = parser.parse("R = QQ[x, y]", None).unwrap();
+```
+
+### Node.js
+
+```sh
+npm install tree-sitter tree-sitter-macaulay2
+```
+
+```js
+import Parser from "tree-sitter";
+import Macaulay2 from "tree-sitter-macaulay2";
+
+const parser = new Parser();
+parser.setLanguage(Macaulay2);
+const tree = parser.parse("R = QQ[x, y]");
+```
+
+### Python
+
+```sh
+pip install tree-sitter
+pip install git+https://github.com/AlexanderGolys/tree-sitter-macaulay2
+```
+
+```python
+from tree_sitter import Language, Parser
+import tree_sitter_macaulay2
+
+parser = Parser(Language(tree_sitter_macaulay2.language()))
+tree = parser.parse(b"R = QQ[x, y]")
+```
+
+All bindings also export the queries as `HIGHLIGHTS_QUERY`, `INJECTIONS_QUERY`,
+`TAGS_QUERY`, `INDENTS_QUERY`, and `FOLDS_QUERY`.
+
+### Neovim
+
+The parser is not bundled with nvim-treesitter yet. With the `master` branch of
+nvim-treesitter, register it and the `.m2` file type, then run
+`:TSInstall macaulay2`:
+
+```lua
+vim.filetype.add({ extension = { m2 = "macaulay2" } })
+
+require("nvim-treesitter.parsers").get_parser_configs().macaulay2 = {
+  install_info = {
+    url = "https://github.com/AlexanderGolys/tree-sitter-macaulay2",
+    files = { "src/parser.c", "src/scanner.c" },
+  },
+  filetype = "macaulay2",
+}
+```
+
+Neovim reads queries from `queries/macaulay2/` on the runtime path; add a clone
+of this repository to `runtimepath` to use them.
 
 ## Development
 
-Install dependencies:
-
-```bash
+```sh
 npm install
+npx tree-sitter generate   # regenerate src/ from grammar.js
+npx tree-sitter test       # corpus and highlight tests
+npm run build:wasm         # build tree-sitter-macaulay2.wasm
 ```
 
-Regenerate the parser and run the corpus tests:
-
-```bash
-npm run check
-```
-
-Rebuild the WebAssembly parser:
-
-```bash
-npm run build:wasm
-```
-
-## Generated Corpus
-
-The generated corpus files are committed, so normal testing does not require
-Macaulay2. The Macaulay2-based generator is only needed when changing the
-generated-test inputs; see [CONTRIBUTING.md](CONTRIBUTING.md) for that maintainer
-workflow.
-
-## Neovim
-
-Until this parser is available through a registry, it can be installed manually
-with a local parser configuration. If Neovim disagrees with `tree-sitter parse`,
-rebuild/reinstall the compiled parser first; stale compiled parser artifacts are
-the most common source of editor-only mismatches.
+Part of the corpus is generated from Macaulay2's own parser; see
+[CONTRIBUTING.md](CONTRIBUTING.md) for that workflow and the full set of checks.
 
 ## References
 
-- [Macaulay2 Website](https://macaulay2.com/)
-- [Macaulay2 Documentation on Parsing](https://macaulay2.com/doc/Macaulay2/share/doc/Macaulay2/Macaulay2Doc/html/_parsing_spprecedence_cm_spin_spdetail.html)
+- [Macaulay2](https://macaulay2.com/)
+- [Parsing precedence in Macaulay2](https://macaulay2.com/doc/Macaulay2/share/doc/Macaulay2/Macaulay2Doc/html/_parsing_spprecedence_cm_spin_spdetail.html)
 
 ## License
 
-MIT (see [LICENCE](LICENCE))
+[MIT](LICENCE)
+
+[release]: https://img.shields.io/github/v/release/AlexanderGolys/tree-sitter-macaulay2?logo=github
+[crates]: https://img.shields.io/crates/v/tree-sitter-macaulay2?logo=rust
+[docs.rs]: https://img.shields.io/docsrs/tree-sitter-macaulay2?logo=docs.rs
+[npm]: https://img.shields.io/npm/v/tree-sitter-macaulay2?logo=npm
+[license]: https://img.shields.io/github/license/AlexanderGolys/tree-sitter-macaulay2

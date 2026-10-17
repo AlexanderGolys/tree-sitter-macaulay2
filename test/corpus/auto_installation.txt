@@ -220,9 +220,9 @@ ZZ ZZ := ZZ => f
 
 
 ==================
-(13) (x, (y, z)) := values [auto installation]
+(13) (x, (y, z)) := val [auto installation]
 ==================
-(x, (y, z)) := values
+(x, (y, z)) := val
 ---
 
 (source_file
@@ -288,13 +288,7 @@ a_*^*!^!!^*_***=*##<*<<<<b=a!
 
 
 ==================
-(16) a_******c [auto installation]
-:error
-==================
-a_******c
-
-==================
-(17) a_*^*!^!!^*!!!**##<*<<<(b) [] [auto installation]
+(16) a_*^*!^!!^*!!!**##<*<<<(b) [] [auto installation]
 ==================
 a_*^*!^!!^*!!!**##<*<<<(b) []
 ---
@@ -325,7 +319,7 @@ a_*^*!^!!^*!!!**##<*<<<(b) []
 
 
 ==================
-(18) a_*^*!^!!^*_***##<*<<<(b) () [auto installation]
+(17) a_*^*!^!!^*_***##<*<<<(b) () [auto installation]
 ==================
 a_*^*!^!!^*_***##<*<<<(b) ()
 ---
@@ -354,13 +348,107 @@ a_*^*!^!!^*_***##<*<<<(b) ()
 
 
 ==================
-(19) a*b****[] [auto installation]
-:error
+(18) A SPACE B := c => d [auto installation]
 ==================
-a*b****[]
+A SPACE B := c => d
+---
+
+(source_file
+  (cell
+    (binary_installation
+      left: (binary_expression
+        left_operand: (symbol)
+        right: (symbol))
+      right: (option
+        left: (symbol)
+        right: (symbol)))))
+
 
 ==================
-(20) a*b****() [auto installation]
-:error
+(19) a SPACE b := c [auto installation]
 ==================
-a*b****()
+a SPACE b := c
+---
+
+(source_file
+  (cell
+    (binary_installation
+      left: (binary_expression
+        left_operand: (symbol)
+        right: (symbol))
+      right: (symbol))))
+
+
+==================
+(20) a b := c [auto installation]
+==================
+a b := c
+---
+
+(source_file
+  (cell
+    (binary_installation
+      left: (binary_expression
+        left_operand: (symbol)
+        right: (symbol))
+      right: (symbol))))
+
+
+==================
+(21) A SPACE B := c [auto installation]
+==================
+A SPACE B := c
+---
+
+(source_file
+  (cell
+    (binary_installation
+      left: (binary_expression
+        left_operand: (symbol)
+        right: (symbol))
+      right: (symbol))))
+
+
+==================
+(22) A B := c [auto installation]
+==================
+A B := c
+---
+
+(source_file
+  (cell
+    (binary_installation
+      left: (binary_expression
+        left_operand: (symbol)
+        right: (symbol))
+      right: (symbol))))
+
+
+==================
+(23) cos Core$SPACE Thing := print [auto installation]
+==================
+cos Core$SPACE Thing := print
+---
+
+(source_file
+  (cell
+    (binary_installation
+      left: (binary_expression
+        left_operand: (symbol)
+        right: (symbol))
+      right: (symbol))))
+
+
+==================
+(24) sin SPACE Thing := print [auto installation]
+==================
+sin SPACE Thing := print
+---
+
+(source_file
+  (cell
+    (binary_installation
+      left: (binary_expression
+        left_operand: (symbol)
+        right: (symbol))
+      right: (symbol))))

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Add Python bindings exporting the parser and all queries.
+- Correct the package name in the Node type declarations example.
+- Remove unused scaffolding for bindings this grammar does not ship.
+- Rewrite the README with usage for every binding and Neovim setup.
+
 ## 6.3.0 - 2026-10-18
 
 - Group keywords by the construct that introduces them: `when`, `list`, and

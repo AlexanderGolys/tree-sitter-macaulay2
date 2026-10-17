@@ -10,11 +10,15 @@ ZZ ZZ := ZZ => f
 ((- ZZ)) := f
 ((ZZ !)) := f
 ((f(A, B))) := f
-(x, (y, z)) := values
+(x, (y, z)) := val
 ZZ + ZZ := ZZ QQ := ZZ => f
 a_*^*!^!!^*_***=*##<*<<<<b=a!
-a_******c
 a_*^*!^!!^*!!!**##<*<<<(b) []
 a_*^*!^!!^*_***##<*<<<(b) ()
-a*b****[]
-a*b****()
+A SPACE B := c => d
+a SPACE b := c 
+a b := c 
+A SPACE B := c
+A B := c
+cos Core$SPACE Thing := print 
+sin SPACE Thing := print 

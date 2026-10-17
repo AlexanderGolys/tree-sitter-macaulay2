@@ -243,6 +243,13 @@ npm test
 npm pack --dry-run
 ```
 
+If your change affects Python bindings or packaging metadata, run:
+
+```sh
+pip install "tree-sitter>=0.24" .
+python -m unittest discover -s bindings/python/tests
+```
+
 If your change affects Rust bindings or Cargo metadata, run:
 
 ```sh

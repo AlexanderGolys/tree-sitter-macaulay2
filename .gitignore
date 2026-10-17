@@ -6,15 +6,10 @@ build/
 prebuilds/
 node_modules/
 
-# Swift artifacts
-.build/
-
-# Go artifacts
-_obj/
-
 # Python artifacts
 .venv/
 dist/
+__pycache__/
 *.egg-info
 *.whl
 
@@ -27,14 +22,6 @@ dist/
 *.pc
 *.exp
 *.lib
-
-# Zig artifacts
-.zig-cache/
-zig-cache/
-zig-out/
-
-# Example dirs
-/examples/*/
 
 # Grammar volatiles
 *.wasm
@@ -49,16 +36,12 @@ zig-out/
 
 # npm logs
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
 
 # Local debug files
 debug_*.m2
 debug_*.txt
 gen_output.txt
 compile_commands.json
-opencode.json
 nvim.log
 
 # Editor files
@@ -66,6 +49,11 @@ nvim.log
 .DS_Store
 .vscode/
 
-# Local notes
-M2_BUILD_NOTES.md
+# Local tooling, notes, and plans
+.claude/
+CLAUDE.md
 AGENTS.md
+opencode.json
+mise.toml
+M2_BUILD_NOTES.md
+docs/superpowers/

@@ -221,6 +221,13 @@ If those tests fail, decide whether:
 - the generated corpus needs to be refreshed;
 - the affected corpus test should be updated manually.
 
+## Changing highlight queries
+
+`docs/highlight-queries.md` describes every capture and the conventions the
+query follows. Cover each query change with an assertion in `test/highlight/`;
+`tree-sitter test` runs those assertions with the corpus. Keep
+`queries/macaulay2/highlights.scm` identical to `queries/highlights.scm`.
+
 ## Extra checks
 
 If your change affects examples, run:

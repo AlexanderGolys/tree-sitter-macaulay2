@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+- Group keywords by the construct that introduces them: `when`, `list`, and
+  loop `do` are `@keyword.repeat`; `then`, `else`, and `do` of a `try` are
+  `@keyword.exception`; `shield` is no longer also captured as
+  `@keyword.debug`.
+- Capture installed methods as `@function.method` instead of `@label`.
+- Highlight `and`, `or`, `xor`, and `not` as `@operator` instead of
+  `@keyword.operator`; `not` is never captured as an installed method.
+- Highlight a capitalized adjacency installation operand (`Matrix Vector :=`)
+  as `@type.parameter` in the CLI and Rust highlighters.
+- Drop redundant text predicates from keyword patterns; Core-qualified keywords
+  share the node of their bare spelling.
+- Document the highlight captures in `docs/highlight-queries.md` and assert them
+  in `test/highlight/`.
+
 ## 6.2.0 - 2026-09-04
 
 - Preserve complete `if` and `for` expressions when they are operands of

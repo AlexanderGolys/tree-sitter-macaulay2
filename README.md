@@ -9,7 +9,7 @@
 > 
 ## Features
 
-- [x] Highlighting (`highlights.scm`)
+- [x] Highlighting (`highlights.scm`, see [docs/highlight-queries.md](docs/highlight-queries.md))
 - [x] Indentation (`indents.scm`)
 - [x] Symbol Tags (`tags.scm`)
 - [x] Folds (`folds.scm`)

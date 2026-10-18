@@ -9,8 +9,6 @@
 
 [Macaulay2](https://macaulay2.com/) grammar for [tree-sitter](https://github.com/tree-sitter/tree-sitter).
 
-<img width="3840" height="2160" alt="Macaulay2 code highlighted with this grammar" src="https://github.com/user-attachments/assets/06c3daba-1785-48fc-93b4-c9171081db05" />
-
 The parse tree follows the precedence and newline rules of Macaulay2's own
 parser; [docs/macaulay2-parsing-precedence.md](docs/macaulay2-parsing-precedence.md)
 describes how they are modelled.

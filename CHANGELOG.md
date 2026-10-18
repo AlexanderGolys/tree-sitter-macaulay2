@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.2 - 2026-10-18
+
+- Remove the screenshot from the README.
+
 ## 6.3.1 - 2026-10-18
 
 - Add Python bindings exporting the parser and all queries.

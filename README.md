@@ -5,7 +5,7 @@
 [![docs.rs][docs.rs]](https://docs.rs/tree-sitter-macaulay2)
 [![npm][npm]](https://www.npmjs.com/package/tree-sitter-macaulay2)
 [![pypi][pypi]](https://pypi.org/project/tree-sitter-macaulay2)
-[![license][license]](LICENCE)
+[![license][license]](#license)
 
 [Macaulay2](https://macaulay2.com/) grammar for [tree-sitter](https://github.com/tree-sitter/tree-sitter).
 
@@ -112,11 +112,12 @@ Part of the corpus is generated from Macaulay2's own parser; see
 
 ## License
 
-[MIT](LICENCE)
+Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or
+[MIT license](LICENSE-MIT) at your option.
 
 [release]: https://img.shields.io/github/v/release/AlexanderGolys/tree-sitter-macaulay2?logo=github
 [crates]: https://img.shields.io/crates/v/tree-sitter-macaulay2?logo=rust
 [docs.rs]: https://img.shields.io/docsrs/tree-sitter-macaulay2?logo=docs.rs
 [npm]: https://img.shields.io/npm/v/tree-sitter-macaulay2?logo=npm
 [pypi]: https://img.shields.io/pypi/v/tree-sitter-macaulay2?logo=pypi
-[license]: https://img.shields.io/github/license/AlexanderGolys/tree-sitter-macaulay2
+[license]: https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue

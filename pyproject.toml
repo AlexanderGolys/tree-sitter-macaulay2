@@ -5,21 +5,26 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tree-sitter-macaulay2"
 description = "Macaulay2 grammar for tree-sitter"
-version = "6.3.2"
+version = "6.3.3"
 keywords = ["incremental", "parsing", "tree-sitter", "macaulay2"]
 classifiers = [
   "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "License :: OSI Approved :: MIT License",
   "Topic :: Software Development :: Compilers",
   "Topic :: Text Processing :: Linguistic",
   "Typing :: Typed",
 ]
 authors = [{ name = "Alexander Golys", email = "alexandergolys@gmail.com" }]
 requires-python = ">=3.10"
-license.text = "MIT"
+license.text = "MIT OR Apache-2.0"
 readme = "README.md"
 
 [project.urls]
-Homepage = "https://github.com/AlexanderGolys/tree-sitter-macaulay2"
+Homepage = "https://spectralflux.dev/projects/tree-sitter-macaulay2"
+Repository = "https://github.com/AlexanderGolys/tree-sitter-macaulay2"
+Issues = "https://github.com/AlexanderGolys/tree-sitter-macaulay2/issues"
+Changelog = "https://github.com/AlexanderGolys/tree-sitter-macaulay2/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 core = ["tree-sitter~=0.24"]

@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.3.3 - 2026-10-28
+
+- Relicense under MIT OR Apache-2.0.
+- Add author, homepage, documentation, and issue tracker links to the
+  package metadata.
+
 ## 6.3.2 - 2026-10-18
 
 - Remove the screenshot from the README.

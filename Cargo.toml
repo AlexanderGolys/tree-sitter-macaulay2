@@ -1,15 +1,20 @@
 [package]
 name = "tree-sitter-macaulay2"
 description = "Macaulay2 grammar for the tree-sitter parsing library"
-version = "6.3.2"
+authors = ["Alexander Golys <alexandergolys@gmail.com>"]
+version = "6.3.3"
 keywords = ["incremental", "parsing", "macaulay2"]
 categories = ["parsing", "text-editors"]
+homepage = "https://spectralflux.dev/projects/tree-sitter-macaulay2"
+documentation = "https://docs.rs/tree-sitter-macaulay2"
 repository = "https://github.com/AlexanderGolys/tree-sitter-macaulay2"
+readme = "README.md"
 edition = "2018"
-license = "MIT"
+license = "MIT OR Apache-2.0"
 
 build = "bindings/rust/build.rs"
 include = [
+  "LICENSE-*",
   "bindings/rust/*",
   "grammar.js",
   "queries/*",

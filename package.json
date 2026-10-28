@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-macaulay2",
-  "version": "6.3.2",
+  "version": "6.3.3",
   "description": "Macaulay2 grammar for tree-sitter",
   "main": "bindings/node",
   "types": "bindings/node",
@@ -10,8 +10,12 @@
     "macaulay2",
     "tree-sitter"
   ],
-  "author": "Alexander Golys <alexandergolys@gmail.com>",
-  "license": "MIT",
+  "author": "Alexander Golys <alexandergolys@gmail.com> (https://spectralflux.dev)",
+  "license": "MIT OR Apache-2.0",
+  "homepage": "https://spectralflux.dev/projects/tree-sitter-macaulay2",
+  "bugs": {
+    "url": "https://github.com/AlexanderGolys/tree-sitter-macaulay2/issues"
+  },
   "type": "module",
   "repository": {
     "type": "git",
@@ -25,7 +29,8 @@
     "grammar.js",
     "tree-sitter.json",
     "README.md",
-    "LICENCE"
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
   ],
   "dependencies": {
     "node-addon-api": "^8.5.0",

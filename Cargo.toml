@@ -2,7 +2,7 @@
 name = "tree-sitter-macaulay2"
 description = "Macaulay2 grammar for the tree-sitter parsing library"
 authors = ["Alexander Golys <alexandergolys@gmail.com>"]
-version = "6.3.3"
+version = "6.3.4"
 keywords = ["incremental", "parsing", "macaulay2"]
 categories = ["parsing", "text-editors"]
 homepage = "https://spectralflux.dev/projects/tree-sitter-macaulay2"
@@ -19,6 +19,7 @@ include = [
   "grammar.js",
   "queries/*",
   "src/*",
+  "tree-sitter.json",
 ]
 
 [lib]

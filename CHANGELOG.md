@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.3.4 - 2026-10-28
+
+- Ship the Wasm parser in the npm package.
+- Ship a prebuilt Node binary for Linux x64, so installing there needs no
+  compiler.
+- Include `tree-sitter.json` in the crate.
+
 ## 6.3.3 - 2026-10-28
 
 - Relicense under MIT OR Apache-2.0.

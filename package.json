@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-macaulay2",
-  "version": "6.3.3",
+  "version": "6.3.4",
   "description": "Macaulay2 grammar for tree-sitter",
   "main": "bindings/node",
   "types": "bindings/node",
@@ -24,10 +24,12 @@
   "files": [
     "bindings/node",
     "binding.gyp",
+    "prebuilds/**",
     "queries",
     "src",
     "grammar.js",
     "tree-sitter.json",
+    "*.wasm",
     "README.md",
     "LICENSE-MIT",
     "LICENSE-APACHE"
@@ -53,6 +55,7 @@
     "install": "node-gyp-build",
     "generate": "tree-sitter generate",
     "build:wasm": "tree-sitter build --wasm",
+    "build:node": "prebuildify -t 20.19.5",
     "test": "tree-sitter test --rebuild",
     "test:node": "node --test bindings/node/*_test.js",
     "check": "tree-sitter test --rebuild",

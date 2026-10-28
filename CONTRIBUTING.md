@@ -300,6 +300,7 @@ Before a release, run:
 ```sh
 tree-sitter generate
 tree-sitter test
+npm run build:wasm
 npm run parse:examples
 npm test
 cargo test
@@ -321,6 +322,35 @@ tree-sitter test
 and commit the generated corpus output before releasing.
 
 The release should not depend on uncommitted generated files.
+
+## Release artifacts
+
+Each channel ships what the other tree-sitter grammars ship:
+
+- npm: sources, queries, the Wasm parser, and Node-API prebuilds under
+  `prebuilds/<platform>-<arch>/`. A platform without a prebuild compiles on install.
+- crates.io: sources, queries, and `tree-sitter.json`.
+- PyPI: a source distribution and abi3 wheels.
+- GitHub release: the Wasm parser and a source tarball.
+
+Native binaries must be built on the platform they target. On every machine
+available for the release, build the Node prebuild and the Python wheels:
+
+```sh
+npm run build:node                    # adds prebuilds/<platform>-<arch>/
+uvx cibuildwheel --output-dir dist    # Linux needs Docker; macOS and Windows build natively
+```
+
+Collect all `prebuilds/` directories on one machine before `npm publish`, since a
+published npm version cannot gain files later. PyPI accepts additional wheels for
+an existing version, so `twine upload` can run from each machine separately.
+
+Attach the Wasm parser and a source tarball to the GitHub release:
+
+```sh
+git archive --format=tar.gz -o tree-sitter-macaulay2.tar.gz "$TAG"
+gh release create "$TAG" tree-sitter-macaulay2.wasm tree-sitter-macaulay2.tar.gz
+```
 
 ## Summary
 

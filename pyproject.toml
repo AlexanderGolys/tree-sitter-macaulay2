@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tree-sitter-macaulay2"
 description = "Macaulay2 grammar for tree-sitter"
-version = "6.3.3"
+version = "6.3.4"
 keywords = ["incremental", "parsing", "tree-sitter", "macaulay2"]
 classifiers = [
   "Intended Audience :: Developers",

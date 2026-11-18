@@ -41,5 +41,28 @@ f = (x, y) -> x
 2_QQ
 -- <- number
 
-H#key
---^ property
+-- Binary `.` and `#` are punctuation; `.?`, `#?` and prefix `#` are operators.
+-- No access form gives its right operand a custom highlight.
+
+  H#key
+-- ^ punctuation.delimiter
+--  ^ variable
+
+  x.?name
+-- ^ operator
+--   ^ variable
+
+  L#0
+-- ^ punctuation.delimiter
+--  ^ number
+
+  #L
+--^ operator
+
+  H#?key
+-- ^ operator
+--   ^ variable
+
+  R_0
+-- ^ operator
+--  ^ property

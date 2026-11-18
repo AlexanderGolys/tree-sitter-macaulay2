@@ -355,8 +355,9 @@ else z
       condition: (symbol)
       (then_clause
         (symbol))))
-  (ERROR
-    (raw_string_content)))
+  (ERROR)
+  (cell
+    (symbol)))
 
 ==================
 (27) parenthesized newlines are whitespace: one 3-part if

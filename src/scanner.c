@@ -163,11 +163,25 @@ enum TokenType {
   SET_EXPRESSION_FLOOR_70,
 
   BYPASS_EXPRESSION_CONTEXT,
+
+  // Never valid in any parse state. Tree-sitter marks every external token
+  // valid during error recovery, which this token reveals.
+  ERROR_SENTINEL,
 };
 
 typedef enum { SCAN_NONE, SCAN_DONE, SCAN_FAIL } ScanResult;
 
 #define MAX_EXPRESSION_CONTEXTS (TREE_SITTER_SERIALIZATION_BUFFER_SIZE - 3)
+#define COUNT_OF(array) (sizeof(array) / sizeof((array)[0]))
+
+// Parsing precedence of implicit adjacency, and hence of every token that can
+// only begin an operand: symbols, literals and opening delimiters.
+#define ADJACENCY_PRECEDENCE 62
+
+// Longest keyword (`elapsedTiming`) with its `Core$` qualification fits.
+#define KEYWORD_BUFFER_SIZE 32
+
+static const char CORE_QUALIFIER[] = "Core$";
 
 typedef struct {
   uint8_t pending_floor;
@@ -272,7 +286,7 @@ void tree_sitter_macaulay2_external_scanner_deserialize(void *payload,
 
 static bool is_mathematical_operator(int32_t c) {
   return (c >= 0x00a0 && c <= 0x00bf) || c == 0x00d7 || c == 0x00f7 ||
-         (c >= 0x2190 && c <= 0x23ff) || (c >= 0x27c0 && c <= 0x27ff) ||
+         (c >= 0x2180 && c <= 0x23ff) || (c >= 0x27c0 && c <= 0x27ff) ||
          (c >= 0x2900 && c <= 0x2bff);
 }
 
@@ -303,10 +317,6 @@ static bool is_radix_prefix(int32_t c) {
   return c == 'b' || c == 'B' || c == 'o' || c == 'O' || c == 'x' || c == 'X';
 }
 
-static bool is_known_mathematical_operator(int32_t c) {
-  return c == 0x00b7 || c == 0x22a0 || c == 0x29e2; // ·, ⊠, ⧢
-}
-
 static bool is_inline_whitespace(int32_t c) { return c == ' ' || c == '\t'; }
 
 static bool is_whitespace(int32_t c) {
@@ -322,55 +332,40 @@ static bool emit(TSLexer *lexer, enum TokenType symbol) {
   return true;
 }
 
-// This helper is narrower than "is keyword". It answers a parser-specific
-// question used by adjacency scanning:
-//
-//   If an identifier-like word appears after something that could form the
-//   implicit adjacency operator, should we *block* adjacency because the word
-//   is actually starting a structural construct?
-//
-// For example, after `if x`, the `then` should start an `if` continuation, not
-// be consumed as `x SPACE then`. Binary word operators such as `or` also need
-// to be blocked here. By contrast, prefix/locality words such as `not` or
-// `symbol` must *not* be listed, because they still need to participate in
-// ordinary expression parsing after adjacency.
-static bool is_adjacency_blocking_keyword_ahead(TSLexer *lexer) {
-  char buffer[32];
-  int i = 0;
-
-  while (is_ident_char(lexer->lookahead) && i < 31) {
-    buffer[i++] = (char)lexer->lookahead;
+// Consume one identifier into `buffer`. Every keyword is ASCII, so an
+// identifier with any other character, or one too long for the buffer, yields
+// the empty word instead of being truncated into a false keyword: the code
+// point U+0174 must not turn `Ŵhen` into `then`.
+static void scan_word(TSLexer *lexer, char buffer[KEYWORD_BUFFER_SIZE]) {
+  size_t length = 0;
+  bool keyword_shaped = true;
+  while (is_ident_char(lexer->lookahead)) {
+    keyword_shaped &=
+        lexer->lookahead < 0x80 && length + 1 < KEYWORD_BUFFER_SIZE;
+    if (keyword_shaped)
+      buffer[length++] = (char)lexer->lookahead;
     advance(lexer);
   }
+  buffer[keyword_shaped ? length : 0] = '\0';
+}
 
-  if (is_ident_char(lexer->lookahead))
-    return false;
-
-  buffer[i] = '\0';
-
-  if (i == 0)
-    return false;
-
-  // Structural keywords have canonical Core-qualified spellings as well.
-  // Strip exactly one `Core$`: `Foo$then` and `Core$Core$then` remain ordinary
-  // symbols and therefore must not suppress adjacency.
-  const char *word = buffer;
-  if (strncmp(word, "Core$", 5) == 0)
-    word += 5;
-
-  static const char *const keywords[] = {
-    "then",    "else",    "from",     "to",
-    "when",     "do",      "in",      "of",
-    "list",     "and",     "or",       "xor",
-    "SPACE",    "except", 
+// `Core$K` spells the keyword K, except for the words that only continue an
+// enclosing construct. Macaulay2 matches those by the identity of the lexed
+// word, so `Core$then` stays a distinct word that is an error wherever it
+// appears. Exactly one qualifier is stripped: `Core$Core$if` is a symbol.
+static const char *keyword_spelling(const char *word) {
+  static const char *const continuation_words[] = {
+      "then", "else", "do", "list", "except",
+      "when", "of",   "in", "from", "to",
   };
-
-  for (size_t k = 0; k < sizeof(keywords) / sizeof(keywords[0]); k++) {
-    if (strcmp(word, keywords[k]) == 0)
-      return true;
-  }
-
-  return false;
+  const size_t qualifier_length = sizeof(CORE_QUALIFIER) - 1;
+  if (strncmp(word, CORE_QUALIFIER, qualifier_length) != 0)
+    return word;
+  const char *keyword = word + qualifier_length;
+  for (size_t i = 0; i < COUNT_OF(continuation_words); i++)
+    if (strcmp(keyword, continuation_words[i]) == 0)
+      return word;
+  return keyword;
 }
 
 static void skip_whitespace(TSLexer *lexer) {
@@ -431,14 +426,11 @@ static bool can_scan_expression_context(const bool *valid_symbols) {
       valid_symbols[BYPASS_EXPRESSION_CONTEXT])
     return true;
 
-  for (size_t i = 0;
-       i < sizeof(operator_gate_tokens) / sizeof(operator_gate_tokens[0]); i++)
+  for (size_t i = 0; i < COUNT_OF(operator_gate_tokens); i++)
     if (valid_symbols[operator_gate_tokens[i].token])
       return true;
 
-  for (size_t i = 0;
-       i < sizeof(expression_floor_tokens) / sizeof(expression_floor_tokens[0]);
-       i++)
+  for (size_t i = 0; i < COUNT_OF(expression_floor_tokens); i++)
     if (valid_symbols[expression_floor_tokens[i].token])
       return true;
   return false;
@@ -549,17 +541,47 @@ typedef struct {
   bool bypass_floor;
 } NextTokenInfo;
 
+static const NextTokenInfo OPERAND_INFO = {ADJACENCY_PRECEDENCE, -1,
+                                           COMMENT_NONE, 0, false, false};
+
+// Operator words spelled with an operator character. M2's lexer takes one such
+// character, plus a directly following `=`, as one word; any word not listed
+// here and not a synonym below is an ordinary symbol, such as `§` or `∧=`.
+static const ParsingWord mathematical_operator_words[] = {
+    {"·", 52, -1, false}, {"·=", 14, -1, false},
+    {"⊠", 54, -1, false}, {"⊠=", 14, -1, false},
+    {"⧢", 54, -1, false}, {"⧢=", 14, -1, false},
+};
+
+// Core installs these one-character words as synonyms of ASCII operators
+// (m2/exports.m2); each parses exactly like its twin.
+static const struct {
+  const char *synonym;
+  const char *twin;
+} operator_synonyms[] = {
+    {"⊗", "**"}, {"←", "<-"}, {"→", "->"}, {"⇒", "=>"}, {"≠", "!="},
+    {"⊕", "++"}, {"≪", "<<"}, {"≫", ">>"}, {"∧", "and"}, {"∨", "or"},
+    {"≤", "<="}, {"≥", ">="}, {"⊢", "|-"},
+};
+
+static const ParsingWord *find_parsing_word(const ParsingWord *words,
+                                            size_t count,
+                                            const char *spelling) {
+  for (size_t i = 0; i < count; i++)
+    if (strcmp(words[i].word, spelling) == 0)
+      return &words[i];
+  return NULL;
+}
+
 static NextTokenInfo parsing_word_info(const char *word) {
-  if (strncmp(word, "Core$", 5) == 0)
-    word += 5;
+  word = keyword_spelling(word);
 
   uint8_t reset_floor = 0;
   static const char *const wide_control_words[] = {
       "break", "catch", "continue", "finish", "if", "return",
       "step", "throw", "try", "while",
   };
-  for (size_t i = 0;
-       i < sizeof(wide_control_words) / sizeof(wide_control_words[0]); i++)
+  for (size_t i = 0; i < COUNT_OF(wide_control_words); i++)
     if (strcmp(word, wide_control_words[i]) == 0) {
       reset_floor = 12;
       break;
@@ -584,14 +606,85 @@ static NextTokenInfo parsing_word_info(const char *word) {
       {"SPACE", 62, -1, false},
   };
 
-  for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
-    if (strcmp(word, words[i].word) == 0)
-      return (NextTokenInfo){words[i].precedence, words[i].unary_strength,
-                             COMMENT_NONE, reset_floor,
-                             strcmp(word, "SPACE") == 0, false};
+  const ParsingWord *known = find_parsing_word(words, COUNT_OF(words), word);
+  if (known != NULL)
+    return (NextTokenInfo){known->precedence, known->unary_strength,
+                           COMMENT_NONE, reset_floor,
+                           strcmp(word, "SPACE") == 0, false};
   bool bypass_floor = strcmp(word, "if") == 0 || strcmp(word, "for") == 0;
-  return (NextTokenInfo){62, -1, COMMENT_NONE, reset_floor, false,
-                         bypass_floor};
+  return (NextTokenInfo){ADJACENCY_PRECEDENCE, -1, COMMENT_NONE, reset_floor,
+                         false, bypass_floor};
+}
+
+// `before_digit` tells whether a digit directly follows the punctuation word.
+static NextTokenInfo punctuation_word_info(const ParsingWord *word,
+                                           bool before_digit) {
+  int8_t precedence = word->precedence;
+  // `.2` is one floating-point word. After a complete expression it is
+  // reached through the implicit adjacency operator, not member access.
+  if (strcmp(word->word, ".") == 0 && before_digit)
+    precedence = ADJACENCY_PRECEDENCE;
+  else if (strcmp(word->word, "=") == 0)
+    precedence = -1;
+  else if (strcmp(word->word, ":=") == 0)
+    precedence = -2;
+  else if (strcmp(word->word, "<-") == 0)
+    precedence = -3;
+  else if (strcmp(word->word, "=>") == 0)
+    precedence = -4;
+  else if (strcmp(word->word, "->") == 0)
+    precedence = -5;
+  int comment = COMMENT_NONE;
+  if (strcmp(word->word, "--") == 0)
+    comment = COMMENT_LINE;
+  else if (strcmp(word->word, "-*") == 0)
+    comment = COMMENT_BLOCK;
+  return (NextTokenInfo){precedence, word->unary_strength, comment, 0, false,
+                         false};
+}
+
+// Operator characters all lie in the Basic Multilingual Plane, so they take
+// the standard two- or three-byte UTF-8 form.
+static size_t encode_utf8(int32_t c, char *buffer) {
+  if (c < 0x800) {
+    buffer[0] = (char)(0xc0 | (c >> 6));
+    buffer[1] = (char)(0x80 | (c & 0x3f));
+    return 2;
+  }
+  buffer[0] = (char)(0xe0 | (c >> 12));
+  buffer[1] = (char)(0x80 | ((c >> 6) & 0x3f));
+  buffer[2] = (char)(0x80 | (c & 0x3f));
+  return 3;
+}
+
+static NextTokenInfo classify_mathematical_operator(TSLexer *lexer) {
+  // One three-byte character, `=` and the terminator.
+  char spelling[5];
+  size_t length = encode_utf8(lexer->lookahead, spelling);
+  advance(lexer);
+  if (lexer->lookahead == '=') {
+    spelling[length++] = '=';
+    advance(lexer);
+  }
+  spelling[length] = '\0';
+
+  const ParsingWord *own = find_parsing_word(
+      mathematical_operator_words, COUNT_OF(mathematical_operator_words),
+      spelling);
+  if (own != NULL)
+    return punctuation_word_info(own, false);
+
+  for (size_t i = 0; i < COUNT_OF(operator_synonyms); i++) {
+    if (strcmp(spelling, operator_synonyms[i].synonym) != 0)
+      continue;
+    const char *twin = operator_synonyms[i].twin;
+    const ParsingWord *punctuation =
+        find_parsing_word(parsing_punctuation_words,
+                          COUNT_OF(parsing_punctuation_words), twin);
+    return punctuation != NULL ? punctuation_word_info(punctuation, false)
+                               : parsing_word_info(twin);
+  }
+  return OPERAND_INFO;
 }
 
 static NextTokenInfo classify_next_token(TSLexer *lexer) {
@@ -603,42 +696,18 @@ static NextTokenInfo classify_next_token(TSLexer *lexer) {
     return (NextTokenInfo){4, -1, COMMENT_NONE, 0, false, false};
 
   if (is_alpha(c)) {
-    char word[64];
-    size_t length = 0;
-    bool overflow = false;
-    while (is_ident_char(lexer->lookahead)) {
-      if (length + 1 < sizeof(word))
-        word[length++] = (char)lexer->lookahead;
-      else
-        overflow = true;
-      advance(lexer);
-    }
-    if (overflow)
-      return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false, false};
-    word[length] = '\0';
+    char word[KEYWORD_BUFFER_SIZE];
+    scan_word(lexer, word);
     return parsing_word_info(word);
   }
 
   if (is_digit(c) || c == '"')
-    return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false, false};
+    return OPERAND_INFO;
 
-  if (c == 0x00b7) {
-    advance(lexer);
-    return lexer->lookahead == '='
-               ? (NextTokenInfo){14, -1, COMMENT_NONE, 0, false, false}
-               : (NextTokenInfo){52, -1, COMMENT_NONE, 0, false, false};
-  }
-  if (c == 0x22a0 || c == 0x29e2) {
-    advance(lexer);
-    return lexer->lookahead == '='
-               ? (NextTokenInfo){14, -1, COMMENT_NONE, 0, false, false}
-               : (NextTokenInfo){54, -1, COMMENT_NONE, 0, false, false};
-  }
   if (is_mathematical_operator(c))
-    return (NextTokenInfo){62, -1, COMMENT_NONE, 0, false, false};
+    return classify_mathematical_operator(lexer);
 
-  const size_t count = sizeof(parsing_punctuation_words) /
-                       sizeof(parsing_punctuation_words[0]);
+  const size_t count = COUNT_OF(parsing_punctuation_words);
   bool candidates[count];
   memset(candidates, true, sizeof(candidates));
   const ParsingWord *accepted = NULL;
@@ -666,31 +735,7 @@ static NextTokenInfo classify_next_token(TSLexer *lexer) {
   }
 
   if (accepted != NULL)
-  {
-    int8_t precedence = accepted->precedence;
-    // `.2` is one floating-point word. After a complete expression it is
-    // reached through the implicit adjacency operator, not member access.
-    if (strcmp(accepted->word, ".") == 0 &&
-        is_digit(lexer->lookahead))
-      precedence = 62;
-    else if (strcmp(accepted->word, "=") == 0)
-      precedence = -1;
-    else if (strcmp(accepted->word, ":=") == 0)
-      precedence = -2;
-    else if (strcmp(accepted->word, "<-") == 0)
-      precedence = -3;
-    else if (strcmp(accepted->word, "=>") == 0)
-      precedence = -4;
-    else if (strcmp(accepted->word, "->") == 0)
-      precedence = -5;
-    int comment = COMMENT_NONE;
-    if (strcmp(accepted->word, "--") == 0)
-      comment = COMMENT_LINE;
-    else if (strcmp(accepted->word, "-*") == 0)
-      comment = COMMENT_BLOCK;
-    return (NextTokenInfo){precedence, accepted->unary_strength, comment, 0,
-                           false, false};
-  }
+    return punctuation_word_info(accepted, is_digit(lexer->lookahead));
   return (NextTokenInfo){0, -1, COMMENT_NONE, 0, false, false};
 }
 
@@ -750,10 +795,7 @@ static NextTokenInfo classify_after_control_trivia(TSLexer *lexer) {
 }
 
 static bool can_scan_nullable_control(const bool *valid_symbols) {
-  for (size_t i = 0;
-       i < sizeof(nullable_control_keywords) /
-               sizeof(nullable_control_keywords[0]);
-       i++) {
+  for (size_t i = 0; i < COUNT_OF(nullable_control_keywords); i++) {
     NullableControlKeyword item = nullable_control_keywords[i];
     if (valid_symbols[item.bare_token] ||
         valid_symbols[item.operand_token])
@@ -764,24 +806,13 @@ static bool can_scan_nullable_control(const bool *valid_symbols) {
 
 static bool scan_nullable_control(TSLexer *lexer,
                                   const bool *valid_symbols) {
-  char buffer[32];
-  size_t length = 0;
-  while (is_ident_char(lexer->lookahead)) {
-    if (length + 1 >= sizeof(buffer))
-      return false;
-    buffer[length++] = (char)lexer->lookahead;
-    advance(lexer);
-  }
-  buffer[length] = '\0';
+  char buffer[KEYWORD_BUFFER_SIZE];
+  scan_word(lexer, buffer);
   lexer->mark_end(lexer);
 
-  const char *word =
-      strncmp(buffer, "Core$", 5) == 0 ? buffer + 5 : buffer;
+  const char *word = keyword_spelling(buffer);
   const NullableControlKeyword *accepted = NULL;
-  for (size_t i = 0;
-       i < sizeof(nullable_control_keywords) /
-               sizeof(nullable_control_keywords[0]);
-       i++)
+  for (size_t i = 0; i < COUNT_OF(nullable_control_keywords); i++)
     if (strcmp(word, nullable_control_keywords[i].word) == 0) {
       accepted = &nullable_control_keywords[i];
       break;
@@ -817,9 +848,7 @@ static bool scan_expression_context(Scanner *scanner, TSLexer *lexer,
   // All such grammar branches merge into the same contextual-expression rule;
   // scanner state carries the information that LR state merging would
   // otherwise lose.
-  for (size_t i = 0;
-       i < sizeof(expression_floor_tokens) / sizeof(expression_floor_tokens[0]);
-       i++) {
+  for (size_t i = 0; i < COUNT_OF(expression_floor_tokens); i++) {
     PrecedenceToken item = expression_floor_tokens[i];
     if (valid_symbols[item.token]) {
       uint8_t outer = active_floor(scanner);
@@ -915,8 +944,7 @@ static bool scan_expression_context(Scanner *scanner, TSLexer *lexer,
     return valid_symbols[token] && emit(lexer, token);
   }
 
-  for (size_t i = 0;
-       i < sizeof(operator_gate_tokens) / sizeof(operator_gate_tokens[0]); i++) {
+  for (size_t i = 0; i < COUNT_OF(operator_gate_tokens); i++) {
     PrecedenceToken item = operator_gate_tokens[i];
     if (item.value == parsing_precedence && valid_symbols[item.token])
       return emit(lexer, item.token);
@@ -931,7 +959,7 @@ static bool scan_expression_context(Scanner *scanner, TSLexer *lexer,
 static ScanResult scan_guarded_punctuation(TSLexer *lexer,
                                            const bool *valid_symbols) {
   const size_t word_count =
-      sizeof(punctuation_words) / sizeof(punctuation_words[0]);
+      COUNT_OF(punctuation_words);
   uint64_t candidates = (UINT64_C(1) << word_count) - 1;
   size_t position = 0;
   int accepted_token = -2;
@@ -1350,18 +1378,23 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
   }
 
   if (is_alpha(c)) {
-    // For identifier-like words, adjacency is allowed unless the word is one of
-    // the structural continuations that must start a larger statement form.
-    if (is_adjacency_blocking_keyword_ahead(lexer))
-      return false;
-    return emit(lexer, SPACE);
+    // A word is an adjacency operand unless it cannot begin an expression:
+    // continuations such as `then`, binary words such as `or`, and an
+    // explicit `SPACE`. Prefix words such as `not` or `symbol` remain
+    // operands.
+    NextTokenInfo next = classify_next_token(lexer);
+    bool begins_expression =
+        !next.explicit_space &&
+        (next.precedence >= ADJACENCY_PRECEDENCE || next.unary_strength >= 0);
+    return begins_expression && emit(lexer, SPACE);
   }
 
-  // Mathematical operators are separate one-character words in M2. Unknown
-  // ones retain the default adjacency behavior; operators modeled explicitly
-  // by this grammar must remain available to the parser as operators.
-  if (is_mathematical_operator(c) && !is_known_mathematical_operator(c))
-    return emit(lexer, SPACE);
+  // An operator character forms either an operator word or a plain symbol.
+  // Unlike `not`, no operator word is prefix-only, so each one keeps its
+  // binary meaning after an operand: `f ≤ x` compares and `f · x` multiplies.
+  if (is_mathematical_operator(c))
+    return classify_next_token(lexer).precedence == ADJACENCY_PRECEDENCE &&
+           emit(lexer, SPACE);
 
   if (c == '[') {
     // `f[x]` is the bracket analogue of `f<|x|>` above.
@@ -1392,6 +1425,11 @@ static bool scan_adjacency(TSLexer *lexer, const bool *valid_symbols,
 bool tree_sitter_macaulay2_external_scanner_scan(void *payload, TSLexer *lexer,
                                                  const bool *valid_symbols) {
   Scanner *scanner = payload;
+  // During error recovery raw-string content would swallow the rest of the
+  // file, so leave recovery to the built-in lexer.
+  if (valid_symbols[ERROR_SENTINEL])
+    return false;
+
   // Raw strings are the only scanner mode where leading spaces/newlines are
   // significant content, so we must handle them before generic whitespace
   // skipping.

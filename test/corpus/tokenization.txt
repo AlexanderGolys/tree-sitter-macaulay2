@@ -85,7 +85,7 @@ Binary double star cannot split into two prefixes
 
 (source_file
   (ERROR
-    (raw_string_content)))
+    (UNEXPECTED '1')))
 
 ==================
 Binary double plus cannot split into two prefixes
@@ -95,7 +95,7 @@ Binary double plus cannot split into two prefixes
 
 (source_file
   (ERROR
-    (raw_string_content)))
+    (UNEXPECTED '1')))
 
 ==================
 Binary sharp question cannot split into two prefixes
@@ -105,7 +105,7 @@ Binary sharp question cannot split into two prefixes
 
 (source_file
   (ERROR
-    (raw_string_content)))
+    (UNEXPECTED '1')))
 
 ==================
 Lambda arrow cannot split into two prefixes
@@ -115,7 +115,7 @@ Lambda arrow cannot split into two prefixes
 
 (source_file
   (ERROR
-    (raw_string_content)))
+    (UNEXPECTED '1')))
 
 ==================
 Evaluated assignment cannot split into two prefixes
@@ -125,7 +125,7 @@ Evaluated assignment cannot split into two prefixes
 
 (source_file
   (ERROR
-    (raw_string_content)))
+    (UNEXPECTED '1')))
 
 ==================
 Binary equivalence cannot split into two prefixes
@@ -135,7 +135,7 @@ Binary equivalence cannot split into two prefixes
 
 (source_file
   (ERROR
-    (raw_string_content)))
+    (UNEXPECTED '1')))
 
 ==================
 Compound assignment cannot split into two greater prefixes
@@ -145,7 +145,7 @@ Compound assignment cannot split into two greater prefixes
 
 (source_file
   (ERROR
-    (raw_string_content)))
+    (UNEXPECTED '1')))
 
 ==================
 Postfix star word cannot split into a parenthesized prefix
@@ -154,8 +154,7 @@ Postfix star word cannot split into a parenthesized prefix
 ---
 
 (source_file
-  (ERROR
-    (raw_string_content)))
+  (ERROR))
 
 ==================
 Unterminated block comment remains an error
@@ -167,4 +166,4 @@ Unterminated block comment remains an error
   (cell
     (integer_literal))
   (ERROR
-    (raw_string_content)))
+    (UNEXPECTED '\0')))

@@ -46,7 +46,13 @@
 ; Operators
 ; Operator-bearing nodes keep this field across the assignment/structured-
 ; binding CST split, so avoid coupling the base capture to every node name.
-(_ operator: _ @operator)
+; Binary `.` and `#` are punctuation instead, see below; the prefix length
+; `#L` and the tests `.?` and `#?` stay operators.
+((_ operator: _ @operator)
+  (#not-any-of? @operator "." "#"))
+
+(prefix_expression
+  operator: "#" @operator)
 
 ; Punctuation
 [
@@ -64,6 +70,10 @@
   ","
   ";"
 ] @punctuation.delimiter
+
+; Member access and indexing: x.name, H#key
+(binary_expression
+  operator: ["." "#"] @punctuation.delimiter)
 
 ; Conditionals: if c then a else b
 "if" @keyword.conditional
@@ -183,9 +193,9 @@
 ]
 
 
-; Members, options, and properties: x.name, H#key, L#0, R_0
+; Subscripts: R_0, x_i
 (binary_expression
-  operator: ["." ".?" "#" "#?" "_"]
+  operator: "_"
   right: [(symbol) (integer_literal)] @property)
 
 
@@ -314,7 +324,11 @@
   (#match? @boolean "^(Core\\$)?(true|false)$"))
 
 ((symbol) @error
-  (#match? @error "^(Core\\$)?(error|stderr)$")
+  (#match? @error "^(Core\\$)?(error|stderr|Error)$")
+  (#set! priority 160))
+
+((symbol) @keyword.directive
+  (#match? @keyword.directive "^(Core\\$)?(exit|end|quit|restart)$")
   (#set! priority 160))
 
 

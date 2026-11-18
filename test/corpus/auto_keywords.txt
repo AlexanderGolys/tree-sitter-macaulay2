@@ -138,3 +138,96 @@ step x
   (cell
     (debug_clause
       (symbol))))
+
+
+==================
+(13) Core$for i from 1 to 2 do i [auto keywords]
+==================
+Core$for i from 1 to 2 do i
+---
+
+(source_file
+  (cell
+    (for_loop
+      variable: (symbol)
+      (iteration_range
+        range_start: (integer_literal)
+        range_end: (integer_literal))
+      (loop_body
+        ignored_value: (symbol)))))
+
+
+==================
+(14) Core$while false do 1 [auto keywords]
+==================
+Core$while false do 1
+---
+
+(source_file
+  (cell
+    (while_loop
+      condition: (symbol)
+      (loop_body
+        ignored_value: (integer_literal)))))
+
+
+==================
+(15) Core$try 1 else 2 [auto keywords]
+==================
+Core$try 1 else 2
+---
+
+(source_file
+  (cell
+    (try_statement
+      (integer_literal)
+      fallback: (else_clause
+        (integer_literal)))))
+
+
+==================
+(16) symbol Core$then [auto keywords]
+==================
+symbol Core$then
+---
+
+(source_file
+  (cell
+    (quote_expression
+      token: (symbol))))
+
+
+==================
+(17) local Core$then [auto keywords]
+==================
+local Core$then
+---
+
+(source_file
+  (cell
+    (quote_expression
+      token: (symbol))))
+
+
+==================
+(18) symbol ∧ [auto keywords]
+==================
+symbol ∧
+---
+
+(source_file
+  (cell
+    (quote_expression
+      token: (symbol))))
+
+
+==================
+(19) symbol · [auto keywords]
+==================
+symbol ·
+---
+
+(source_file
+  (cell
+    (quote_expression
+      token: (keyword))))

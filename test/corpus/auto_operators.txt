@@ -1655,3 +1655,254 @@ x.x()
     (binary_expression
       left: (float_literal)
       right: (symbol))))
+
+
+==================
+(108) a ∧ b [auto operators]
+==================
+a ∧ b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(109) a ∨ b [auto operators]
+==================
+a ∨ b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(110) not a ∧ b [auto operators]
+==================
+not a ∧ b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (prefix_expression
+        operand: (symbol))
+      right: (symbol))))
+
+
+==================
+(111) a ≠ b [auto operators]
+==================
+a ≠ b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(112) a ≤ b [auto operators]
+==================
+a ≤ b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(113) a ≥ b [auto operators]
+==================
+a ≥ b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(114) ≤ b [auto operators]
+==================
+≤ b
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (symbol))))
+
+
+==================
+(115) a ≪ b [auto operators]
+==================
+a ≪ b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(116) ≪ b [auto operators]
+==================
+≪ b
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (symbol))))
+
+
+==================
+(117) a ≫ b [auto operators]
+==================
+a ≫ b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(118) a ⊢ b [auto operators]
+==================
+a ⊢ b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(119) ⊢ b [auto operators]
+==================
+⊢ b
+---
+
+(source_file
+  (cell
+    (prefix_expression
+      operand: (symbol))))
+
+
+==================
+(120) a ⊕ b [auto operators]
+==================
+a ⊕ b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(121) a ⊗ b ⊕ c [auto operators]
+==================
+a ⊗ b ⊕ c
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (binary_expression
+        left_operand: (symbol)
+        right: (symbol))
+      right: (symbol))))
+
+
+==================
+(122) f = x → x [auto operators]
+==================
+f = x → x
+---
+
+(source_file
+  (cell
+    (assignment
+      left: (symbol)
+      right: (lambda_expression
+        parameters: (symbol)
+        body: (symbol)))))
+
+
+==================
+(123) (x, y) → x [auto operators]
+==================
+(x, y) → x
+---
+
+(source_file
+  (cell
+    (lambda_expression
+      parameters: (sequence
+        (symbol)
+        (symbol))
+      body: (symbol))))
+
+
+==================
+(124) x ← 3 [auto operators]
+==================
+x ← 3
+---
+
+(source_file
+  (cell
+    (evaluated_assignment
+      left: (symbol)
+      right: (integer_literal))))
+
+
+==================
+(125) x ⇒ 3 [auto operators]
+==================
+x ⇒ 3
+---
+
+(source_file
+  (cell
+    (option
+      left: (symbol)
+      right: (integer_literal))))
+
+
+==================
+(126) f ≤ x [auto operators]
+==================
+f ≤ x
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))

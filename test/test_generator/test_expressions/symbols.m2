@@ -12,3 +12,20 @@ x$.2
 é
 😀
 α⊠β
+😀😀 = 11
+x😀y
+§
+§=
+§§
+a§1
+1§
+a × b
+x²
+ↀ=
+aↀb
+Ŵhen
+x Ŵhen
+x Ųeturn
+a ∧= b
+Core$§
+Core$∧ 1

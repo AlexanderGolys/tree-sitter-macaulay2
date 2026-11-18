@@ -68,11 +68,12 @@ always an operator, even as the sign of a prefix installation.
 | `@variable.builtin`   | output history and interpreter settings                            | `oo`, `o12`, `debugLevel`       |
 | `@constant.builtin`   | builtin constants                                                  | `pi`, `ii`, `infinity`, `null`  |
 | `@boolean`            | `true`, `false`                                                    |                                 |
-| `@error`              | `error`, `stderr`                                                  | `error "bad input"`             |
+| `@error`              | `error`, `stderr`, `Error`                                         | `error "bad input"`             |
+| `@keyword.directive`  | session control: `exit`, `end`, `quit`, `restart`                  | `restart`                       |
 | `@function`           | name bound to a lambda; package functions                          | `f = x -> x^2`                  |
 | `@function.call`      | left operand of application by adjacency                           | `gb I`                          |
 | `@function.builtin`   | `installAssignmentMethod`, `getWWW`, `splitWWW`, `urlEncode`       | `getWWW "https://…"`            |
-| `@property`           | right operand of `.`, `.?`, `#`, `#?`, `_`                         | `H#key`, `R_0`, `x.name`        |
+| `@property`           | right operand of `_`                                               | `R_0`, `x_i`                    |
 | `@type`               | class and parent of `new`                                          | `new Type of Parent`            |
 | `@module`             | package name passed to a package function                          | `needsPackage "Graphs"`, `importFrom_Core` |
 | `@namespace`          | file passed to `load`                                              | `load "setup.m2"`               |
@@ -84,7 +85,7 @@ always an operator, even as the sign of a prefix installation.
 | `@comment`            | `-- line` and `-* block *-` comments                               |                                 |
 | `@operator`           | every operator not captured more specifically, including `and`, `or`, `xor`, `not` | `+`, `->`, `a and not b` |
 | `@punctuation.bracket` | `( ) [ ] { } <| |>`                                               |                                 |
-| `@punctuation.delimiter` | `,` `;`                                                         |                                 |
+| `@punctuation.delimiter` | `,` `;`; binary `.` and `#`                                     | `x.name`, `H#key`               |
 
 ## Conventions
 
@@ -100,6 +101,12 @@ never carry a text predicate:
 ```scheme
 "if" @keyword.conditional          ; matches `if` and `Core$if`
 ```
+
+Words that only continue a construct (`then else do list except when of in
+from to`) have no qualified spelling: Macaulay2 rejects `if x Core$then y`, and
+so does the grammar. The Unicode operator synonyms Core installs work the same
+way as qualified keywords: `∧`, `→`, `⊕`, … are aliased to `and`, `->`, `++`,
+…, so `"and" @operator` also matches `a ∧ b`.
 
 **Symbols** — `Core$pi` is a single `(symbol)` node whose text includes the
 prefix. Every predicate on node text starts with `^(Core\\$)?`:

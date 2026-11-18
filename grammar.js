@@ -24,12 +24,35 @@ const ASSIGNMENT_GATE_BY_OPERATOR = {
 };
 
 // Macaulay2's lexer treats every non-ASCII UTF-8 character as alphabetic,
-// except for the ranges reserved for one-character mathematical operators.
-// Keep those ranges separate so `α⊠β` cannot be consumed as one identifier.
+// except for the ranges reserved for one-character mathematical operators
+// (`ismathoperator` in d/ctype.d). Keep those ranges separate so `α⊠β` cannot
+// be consumed as one identifier. The arrows range starts at U+2180, not at
+// U+2190 as its comment claims: ctype.d tests the first two UTF-8 bytes with
+// the mask `(c & 0xfffe) == 0xe286`, i.e. lead bytes E2 86 and E2 87.
 const unicodeIdentifierCharacter =
-  /[\u0080-\u009f\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u218f\u2400-\u27bf\u2800-\u28ff\u2c00-\u{10ffff}]/u;
+  /[\u0080-\u009f\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u217f\u2400-\u27bf\u2800-\u28ff\u2c00-\u{10ffff}]/u;
 const mathematicalOperatorCharacter =
-  /[\u00a0-\u00bf\u00d7\u00f7\u2190-\u23ff\u27c0-\u27ff\u2900-\u2bff]/u;
+  /[\u00a0-\u00bf\u00d7\u00f7\u2180-\u23ff\u27c0-\u27ff\u2900-\u2bff]/u;
+
+// Core (m2/exports.m2) installs these one-character words as synonyms of
+// ASCII operators; each parses exactly like its twin, e.g. `x → x` is a
+// function and `a ∧ b` is `a and b`. Their `=`-suffixed spellings such as
+// `∧=` are not synonyms, so they remain ordinary symbols.
+const unicodeSynonyms = {
+  "**": "⊗",
+  "<-": "←",
+  "->": "→",
+  "=>": "⇒",
+  "!=": "≠",
+  "++": "⊕",
+  "<<": "≪",
+  ">>": "≫",
+  and: "∧",
+  or: "∨",
+  "<=": "≤",
+  ">=": "≥",
+  "|-": "⊢",
+};
 
 const binaryOperators = [
   {
@@ -280,6 +303,32 @@ const keywords = [
   "xor",
 ];
 
+// Words that only continue an enclosing construct. Macaulay2 recognises them
+// by the identity of the lexed word (`token.word == thenW` in d/parser.d), so
+// `Core$then` never continues an `if`: it is a syntax error unless quoted.
+const continuationKeywords = [
+  "then",
+  "else",
+  "do",
+  "list",
+  "except",
+  "when",
+  "of",
+  "in",
+  "from",
+  "to",
+];
+
+// Nullable control words are excluded because the scanner owns them.
+const reservedKeywords = keywords.filter(
+  (keyword) => !nullableControlKeywords.includes(keyword),
+);
+// Operators spelled with an operator character, such as `·`, `⊠=` and `∧`.
+const mathematicalOperatorWords = [
+  ...operatorSymbols,
+  ...Object.values(unicodeSynonyms),
+].filter((spelling) => mathematicalOperatorCharacter.test(spelling));
+
 // Operator tokens nameable after a quote specifier (e.g. `symbol +`,
 // `symbol ..`, `symbol and`). This includes word-shaped operators such as
 // and/or/xor/not/SPACE, which live in `operatorSymbols`.
@@ -319,9 +368,14 @@ export default grammar({
 
   word: ($) => $.symbol,
 
+  // Words which may never be lexed as an ordinary `symbol`. Without the
+  // operator words, a lone `∧` would fall back to the `symbol` token.
   reserved: {
-    keywords: (_) =>
-      keywords.filter((keyword) => !nullableControlKeywords.includes(keyword)),
+    keywords: (_) => [
+      ...reservedKeywords,
+      ...reservedKeywords.map(qualifiedSpelling),
+      ...mathematicalOperatorWords,
+    ],
     unreserved: (_) => [],
   },
 
@@ -360,6 +414,7 @@ export default grammar({
     $._lambda_gate,
     ...expressionFloors.map((floor) => $[expressionFloorTokenName(floor)]),
     $._bypass_expression_context,
+    $._error_sentinel,
   ],
 
   rules: {
@@ -390,6 +445,11 @@ export default grammar({
           seq(mathematicalOperatorCharacter, optional("=")),
         ),
       ),
+
+    // `Core$then` and the other qualified continuations are reserved words
+    // with no meaning: only a quote can name them, as the symbol they spell.
+    _qualified_continuation: (_) =>
+      choice(...continuationKeywords.map(qualifiedSpelling)),
 
     keyword: ($) =>
       choice(...quotedPunctuationTokens.map((token) => grammarToken($, token))),
@@ -591,17 +651,11 @@ export default grammar({
     iteration_range: ($) =>
       choice(
         Any(
-          seq(
-            Qualify("from"),
-            expressionAtFloor($, PREC.LOOP_CLAUSE, "range_start"),
-          ),
-          seq(
-            Qualify("to"),
-            expressionAtFloor($, PREC.LOOP_CLAUSE, "range_end"),
-          ),
+          seq("from", expressionAtFloor($, PREC.LOOP_CLAUSE, "range_start")),
+          seq("to", expressionAtFloor($, PREC.LOOP_CLAUSE, "range_end")),
         ),
         seq(
-          Qualify("in"),
+          "in",
           expressionAtFloor($, PREC.LOOP_CLAUSE, "iterated_collection"),
         ),
       ),
@@ -613,12 +667,7 @@ export default grammar({
         "for",
         field("variable", $.symbol),
         optional($.iteration_range),
-        optional(
-          seq(
-            Qualify("when"),
-            expressionAtFloor($, PREC.LOOP_CLAUSE, "filter"),
-          ),
-        ),
+        optional(seq("when", expressionAtFloor($, PREC.LOOP_CLAUSE, "filter"))),
         $.loop_body,
       ),
 
@@ -637,14 +686,9 @@ export default grammar({
         PREC.LOOP_CLAUSE,
         "new",
         expressionAtFloor($, PREC.LOOP_CLAUSE, "class"),
+        optional(seq("of", expressionAtFloor($, PREC.LOOP_CLAUSE, "parent"))),
         optional(
-          seq(Qualify("of"), expressionAtFloor($, PREC.LOOP_CLAUSE, "parent")),
-        ),
-        optional(
-          seq(
-            Qualify("from"),
-            expressionAtFloor($, PREC.LOOP_CLAUSE, "instance"),
-          ),
+          seq("from", expressionAtFloor($, PREC.LOOP_CLAUSE, "instance")),
         ),
       ),
 
@@ -656,7 +700,7 @@ export default grammar({
         prec.left(
           PREC.CONTROL,
           seq(
-            field("keyword", Qualify(...widePrefixKeywords)),
+            field("keyword", Spellings(...widePrefixKeywords)),
             expressionAtFloor($, PREC.CONTROL),
           ),
         ),
@@ -698,8 +742,15 @@ export default grammar({
       LeftSeq(
         $,
         74,
-        Qualify("symbol", "local", "global", "threadVariable", "threadLocal"),
-        field("token", choice($.keyword, reserved("unreserved", $.symbol))),
+        Spellings("symbol", "local", "global", "threadVariable", "threadLocal"),
+        field(
+          "token",
+          choice(
+            $.keyword,
+            reserved("unreserved", $.symbol),
+            alias($._qualified_continuation, $.symbol),
+          ),
+        ),
       ),
 
     _expr_pack: ($) => choice($.expression, $._comma_pack),
@@ -747,14 +798,29 @@ function Any(x, y) {
   return prec.right(choice(seq(optional(x), y), x));
 }
 
-function Qualify(...names) {
-  const qualified = [
-    ...names,
-    ...names
-      .filter((s) => typeof s == "string" && keywords.includes(s))
-      .map((name) => alias(`Core$${name}`, name)),
+// Every source spelling of the given tokens. Besides itself, a token may be
+// spelled with its `Core$` qualification (keywords other than continuations)
+// or with its Unicode synonym; both are aliased to the canonical spelling, so
+// `Core$if` and `∧` appear in the tree as `if` and `and`.
+function Spellings(...names) {
+  const spellings = names.flatMap((name) => [
+    name,
+    ...alternativeSpellings(name).map((spelling) => alias(spelling, name)),
+  ]);
+  return spellings.length === 1 ? spellings[0] : choice(...spellings);
+}
+
+function alternativeSpellings(name) {
+  const qualifiable =
+    keywords.includes(name) && !continuationKeywords.includes(name);
+  return [
+    ...(qualifiable ? [qualifiedSpelling(name)] : []),
+    ...(name in unicodeSynonyms ? [unicodeSynonyms[name]] : []),
   ];
-  return qualified.length === 1 ? qualified[0] : choice(...qualified);
+}
+
+function qualifiedSpelling(name) {
+  return `Core$${name}`;
 }
 
 function fieldExpr($, name) {
@@ -825,7 +891,7 @@ function grammarToken($, item) {
       nullableControlToken($, item, false),
       nullableControlToken($, item, true),
     );
-  return Qualify(item);
+  return Spellings(item);
 }
 
 function RightSeq($, p, ...x) {
@@ -923,11 +989,11 @@ function operatorRule($, operator) {
   if (typeof operator === "string")
     return guardedPunctuationSpellingSet.has(operator)
       ? punctuationRule($, operator)
-      : Qualify(operator);
+      : Spellings(operator);
   if (operator.alsoLiteral)
     return choice(
       alias($[operator.token], operator.spelling),
-      Qualify(operator.spelling),
+      Spellings(operator.spelling),
     );
   return alias($[operator.token], operator.spelling);
 }
@@ -1052,6 +1118,6 @@ function prefixExpression($, operator) {
 function trapExpression($) {
   return prec.left(
     PREC.CONTROL,
-    seq(Qualify("trap"), expressionAtFloor($, PREC.CONTROL)),
+    seq(Spellings("trap"), expressionAtFloor($, PREC.CONTROL)),
   );
 }

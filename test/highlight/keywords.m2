@@ -4,9 +4,10 @@ if x then a else b
 --   ^ keyword.conditional
 --          ^ keyword.conditional
 
-Core$if x then a Core$else b
+-- Core$ qualifies keywords that begin a construct, never continuations.
+Core$if x then a else b
 -- <- keyword.conditional
---                ^ keyword.conditional
+--               ^ keyword.conditional
 
 -- Loops: for/while and every clause keyword they introduce.
 for i from 1 to n when odd i list i
@@ -24,8 +25,9 @@ while c do f()
 -- <- keyword.repeat
 --      ^ keyword.repeat
 
-for i Core$in L Core$list i
---    ^ keyword.repeat
+Core$for i in L list i
+-- <- keyword.repeat
+--         ^ keyword.repeat
 --              ^ keyword.repeat
 
 -- Exceptions: then/else/do of a try expression belong to the try.
@@ -60,3 +62,7 @@ local x
 a and not b
 --^ operator
 --    ^ operator
+
+-- Unicode synonyms highlight like their ASCII twins.
+a ∧ b
+--^ operator

@@ -105,3 +105,22 @@ x.x()
 2.?<2
 2.???2
 .2.?a
+a ∧ b
+a ∨ b
+not a ∧ b
+a ≠ b
+a ≤ b
+a ≥ b
+≤ b
+a ≪ b
+≪ b
+a ≫ b
+a ⊢ b
+⊢ b
+a ⊕ b
+a ⊗ b ⊕ c
+f = x → x
+(x, y) → x
+x ← 3
+x ⇒ 3
+f ≤ x

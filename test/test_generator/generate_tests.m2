@@ -140,6 +140,11 @@ tsTokenValue = expr -> (
     toString expr#1
 )
 
+-- Operators dispatch on their canonical spelling: quoting resolves Core's
+-- Unicode synonyms to their ASCII twins (`symbol ←` is `symbol <-`) and
+-- leaves every other operator token unchanged.
+tsOperatorSpelling = expr -> toString value("symbol " | tsTokenValue expr)
+
 debugUnary = set {
     "break", "continue", "return", "breakpoint", "step", "throw", "shield",
     "TEST", "trap", "time", "timing", "elapsedTime",
@@ -303,7 +308,7 @@ tsConvertExpr(List) := expr -> (
     else if name == "Binary" then tsConvertBinary expr
     else if name == "Adjacent" then tsConvertAdjacent expr
     else if name == "Unary" then (
-        op := tsTokenValue expr#1;
+        op := tsOperatorSpelling expr#1;
         children := if tsIsDummy expr#2 then {} else {tsChild("operand", tsConvertExpr expr#2)};
         if op == "," then tsNode(
             "naked_sequence",
@@ -389,9 +394,9 @@ tsOperatorKind = expr -> (
     if not instance(expr, List) or #expr == 0 then ""
     else if tsTag expr == "Adjacent" then "binary"
     else if tsTag expr == "Binary" and
-            not member(tsTokenValue expr#2, {",", ";", "=", ":=", "<-", "=>"}) then "binary"
+            not member(tsOperatorSpelling expr#2, {",", ";", "=", ":=", "<-", "=>"}) then "binary"
     else if tsTag expr == "Unary" and tsTokenValue expr#1 != "," and
-            not member(tsTokenValue expr#1, debugUnary) then "prefix"
+            not member(tsOperatorSpelling expr#1, debugUnary) then "prefix"
     else if tsTag expr == "Postfix" then "postfix"
     else ""
 )
@@ -406,7 +411,7 @@ tsConvertAssignment = (expr, kind, leftField) -> tsNode(kind, {
 })
 
 tsConvertBinary(List) := expr -> (
-    op := tsTokenValue expr#2;
+    op := tsOperatorSpelling expr#2;
     if op == "," then tsNode(
         "naked_sequence",
         apply(tsFlattenComma expr, item ->
@@ -709,7 +714,7 @@ tsContainsInvalidMemberAccess = expr -> instance(expr, List) and #expr > 0 and (
 -- binding category represented by this Tree-sitter grammar.
 tsContainsInvalidAssignment = expr -> instance(expr, List) and #expr > 0 and (
     if tsTag expr === "Binary" and
-            member(tsTokenValue expr#2, {"=", ":="}) then
+            member(tsOperatorSpelling expr#2, {"=", ":="}) then
         not (
             tsIsSymbolToken expr#1 or
             tsIsStructuredBindingTarget expr#1 or

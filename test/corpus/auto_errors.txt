@@ -311,3 +311,207 @@ a. <2
 :error
 ==================
 2 = x
+
+==================
+(47) a`b [auto errors]
+:error
+==================
+a`b
+
+==================
+(48) 'a [auto errors]
+:error
+==================
+'a
+
+==================
+(49) $a [auto errors]
+:error
+==================
+$a
+
+==================
+(50) §== [auto errors]
+:error
+==================
+§==
+
+==================
+(51) ∧ [auto errors]
+:error
+==================
+∧
+
+==================
+(52) · [auto errors]
+:error
+==================
+·
+
+==================
+(53) ·= [auto errors]
+:error
+==================
+·=
+
+==================
+(54) f ∧ [auto errors]
+:error
+==================
+f ∧
+
+==================
+(55) - ⊕ 1 [auto errors]
+:error
+==================
+- ⊕ 1
+
+==================
+(56) x.∧ [auto errors]
+:error
+==================
+x.∧
+
+==================
+(57) Core$∧ [auto errors]
+:error
+==================
+Core$∧
+
+==================
+(58) Core$· [auto errors]
+:error
+==================
+Core$·
+
+==================
+(59) Core$then [auto errors]
+:error
+==================
+Core$then
+
+==================
+(60) Core$else [auto errors]
+:error
+==================
+Core$else
+
+==================
+(61) Core$do [auto errors]
+:error
+==================
+Core$do
+
+==================
+(62) Core$of [auto errors]
+:error
+==================
+Core$of
+
+==================
+(63) Core$in [auto errors]
+:error
+==================
+Core$in
+
+==================
+(64) Core$list [auto errors]
+:error
+==================
+Core$list
+
+==================
+(65) Core$from [auto errors]
+:error
+==================
+Core$from
+
+==================
+(66) Core$to [auto errors]
+:error
+==================
+Core$to
+
+==================
+(67) Core$when [auto errors]
+:error
+==================
+Core$when
+
+==================
+(68) Core$except [auto errors]
+:error
+==================
+Core$except
+
+==================
+(69) if true Core$then 1 [auto errors]
+:error
+==================
+if true Core$then 1
+
+==================
+(70) if true then 1 Core$else 2 [auto errors]
+:error
+==================
+if true then 1 Core$else 2
+
+==================
+(71) for i Core$from 1 to 2 do i [auto errors]
+:error
+==================
+for i Core$from 1 to 2 do i
+
+==================
+(72) for i in {1} Core$list i [auto errors]
+:error
+==================
+for i in {1} Core$list i
+
+==================
+(73) new HashTable Core$from {} [auto errors]
+:error
+==================
+new HashTable Core$from {}
+
+==================
+(74) try 1 Core$except e do 2 [auto errors]
+:error
+==================
+try 1 Core$except e do 2
+
+==================
+(75) Core$and [auto errors]
+:error
+==================
+Core$and
+
+==================
+(76) Core$or [auto errors]
+:error
+==================
+Core$or
+
+==================
+(77) Core$xor [auto errors]
+:error
+==================
+Core$xor
+
+==================
+(78) Core$SPACE [auto errors]
+:error
+==================
+Core$SPACE
+
+==================
+(79) Core$SPACE b [auto errors]
+:error
+==================
+Core$SPACE b
+
+==================
+(80) symbol Core$∧ [auto errors]
+:error
+==================
+symbol Core$∧

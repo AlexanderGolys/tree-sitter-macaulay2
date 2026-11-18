@@ -143,3 +143,222 @@ é
     (binary_expression
       left_operand: (symbol)
       right: (symbol))))
+
+
+==================
+(14) 😀😀 = 11 [auto symbols]
+==================
+😀😀 = 11
+---
+
+(source_file
+  (cell
+    (assignment
+      left: (symbol)
+      right: (integer_literal))))
+
+
+==================
+(15) x😀y [auto symbols]
+==================
+x😀y
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(16) § [auto symbols]
+==================
+§
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(17) §= [auto symbols]
+==================
+§=
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(18) §§ [auto symbols]
+==================
+§§
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(19) a§1 [auto symbols]
+==================
+a§1
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (binary_expression
+        left_operand: (symbol)
+        right: (integer_literal)))))
+
+
+==================
+(20) 1§ [auto symbols]
+==================
+1§
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (integer_literal)
+      right: (symbol))))
+
+
+==================
+(21) a × b [auto symbols]
+==================
+a × b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (binary_expression
+        left_operand: (symbol)
+        right: (symbol)))))
+
+
+==================
+(22) x² [auto symbols]
+==================
+x²
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(23) ↀ= [auto symbols]
+==================
+ↀ=
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(24) aↀb [auto symbols]
+==================
+aↀb
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (binary_expression
+        left_operand: (symbol)
+        right: (symbol)))))
+
+
+==================
+(25) Ŵhen [auto symbols]
+==================
+Ŵhen
+---
+
+(source_file
+  (cell
+    (symbol)))
+
+
+==================
+(26) x Ŵhen [auto symbols]
+==================
+x Ŵhen
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(27) x Ųeturn [auto symbols]
+==================
+x Ųeturn
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(28) a ∧= b [auto symbols]
+==================
+a ∧= b
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (binary_expression
+        left_operand: (symbol)
+        right: (symbol)))))
+
+
+==================
+(29) Core$§ [auto symbols]
+==================
+Core$§
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (symbol))))
+
+
+==================
+(30) Core$∧ 1 [auto symbols]
+==================
+Core$∧ 1
+---
+
+(source_file
+  (cell
+    (binary_expression
+      left_operand: (symbol)
+      right: (integer_literal))))

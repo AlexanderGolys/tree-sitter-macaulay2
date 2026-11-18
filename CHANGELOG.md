@@ -1,5 +1,22 @@
 # Changelog
 
+## 6.4.0 - 2026-11-18
+
+- Parse Core's Unicode operator synonyms (`⊗ ← → ⇒ ≠ ⊕ ≪ ≫ ∧ ∨ ≤ ≥ ⊢`) exactly
+  like their ASCII twins; they appear in the tree as the twin's node.
+- Reject operator words as symbols: a lone `∧`, `·` or `·=` is a syntax error.
+- Reject `Core$` spellings of continuation words (`Core$then`, `Core$do`, …)
+  and bare `Core$and`, `Core$SPACE` and similar, matching Macaulay2.
+- Treat U+2180–U+218F as operator characters, so `ↀ=` is one symbol.
+- Stop keyword lookahead from truncating non-ASCII identifiers (`x Ŵhen` no
+  longer reads as `x then`).
+- Keep error recovery local: a syntax error no longer turns the rest of the
+  file into raw-string content.
+- Highlight binary `.` and `#` as punctuation; `.?`, `#?` and prefix `#` stay
+  operators. Their right operands no longer get a custom `@property` capture.
+- Highlight `Error` as `@error`, and `exit`, `end`, `quit`, `restart` as
+  `@keyword.directive`.
+
 ## 6.3.4 - 2026-10-28
 
 - Ship the Wasm parser in the npm package.

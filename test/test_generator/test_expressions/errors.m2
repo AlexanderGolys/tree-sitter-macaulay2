@@ -44,3 +44,37 @@ a. <2
 2. .?<2
 .2.??a
 2 = x
+a`b
+'a
+$a
+§==
+∧
+·
+·=
+f ∧
+- ⊕ 1
+x.∧
+Core$∧
+Core$·
+Core$then
+Core$else
+Core$do
+Core$of
+Core$in
+Core$list
+Core$from
+Core$to
+Core$when
+Core$except
+if true Core$then 1
+if true then 1 Core$else 2
+for i Core$from 1 to 2 do i
+for i in {1} Core$list i
+new HashTable Core$from {}
+try 1 Core$except e do 2
+Core$and
+Core$or
+Core$xor
+Core$SPACE
+Core$SPACE b
+symbol Core$∧
